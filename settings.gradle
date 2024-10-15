@@ -51,7 +51,7 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "5616143"
-        def ldLibVersion = "1.0.28.d"
+        def ldLibVersion = "1.0.29.b"
         def shimmerVersion = "0.2.4"
         def modDevGradleVersion = "2.0.28-beta"
         def lombokPluginVersion = "8.7.1"
