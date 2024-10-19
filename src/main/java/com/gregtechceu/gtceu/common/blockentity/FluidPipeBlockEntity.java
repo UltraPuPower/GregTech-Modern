@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
@@ -105,8 +106,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             if (level.getBlockEntity(getBlockPos().relative(side)) instanceof FluidPipeBlockEntity) {
                 return false;
             }
-            return FluidTransferHelper.getFluidTransfer(level, getBlockPos().relative(side), side.getOpposite()) !=
-                    null;
+            return GTTransferUtils.hasAdjacentFluidHandler(level, getBlockPos(), side);
         }
         return false;
     }
@@ -173,7 +173,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // pipeTank should only be determined by the cover attached to the actual pipe
             if (cover != null) {
-                pipeTank = cover.getFluidTransferCap(pipeTank);
+                pipeTank = cover.getFluidHandlerCap(pipeTank);
                 // Shutter covers return null capability when active, so check here to prevent NPE
                 if (pipeTank == null || checkForPumpCover(cover)) continue;
             } else {
@@ -252,7 +252,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         boolean burning = prop.getMaxFluidTemperature() < fluid.getFluidType().getTemperature(stack);
         boolean leaking = !prop.isGasProof() && fluid.getFluidType().getDensity(stack) < 0;
         boolean shattering = !prop.isCryoProof() &&
-                fluid.getFluidType().getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
+                fluid.getFluidType().getTemperature(stack) < FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
         boolean corroding = false;
         boolean melting = false;
 
@@ -452,9 +452,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             if (stack1 == null || stack1.getAmount() <= 0) {
                 fluidTag.putBoolean("isNull", true);
             } else {
-                FluidStack.OPTIONAL_CODEC.encode(stack1,
-                        Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE), fluidTag)
-                        .getOrThrow();
+                stack1.saveOptional(Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE));
             }
             list.add(fluidTag);
         }
@@ -469,9 +467,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         for (int i = 0; i < list.size(); i++) {
             CompoundTag tag = list.getCompound(i);
             if (!tag.getBoolean("isNull")) {
-                fluidTanks[i].setFluid(FluidStack.OPTIONAL_CODEC
-                        .parse(Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE), tag)
-                        .getOrThrow());
+                fluidTanks[i].setFluid(FluidStack
+                        .parseOptional(Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE), tag));
             }
         }
     }

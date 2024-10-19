@@ -21,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -74,7 +73,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune) {
         super(holder, false, fortune, speed, maximumRadius);
         this.inventorySize = 4;
-        this.energyPerTick = (int) (16 * FluidHelper.getBucket() / 1000);
+        this.energyPerTick = 16;
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
     }
@@ -99,7 +98,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     @Override
     protected NotifiableFluidTank createSteamTank(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.IN);
+        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
     protected NotifiableItemStackHandler createImportItemHandler(@SuppressWarnings("unused") Object... args) {

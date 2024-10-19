@@ -305,21 +305,21 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
 
         @Override
-        public FluidStack drain(int maxDrain, FluidAction fluidAction) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (this.stock != null && this.config != null) {
                 // Extract the items from the real net to either validate (simulate)
                 // or extract (modulate) when this is called
                 if (!isOnline()) return FluidStack.EMPTY;
                 MEStorage aeNetwork = getMainNode().getGrid().getStorageService().getInventory();
 
-                Actionable action = fluidAction.simulate() ? Actionable.SIMULATE : Actionable.MODULATE;
+                Actionable actionable = action.simulate() ? Actionable.SIMULATE : Actionable.MODULATE;
                 var key = config.what();
-                long extracted = aeNetwork.extract(key, maxDrain, action, actionSource);
+                long extracted = aeNetwork.extract(key, maxDrain, actionable, actionSource);
 
                 if (extracted > 0) {
                     FluidStack resultStack = key instanceof AEFluidKey fluidKey ?
                             AEUtil.toFluidStack(fluidKey, extracted) : FluidStack.EMPTY;
-                    if (fluidAction.execute()) {
+                    if (action.execute()) {
                         // may as well update the display here
                         this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
                         if (this.stock.amount() == 0) {

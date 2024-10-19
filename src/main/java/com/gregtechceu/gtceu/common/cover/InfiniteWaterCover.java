@@ -12,6 +12,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,7 +34,7 @@ public class InfiniteWaterCover extends CoverBehavior {
 
     @Override
     public boolean canAttach() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
     }
 
     @Override
@@ -52,11 +53,11 @@ public class InfiniteWaterCover extends CoverBehavior {
 
     public void update() {
         if (coverHolder.getOffsetTimer() % 20 == 0) {
-            var fluidHandler = FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(),
-                    attachedSide);
-            if (fluidHandler != null)
-                fluidHandler.fill(new FluidStack(Fluids.WATER, 16 * FluidHelper.getBucket()),
+            IFluidHandler handler = FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+            if (handler != null) {
+                handler.fill(new FluidStack(Fluids.WATER, 16 * FluidType.BUCKET_VOLUME),
                         IFluidHandler.FluidAction.EXECUTE);
+            }
         }
     }
 }

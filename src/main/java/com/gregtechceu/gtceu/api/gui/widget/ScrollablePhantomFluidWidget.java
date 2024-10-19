@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
@@ -20,7 +21,6 @@ import java.util.function.Supplier;
 public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
 
     private static final int SCROLL_ACTION_ID = 0x0001_0001;
-    private static final int MILLIBUCKETS = FluidHelper.getBucket() / 1000;
 
     public ScrollablePhantomFluidWidget(@Nullable IFluidHandlerModifiable fluidTank, int tank, int x, int y, int width,
                                         int height, Supplier<FluidStack> phantomFluidGetter,
@@ -34,7 +34,7 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
         if (!isMouseOverElement(mouseX, mouseY))
             return false;
 
-        int delta = getModifiedChangeAmount((scrollY > 0) ? 1 : -1) * MILLIBUCKETS;
+        var delta = getModifiedChangeAmount((scrollY > 0) ? 1 : -1);
         writeClientAction(SCROLL_ACTION_ID, buf -> buf.writeVarInt(delta));
 
         return true;
@@ -74,7 +74,7 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
 
         fluid.setAmount(Math.min(Math.max(fluid.getAmount() + delta, 0), fluidTank.getTankCapacity(tank)));
         if (fluid.getAmount() <= 0L) {
-            fluidTank.drain(fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            fluidTank.setFluidInTank(tank, FluidStack.EMPTY);
         }
     }
 }

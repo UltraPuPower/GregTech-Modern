@@ -354,21 +354,21 @@ public class GTUtil {
 
         if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
                 biome.is(BiomeTags.IS_RIVER)) {
-            return FluidHelper.getBucket();
+            return FluidType.BUCKET_VOLUME;
         } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
-            return FluidHelper.getBucket() * 4 / 5;
+            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
-            return FluidHelper.getBucket() * 35 / 100;
+            return FluidType.BUCKET_VOLUME * 35 / 100;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
-            return FluidHelper.getBucket() * 3 / 10;
+            return FluidType.BUCKET_VOLUME * 3 / 10;
         } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {
-            return FluidHelper.getBucket() / 4;
+            return FluidType.BUCKET_VOLUME / 4;
         } else if (biome.is(Tags.Biomes.IS_COLD)) {
-            return FluidHelper.getBucket() * 175 / 1000;
+            return FluidType.BUCKET_VOLUME * 175 / 1000;
         } else if (biome.is(Tags.Biomes.IS_SANDY)) {
-            return FluidHelper.getBucket() * 170 / 1000;
+            return FluidType.BUCKET_VOLUME * 170 / 1000;
         }
-        return FluidHelper.getBucket() / 10;
+        return FluidType.BUCKET_VOLUME / 10;
     }
 
     /**
@@ -412,6 +412,10 @@ public class GTUtil {
         if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
             return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.LIQUID);
         return null;
+    }
+
+    public static int getFluidColor(FluidStack fluid) {
+        return IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
     }
 
     public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {

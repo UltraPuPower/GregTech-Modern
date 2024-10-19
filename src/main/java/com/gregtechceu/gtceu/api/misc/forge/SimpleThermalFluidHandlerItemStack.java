@@ -49,8 +49,8 @@ public class SimpleThermalFluidHandlerItemStack extends FluidHandlerItemStackSim
     }
 
     private void removeTagWhenEmpty(FluidAction action) {
-        if (getFluid() == FluidStack.EMPTY && action == FluidAction.EXECUTE) {
-            this.container.remove(GTDataComponents.FLUID_CONTENT);
+        if (getFluid().isEmpty() && action.execute()) {
+            this.setContainerToEmpty();
         }
     }
 

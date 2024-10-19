@@ -83,7 +83,7 @@ public class FluidDrillLogic extends RecipeLogic {
         return null;
     }
 
-    public long getFluidToProduce() {
+    public int getFluidToProduce() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             return getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()));
@@ -106,7 +106,7 @@ public class FluidDrillLogic extends RecipeLogic {
             if (isOverclocked()) {
                 produced = produced * 3 / 2;
             }
-            return produced * FluidHelper.getBucket() / 1000;
+            return produced;
         }
         return 0;
     }

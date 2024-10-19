@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -117,9 +116,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
         if (currentTemperature >= 100 && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
-            int maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidHelper.getBucket() /
+            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidType.BUCKET_VOLUME /
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100000);
-            List<SizedFluidIngredient> drainWater = List.of(SizedFluidIngredient.of(Fluids.WATER, maxDrain));
+            var drainWater = List.of(SizedFluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
                 inputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)));

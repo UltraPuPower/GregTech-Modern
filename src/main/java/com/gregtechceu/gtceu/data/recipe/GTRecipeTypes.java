@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -439,17 +440,13 @@ public class GTRecipeTypes {
                 var fluidA = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidA")));
                 var fluidB = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidB")));
                 if (fluidA != Fluids.EMPTY) {
-                    FluidTank tank = new FluidTank(1000);
-                    tank.setFluid(new FluidStack(fluidA, 1000));
-                    widgetGroup.addWidget(new TankWidget(tank, widgetGroup.getSize().width - 30,
-                            widgetGroup.getSize().height - 30, false, false)
+                    widgetGroup.addWidget(new TankWidget(new CustomFluidTank(new FluidStack(fluidA, 1000)),
+                            widgetGroup.getSize().width - 30, widgetGroup.getSize().height - 30, false, false)
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
                 if (fluidB != Fluids.EMPTY) {
-                    FluidTank tank = new FluidTank(1000);
-                    tank.setFluid(new FluidStack(fluidB, 1000));
-                    widgetGroup.addWidget(new TankWidget(tank, widgetGroup.getSize().width - 30 - 20,
-                            widgetGroup.getSize().height - 30, false, false)
+                    widgetGroup.addWidget(new TankWidget(new CustomFluidTank(new FluidStack(fluidB, 1000)),
+                            widgetGroup.getSize().width - 30 - 20, widgetGroup.getSize().height - 30, false, false)
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
             })

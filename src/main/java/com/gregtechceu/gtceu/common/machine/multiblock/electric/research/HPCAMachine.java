@@ -124,7 +124,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
-        this.coolantHandler = new FluidTransferList(coolantContainers);
+        this.coolantHandler = new FluidHandlerList(coolantContainers);
         this.hpcaHandler.onStructureForm(componentHatches);
 
         if (getLevel() instanceof ServerLevel serverLevel) {
@@ -494,7 +494,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
                         getCoolantStack(coolantToDrain), IFluidHandler.FluidAction.EXECUTE);
                 if (!coolantStack.isEmpty()) {
-                    long coolantDrained = coolantStack.getAmount();
+                    int coolantDrained = coolantStack.getAmount();
                     if (coolantDrained == coolantToDrain) {
                         // successfully stabilized to zero
                         return 0;

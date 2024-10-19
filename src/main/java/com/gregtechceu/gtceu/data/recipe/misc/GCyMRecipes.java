@@ -395,7 +395,7 @@ public class GCyMRecipes {
                 .outputFluids(output.getFluid(GTValues.L * outputAmount))
                 .duration(duration * 3 / 4)
                 .EUt(16)
-                .blastFurnaceTemp(FluidHelper.getTemperature(output.getFluid(1)))
+                .blastFurnaceTemp(output.getFluid().getFluidType().getTemperature())
                 .save(provider);
     }
 
@@ -414,7 +414,7 @@ public class GCyMRecipes {
                 .outputFluids(output.getFluid(GTValues.L * outputAmount))
                 .duration(duration * 3 / 4)
                 .EUt(16)
-                .blastFurnaceTemp(FluidHelper.getTemperature(output.getFluid(1)))
+                .blastFurnaceTemp(output.getFluid().getFluidType().getTemperature())
                 .save(provider);
     }
 

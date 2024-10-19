@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -34,12 +36,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,6 +48,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import lombok.Setter;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -203,8 +203,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingFluids();
-        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null && FluidTransferHelper
-                .getFluidTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null) {
+        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null &&
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -233,47 +233,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     @Override
     public ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                       BlockHitResult hit) {
-        var currentStack = player.getMainHandItem();
-        if (hit.getDirection() == getFrontFacing() && !currentStack.isEmpty()) {
-            var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
-            var fluidTank = cache.getStorages()[0];
-            if (handler != null && !isRemote()) {
-                if (cache.getStorages()[0].getFluidAmount() > 0) {
-                    FluidStack initialFluid = fluidTank.getFluid();
-                    FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank,
-                            Integer.MAX_VALUE, null, false);
-                    if (result.isSuccess()) {
-                        ItemStack remainingStack = FluidTransferHelper
-                                .tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
-                        currentStack.shrink(1);
-                        SoundEvent soundevent = FluidHelper.getFillSound(initialFluid);
-                        if (soundevent != null) {
-                            player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                                    soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        }
-                        if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
-                            Block.popResource(player.level(), player.getOnPos(), remainingStack);
-                        }
-                        return ItemInteractionResult.SUCCESS;
-                    }
-                }
-
-                FluidActionResult result = FluidTransferHelper.tryEmptyContainer(currentStack, fluidTank,
-                        Integer.MAX_VALUE, null, false);
-                if (result.isSuccess()) {
-                    ItemStack remainingStack = FluidTransferHelper
-                            .tryEmptyContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
-                    currentStack.shrink(1);
-                    SoundEvent soundevent = FluidHelper.getEmptySound(fluidTank.getFluid());
-                    if (soundevent != null) {
-                        player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent,
-                                SoundSource.BLOCKS, 1.0F, 1.0F);
-                    }
-                    if (!remainingStack.isEmpty() && !player.getInventory().add(remainingStack)) {
-                        Block.popResource(player.level(), player.getOnPos(), remainingStack);
-                    }
-                }
+                                   BlockHitResult hit) {
+        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, cache)) {
                 return ItemInteractionResult.SUCCESS;
             }
         }
@@ -345,7 +307,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         group.addWidget(new ImageWidget(4, 4, 82, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
                 .addWidget(new LabelWidget(8, 18,
-                        () -> String.valueOf(cache.getFluidInTank(0).getAmount() / (FluidHelper.getBucket() / 1000)))
+                        () -> String.valueOf(cache.getFluidInTank(0).getAmount()))
                         .setTextColor(-1).setDropShadow(true))
                 .addWidget(new TankWidget(cache.getStorages()[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))

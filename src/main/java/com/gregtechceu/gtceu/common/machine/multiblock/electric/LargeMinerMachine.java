@@ -67,7 +67,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     @Nullable
     protected EnergyContainerList energyContainer;
     @Nullable
-    protected FluidTransferList inputFluidInventory;
+    protected FluidHandlerList inputFluidInventory;
     private final int drillingFluidConsumePerTick;
 
     public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune,
@@ -139,13 +139,13 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                         handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
                 } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP &&
-                        handler instanceof IFluidHandler fluidTransfer) {
-                            fluidTanks.add(fluidTransfer);
+                        handler instanceof IFluidHandler fluidHandler) {
+                            fluidTanks.add(fluidHandler);
                         }
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
-        this.inputFluidInventory = new FluidTransferList(fluidTanks);
+        this.inputFluidInventory = new FluidHandlerList(fluidTanks);
 
         getRecipeLogic().setVoltageTier(GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()));
         getRecipeLogic().setOverclockAmount(
@@ -177,7 +177,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         }
 
         // drain fluid
-        if (inputFluidInventory != null && inputFluidInventory.transfers.length > 0) {
+        if (inputFluidInventory != null && inputFluidInventory.handlers.length > 0) {
             FluidStack drillingFluid = DrillingFluid
                     .getFluid(this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
             FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);

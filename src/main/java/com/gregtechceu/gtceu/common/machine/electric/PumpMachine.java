@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -100,7 +102,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket() * Math.max(1, getTier()), IO.NONE, IO.OUT);
+        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE, IO.OUT);
     }
 
     @Override
@@ -235,8 +237,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                 // Remember all the sources we find
                 boolean isSource = fluidState.isSource();
                 if (isSource) {
-                    var fluidHandler = new FluidBlockTransfer(liquidBlock, level, check);
-                    FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
+                    var fluidHandler = new BucketPickupHandlerWrapper(liquidBlock, level, check);
+                    FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
                     if (!drainStack.isEmpty()) {
                         return new SearchResult(check, true);
                     }
@@ -477,14 +479,12 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                     states.removeLast();
                     FluidState fluidState = sourceState.state().getFluidState();
                     if (sourceState.state().getBlock() instanceof LiquidBlock liquidBlock && fluidState.isSource()) {
-                        var fluidHandler = new FluidBlockTransfer(liquidBlock, getLevel(), pos);
-                        FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE,
-                                IFluidHandler.FluidAction.SIMULATE);
+                        var fluidHandler = new BucketPickupHandlerWrapper(liquidBlock, getLevel(), pos);
+                        FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
                         if (!drainStack.isEmpty() &&
-                                cache.fillInternal(drainStack, IFluidHandler.FluidAction.SIMULATE) ==
-                                        drainStack.getAmount()) {
-                            cache.fillInternal(drainStack, IFluidHandler.FluidAction.EXECUTE);
-                            fluidHandler.drain(drainStack, IFluidHandler.FluidAction.EXECUTE);
+                                cache.fillInternal(drainStack, FluidAction.SIMULATE) == drainStack.getAmount()) {
+                            cache.fillInternal(drainStack, FluidAction.EXECUTE);
+                            fluidHandler.drain(drainStack, FluidAction.EXECUTE);
                             getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                             pumped = true;
                             pumps--;

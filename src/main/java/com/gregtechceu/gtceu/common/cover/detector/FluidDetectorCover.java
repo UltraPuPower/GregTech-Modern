@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.utils.RedstoneUtil;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class FluidDetectorCover extends DetectorCover {
@@ -17,7 +18,7 @@ public class FluidDetectorCover extends DetectorCover {
 
     @Override
     public boolean canAttach() {
-        return getFluidTransfer() != null;
+        return getFluidHandler() != null;
     }
 
     @Override
@@ -25,12 +26,12 @@ public class FluidDetectorCover extends DetectorCover {
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
-        IFluidHandler fluidHandler = getFluidTransfer();
+        IFluidHandler fluidHandler = getFluidHandler();
         if (fluidHandler == null)
             return;
 
-        long storedFluid = 0;
-        long fluidCapacity = 0;
+        int storedFluid = 0;
+        int fluidCapacity = 0;
 
         for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
             FluidStack content = fluidHandler.getFluidInTank(tank);
@@ -46,8 +47,7 @@ public class FluidDetectorCover extends DetectorCover {
         setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedFluid, fluidCapacity, isInverted()));
     }
 
-    protected IFluidHandler getFluidTransfer() {
-        return coverHolder.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, coverHolder.getPos(),
-                attachedSide);
+    protected IFluidHandler getFluidHandler() {
+        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
 }

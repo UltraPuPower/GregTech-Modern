@@ -39,7 +39,7 @@ public class FilteredFluidHandlerItemStack extends FluidHandlerItemStack {
     }
 
     private void removeTagWhenEmpty(FluidAction action) {
-        if (getFluid().isEmpty() && action == FluidAction.EXECUTE) {
+        if (getFluid().isEmpty() && action.execute()) {
             this.setContainerToEmpty();
         }
     }

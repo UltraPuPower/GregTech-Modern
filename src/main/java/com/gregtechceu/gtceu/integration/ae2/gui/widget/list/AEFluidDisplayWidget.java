@@ -30,7 +30,7 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawText;
 
 /**
  * @author GlodBlock
- * @ Display a certain {@link net.neoforged.neoforge.fluids.FluidStack} element.
+ * @ Display a certain {@link FluidStack} element.
  * @date 2023/4/19-0:30
  */
 public class AEFluidDisplayWidget extends Widget {
@@ -56,7 +56,7 @@ public class AEFluidDisplayWidget extends Widget {
         if (fluid != null) {
             FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ?
                     key.toStack((int) fluid.amount()) : FluidStack.EMPTY;
-            DrawerHelper.drawFluidForGui(graphics, fluidStack, fluid.amount(), stackX, stackY, 17, 17);
+            DrawerHelper.drawFluidForGui(graphics, fluidStack, fluid.amount(), stackX, stackY, 16, 16);
             String amountStr = String.format("x%,d", fluid.amount());
             drawText(graphics, amountStr, stackX + 20, stackY + 5, 1, 0xFFFFFFFF);
         }
@@ -76,7 +76,7 @@ public class AEFluidDisplayWidget extends Widget {
                 tooltips.add(Component.literal(String.format("%,d ", fluid.amount())).append(FluidHelper.getUnit()));
                 if (!Platform.isForge()) {
                     tooltips.add(Component.literal(
-                            "§6mB:§r %d mB".formatted(fluidStack.getAmount() * 1000 / FluidHelper.getBucket())));
+                            "§6mB:§r %d mB".formatted(fluidStack.getAmount())));
                 }
                 TooltipsHandler.appendFluidTooltips(fluidStack.getFluid(), fluidStack.getAmount(), tooltips::add,
                         TooltipFlag.NORMAL);

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 
@@ -42,7 +43,7 @@ public class FluidRegulatorCover extends PumpCover {
     @DescSynced
     @Getter
     protected int globalTransferSizeMillibuckets;
-    protected long fluidTransferBuffered = 0L;
+    protected int fluidTransferBuffered = 0;
 
     private NumberInputWidget<Integer> transferSizeInput;
     private EnumSelectorWidget<BucketMode> transferBucketModeInput;
@@ -69,11 +70,11 @@ public class FluidRegulatorCover extends PumpCover {
         int fluidLeftToTransfer = platformTransferLimit;
 
         for (int slot = 0; slot < source.getTanks(); slot++) {
-            if (fluidLeftToTransfer <= 0L)
+            if (fluidLeftToTransfer <= 0)
                 break;
 
             FluidStack sourceFluid = source.getFluidInTank(slot).copy();
-            int supplyAmount = getFilteredFluidAmount(sourceFluid) * MILLIBUCKET_SIZE;
+            int supplyAmount = getFilteredFluidAmount(sourceFluid);
 
             // If the remaining transferrable amount in this operation is not enough to transfer the full stack size,
             // the remaining amount for this operation will be buffered and added to the next operation's maximum.
@@ -83,28 +84,28 @@ public class FluidRegulatorCover extends PumpCover {
                 break;
             }
 
-            if (sourceFluid.isEmpty() || supplyAmount <= 0L)
+            if (sourceFluid.isEmpty() || supplyAmount <= 0)
                 continue;
 
             sourceFluid.setAmount(supplyAmount);
-            FluidStack drained = source.drain(sourceFluid, IFluidHandler.FluidAction.SIMULATE);
+            FluidStack drained = source.drain(sourceFluid, FluidAction.SIMULATE);
 
             if (drained.isEmpty() || drained.getAmount() < supplyAmount)
                 continue;
 
-            int insertableAmount = destination.fill(drained.copy(), IFluidHandler.FluidAction.SIMULATE);
+            int insertableAmount = destination.fill(drained.copy(), FluidAction.SIMULATE);
             if (insertableAmount <= 0)
                 continue;
 
             drained.setAmount(insertableAmount);
-            drained = source.drain(drained, IFluidHandler.FluidAction.EXECUTE);
+            drained = source.drain(drained, FluidAction.EXECUTE);
 
             if (!drained.isEmpty()) {
-                destination.fill(drained, IFluidHandler.FluidAction.EXECUTE);
+                destination.fill(drained, FluidAction.EXECUTE);
                 fluidLeftToTransfer -= (drained.getAmount() - fluidTransferBuffered);
             }
 
-            fluidTransferBuffered = 0L;
+            fluidTransferBuffered = 0;
         }
 
         return platformTransferLimit - fluidLeftToTransfer;
@@ -119,28 +120,28 @@ public class FluidRegulatorCover extends PumpCover {
                 TransferDirection.INSERT);
 
         for (FluidStack fluidStack : sourceAmounts.keySet()) {
-            if (fluidLeftToTransfer <= 0L)
+            if (fluidLeftToTransfer <= 0)
                 break;
 
-            int amountToKeep = getFilteredFluidAmount(fluidStack) * MILLIBUCKET_SIZE;
+            int amountToKeep = getFilteredFluidAmount(fluidStack);
             int amountInDest = destinationAmounts.getOrDefault(fluidStack, 0);
             if (amountInDest >= amountToKeep)
                 continue;
 
             FluidStack fluidToMove = fluidStack.copy();
             fluidToMove.setAmount(Math.min(fluidLeftToTransfer, amountToKeep - amountInDest));
-            if (fluidToMove.getAmount() <= 0L)
+            if (fluidToMove.getAmount() <= 0)
                 continue;
 
-            FluidStack drained = source.drain(fluidToMove, IFluidHandler.FluidAction.SIMULATE);
-            int fillableAmount = destination.fill(drained, IFluidHandler.FluidAction.SIMULATE);
-            if (fillableAmount <= 0L)
+            FluidStack drained = source.drain(fluidToMove, FluidAction.SIMULATE);
+            int fillableAmount = destination.fill(drained, FluidAction.SIMULATE);
+            if (fillableAmount <= 0)
                 continue;
 
             fluidToMove.setAmount(Math.min(fluidToMove.getAmount(), fillableAmount));
 
-            drained = source.drain(fluidToMove, IFluidHandler.FluidAction.EXECUTE);
-            long movedAmount = destination.fill(drained, IFluidHandler.FluidAction.EXECUTE);
+            drained = source.drain(fluidToMove, FluidAction.EXECUTE);
+            int movedAmount = destination.fill(drained, FluidAction.EXECUTE);
 
             fluidLeftToTransfer -= movedAmount;
         }
@@ -189,8 +190,7 @@ public class FluidRegulatorCover extends PumpCover {
             return globalTransferSizeMillibuckets;
 
         FluidFilter filter = filterHandler.getFilter();
-        return (filter.supportsAmounts() ? filter.testFluidAmount(fluidStack) : globalTransferSizeMillibuckets) *
-                MILLIBUCKET_SIZE;
+        return (filter.supportsAmounts() ? filter.testFluidAmount(fluidStack) : globalTransferSizeMillibuckets);
     }
 
     ///////////////////////////

@@ -45,7 +45,8 @@ public class FluidStackElement implements IElement {
             y += 2;
             int width = style.getWidth() - 4;
             int height = style.getHeight() - 4;
-            DrawerHelper.drawFluidForGui(guiGraphics, fluidStack, fluidStack.getAmount(), x, y, width, height);
+            DrawerHelper.drawFluidForGui(guiGraphics, FluidHelperImpl.toFluidStack(fluidStack), fluidStack.getAmount(),
+                    x, y, width, height);
 
             guiGraphics.pose().pushPose();
             guiGraphics.pose().scale(0.5F, 0.5F, 1);

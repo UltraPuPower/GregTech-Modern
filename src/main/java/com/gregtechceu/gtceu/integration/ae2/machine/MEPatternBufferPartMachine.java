@@ -66,6 +66,7 @@ import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.primitives.Ints;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -161,7 +162,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         this.circuitInventorySimulated = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         this.shareInventory = new NotifiableItemStackHandler(this, 9, IO.IN, IO.NONE);
-        this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidHelper.getBucket(), IO.IN, IO.NONE);
+        this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidType.BUCKET_VOLUME, IO.IN, IO.NONE);
     }
 
     @Override
@@ -451,11 +452,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             recipeHandler.getItemInputHandler().notifyListeners();
         }
 
-        private void addFluid(AEFluidKey key, long amount) {
+        private void addFluid(AEFluidKey key, int amount) {
             if (amount <= 0L) return;
             for (FluidStack fluid : fluidInventory) {
-                if (AEUtil.matches(key, fluid)) {
-                    long free = Long.MAX_VALUE - fluid.getAmount();
+                if (key.matches(fluid)) {
+                    int free = Integer.MAX_VALUE - fluid.getAmount();
                     if (amount <= free) {
                         fluid.grow((int) amount);
                     } else {
@@ -501,12 +502,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 for (FluidStack stack : fluidInventory) {
                     if (stack == null || stack.isEmpty()) continue;
 
-                    int inserted = (int) StorageHelper.poweredInsert(
+                    int inserted = Ints.saturatedCast(StorageHelper.poweredInsert(
                             energy,
                             networkInv,
                             AEFluidKey.of(stack),
                             stack.getAmount(),
-                            actionSource);
+                            actionSource));
                     if (inserted > 0) {
                         stack.shrink(inserted);
                         if (stack.isEmpty()) {
@@ -521,7 +522,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         public void pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
             patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                 if (what instanceof AEFluidKey key) {
-                    addFluid(key, amount);
+                    addFluid(key, Ints.saturatedCast(amount));
                 }
 
                 if (what instanceof AEItemKey key) {
@@ -581,7 +582,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     foundStack = stack;
                 }
                 if (!found) continue;
-                int drained = Math.min(foundStack.getAmount(), fluidStack.amount());
+                int drained = Math.min(foundStack.getAmount(), fluidStack.getAmount());
                 if (!simulate) {
                     foundStack.shrink(drained);
                     if (foundStack.isEmpty()) {

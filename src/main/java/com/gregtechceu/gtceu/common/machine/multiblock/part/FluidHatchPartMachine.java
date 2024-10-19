@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -13,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -47,9 +50,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidHatchPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
-    public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidHelper.getBucket();
-    public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidHelper.getBucket();
-    public static final int INITIAL_TANK_CAPACITY_9X = FluidHelper.getBucket();
+    public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidType.BUCKET_VOLUME;
+    public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidType.BUCKET_VOLUME;
+    public static final int INITIAL_TANK_CAPACITY_9X = FluidType.BUCKET_VOLUME;
 
     @Persisted
     public final NotifiableFluidTank tank;
@@ -140,8 +143,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
     protected void updateTankSubscription() {
         if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) &&
-                FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(getFrontFacing()),
-                        getFrontFacing().getOpposite()) != null) {
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing())) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();

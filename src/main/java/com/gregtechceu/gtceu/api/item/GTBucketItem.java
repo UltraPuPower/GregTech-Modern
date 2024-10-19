@@ -50,7 +50,7 @@ public class GTBucketItem extends BucketItem {
     public static int color(ItemStack itemStack, int index) {
         if (itemStack.getItem() instanceof GTBucketItem item) {
             if (index == 1) {
-                return FluidHelper.getColor(new FluidStack(item.content, FluidHelper.getBucket()));
+                return IClientFluidTypeExtensions.of(item.getFluid()).getTintColor();
             }
         }
         return -1;

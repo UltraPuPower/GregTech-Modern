@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -22,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote FluidTankProxyTrait
  */
 @Accessors(chain = true)
-public class FluidTankProxyTrait extends MachineTrait implements IFluidHandler, ICapabilityTrait {
+public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerModifiable, ICapabilityTrait {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidTankProxyTrait.class);
     @Getter
@@ -30,7 +32,7 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandler, 
     @Setter
     @Getter
     @Nullable
-    public IFluidHandler proxy;
+    public IFluidHandlerModifiable proxy;
 
     public FluidTankProxyTrait(MetaMachine machine, IO capabilityIO) {
         super(machine);
@@ -74,47 +76,47 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandler, 
     }
 
     @Override
-    public int fill(FluidStack resource, FluidAction simulate) {
+    public int fill(FluidStack resource, FluidAction action) {
         if (proxy != null && canCapInput()) {
-            return proxy.fill(resource, simulate);
+            return proxy.fill(resource, action);
         }
         return 0;
     }
 
-    public long fillInternal(FluidStack resource, FluidAction simulate) {
+    public int fillInternal(FluidStack resource, FluidAction action) {
         if (proxy != null && !resource.isEmpty()) {
-            return proxy.fill(resource, simulate);
+            return proxy.fill(resource, action);
         }
         return 0;
     }
 
-    public FluidStack drainInternal(FluidStack resource, FluidAction simulate) {
+    public FluidStack drainInternal(FluidStack resource, FluidAction action) {
         if (proxy != null && !resource.isEmpty()) {
-            return proxy.drain(resource, simulate);
+            return proxy.drain(resource, action);
         }
         return FluidStack.EMPTY;
     }
 
     @NotNull
     @Override
-    public FluidStack drain(int maxDrain, FluidAction simulate) {
+    public FluidStack drain(int maxDrain, FluidAction action) {
         if (proxy != null && canCapOutput()) {
-            return proxy.drain(maxDrain, simulate);
+            return proxy.drain(maxDrain, action);
         }
         return FluidStack.EMPTY;
     }
 
     @NotNull
     @Override
-    public FluidStack drain(FluidStack resource, FluidAction simulate) {
+    public FluidStack drain(FluidStack resource, FluidAction action) {
         if (proxy != null && canCapOutput()) {
-            return proxy.drain(resource, simulate);
+            return proxy.drain(resource, action);
         }
         return FluidStack.EMPTY;
     }
 
-    public FluidStack drainInternal(int maxDrain, FluidAction simulate) {
-        return proxy == null ? FluidStack.EMPTY : proxy.drain(maxDrain, simulate);
+    public FluidStack drainInternal(int maxDrain, FluidAction action) {
+        return proxy == null ? FluidStack.EMPTY : proxy.drain(maxDrain, action);
     }
 
     public boolean isEmpty() {
@@ -136,8 +138,8 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandler, 
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            FluidTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing),
-                    facing.getOpposite());
+            GTTransferUtils.getAdjacentFluidHandler(level, pos, facing).ifPresent(
+                    h -> FluidUtil.tryFluidTransfer(h, this, Integer.MAX_VALUE, true));
         }
     }
 }

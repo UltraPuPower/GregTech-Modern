@@ -181,7 +181,7 @@ public abstract class ProspectorMode<T> {
             if (fluidStack.getFluid() == Fluids.LAVA) {
                 return 0xFFFF7000;
             }
-            return FluidHelper.getColor(fluidStack);
+            return GTUtil.getFluidColor(fluidStack);
         }
 
         @Override

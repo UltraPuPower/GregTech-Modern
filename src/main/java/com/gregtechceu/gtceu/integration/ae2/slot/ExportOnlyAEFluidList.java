@@ -14,10 +14,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfigurableSlotList {
@@ -40,16 +37,8 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
         for (int i = 0; i < slots; i++) {
             this.inventory[i] = slotFactory.get();
             this.inventory[i].setOnContentsChanged(this::onContentsChanged);
+            this.storages[i] = new FluidStorageDelegate(inventory[i]);
         }
-    }
-
-    @Override
-    public CustomFluidTank[] getStorages() {
-        if (this.fluidStorages == null) {
-            this.fluidStorages = Arrays.stream(this.inventory)
-                    .map(FluidStorageDelegate::new).toArray(CustomFluidTank[]::new);
-        }
-        return this.fluidStorages;
     }
 
     @Override
@@ -86,13 +75,6 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
             if (maxDrain <= 0) break;
         }
         return totalDrained == null ? FluidStack.EMPTY : totalDrained;
-    }
-
-    @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
-                                                        List<SizedFluidIngredient> left,
-                                                        @Nullable String slotName, boolean simulate) {
-        return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
     }
 
     @Override
@@ -141,10 +123,9 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
             return this.fluid.getFluid();
         }
 
-        @NotNull
         @Override
-        public FluidStack drain(FluidStack maxDrain, FluidAction action) {
-            return fluid.drain(maxDrain, action);
+        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+            return fluid.drain(resource, action);
         }
 
         @Override
@@ -162,10 +143,9 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
             // because recipe testing uses copy storage instead of simulated operations
             return new FluidStorageDelegate(fluid) {
 
-                @NotNull
                 @Override
-                public FluidStack drain(FluidStack maxDrain, FluidAction action) {
-                    return super.drain(maxDrain, FluidAction.SIMULATE);
+                public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+                    return super.drain(resource, action);
                 }
             };
         }

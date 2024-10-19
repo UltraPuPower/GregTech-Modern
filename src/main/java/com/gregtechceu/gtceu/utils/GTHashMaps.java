@@ -99,8 +99,8 @@ public final class GTHashMaps {
      * @return a {@link Set} of unique {@link FluidKey}s for each fluid in the handler. Will be oversized stacks if
      *         required
      */
-    public static Map<FluidKey, Long> fromFluidHandler(IFluidHandler fluidInputs) {
-        final Object2LongMap<FluidKey> map = new Object2LongLinkedOpenHashMap<>();
+    public static Map<FluidKey, Integer> fromFluidHandler(IFluidHandler fluidInputs) {
+        final Object2IntMap<FluidKey> map = new Object2IntLinkedOpenHashMap<>();
 
         // Create a single stack of the combined count for each item
 
@@ -108,7 +108,7 @@ public final class GTHashMaps {
             FluidStack fluidStack = fluidInputs.getFluidInTank(i);
             if (fluidStack != FluidStack.EMPTY && fluidStack.getAmount() > 0) {
                 FluidKey key = new FluidKey(fluidStack);
-                map.put(key, map.getLong(key) + fluidStack.getAmount());
+                map.put(key, map.getInt(key) + fluidStack.getAmount());
             }
         }
 

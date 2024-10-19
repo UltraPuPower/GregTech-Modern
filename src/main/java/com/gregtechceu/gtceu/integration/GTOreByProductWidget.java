@@ -160,15 +160,16 @@ public class GTOreByProductWidget extends WidgetGroup {
         }
 
         List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
-        TagOrCycleFluidTransfer fluidInputsHandler = new TagOrCycleFluidTransfer(fluidInputs);
+        TagOrCycleFluidHandler fluidInputsHandler = new TagOrCycleFluidHandler(fluidInputs);
         WidgetGroup fluidStackGroup = new WidgetGroup();
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
             if (!fluidInputs.get(slotIndex).map(Function.identity(), Function.identity()).isEmpty()) {
-                fluidStackGroup
-                        .addWidget(new TankWidget(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)),
-                                FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
-                                .setIngredientIO(IngredientIO.INPUT).setBackground(GuiTextures.FLUID_SLOT));
+                var tank = new TankWidget(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)),
+                        FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
+                        .setIngredientIO(IngredientIO.INPUT).setBackground(GuiTextures.FLUID_SLOT);
+                tank.setShowAmount(false);
+                fluidStackGroup.addWidget(tank);
             }
         }
 

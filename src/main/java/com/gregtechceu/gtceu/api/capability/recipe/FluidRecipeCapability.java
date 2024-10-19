@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -9,6 +10,9 @@ import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
@@ -17,7 +21,6 @@ import com.gregtechceu.gtceu.utils.OverlayedFluidHandler;
 import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
@@ -37,7 +40,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -156,7 +158,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
-        OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(new FluidTransferList(
+        OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(new FluidHandlerList(
                 Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP),
                         Collections::emptyList)
                         .stream()
@@ -221,8 +223,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
         Map<SizedFluidIngredient, Integer> notConsumableMap = new HashMap<>();
         for (Content content : recipe.getInputContents(FluidRecipeCapability.CAP)) {
             SizedFluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
-            final int fluidAmount = fluidInput.amount();
-            if (content.chance == 0.0f) {
+            int fluidAmount = fluidInput.amount();
+            if (content.chance == 0) {
                 notConsumableMap.computeIfPresent(fluidInput,
                         (k, v) -> v + fluidAmount);
                 notConsumableMap.putIfAbsent(fluidInput, fluidAmount);
@@ -242,9 +244,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                 // Strip the Non-consumable tags here, as FluidKey compares the tags, which causes finding matching
                 // fluids
                 // in the input tanks to fail, because there is nothing in those hatches with a non-consumable tag
-                FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(),
-                        inputFluid.getKey().component);
-                if (notConsumableFluid.getKey().equals(stack)) {
+                if (notConsumableFluid.getKey().test(new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(),
+                        inputFluid.getKey().component))) {
                     available = inputFluid.getValue();
                     if (available > needed) {
                         inputFluid.setValue(available - needed);
@@ -281,9 +282,9 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             int available = 0;
             // For every fluid gathered from the fluid inputs.
             for (Map.Entry<FluidKey, Integer> inputFluid : fluidStacks.entrySet()) {
-                FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(),
-                        inputFluid.getKey().component);
-                if (fs.getKey().test(stack)) {
+                if (fs.getKey().test(
+                        new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(),
+                        inputFluid.getKey().component))) {
                     available += inputFluid.getValue();
                 }
             }
@@ -310,7 +311,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
     public Object createXEIContainer(List<?> contents) {
         // cast is safe if you don't pass the wrong thing.
         // noinspection unchecked
-        return new TagOrCycleFluidTransfer(
+        return new TagOrCycleFluidHandler(
                 (List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>>) contents);
     }
 
@@ -340,10 +341,10 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                                 @Nullable Content content,
                                 @Nullable Object storage) {
         if (widget instanceof TankWidget tank) {
-            if (storage instanceof TagOrCycleFluidTransfer fluidTransfer) {
-                tank.setFluidTank(fluidTransfer, index);
-            } else if (storage instanceof IFluidHandlerModifiable fluidTransfer) {
-                tank.setFluidTank(new OverlayingFluidStorage(fluidTransfer, index));
+            if (storage instanceof TagOrCycleFluidHandler fluidHandler) {
+                tank.setFluidTank(fluidHandler, index);
+            } else if (storage instanceof IFluidHandlerModifiable fluidHandler) {
+                tank.setFluidTank(new OverlayingFluidStorage(fluidHandler, index));
             }
             tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
             tank.setAllowClickFilled(!isXEI);

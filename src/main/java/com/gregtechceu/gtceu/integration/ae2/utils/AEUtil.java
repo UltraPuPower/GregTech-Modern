@@ -6,6 +6,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -29,7 +30,7 @@ public class AEUtil {
     }
 
     public static FluidStack toFluidStack(AEFluidKey key, long amount) {
-        return key.toStack((int) amount);
+        return key.toStack(Ints.saturatedCast(amount));
     }
 
     public static ItemStack[] toItemStacks(GenericStack stack) {

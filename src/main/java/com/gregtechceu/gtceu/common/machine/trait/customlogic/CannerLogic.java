@@ -59,7 +59,7 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                     return GTRecipeTypes.CANNER_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(item))
                             .inputItems(inputStack)
                             .outputItems(fluidHandlerItem.getContainer())
-                            .outputFluids(fluid)
+                            .outputFluids(fluid.copy())
                             .duration(Math.max(16, fluid.getAmount() / 64)).EUt(4)
                             .build();
                 }

@@ -55,12 +55,6 @@ public class SimpleFluidFilter implements FluidFilter {
         Arrays.fill(matches, FluidStack.EMPTY);
     }
 
-    protected SimpleFluidFilter(boolean isBlackList, boolean ignoreNbt, List<FluidStack> matches) {
-        this.isBlackList = isBlackList;
-        this.ignoreNbt = ignoreNbt;
-        this.matches = matches.toArray(FluidStack[]::new);
-    }
-
     public static SimpleFluidFilter loadFilter(ItemStack itemStack) {
         var handler = itemStack.getOrDefault(GTDataComponents.SIMPLE_FLUID_FILTER, new SimpleFluidFilter());
         handler.itemWriter = filter -> itemStack.set(GTDataComponents.SIMPLE_FLUID_FILTER, filter);

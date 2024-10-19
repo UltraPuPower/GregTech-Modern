@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 /**
- * Simulates consecutive fills to {@link IFluidHandler} instance.
+ * Simulates consecutive fills to {@link IFluidTank} instances.
  */
 public class OverlayedFluidHandler {
 
     private final List<OverlayedTank> overlayedTanks;
 
-    public OverlayedFluidHandler(@NotNull FluidTransferList tank) {
+    public OverlayedFluidHandler(@NotNull FluidHandlerList tank) {
         this.overlayedTanks = new ArrayList<>();
         FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank)
                 .toArray(FluidStack[]::new);
@@ -62,8 +62,9 @@ public class OverlayedFluidHandler {
         // search for tanks with same fluid type first
         for (OverlayedTank overlayedTank : this.overlayedTanks) {
             // if the fluid to insert matches the tank, insert the fluid
-            if (overlayedTank.fluid != null && FluidStack.isSameFluidSameComponents(fluid, overlayedTank.fluid)) {
-                int inserted = Ints.saturatedCast(overlayedTank.tryInsert(fluid, amountToInsert));
+            if (!overlayedTank.isEmpty() && overlayedTank.fluid != null &&
+                    FluidStack.isSameFluidSameComponents(fluid, overlayedTank.fluid)) {
+                int inserted = overlayedTank.tryInsert(fluid, amountToInsert);
                 if (inserted > 0) {
                     totalInserted += inserted;
                     amountToInsert -= inserted;
@@ -119,7 +120,7 @@ public class OverlayedFluidHandler {
             if (fluid.isEmpty()) {
                 stb.append("None 0 / ").append(overlayedTank.property.getCapacity());
             } else {
-                stb.append(FluidHelper.getDisplayName(fluid)).append(' ').append(fluid.getAmount())
+                stb.append(fluid.getDisplayName()).append(' ').append(fluid.getAmount())
                         .append(" / ").append(overlayedTank.property.getCapacity());
             }
         }
@@ -155,7 +156,7 @@ public class OverlayedFluidHandler {
          * @return Amount of fluid inserted into this tank
          */
         public int tryInsert(@NotNull FluidStack fluid, int amount) {
-            if (this.fluid == FluidStack.EMPTY) {
+            if (this.fluid.isEmpty()) {
                 this.fluid = fluid.copy();
                 this.fluid.setAmount(Math.min(this.property.getCapacity(), amount));
                 return this.fluid.getAmount();

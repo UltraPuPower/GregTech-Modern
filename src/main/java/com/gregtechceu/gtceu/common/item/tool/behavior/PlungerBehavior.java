@@ -57,19 +57,20 @@ public class PlungerBehavior implements IToolBehavior<PlungerBehavior>, ICompone
 
         if (context.getLevel()
                 .getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity metaMachineBlockEntity) {
-            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidTransferCap(context.getClickedFace(), false);
+            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidHandlerCap(context.getClickedFace(), false);
         } else {
-            fluidHandler = FluidTransferHelper.getFluidTransfer(context.getLevel(), context.getClickedPos(),
-                    context.getClickedFace());
+            fluidHandler = FluidUtil
+                    .getFluidHandler(context.getLevel(), context.getClickedPos(), context.getClickedFace()).resolve()
+                    .orElse(null);
         }
 
         if (fluidHandler == null) {
             return InteractionResult.PASS;
         }
 
-        FluidStack drained = fluidHandler.drain(1000, IFluidHandler.FluidAction.SIMULATE);
+        FluidStack drained = fluidHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
         if (!drained.isEmpty()) {
-            fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+            fluidHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
             ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
             return InteractionResult.CONSUME;
         }

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
 
@@ -59,30 +60,30 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     @Override
     protected void doVoidFluids() {
-        IFluidHandlerModifiable fluidTransfer = getOwnFluidTransfer();
-        if (fluidTransfer == null) {
+        IFluidHandlerModifiable fluidHandler = getOwnFluidHandler();
+        if (fluidHandler == null) {
             return;
         }
 
         switch (voidingMode) {
-            case VOID_ANY -> voidAny(fluidTransfer);
-            case VOID_OVERFLOW -> voidOverflow(fluidTransfer);
+            case VOID_ANY -> voidAny(fluidHandler);
+            case VOID_OVERFLOW -> voidOverflow(fluidHandler);
         }
     }
 
-    private void voidOverflow(IFluidHandlerModifiable fluidTransfer) {
-        final Map<FluidStack, Integer> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
+    private void voidOverflow(IFluidHandlerModifiable fluidHandler) {
+        final Map<FluidStack, Integer> fluidAmounts = enumerateDistinctFluids(fluidHandler, TransferDirection.EXTRACT);
 
         for (FluidStack fluidStack : fluidAmounts.keySet()) {
             int presentAmount = fluidAmounts.get(fluidStack);
-            int targetAmount = getFilteredFluidAmount(fluidStack) * MILLIBUCKET_SIZE;
+            int targetAmount = getFilteredFluidAmount(fluidStack);
             if (targetAmount <= 0L || targetAmount > presentAmount)
                 continue;
 
             var toDrain = fluidStack.copy();
             toDrain.setAmount(presentAmount - targetAmount);
 
-            fluidTransfer.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
+            fluidHandler.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
         }
     }
 

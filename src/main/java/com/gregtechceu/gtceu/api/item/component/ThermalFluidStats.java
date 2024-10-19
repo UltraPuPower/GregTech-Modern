@@ -13,6 +13,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        FluidStack tank = FluidTransferHelper.getFluidContained(stack);
+        FluidStack tank = FluidUtil.getFluidContained(stack);
         if (!tank.isEmpty()) {
             tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getHoverName(),
                     tank.getAmount()));

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
+import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -50,6 +51,14 @@ public class CustomFluidTank extends FluidTank
     public void setFluidInTank(int tank, FluidStack stack) {
         this.setFluid(stack);
         this.onContentsChanged();
+    }
+
+    public int fill(int tank, FluidStack resource, FluidAction action) {
+        return this.fill(resource, action);
+    }
+
+    public FluidStack drain(int tank, FluidStack resource, FluidAction action) {
+        return this.drain(resource, action);
     }
 
     @Override

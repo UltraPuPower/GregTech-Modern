@@ -58,8 +58,9 @@ public class FluidContainerIngredient implements ICustomIngredient {
     public Stream<ItemStack> getItems() {
         if (cachedStacks == null)
             cachedStacks = Arrays.stream(this.fluid.getFluids())
-                    .map(stack -> stack.getFluid().getBucket().getDefaultInstance())
-                    .filter(s -> !s.isEmpty());
+                    .map(FluidUtil::getFilledBucket)
+                    .filter(s -> !s.isEmpty())
+                    .toArray(ItemStack[]::new);
         return this.cachedStacks;
     }
 
@@ -67,8 +68,9 @@ public class FluidContainerIngredient implements ICustomIngredient {
     public boolean test(@Nullable ItemStack stack) {
         if (stack == null || stack.isEmpty())
             return false;
-        IFluidHandler transfer = FluidTransferHelper.getFluidTransfer(stack);
-        return transfer != null && this.extractFrom(transfer, true);
+        return FluidUtil.getFluidContained(stack).map(fluid::test).orElse(false) &&
+                FluidUtil.tryEmptyContainer(stack, VoidFluidHandler.INSTANCE, fluid.getAmount(), null, false)
+                        .isSuccess();
     }
 
     @Override
@@ -82,30 +84,11 @@ public class FluidContainerIngredient implements ICustomIngredient {
     }
 
     public ItemStack getExtractedStack(ItemStack input) {
-        FluidActionResult result = FluidTransferHelper.tryEmptyContainer(input,
-                new InfiniteFluidTransfer(1),
-                (int) this.fluid.amount(),
-                CommonHooks.getCraftingPlayer(),
-                true);
-        if (result.success) {
-            return result.result;
+        FluidActionResult result = FluidUtil.tryEmptyContainer(input, VoidFluidHandler.INSTANCE, fluid.getAmount(),
+                ForgeHooks.getCraftingPlayer(), true);
+        if (result.isSuccess()) {
+            return result.getResult();
         }
         return input;
-    }
-
-    public boolean extractFrom(IFluidHandler handler, boolean simulate) {
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            FluidStack inTank = handler.getFluidInTank(tank);
-            if (fluid.test(inTank)) {
-                FluidStack toExtract = inTank.copyWithAmount(fluid.amount());
-                FluidStack extractedSim = handler.drain(toExtract, IFluidHandler.FluidAction.SIMULATE);
-                if (extractedSim.getAmount() >= fluid.amount()) {
-                    if (!simulate)
-                        handler.drain(toExtract, IFluidHandler.FluidAction.EXECUTE);
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

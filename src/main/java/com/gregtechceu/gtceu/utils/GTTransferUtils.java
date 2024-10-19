@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 
-import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemHandlerHelper;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -21,7 +23,26 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Predicate;
 
+import javax.annotation.Nonnull;
+
 public class GTTransferUtils {
+
+    /**
+     * Gets the FluidHandler from the adjacent block on the side connected to the caller
+     *
+     * @param level  Level
+     * @param pos    BlockPos of the machine which is calling
+     * @param facing Direction to get the FluidHandler from
+     * @return LazyOpt of the IFluidHandler described above
+     */
+    public static LazyOptional<IFluidHandler> getAdjacentFluidHandler(Level level, BlockPos pos, Direction facing) {
+        return FluidUtil.getFluidHandler(level, pos.relative(facing), facing.getOpposite());
+    }
+
+    // Same as above, but returns the presence
+    public static boolean hasAdjacentFluidHandler(Level level, BlockPos pos, Direction facing) {
+        return getAdjacentFluidHandler(level, pos, facing).isPresent();
+    }
 
     public static int transferFluids(@NotNull IFluidHandler sourceHandler, @NotNull IFluidHandler destHandler) {
         return transferFluids(sourceHandler, destHandler, Integer.MAX_VALUE, fluidStack -> true);
@@ -43,17 +64,17 @@ public class GTTransferUtils {
             }
 
             currentFluid.setAmount(fluidLeftToTransfer);
-            FluidStack fluidStack = sourceHandler.drain(currentFluid, IFluidHandler.FluidAction.SIMULATE);
+            FluidStack fluidStack = sourceHandler.drain(currentFluid, FluidAction.SIMULATE);
             if (fluidStack.isEmpty()) {
                 continue;
             }
 
-            int canInsertAmount = destHandler.fill(fluidStack, IFluidHandler.FluidAction.SIMULATE);
+            int canInsertAmount = destHandler.fill(fluidStack, FluidAction.SIMULATE);
             if (canInsertAmount > 0) {
                 fluidStack.setAmount(canInsertAmount);
-                fluidStack = sourceHandler.drain(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                if (fluidStack.isEmpty() && fluidStack.getAmount() > 0) {
-                    fillFluidAccountNotifiableList(destHandler, fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                fluidStack = sourceHandler.drain(fluidStack, FluidAction.EXECUTE);
+                if (!fluidStack.isEmpty() && fluidStack.getAmount() > 0) {
+                    fillFluidAccountNotifiableList(destHandler, fluidStack, FluidAction.EXECUTE);
 
                     fluidLeftToTransfer -= fluidStack.getAmount();
                     if (fluidLeftToTransfer == 0) {
@@ -67,23 +88,55 @@ public class GTTransferUtils {
 
     public static boolean transferExactFluidStack(@NotNull IFluidHandler sourceHandler,
                                                   @NotNull IFluidHandler destHandler, FluidStack fluidStack) {
-        long amount = fluidStack.getAmount();
-        FluidStack sourceFluid = sourceHandler.drain(fluidStack, IFluidHandler.FluidAction.SIMULATE);
+        int amount = fluidStack.getAmount();
+        FluidStack sourceFluid = sourceHandler.drain(fluidStack, FluidAction.SIMULATE);
         if (sourceFluid == FluidStack.EMPTY || sourceFluid.getAmount() != amount) {
             return false;
         }
-        long canInsertAmount = destHandler.fill(sourceFluid, IFluidHandler.FluidAction.SIMULATE);
+        int canInsertAmount = destHandler.fill(sourceFluid, FluidAction.SIMULATE);
         if (canInsertAmount == amount) {
-            sourceFluid = sourceHandler.drain(sourceFluid, IFluidHandler.FluidAction.EXECUTE);
-            if (sourceFluid.isEmpty() && sourceFluid.getAmount() > 0) {
-                destHandler.fill(sourceFluid, IFluidHandler.FluidAction.EXECUTE);
+            sourceFluid = sourceHandler.drain(sourceFluid, FluidAction.EXECUTE);
+            if (!fluidStack.isEmpty() && sourceFluid.getAmount() > 0) {
+                destHandler.fill(sourceFluid, FluidAction.EXECUTE);
                 return true;
             }
         }
         return false;
     }
 
-    public static void moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory) {
+    // TODO: Clean this up to use FluidUtil and move it back to caller
+    public static int transferFiltered(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler,
+                                       int transferLimit, @Nonnull Predicate<FluidStack> fluidFilter) {
+        int fluidLeftToTransfer = transferLimit;
+        for (int i = 0; i < sourceHandler.getTanks(); i++) {
+            FluidStack currentFluid = sourceHandler.getFluidInTank(i).copy();
+            if (currentFluid.isEmpty() || !fluidFilter.test(currentFluid)) {
+                continue;
+            }
+
+            currentFluid.setAmount(fluidLeftToTransfer);
+            var drained = sourceHandler.drain(currentFluid, FluidAction.SIMULATE);
+            if (drained.isEmpty()) {
+                continue;
+            }
+
+            var canInsertAmount = destHandler.fill(drained.copy(), FluidAction.SIMULATE);
+            if (canInsertAmount > 0) {
+                drained.setAmount(canInsertAmount);
+                drained = sourceHandler.drain(drained, FluidAction.EXECUTE);
+                if (!drained.isEmpty()) {
+                    destHandler.fill(drained, FluidAction.EXECUTE);
+                    fluidLeftToTransfer -= drained.getAmount();
+                    if (fluidLeftToTransfer == 0) {
+                        break;
+                    }
+                }
+            }
+        }
+        return transferLimit - fluidLeftToTransfer;
+    }
+
+    public static void moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory) {
         for (int srcIndex = 0; srcIndex < sourceInventory.getSlots(); srcIndex++) {
             ItemStack sourceStack = sourceInventory.extractItem(srcIndex, Integer.MAX_VALUE, true);
             if (sourceStack.isEmpty()) {
@@ -149,13 +202,13 @@ public class GTTransferUtils {
      * @param fluidStacks  the items to insert into {@code fluidHandler}.
      * @return {@code true} if the insertion succeeded, {@code false} otherwise.
      */
-    public static boolean addFluidsToFluidHandler(FluidTransferList fluidHandler,
+    public static boolean addFluidsToFluidHandler(FluidHandlerList fluidHandler,
                                                   boolean simulate,
                                                   List<FluidStack> fluidStacks) {
         if (simulate) {
             OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(fluidHandler);
             for (FluidStack fluidStack : fluidStacks) {
-                long inserted = overlayedFluidHandler.insertFluid(fluidStack, fluidStack.getAmount());
+                int inserted = overlayedFluidHandler.insertFluid(fluidStack, fluidStack.getAmount());
                 if (inserted != fluidStack.getAmount()) {
                     return false;
                 }
@@ -164,48 +217,47 @@ public class GTTransferUtils {
         }
 
         for (FluidStack fluidStack : fluidStacks) {
-            fillFluidAccountNotifiableList(fluidHandler, fluidStack, IFluidHandler.FluidAction.EXECUTE);
+            fillFluidAccountNotifiableList(fluidHandler, fluidStack, FluidAction.EXECUTE);
         }
         return true;
     }
 
-    public static long fillFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack,
-                                                      IFluidHandler.FluidAction action) {
+    public static int fillFluidAccountNotifiableList(IFluidHandler fluidHandler, FluidStack stack, FluidAction action) {
         if (stack.isEmpty()) return 0;
-        if (handler instanceof FluidTransferList transferList) {
+        if (fluidHandler instanceof FluidHandlerList handlerList) {
             var copied = stack.copy();
-            for (var transfer : transferList.transfers) {
+            for (var handler : handlerList.handlers) {
                 var candidate = copied.copy();
-                if (transfer instanceof NotifiableFluidTank notifiable) {
+                if (handler instanceof NotifiableFluidTank notifiable) {
                     copied.shrink(notifiable.fillInternal(candidate, action));
                 } else {
-                    copied.shrink(transfer.fill(candidate, action));
+                    copied.shrink(handler.fill(candidate, action));
                 }
                 if (copied.isEmpty()) break;
             }
             return stack.getAmount() - copied.getAmount();
         }
-        return handler.fill(stack, action);
+        return fluidHandler.fill(stack, action);
     }
 
-    public static FluidStack drainFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack,
-                                                             IFluidHandler.FluidAction action) {
+    public static FluidStack drainFluidAccountNotifiableList(IFluidHandler fluidHandler, FluidStack stack,
+                                                             FluidAction action) {
         if (stack.isEmpty()) return FluidStack.EMPTY;
-        if (handler instanceof FluidTransferList transferList) {
+        if (fluidHandler instanceof FluidHandlerList handlerList) {
             var copied = stack.copy();
-            for (var transfer : transferList.transfers) {
+            for (var handler : handlerList.handlers) {
                 var candidate = copied.copy();
-                if (transfer instanceof NotifiableFluidTank notifiable) {
+                if (handler instanceof NotifiableFluidTank notifiable) {
                     copied.shrink(notifiable.drainInternal(candidate, action).getAmount());
                 } else {
-                    copied.shrink(transfer.drain(candidate, action).getAmount());
+                    copied.shrink(handler.drain(candidate, action).getAmount());
                 }
                 if (copied.isEmpty()) break;
             }
             copied.setAmount(stack.getAmount() - copied.getAmount());
             return copied;
         }
-        return handler.drain(stack, action);
+        return fluidHandler.drain(stack, action);
     }
 
     /**

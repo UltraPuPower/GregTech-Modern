@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
 
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
@@ -53,8 +54,21 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
         }
 
         @Override
+        public boolean supportsFill(int tank) {
+            if (delegate instanceof IFluidHandlerModifiable modifiable) {
+                return modifiable.supportsFill(tank);
+            }
+            return true;
+        }
+
+        @Override
         public int fill(FluidStack resource, FluidAction action) {
             return delegate.fill(resource, action);
+        }
+
+        @Override
+        public boolean supportsDrain(int tank) {
+            return false;
         }
 
         @Override
@@ -65,19 +79,6 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
         @Override
         public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
             return FluidStack.EMPTY;
-        }
-
-        @Override
-        public boolean supportsFill(int tank) {
-            if (delegate instanceof IFluidHandlerModifiable modifiable) {
-                return modifiable.supportsFill(tank);
-            }
-            return true;
-        }
-
-        @Override
-        public boolean supportsDrain(int tank) {
-            return false;
         }
     }
 }

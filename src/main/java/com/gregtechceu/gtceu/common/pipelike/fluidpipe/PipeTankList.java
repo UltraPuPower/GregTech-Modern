@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Iterator;
 
+@SuppressWarnings("UnstableApiUsage")
 public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFluidTank> {
 
     private final FluidPipeBlockEntity pipe;
@@ -65,17 +66,15 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
         return tanks[tank].isFluidValid(stack);
     }
 
+    private int fullCapacity() {
+        return tanks.length * pipe.getCapacityPerTank();
+    }
+
     @Override
     public int fill(FluidStack resource, FluidAction action) {
         int channel;
-        if (pipe.isBlocked(facing) || resource.getAmount() <= 0 || (channel = findChannel(resource)) < 0)
-            return 0;
-
+        if (pipe.isBlocked(facing) || resource.getAmount() < 0 || (channel = findChannel(resource)) < 0) return 0;
         return fill(resource, action, channel);
-    }
-
-    private int fullCapacity() {
-        return tanks.length * pipe.getCapacityPerTank();
     }
 
     private int fill(FluidStack resource, FluidAction action, int channel) {
@@ -86,7 +85,7 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
         if (currentFluid.isEmpty() || currentFluid.getAmount() <= 0) {
             FluidStack newFluid = resource.copy();
             newFluid.setAmount(Math.min(pipe.getCapacityPerTank(), newFluid.getAmount()));
-            if (action == FluidAction.EXECUTE) {
+            if (action.execute()) {
                 tank.setFluid(newFluid);
                 pipe.receivedFrom(facing);
                 pipe.checkAndDestroy(newFluid);
@@ -96,7 +95,7 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
         if (FluidStack.isSameFluidSameComponents(currentFluid, resource)) {
             int toAdd = Math.min(tank.getCapacity() - currentFluid.getAmount(), resource.getAmount());
             if (toAdd > 0) {
-                if (action == FluidAction.EXECUTE) {
+                if (action.execute()) {
                     currentFluid.setAmount(currentFluid.getAmount() + toAdd);
                     pipe.receivedFrom(facing);
                     pipe.checkAndDestroy(currentFluid);
@@ -108,9 +107,8 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
         return 0;
     }
 
-    @NotNull
     @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
+    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
         if (maxDrain <= 0) return FluidStack.EMPTY;
         for (CustomFluidTank tank : tanks) {
             FluidStack drained = tank.drain(maxDrain, action);
@@ -119,13 +117,12 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
         return FluidStack.EMPTY;
     }
 
-    @NotNull
     @Override
-    public FluidStack drain(FluidStack fluidStack, FluidAction action) {
-        if (fluidStack.isEmpty() || fluidStack.getAmount() <= 0) return FluidStack.EMPTY;
-        fluidStack = fluidStack.copy();
+    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        if (resource.getAmount() <= 0) return FluidStack.EMPTY;
+        resource = resource.copy();
         for (CustomFluidTank tank : tanks) {
-            FluidStack drained = tank.drain(fluidStack, action);
+            FluidStack drained = tank.drain(resource, action);
             if (!drained.isEmpty()) return drained;
         }
         return FluidStack.EMPTY;

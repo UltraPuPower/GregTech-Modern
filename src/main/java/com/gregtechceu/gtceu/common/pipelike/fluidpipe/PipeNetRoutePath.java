@@ -43,6 +43,6 @@ public class PipeNetRoutePath implements IRoutePath<IFluidHandler> {
 
     @Nullable
     public IFluidHandler getHandler(Level world) {
-        return world.getCapability(Capabilities.FluidHandler.BLOCK, getTargetPipePos(), targetFacing.getOpposite());
+        return GTTransferUtils.getAdjacentFluidHandler(world, pipePos, targetFacing);
     }
 }

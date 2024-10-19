@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -222,7 +223,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     @Nullable
-    public IFluidHandlerModifiable getFluidTransferCap(IFluidHandlerModifiable defaultValue) {
+    public IFluidHandlerModifiable getFluidHandlerCap(IFluidHandlerModifiable defaultValue) {
         return defaultValue;
     }
 }

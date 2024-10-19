@@ -48,12 +48,11 @@ import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -563,13 +562,9 @@ public class GTItems {
     public static ItemColor cellColor() {
         return (itemStack, index) -> {
             if (index == 1) {
-                var held = FluidTransferHelper.getFluidContained(itemStack);
-                if (held != null) {
-                    if (held.getFluid() == Fluids.LAVA) {
-                        return 0xFFFF7000;
-                    }
-                    return FluidHelper.getColor(held);
-                }
+                return FluidUtil.getFluidContained(itemStack)
+                        .map(f -> f.getFluid() == Fluids.LAVA ? 0xFFFF7000 : GTUtil.getFluidColor(f))
+                        .orElse(-1);
             }
             return -1;
         };
@@ -580,11 +575,8 @@ public class GTItems {
 
             @Override
             public Component getItemName(ItemStack stack) {
-                var held = FluidTransferHelper.getFluidContained(stack);
-                Component prefix = Component.translatable("gtceu.fluid.empty");
-                if (held != null && !held.isEmpty()) {
-                    prefix = FluidHelper.getDisplayName(held);
-                }
+                Component prefix = FluidUtil.getFluidContained(stack).map(FluidStack::getDisplayName)
+                        .orElse(Component.translatable("gtceu.fluid.empty"));
                 return Component.translatable(stack.getDescriptionId(), prefix);
             }
         };
@@ -595,9 +587,9 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .color(() -> GTItems::cellColor)
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(
-                    attach(ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, false),
-                            new ItemFluidContainer(), cellName()))
+            .onRegister(attach(
+                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1800, true, false, false, false, false),
+                    new ItemFluidContainer(), cellName()))
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE
             .item("universal_fluid_cell", ComponentItem::new)
@@ -606,7 +598,7 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, true),
+                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1800, true, false, false, false, true),
                     new ItemFluidContainer()))
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = REGISTRATE
@@ -616,7 +608,7 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidHelper.getBucket() * 8,
+                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 8,
                             GTMaterials.Steel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false,
                             false, false, true),
                     new ItemFluidContainer()))
@@ -629,7 +621,7 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidHelper.getBucket() * 32,
+                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 32,
                             GTMaterials.Aluminium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
                             false, false, false, true),
                     new ItemFluidContainer()))
@@ -642,7 +634,7 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidHelper.getBucket() * 64,
+                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 64,
                             GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
                             true, false, false, false, true),
                     new ItemFluidContainer()))
@@ -656,7 +648,7 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidHelper.getBucket() * 128,
+                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 128,
                             GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
                             false, false, false, true),
                     new ItemFluidContainer()))
@@ -670,7 +662,7 @@ public class GTItems {
             .properties(p -> p.stacksTo(32))
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidHelper.getBucket() * 512,
+                    ThermalFluidStats.create((int) FluidType.BUCKET_VOLUME * 512,
                             GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
                             true, false, false, false, true),
                     new ItemFluidContainer()))
@@ -682,9 +674,11 @@ public class GTItems {
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNode(GTCompassSections.ITEMS))
-            .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidHelper.getBucket(), 1200, false, true, false, false, true),
-                    new ItemFluidContainer()))
+            .onRegister(
+                    attach(cellName(),
+                            ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1200, false, true, false, false,
+                                    true),
+                            new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M / 4))))
             .register();
 

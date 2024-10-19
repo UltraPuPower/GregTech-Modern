@@ -128,7 +128,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public FluidStack getFluidInTank(int tank) {
+        public @NotNull FluidStack getFluidInTank(int tank) {
             return storage.getFluid();
         }
 
@@ -189,7 +189,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
 
                 @Override
                 public int fill(FluidStack resource, FluidAction action) {
-                    return super.fill(resource, FluidAction.SIMULATE);
+                    return super.fill(resource, action);
                 }
             };
         }

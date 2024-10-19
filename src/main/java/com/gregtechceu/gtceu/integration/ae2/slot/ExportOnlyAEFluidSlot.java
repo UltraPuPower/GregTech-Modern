@@ -84,22 +84,22 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidHan
     }
 
     @Override
+    public void setFluidInTank(int tank, FluidStack stack) {}
+
+    @Override
     public int getTankCapacity(int tank) {
         return 0;
     }
 
     @Override
-    public boolean isFluidValid(int tank, FluidStack stack) {
+    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
         return false;
     }
 
     @Override
-    public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
+    public int fill(FluidStack resource, FluidAction action) {
         return 0;
     }
-
-    @Override
-    public void setFluidInTank(int tank, FluidStack stack) {}
 
     @Override
     public boolean supportsFill(int tank) {
@@ -107,9 +107,9 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidHan
     }
 
     @Override
-    public FluidStack drain(FluidStack resource, FluidAction doDrain) {
+    public FluidStack drain(FluidStack resource, FluidAction action) {
         if (FluidStack.isSameFluidSameComponents(this.getFluid(), resource)) {
-            return this.drain(resource.getAmount(), doDrain);
+            return this.drain(resource.getAmount(), action);
         }
         return FluidStack.EMPTY;
     }

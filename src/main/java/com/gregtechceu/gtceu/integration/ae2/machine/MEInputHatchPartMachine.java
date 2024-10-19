@@ -31,6 +31,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
+import com.google.common.primitives.Ints;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -88,9 +89,10 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
             // Try to clear the wrong fluid
             GenericStack exceedFluid = aeTank.exceedStack();
             if (exceedFluid != null) {
-                int total = (int) exceedFluid.amount();
-                int inserted = (int) networkInv.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
-                        this.actionSource);
+                int total = Ints.saturatedCast(exceedFluid.amount());
+                int inserted = Ints
+                        .saturatedCast(networkInv.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
+                                this.actionSource));
                 if (inserted > 0) {
                     aeTank.drain(inserted, IFluidHandler.FluidAction.EXECUTE);
                     continue;

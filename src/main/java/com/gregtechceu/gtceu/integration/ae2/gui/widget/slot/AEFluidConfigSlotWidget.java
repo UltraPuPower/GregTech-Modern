@@ -66,7 +66,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (config != null) {
             var stack = AEUtil.toFluidStack(config);
             if (!stack.isEmpty()) {
-                DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 16, 16);
+                DrawerHelper.drawFluidForGui(graphics, FluidHelperImpl.toFluidStack(stack), config.amount(), stackX,
+                        stackY, 16, 16);
                 if (!parentWidget.isStocking()) {
                     String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
                     drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
@@ -76,7 +77,9 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (stock != null) {
             var stack = AEUtil.toFluidStack(stock);
             if (!stack.isEmpty()) {
-                DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 16, 16);
+                DrawerHelper.drawFluidForGui(graphics, FluidHelperImpl.toFluidStack(stack), stock.amount(), stackX,
+                        stackY + 18, 16,
+                        16);
                 String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
                 drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 18 + 17, 16777215, true, 0.5f);
             }
@@ -120,11 +123,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
             } else if (button == 0) {
                 // Left click to set/select
                 ItemStack hold = this.gui.getModularUIContainer().getCarried();
-                FluidStack fluid = FluidTransferHelper.getFluidContained(hold);
-
-                if (!fluid.isEmpty()) {
-                    writeClientAction(UPDATE_ID, buf -> FluidStack.STREAM_CODEC.encode(buf, fluid));
-                }
+                FluidUtil.getFluidContained(hold).ifPresent(f -> writeClientAction(UPDATE_ID,
+                        buf -> FluidStack.STREAM_CODEC.encode(buf, fluid)));
 
                 if (!parentWidget.isStocking()) {
                     this.parentWidget.enableAmount(this.index);
@@ -212,7 +212,6 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 gui.getModularUIContainer().setCarried(currentStack);
 
                 FluidStack stack = new FluidStack(key.getFluid(), (int) slot.getStock().amount());
-
                 // this is inverted for some reason
                 if (!key.hasComponents()) {
                     stack.applyComponents(key.toStack(1).getComponents());
@@ -278,7 +277,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (fluidTank == null) return -1;
         Player player = gui.entityPlayer;
         ItemStack currentStack = gui.getModularUIContainer().getCarried();
-        var handler = FluidTransferHelper.getFluidTransfer(gui.entityPlayer, gui.getModularUIContainer());
+        var handler = FluidUtil.getFluidHandler(currentStack).resolve().orElse(null);
         if (handler == null) return -1;
         int maxAttempts = isShiftKeyDown ? currentStack.getCount() : 1;
 
@@ -286,10 +285,10 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
             boolean performedFill = false;
             FluidStack initialFluid = fluidTank.getFluid();
             for (int i = 0; i < maxAttempts; i++) {
-                FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank,
-                        Integer.MAX_VALUE, null, false);
+                FluidActionResult result = FluidUtil.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null,
+                        false);
                 if (!result.isSuccess()) break;
-                ItemStack remainingStack = FluidTransferHelper
+                ItemStack remainingStack = FluidUtil
                         .tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
                 currentStack.shrink(1);
                 performedFill = true;
@@ -299,7 +298,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 }
             }
             if (performedFill) {
-                SoundEvent soundevent = FluidHelper.getFillSound(initialFluid);
+                SoundEvent soundevent = initialFluid.getFluid().getFluidType().getSound(initialFluid,
+                        SoundActions.BUCKET_FILL);
                 if (soundevent != null) {
                     player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
                             soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
