@@ -101,6 +101,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.data.GTModels.createModelBlockState;
 import static com.gregtechceu.gtceu.data.block.GCyMBlocks.*;
@@ -570,7 +572,7 @@ public class GTBlocks {
         builder.put(GTMaterials.TungstenSteel, CASING_TUNGSTENSTEEL_ROBUST);
         builder.put(GTMaterials.Polytetrafluoroethylene, CASING_PTFE_INERT);
         builder.put(GTMaterials.HSSE, CASING_HSSE_STURDY);
-        // GCyM
+        // GCYM
         builder.put(GTMaterials.HSLASteel, CASING_NONCONDUCTING);
         builder.put(GTMaterials.IncoloyMA956, CASING_VIBRATION_SAFE);
         builder.put(GTMaterials.WatertightSteel, CASING_WATERTIGHT);
@@ -1735,8 +1737,8 @@ public class GTBlocks {
         FLUID_PIPE_BLOCKS_BUILDER = null;
         ITEM_PIPE_BLOCKS_BUILDER = null;
 
-        // GCyM
-        GCyMBlocks.init();
+        // GCYM
+        GCYMBlocks.init();
     }
 
     public static boolean doMetalPipe(Material material) {
