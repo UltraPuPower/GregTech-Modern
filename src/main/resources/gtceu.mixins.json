@@ -31,7 +31,6 @@
         "DataFixTypesMixin",
         "EntityMixin",
         "FluidStackAccessor",
-        "ForgeHooksMixin",
         "IFoliagePlacerTypeAccessor",
         "IHolderReferenceAccessor",
         "IngredientAccessor",
