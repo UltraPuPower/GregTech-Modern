@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
-import com.gregtechceu.gtceu.utils.OreDictExprFilter;
+import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +20,6 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
 
     protected TagItemFilter(String tag) {
         oreDictFilterExpression = tag;
-        OreDictExprFilter.parseExpression(matchRules, oreDictFilterExpression);
     }
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
@@ -40,7 +39,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     public boolean test(ItemStack itemStack) {
         if (oreDictFilterExpression.isEmpty()) return true;
         if (cache.containsKey(itemStack.getItem())) return cache.getOrDefault(itemStack.getItem(), false);
-        if (OreDictExprFilter.matchesOreDict(matchRules, itemStack)) {
+        if (TagExprFilter.tagsMatch(matchExpr, itemStack)) {
             cache.put(itemStack.getItem(), true);
             return true;
         }
