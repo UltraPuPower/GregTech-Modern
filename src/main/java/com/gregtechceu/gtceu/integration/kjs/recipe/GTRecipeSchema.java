@@ -46,6 +46,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -125,8 +126,7 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe addCondition(RecipeCondition condition) {
-            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new ArrayList<>());
-            getValue(CONDITIONS).add(condition);
+            setValue(CONDITIONS, ArrayUtils.add(getValue(CONDITIONS), condition));
             save();
             return this;
         }
