@@ -28,7 +28,7 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     @Getter
     protected ExportOnlyAEItemSlot[] inventory;
 
-    private CustomItemStackHandler itemTransfer;
+    private CustomItemStackHandler itemHandler;
 
     public ExportOnlyAEItemList(MetaMachine holder, int slots) {
         this(holder, slots, ExportOnlyAEItemSlot::new);
@@ -45,11 +45,11 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         }
     }
 
-    public CustomItemStackHandler getTransfer() {
-        if (this.itemTransfer == null) {
-            this.itemTransfer = new ItemStackTransferDelegate(inventory);
+    public CustomItemStackHandler getHandler() {
+        if (this.itemHandler == null) {
+            this.itemHandler = new ItemStackHandlerDelegate(inventory);
         }
-        return itemTransfer;
+        return itemHandler;
     }
 
     @Override
@@ -93,8 +93,8 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
 
     @Override
     public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
-                                                   @Nullable String slotName, boolean simulate) {
-        return handleIngredient(io, recipe, left, simulate, this.handlerIO, getTransfer());
+                                              @Nullable String slotName, boolean simulate) {
+        return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, this.handlerIO, getHandler());
     }
 
     @Override
@@ -120,11 +120,11 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class ItemStackTransferDelegate extends CustomItemStackHandler {
+    private static class ItemStackHandlerDelegate extends CustomItemStackHandler {
 
         private final ExportOnlyAEItemSlot[] inventory;
 
-        public ItemStackTransferDelegate(ExportOnlyAEItemSlot[] inventory) {
+        public ItemStackHandlerDelegate(ExportOnlyAEItemSlot[] inventory) {
             super();
             this.inventory = inventory;
         }
@@ -171,18 +171,6 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             return false;
-        }
-
-        @Override
-        public CustomItemStackHandler copy() {
-            // because recipe testing uses copy transfer instead of simulated operations
-            return new ItemStackTransferDelegate(inventory) {
-
-                @Override
-                public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                    return super.extractItem(slot, amount, true);
-                }
-            };
         }
     }
 }

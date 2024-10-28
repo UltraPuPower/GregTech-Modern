@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.core.BlockPos;
@@ -313,7 +312,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
         if (pipeCover != null) {
             testHandler.setStackInSlot(0, stack.copy());
-            IItemHandlerModifiable itemHandler = pipeCover.getItemTransferCap(testHandler);
+            IItemHandlerModifiable itemHandler = pipeCover.getItemHandlerCap(testHandler);
             if (itemHandler == null || (itemHandler != testHandler &&
                     (allowed = itemHandler.extractItem(0, allowed, true).getCount()) <= 0)) {
                 testHandler.setStackInSlot(0, ItemStack.EMPTY);
@@ -335,14 +334,14 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     private ItemStack insert(IItemHandler handler, ItemStack stack, boolean simulate, int allowed,
                              boolean ignoreLimit) {
         if (stack.getCount() == allowed) {
-            ItemStack re = GTTransferUtils.insertItem(handler, stack, simulate);
+            ItemStack re = ItemHandlerHelper.insertItemStacked(handler, stack, simulate);
             if (!ignoreLimit)
                 transfer(simulate, stack.getCount() - re.getCount());
             return re;
         }
         ItemStack toInsert = stack.copy();
         toInsert.setCount(Math.min(allowed, stack.getCount()));
-        int r = GTTransferUtils.insertItem(handler, toInsert, simulate).getCount();
+        int r = ItemHandlerHelper.insertItemStacked(handler, toInsert, simulate).getCount();
         if (!ignoreLimit)
             transfer(simulate, toInsert.getCount() - r);
         ItemStack remainder = stack.copy();
@@ -477,6 +476,9 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             entry.setValue(entry.getValue() - amount);
         }
     }
+
+    @Override
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {}
 
     private static class EnhancedRoundRobinData {
 

@@ -19,8 +19,8 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.misc.IOFilteredInvWrapper;
 import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
-import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -30,7 +30,6 @@ import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -649,16 +648,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     // ****** Capability ********//
     //////////////////////////////////////
 
-    public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side) {
+    public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
-            if (cover instanceof ItemFilterCover filterCover) {
+            if (cover instanceof ItemFilterCover filterCover && filterCover.getFilterMode().filters(io)) {
                 return filterCover.getItemFilter();
             }
         }
         return item -> true;
     }
 
+    // TODO: ADD Fluid Filter Modes
     public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
@@ -670,7 +670,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
                 .filter(IItemHandlerModifiable.class::isInstance)
                 .filter(t -> t.hasCapability(side))
@@ -685,11 +685,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             io = IO.OUT;
         }
 
-        IOItemTransferList transferList = new IOItemTransferList(list, io, getItemCapFilter(side));
-        if (!useCoverCapability || side == null) return transferList;
+        IOFilteredInvWrapper handlerList = new IOFilteredInvWrapper(list, io,
+                getItemCapFilter(side, IO.IN), getItemCapFilter(side, IO.OUT));
+        if (!useCoverCapability || side == null) return handlerList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getItemTransferCap(transferList) : transferList;
+        return cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
     }
 
     @Nullable

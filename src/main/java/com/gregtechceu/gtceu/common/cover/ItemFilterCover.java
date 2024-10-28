@@ -6,8 +6,9 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
+import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -45,7 +46,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @DescSynced
     @Getter
     protected ItemFilterMode filterMode = ItemFilterMode.FILTER_INSERT;
-    private FilteredItemTransferWrapper itemFilterWrapper;
+    private FilteredItemHandlerWrapper itemFilterWrapper;
 
     public ItemFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -65,16 +66,16 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public boolean canAttach() {
-        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return GTTransferUtils.getItemHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
     }
 
     @Override
-    public @Nullable IItemHandlerModifiable getItemTransferCap(IItemHandlerModifiable defaultValue) {
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(IItemHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
         if (itemFilterWrapper == null || itemFilterWrapper.delegate != defaultValue) {
-            this.itemFilterWrapper = new ItemFilterCover.FilteredItemTransferWrapper(defaultValue);
+            this.itemFilterWrapper = new FilteredItemHandlerWrapper(defaultValue);
         }
         return itemFilterWrapper;
     }
@@ -94,9 +95,9 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         return MANAGED_FIELD_HOLDER;
     }
 
-    private class FilteredItemTransferWrapper extends ItemTransferDelegate {
+    private class FilteredItemHandlerWrapper extends ItemHandlerDelegate {
 
-        public FilteredItemTransferWrapper(IItemHandlerModifiable delegate) {
+        public FilteredItemHandlerWrapper(IItemHandlerModifiable delegate) {
             super(delegate);
         }
 

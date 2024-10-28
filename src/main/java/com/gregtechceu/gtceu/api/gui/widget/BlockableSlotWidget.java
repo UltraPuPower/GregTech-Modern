@@ -27,7 +27,8 @@ public class BlockableSlotWidget extends SlotWidget {
 
     public BlockableSlotWidget(IItemHandlerModifiable itemHandler, int slotIndex, int xPosition, int yPosition,
                                boolean canTakeItems, boolean canPutItems) {
-        super(itemHandler, slotIndex, xPosition, yPosition, canTakeItems, canPutItems);
+        super(itemHandler, slotIndex, xPosition, yPosition, canTakeItems,
+                canPutItems);
     }
 
     public BlockableSlotWidget(IItemHandlerModifiable itemHandler, int slotIndex, int xPosition, int yPosition) {

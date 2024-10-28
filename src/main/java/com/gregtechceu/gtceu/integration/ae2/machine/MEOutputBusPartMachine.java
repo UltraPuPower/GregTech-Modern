@@ -114,16 +114,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         private CustomItemStackHandler itemTransfer;
 
         public InaccessibleInfiniteHandler(MetaMachine holder) {
-            super(holder, 1, IO.OUT, IO.NONE, ItemStackTransferDelegate::new);
+            super(holder, 1, IO.OUT, IO.NONE, ItemStackHandlerDelegate::new);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
         }
     }
 
     @NoArgsConstructor
-    private class ItemStackTransferDelegate extends CustomItemStackHandler {
+    private class ItemStackHandlerDelegate extends CustomItemStackHandler {
 
         // Necessary for InaccessibleInfiniteHandler
-        public ItemStackTransferDelegate(Integer integer) {
+        public ItemStackHandlerDelegate(Integer integer) {
             super();
         }
 
@@ -167,18 +167,6 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
-        }
-
-        @Override
-        public CustomItemStackHandler copy() {
-            // because recipe testing uses copy transfer instead of simulated operations
-            return new ItemStackTransferDelegate() {
-
-                @Override
-                public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                    return super.insertItem(slot, stack, true);
-                }
-            };
         }
     }
 }

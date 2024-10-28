@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
@@ -99,7 +100,8 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         var modular = new ModularUI(184, 132, holder, entityPlayer)
                 .widget(label);
         SlotWidget slotwidget = new SlotWidget(
-                new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld()))), 0, 82, 20, false, false);
+                new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld()))),
+                0, 82, 20, false, false);
         slotwidget.setBackground(GuiTextures.SLOT);
         modular.widget(slotwidget);
         int idx = 0;

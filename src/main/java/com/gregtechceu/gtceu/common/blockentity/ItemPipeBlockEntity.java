@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FacingPos;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -90,7 +91,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         if (level.getBlockEntity(getBlockPos().relative(side)) instanceof ItemPipeBlockEntity) {
             return false;
         }
-        return ItemTransferHelper.getItemTransfer(level, getBlockPos().relative(side), side.getOpposite()) != null;
+        return GTTransferUtils.hasAdjacentItemHandler(level, getBlockPos(), side);
     }
 
     @Nullable
@@ -158,6 +159,6 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         if (!useCoverCapability || side == null) return handler;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getItemTransferCap(handler) : handler;
+        return cover != null ? cover.getItemHandlerCap(handler) : handler;
     }
 }

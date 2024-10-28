@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -707,8 +708,8 @@ public class GTRecipeTypes {
                     .setMaxTooltips(4)
                     .setUiBuilder((recipe, group) -> {
                         if (!recipe.conditions.isEmpty() && recipe.conditions.get(0) instanceof RPMCondition) {
-                            var transfer = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
-                            group.addWidget(new SlotWidget(transfer, 0, group.getSize().width - 30,
+                            var handler = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
+                            group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
                                     group.getSize().height - 30, false, false));
                         }
                     });

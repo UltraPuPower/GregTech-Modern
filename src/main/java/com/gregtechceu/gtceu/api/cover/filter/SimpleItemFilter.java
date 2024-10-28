@@ -1,16 +1,17 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 
-import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -145,7 +146,7 @@ public class SimpleItemFilter implements ItemFilter {
         for (var candidate : matches) {
             if (ignoreNbt && ItemStack.isSameItemSameComponents(candidate, itemStack)) {
                 totalCount += candidate.getCount();
-            } else if (ItemTransferHelper.canItemStacksStack(candidate, itemStack)) {
+            } else if (ItemHandlerHelper.canItemStacksStack(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
         }

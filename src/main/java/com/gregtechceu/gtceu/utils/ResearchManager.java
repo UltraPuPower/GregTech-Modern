@@ -164,9 +164,10 @@ public final class ResearchManager {
         @Override
         public GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
             var itemInputs = holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).stream()
-                    .filter(IItemHandlerModifiable.class::isInstance).map(IItemHandlerModifiable.class::cast)
+                    .filter(IItemHandlerModifiable.class::isInstance)
+                    .map(IItemHandlerModifiable.class::cast)
                     .toArray(IItemHandlerModifiable[]::new);
-            var inputs = new ItemTransferList(itemInputs);
+            var inputs = new CombinedInvWrapper(itemInputs);
             if (inputs.getSlots() > 1) {
                 // try the data recipe both ways, prioritizing overwriting the first
                 GTRecipe recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));

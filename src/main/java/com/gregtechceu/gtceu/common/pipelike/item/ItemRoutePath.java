@@ -54,8 +54,7 @@ public class ItemRoutePath implements IRoutePath<IItemHandler> {
 
     @Override
     public @Nullable IItemHandler getHandler(Level world) {
-        return ItemTransferHelper.getItemTransfer(world, getTargetPipePos().relative(targetFacing),
-                targetFacing.getOpposite());
+        return GTTransferUtils.getAdjacentItemHandler(world, getTargetPipePos(), targetFacing);
     }
 
     public boolean matchesFilters(ItemStack stack) {

@@ -14,6 +14,7 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
         super(metaTileEntityId, LDItemPipeType.INSTANCE);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public static class ItemHandlerWrapper implements IItemHandler {
 
         private final IItemHandler delegate;

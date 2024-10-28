@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -54,9 +55,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
         }
     }
 
-    private void updateStored(FluidStack fluid) {
+    private InteractionResult updateStored(FluidStack fluid) {
         cache.setFluidInTank(0, new FluidStack(fluid, 1000));
         stored = cache.getFluidInTank(0);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -65,28 +67,38 @@ public class CreativeTankMachine extends QuantumTankMachine {
         var heldItem = player.getItemInHand(hand);
         if (hit.getDirection() == getFrontFacing() && !isRemote()) {
             // Clear fluid if empty + shift-rclick
-            if (heldItem.isEmpty() && player.isCrouching() && !stored.isEmpty()) {
-                updateStored(FluidStack.EMPTY);
-                return InteractionResult.SUCCESS;
+            if (heldItem.isEmpty()) {
+                if (player.isCrouching() && !stored.isEmpty()) {
+                    return updateStored(FluidStack.EMPTY);
+                }
+                return InteractionResult.PASS;
             }
 
             // If no fluid set and held-item has fluid, set fluid
             if (stored.isEmpty()) {
-                FluidUtil.getFluidContained(heldItem).ifPresent(this::updateStored);
-                return InteractionResult.SUCCESS;
+                return FluidUtil.getFluidContained(heldItem)
+                        .map(this::updateStored)
+                        .orElse(InteractionResult.PASS);
             }
 
-            // If held item can take fluid from tank, do it, otherwise set new fluid
-            var handler = FluidUtil.getFluidHandler(heldItem).resolve().orElse(null);
-            if (handler != null) {
-                var copy = stored.copy();
-                copy.setAmount(Integer.MAX_VALUE);
-                int filled = handler.fill(copy, FluidAction.SIMULATE);
-                if (filled > 0) {
-                    handler.fill(copy, FluidAction.EXECUTE);
-                    player.setItemInHand(hand, handler.getContainer());
-                } else updateStored(handler.getFluidInTank(0));
+            // Need to make a fake source to fully fill held-item since our cache only allows mbPerTick extraction
+            CustomFluidTank source = new CustomFluidTank(
+                    new FluidStack(stored.getFluid(), Integer.MAX_VALUE, stored.getTag()));
+            ItemStack result = FluidUtil.tryFillContainer(heldItem, source, Integer.MAX_VALUE, player, true)
+                    .getResult();
+            if (!result.isEmpty() && heldItem.getCount() > 1) {
+                ItemHandlerHelper.giveItemToPlayer(player, result);
+                result = heldItem.copy();
+                result.shrink(1);
+            }
+
+            if (!result.isEmpty()) {
+                player.setItemInHand(hand, result);
                 return InteractionResult.SUCCESS;
+            } else {
+                return FluidUtil.getFluidContained(heldItem)
+                        .map(this::updateStored)
+                        .orElse(InteractionResult.PASS);
             }
         }
         return InteractionResult.PASS;

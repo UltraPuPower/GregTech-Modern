@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -72,10 +71,10 @@ public class DimensionCondition extends RecipeCondition {
         DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension,
                 new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
         ItemStack icon = dimMarker.getIcon();
-        CustomItemStackHandler transfer = new CustomItemStackHandler(1);
-        SlotWidget dimSlot = new SlotWidget(transfer, 0, xOffset, yOffset, false, false)
+        CustomItemStackHandler handler = new CustomItemStackHandler(1);
+        SlotWidget dimSlot = new SlotWidget(handler, 0, xOffset, yOffset, false, false)
                 .setIngredientIO(IngredientIO.INPUT);
-        transfer.setStackInSlot(0, icon);
+        handler.setStackInSlot(0, icon);
         if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
             dimSlot.setOverlay(
                     new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))

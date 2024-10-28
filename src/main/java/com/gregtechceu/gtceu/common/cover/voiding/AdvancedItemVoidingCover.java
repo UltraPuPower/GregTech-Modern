@@ -50,19 +50,19 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @Override
     protected void doVoidItems() {
-        IItemHandler itemTransfer = getOwnItemTransfer();
-        if (itemTransfer == null) {
+        IItemHandler handler = getOwnItemHandler();
+        if (handler == null) {
             return;
         }
 
         switch (voidingMode) {
-            case VOID_ANY -> voidAny(itemTransfer);
-            case VOID_OVERFLOW -> voidOverflow(itemTransfer);
+            case VOID_ANY -> voidAny(handler);
+            case VOID_OVERFLOW -> voidOverflow(handler);
         }
     }
 
-    private void voidOverflow(IItemHandler itemTransfer) {
-        Map<ItemStack, TypeItemInfo> sourceItemAmounts = countInventoryItemsByType(itemTransfer);
+    private void voidOverflow(IItemHandler handler) {
+        Map<ItemStack, TypeItemInfo> sourceItemAmounts = countInventoryItemsByType(handler);
 
         for (TypeItemInfo itemInfo : sourceItemAmounts.values()) {
             int itemToVoidAmount = itemInfo.totalCount - getFilteredItemAmount(itemInfo.itemStack);
@@ -71,10 +71,10 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
                 continue;
             }
 
-            for (int slot = 0; slot < itemTransfer.getSlots(); slot++) {
-                ItemStack is = itemTransfer.getStackInSlot(slot);
-                if (!is.isEmpty() && ItemStack.isSameItemSameComponents(is, itemInfo.itemStack)) {
-                    ItemStack extracted = itemTransfer.extractItem(slot, itemToVoidAmount, false);
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
+                ItemStack is = handler.getStackInSlot(slot);
+                if (!is.isEmpty() && ItemStack.isSameItemSameTags(is, itemInfo.itemStack)) {
+                    ItemStack extracted = handler.extractItem(slot, itemToVoidAmount, false);
 
                     if (!extracted.isEmpty()) {
                         itemToVoidAmount -= extracted.getCount();

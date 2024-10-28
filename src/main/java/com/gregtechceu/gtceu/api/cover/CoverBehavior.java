@@ -218,7 +218,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     //////////////////////////////////////
 
     @Nullable
-    public IItemHandlerModifiable getItemTransferCap(IItemHandlerModifiable defaultValue) {
+    public IItemHandlerModifiable getItemHandlerCap(IItemHandlerModifiable defaultValue) {
         return defaultValue;
     }
 

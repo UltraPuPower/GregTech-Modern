@@ -56,22 +56,22 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     }
 
     protected void doVoidItems() {
-        IItemHandler itemTransfer = getOwnItemTransfer();
-        if (itemTransfer == null) {
+        IItemHandler handler = getOwnItemHandler();
+        if (handler == null) {
             return;
         }
-        voidAny(itemTransfer);
+        voidAny(handler);
     }
 
-    void voidAny(IItemHandler itemTransfer) {
+    void voidAny(IItemHandler handler) {
         ItemFilter filter = filterHandler.getFilter();
 
-        for (int slot = 0; slot < itemTransfer.getSlots(); slot++) {
-            ItemStack sourceStack = itemTransfer.extractItem(slot, Integer.MAX_VALUE, true);
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            ItemStack sourceStack = handler.extractItem(slot, Integer.MAX_VALUE, true);
             if (sourceStack.isEmpty() || !filter.test(sourceStack)) {
                 continue;
             }
-            itemTransfer.extractItem(slot, Integer.MAX_VALUE, false);
+            handler.extractItem(slot, Integer.MAX_VALUE, false);
         }
     }
 

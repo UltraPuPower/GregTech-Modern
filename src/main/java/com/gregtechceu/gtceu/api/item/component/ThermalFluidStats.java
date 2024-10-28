@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
@@ -64,10 +66,14 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        FluidStack tank = FluidUtil.getFluidContained(stack);
-        if (!tank.isEmpty()) {
-            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getHoverName(),
-                    tank.getAmount()));
-        }
+        FluidUtil.getFluidContained(stack).ifPresentOrElse(tank -> {
+            tooltipComponents
+                    .add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
+                            tank.getAmount()));
+            TooltipsHandler.appendFluidTooltips(tank.getFluid(), tank.getAmount(), tooltipComponents::add, null);
+        }, () -> {
+            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                    FormattingUtil.formatNumbers(capacity)));
+        });
     }
 }

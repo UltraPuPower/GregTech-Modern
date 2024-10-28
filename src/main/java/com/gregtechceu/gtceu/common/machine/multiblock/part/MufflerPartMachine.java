@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -71,7 +72,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
         int numRolls = Math.min(recoveryItems.length, inventory.getSlots());
         IntStream.range(0, numRolls).forEach(slot -> {
             if (calculateChance()) {
-                ItemTransferHelper.insertItemStacked(inventory, recoveryItems[slot].copy(), false);
+                ItemHandlerHelper.insertItemStacked(inventory, recoveryItems[slot].copy(), false);
             }
         });
     }

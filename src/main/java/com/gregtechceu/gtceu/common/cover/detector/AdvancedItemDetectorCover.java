@@ -81,15 +81,15 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
             return;
 
         ItemFilter filter = filterHandler.getFilter();
-        IItemHandler itemTransfer = getItemTransfer();
-        if (itemTransfer == null)
+        IItemHandler handler = getItemHandler();
+        if (handler == null)
             return;
 
         int storedItems = 0;
 
-        for (int i = 0; i < itemTransfer.getSlots(); i++) {
-            if (filter.test(itemTransfer.getStackInSlot(i)))
-                storedItems += itemTransfer.getStackInSlot(i).getCount();
+        for (int i = 0; i < handler.getSlots(); i++) {
+            if (filter.test(handler.getStackInSlot(i)))
+                storedItems += handler.getStackInSlot(i).getCount();
         }
 
         setRedstoneSignalOutput(

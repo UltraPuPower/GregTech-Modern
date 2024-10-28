@@ -10,11 +10,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public abstract class ItemTransferDelegate implements IItemHandlerModifiable {
+public abstract class ItemHandlerDelegate implements IItemHandlerModifiable {
 
     public IItemHandlerModifiable delegate;
 
-    public ItemTransferDelegate(IItemHandlerModifiable delegate) {
+    public ItemHandlerDelegate(IItemHandlerModifiable delegate) {
         this.delegate = delegate;
     }
 

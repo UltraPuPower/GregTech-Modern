@@ -14,10 +14,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
+import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -112,16 +113,16 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected boolean isSubscriptionActive() {
-        return isWorkingEnabled() && getAdjacentItemTransfer() != null;
+        return isWorkingEnabled() && getAdjacentItemHandler() != null;
     }
 
-    protected @Nullable IItemHandlerModifiable getOwnItemTransfer() {
-        return coverHolder.getItemTransferCap(attachedSide, false);
+    protected @Nullable IItemHandlerModifiable getOwnItemHandler() {
+        return coverHolder.getItemHandlerCap(attachedSide, false);
     }
 
-    protected @Nullable IItemHandler getAdjacentItemTransfer() {
-        return coverHolder.getLevel().getCapability(Capabilities.ItemHandler.BLOCK,
-                coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
+    protected @Nullable IItemHandler getAdjacentItemHandler() {
+        return GTTransferUtils.getAdjacentItemHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
+                .resolve().orElse(null);
     }
 
     //////////////////////////////////////
@@ -134,7 +135,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Override
     public boolean canAttach() {
-        return getOwnItemTransfer() != null;
+        return getOwnItemHandler() != null;
     }
 
     public void setTransferRate(int transferRate) {
@@ -147,6 +148,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         if (io == IO.IN || io == IO.OUT) {
             this.io = io;
         }
+        subscriptionHandler.updateSubscription();
         coverHolder.markDirty();
     }
 
@@ -202,13 +204,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 == 0) {
             if (itemsLeftToTransferLastSecond > 0) {
-                var adjacentItemTransfer = getAdjacentItemTransfer();
-                var myItemHandler = getOwnItemTransfer();
+                var adjacent = getAdjacentItemHandler();
+                var self = getOwnItemHandler();
 
-                if (adjacentItemTransfer != null && myItemHandler != null) {
+                if (adjacent != null && self != null) {
                     int totalTransferred = switch (io) {
-                        case IN -> doTransferItems(adjacentItemTransfer, myItemHandler, itemsLeftToTransferLastSecond);
-                        case OUT -> doTransferItems(myItemHandler, adjacentItemTransfer, itemsLeftToTransferLastSecond);
+                        case IN -> doTransferItems(adjacent, self, itemsLeftToTransferLastSecond);
+                        case OUT -> doTransferItems(self, adjacent, itemsLeftToTransferLastSecond);
                         default -> 0;
                     };
                     this.itemsLeftToTransferLastSecond -= totalTransferred;
@@ -240,13 +242,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 continue;
             }
 
-            ItemStack remainder = ItemTransferHelper.insertItem(targetInventory, sourceStack, true);
+            ItemStack remainder = ItemHandlerHelper.insertItem(targetInventory, sourceStack, true);
             int amountToInsert = sourceStack.getCount() - remainder.getCount();
 
             if (amountToInsert > 0) {
                 sourceStack = sourceInventory.extractItem(srcIndex, amountToInsert, false);
                 if (!sourceStack.isEmpty()) {
-                    ItemTransferHelper.insertItem(targetInventory, sourceStack, false);
+                    ItemHandlerHelper.insertItem(targetInventory, sourceStack, false);
                     itemsLeftToTransfer -= sourceStack.getCount();
 
                     if (itemsLeftToTransfer == 0) {
@@ -289,13 +291,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
         // now, see how much we can insert into destination inventory
         // if we can't insert as much as itemInfo requires, and remainder is empty, abort, abort
-        ItemStack remainder = ItemTransferHelper.insertItem(targetInventory, resultStack, true);
+        ItemStack remainder = ItemHandlerHelper.insertItem(targetInventory, resultStack, true);
         if (!remainder.isEmpty()) {
             return false;
         }
 
         // otherwise, perform real insertion and then remove items from the source inventory
-        ItemTransferHelper.insertItem(targetInventory, resultStack, false);
+        ItemHandlerHelper.insertItem(targetInventory, resultStack, false);
 
         // perform real extraction of the items from the source inventory now
         itemsLeftToExtract = itemInfo.totalCount;
@@ -329,7 +331,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             ItemStack extractedStack = sourceInventory.extractItem(i,
                     Math.min(itemInfo.totalCount, itemsLeftToTransfer), true);
 
-            ItemStack remainderStack = ItemTransferHelper.insertItem(targetInventory, extractedStack, true);
+            ItemStack remainderStack = ItemHandlerHelper.insertItem(targetInventory, extractedStack, true);
             int amountToInsert = extractedStack.getCount() - remainderStack.getCount();
 
             if (amountToInsert > 0) {
@@ -337,7 +339,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
                 if (!extractedStack.isEmpty()) {
 
-                    ItemTransferHelper.insertItem(targetInventory, extractedStack, false);
+                    ItemHandlerHelper.insertItem(targetInventory, extractedStack, false);
                     itemsLeftToTransfer -= extractedStack.getCount();
                     itemInfo.totalCount -= extractedStack.getCount();
 
@@ -476,23 +478,23 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     // *** CAPABILITY OVERRIDE ***//
     /////////////////////////////////////
 
-    private CoverableItemTransferWrapper itemHandlerWrapper;
+    private CoverableItemHandlerWrapper itemHandlerWrapper;
 
     @Nullable
     @Override
-    public IItemHandlerModifiable getItemTransferCap(@Nullable IItemHandlerModifiable defaultValue) {
+    public IItemHandlerModifiable getItemHandlerCap(@Nullable IItemHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
         if (itemHandlerWrapper == null || itemHandlerWrapper.delegate != defaultValue) {
-            this.itemHandlerWrapper = new CoverableItemTransferWrapper(defaultValue);
+            this.itemHandlerWrapper = new CoverableItemHandlerWrapper(defaultValue);
         }
         return itemHandlerWrapper;
     }
 
-    private class CoverableItemTransferWrapper extends ItemTransferDelegate {
+    private class CoverableItemHandlerWrapper extends ItemHandlerDelegate {
 
-        public CoverableItemTransferWrapper(IItemHandlerModifiable delegate) {
+        public CoverableItemHandlerWrapper(IItemHandlerModifiable delegate) {
             super(delegate);
         }
 

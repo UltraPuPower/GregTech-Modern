@@ -181,8 +181,8 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
-        return machine.getItemTransferCap(side, useCoverCapability);
+    public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        return machine.getItemHandlerCap(side, useCoverCapability);
     }
 
     @Override

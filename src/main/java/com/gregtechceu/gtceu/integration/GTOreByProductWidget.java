@@ -121,13 +121,14 @@ public class GTOreByProductWidget extends WidgetGroup {
         }
 
         List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> itemInputs = recipeWrapper.itemInputs;
-        TagOrCycleItemStackTransfer itemInputsHandler = new TagOrCycleItemStackTransfer(itemInputs);
+        TagOrCycleItemStackHandler itemInputsHandler = new TagOrCycleItemStackHandler(itemInputs);
         WidgetGroup itemStackGroup = new WidgetGroup();
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
             final int finalI = i;
             itemStackGroup.addWidget(new SlotWidget(itemInputsHandler, i / 2, ITEM_INPUT_LOCATIONS.get(i),
                     ITEM_INPUT_LOCATIONS.get(i + 1))
-                    .setCanTakeItems(false).setCanPutItems(false)
+                    .setCanTakeItems(false)
+                    .setCanPutItems(false)
                     .setIngredientIO(IngredientIO.INPUT)
                     .setOnAddedTooltips((slot, tooltips) -> recipeWrapper.getTooltip(finalI / 2, tooltips))
                     .setBackground((IGuiTexture) null));
@@ -151,8 +152,10 @@ public class GTOreByProductWidget extends WidgetGroup {
 
             itemStackGroup.addWidget(new SlotWidget(itemOutputsHandler, slotIndex, ITEM_OUTPUT_LOCATIONS.get(i),
                     ITEM_OUTPUT_LOCATIONS.get(i + 1))
-                    .setCanTakeItems(false).setCanPutItems(false)
-                    .setIngredientIO(IngredientIO.OUTPUT).setXEIChance(xeiChance)
+                    .setCanTakeItems(false)
+                    .setCanPutItems(false)
+                    .setIngredientIO(IngredientIO.OUTPUT)
+                    .setXEIChance(xeiChance)
                     .setOnAddedTooltips(
                             (slot, tooltips) -> recipeWrapper.getTooltip(slotIndex + itemInputs.size(), tooltips))
                     .setBackground((IGuiTexture) null).setOverlay(overlay));
@@ -167,8 +170,9 @@ public class GTOreByProductWidget extends WidgetGroup {
             if (!fluidInputs.get(slotIndex).map(Function.identity(), Function.identity()).isEmpty()) {
                 var tank = new TankWidget(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)),
                         FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
-                        .setIngredientIO(IngredientIO.INPUT).setBackground(GuiTextures.FLUID_SLOT);
-                tank.setShowAmount(false);
+                        .setIngredientIO(IngredientIO.INPUT)
+                        .setBackground(GuiTextures.FLUID_SLOT)
+                        .setShowAmount(false);
                 fluidStackGroup.addWidget(tank);
             }
         }

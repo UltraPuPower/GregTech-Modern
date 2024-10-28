@@ -31,7 +31,8 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)
                 .stream()
-                .filter(IItemHandlerModifiable.class::isInstance).map(IItemHandlerModifiable.class::cast)
+                .filter(IItemHandlerModifiable.class::isInstance)
+                .map(IItemHandlerModifiable.class::cast)
                 .toArray(IItemHandlerModifiable[]::new);
 
         var fluidInputs = Objects
@@ -41,7 +42,7 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                 .filter(IFluidHandler.class::isInstance).map(IFluidHandler.class::cast)
                 .toArray(IFluidHandler[]::new);
 
-        var inputs = new ItemTransferList(itemInputs);
+        var inputs = new CombinedInvWrapper(itemInputs);
         for (int i = 0; i < inputs.getSlots(); i++) {
             ItemStack item = inputs.getStackInSlot(i);
             if (!item.isEmpty()) {

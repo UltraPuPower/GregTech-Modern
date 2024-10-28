@@ -60,7 +60,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private static final double DIVIDEND = MAX_SPEED * Math.pow(TICK_TOLERANCE, POWER);
     protected final IMiner miner;
     @Nullable
-    private ItemTransferList cachedItemTransfer = null;
+    private NotifiableAccountedInvWrapper cachedItemHandler = null;
     @Getter
     private final int fortune;
     @Getter
@@ -161,7 +161,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public void resetRecipeLogic() {
         super.resetRecipeLogic();
         resetArea(false);
-        this.cachedItemTransfer = null;
+        this.cachedItemHandler = null;
         this.pipeLength = 0;
     }
 
@@ -173,7 +173,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Override
     public void inValid() {
         super.inValid();
-        this.cachedItemTransfer = null;
+        this.cachedItemHandler = null;
         this.pipeLength = 0;
     }
 
@@ -345,9 +345,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
         // create dummy recipe handler
         inputItemHandler.storage.setStackInSlot(0, oreDrop);
-        for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {
-            outputItemHandler.storage.setStackInSlot(i, ItemStack.EMPTY);
-        }
+        outputItemHandler.storage.clear();
 
         var matches = machine.getRecipeType().searchRecipe(this);
 
@@ -389,12 +387,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         blockDrops.add(new ItemStack(blockState.getBlock()));
     }
 
-    protected ItemTransferList getCachedItemTransfer() {
-        if (cachedItemTransfer == null) {
-            cachedItemTransfer = new ItemTransferList(machine.getCapabilitiesProxy()
-                    .get(IO.OUT, ItemRecipeCapability.CAP).stream().map(IItemHandlerModifiable.class::cast).toList());
+    protected NotifiableAccountedInvWrapper getCachedItemHandler() {
+        if (cachedItemHandler == null) {
+            cachedItemHandler = new NotifiableAccountedInvWrapper(machine.getCapabilitiesProxy()
+                    .get(IO.OUT, ItemRecipeCapability.CAP).stream()
+                    .map(IItemHandlerModifiable.class::cast)
+                    .toArray(IItemHandlerModifiable[]::new));
         }
-        return cachedItemTransfer;
+        return cachedItemHandler;
     }
 
     /**
@@ -408,10 +408,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         // If the block's drops can fit in the inventory, move the previously mined position to the block
         // replace the ore block with cobblestone instead of breaking it to prevent mob spawning
         // remove the ore block's position from the mining queue
-        var transfer = getCachedItemTransfer();
-        if (transfer != null) {
-            if (GTTransferUtils.addItemsToItemHandler(transfer, true, blockDrops)) {
-                GTTransferUtils.addItemsToItemHandler(transfer, false, blockDrops);
+        var handler = getCachedItemHandler();
+        if (handler != null) {
+            if (GTTransferUtils.addItemsToItemHandler(handler, true, blockDrops)) {
+                GTTransferUtils.addItemsToItemHandler(handler, false, blockDrops);
                 world.setBlock(blocksToMine.getFirst(), findMiningReplacementBlock(world), 3);
                 mineX = blocksToMine.getFirst().getX();
                 mineZ = blocksToMine.getFirst().getZ();
