@@ -46,6 +46,14 @@ dependencies {
     // KJS
     kjsImplementation forge.kubejs
 
+    // xaerosWorldMap
+    xaerosImplementation(forge.xaerosminimap)
+    xaerosImplementation(forge.xaerosworldmap)
+
+    // journeyMap
+    journeymapCompileOnly(forge.journeymap.api)
+    journeymapImplementation(forge.journeymap.forge)
+
     // Shimmer
     shimmerCompileOnly(forge.shimmer.forge) { transitive = false }
     compileOnly("maven.modrinth:embeddium:1.0.0-beta.1+mc1.21")
