@@ -155,6 +155,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @Override
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+        if (holder instanceof ICustomParallel p) return p.limitParallel(recipe, multiplier);
+
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
@@ -421,5 +423,17 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             return Either.left(List.of(Pair.of(tag.tag(), amount)));
         }
         return Either.right(Arrays.stream(ingredient.getFluids()).toList());
+    }
+
+    public interface ICustomParallel {
+
+        /**
+         * Custom impl of the parallel limiter used by ParallelLogic to limit by outputs
+         * 
+         * @param recipe     Recipe
+         * @param multiplier Initial multiplier
+         * @return Limited multiplier
+         */
+        int limitParallel(GTRecipe recipe, int multiplier);
     }
 }

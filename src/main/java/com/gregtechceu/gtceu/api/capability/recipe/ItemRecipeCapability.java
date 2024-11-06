@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
@@ -12,11 +11,14 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.ItemIngredientEquality;
 import com.gregtechceu.gtceu.api.recipe.lookup.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
 import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
 import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
 import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
@@ -28,9 +30,6 @@ import com.gregtechceu.gtceu.utils.*;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
-import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentPredicate;
@@ -55,6 +54,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -251,6 +251,8 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     @Override
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+        if (holder instanceof ICustomParallel p) return p.limitParallel(recipe, multiplier);
+
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
@@ -672,5 +674,22 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
             }
             return stack;
         }).toList());
+    }
+
+    @Override
+    public Object2IntMap<SizedIngredient> makeChanceCache() {
+        return new Object2IntOpenCustomHashMap<>(ItemIngredientEquality.IngredientHashStrategy.INSTANCE);
+    }
+
+    public interface ICustomParallel {
+
+        /**
+         * Custom impl of the parallel limiter used by ParallelLogic to limit by outputs
+         *
+         * @param recipe     Recipe
+         * @param multiplier Initial multiplier
+         * @return Limited multiplier
+         */
+        int limitParallel(GTRecipe recipe, int multiplier);
     }
 }
