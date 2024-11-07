@@ -248,15 +248,17 @@ public class GTRecipeTypeUI {
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
                                     if (LDLib.isReiLoaded()) {
-                                        ViewSearchBuilder.builder()
-                                                .addCategory(GTRecipeTypeDisplayCategory.CATEGORIES.apply(recipeType))
-                                                .open();
+                                        recipeType.getRecipesByCategory().keySet()
+                                                .forEach(e -> ViewSearchBuilder.builder()
+                                                        .addCategory(GTRecipeREICategory.CATEGORIES.apply(e)).open());
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui()
-                                                .showTypes(List.of(GTRecipeTypeCategory.TYPES.apply(recipeType)));
+                                                .showTypes(new ArrayList<>(recipeType.getRecipesByCategory().keySet()
+                                                        .stream().map(GTRecipeJEICategory.TYPES).toList()));
                                     } else if (LDLib.isEmiLoaded()) {
-                                        EmiApi.displayRecipeCategory(
-                                                GTRecipeTypeEmiCategory.CATEGORIES.apply(recipeType));
+                                        recipeType.getRecipesByCategory().keySet()
+                                                .forEach(e -> EmiApi
+                                                        .displayRecipeCategory(GTRecipeEMICategory.getCategoryFor(e)));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));

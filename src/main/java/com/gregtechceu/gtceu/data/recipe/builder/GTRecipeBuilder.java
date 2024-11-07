@@ -93,6 +93,7 @@ public class GTRecipeBuilder {
     public int tierChanceBoost = 0;
     @Setter
     public boolean isFuel = false;
+    public GTRecipeCategory recipeCategory;
     @Setter
     public BiConsumer<GTRecipeBuilder, RecipeOutput> onSave;
     @Getter
@@ -102,6 +103,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
         this.recipeType = recipeType;
+        this.recipeCategory = GTRecipeCategory.of(recipeType);
     }
 
     public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
@@ -118,6 +120,7 @@ public class GTRecipeBuilder {
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
         this.isFuel = toCopy.isFuel;
+        this.recipeCategory = toCopy.recipeCategory;
     }
 
     public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
@@ -1088,6 +1091,11 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder category(@NotNull GTRecipeCategory category) {
+        this.recipeCategory = category;
+        return this;
+    }
+
     public GTRecipe build() {
         return new GTRecipe(this.recipeType, this.id,
                 this.input, this.output, this.tickInput, this.tickOutput,
@@ -1108,6 +1116,16 @@ public class GTRecipeBuilder {
                 this.recipeType.addDataStickEntry(entry.getResearchId(), build());
             }
         }
+
+        if (recipeType != null) {
+            if (recipeCategory == null) {
+                GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
+            } else if (recipeCategory.getRecipeType() != this.recipeType) {
+                GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
+                        new IllegalArgumentException());
+            }
+        }
+
         GTRecipe built = build();
         consumer.accept(built.id.withPrefix(recipeType.registryName.getPath() + "/"), built, null);
     }
