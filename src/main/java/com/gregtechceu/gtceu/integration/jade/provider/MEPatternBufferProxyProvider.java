@@ -92,7 +92,7 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
                 ListTag itemTags = new ListTag();
                 for (Item item : items.keySet()) {
                     ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
-                    if (key != null) {
+                    if (!key.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
                         CompoundTag itemTag = new CompoundTag();
                         itemTag.putString("item", key.toString());
                         itemTag.putLong("count", items.getInt(item));
