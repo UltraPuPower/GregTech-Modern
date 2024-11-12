@@ -341,7 +341,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                                 @NotNull GTRecipeType recipeType,
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage) {
+                                @Nullable Object storage, int tier, int minTier) {
         if (widget instanceof TankWidget tank) {
             if (storage instanceof TagOrCycleFluidHandler fluidHandler) {
                 tank.setFluidTank(fluidHandler, index);
@@ -352,7 +352,11 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             tank.setAllowClickFilled(!isXEI);
             tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
             if (content != null) {
-                tank.setXEIChance((float) content.chance / content.maxChance);
+                float chanceFloat = (float) content.chance / content.maxChance;
+                float chanceAtTierFloat = Math
+                        .min(chanceFloat + (((float) content.tierChanceBoost / (float) content.maxChance)) *
+                                Math.max(0, tier - minTier), 1.0f);
+                tank.setXEIChance(chanceAtTierFloat);
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     SizedFluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
                     if (!isXEI && ingredient.getFluids().length > 0) {
@@ -364,7 +368,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                     }
 
                     GTRecipeWidget.setConsumedChance(content,
-                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips, tier,
+                            minTier);
                     if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
