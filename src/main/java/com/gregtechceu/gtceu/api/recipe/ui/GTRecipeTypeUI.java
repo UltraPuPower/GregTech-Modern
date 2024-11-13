@@ -258,7 +258,8 @@ public class GTRecipeTypeUI {
                                     } else if (LDLib.isEmiLoaded()) {
                                         recipeType.getRecipesByCategory().keySet()
                                                 .forEach(e -> EmiApi
-                                                        .displayRecipeCategory(GTRecipeEMICategory.getCategoryFor(e)));
+                                                        .displayRecipeCategory(
+                                                                GTRecipeEMICategory.CATEGORIES.apply(e)));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));
