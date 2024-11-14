@@ -55,4 +55,9 @@ public class ForgeClientEventListener {
     public static void registerClientCommand(RegisterClientCommandsEvent event) {
         GTClientCommands.register(event.getDispatcher(), event.getBuildContext());
     }
+
+    @SubscribeEvent
+    public static void serverStopped(ServerStoppedEvent event) {
+        ClientCacheManager.clearCaches();
+    }
 }
