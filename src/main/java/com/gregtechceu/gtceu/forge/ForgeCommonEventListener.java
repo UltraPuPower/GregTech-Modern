@@ -163,10 +163,6 @@ public class ForgeCommonEventListener {
         HazardCommands.register(event.getDispatcher(), event.getBuildContext());
     }
 
-    public static void registerClientCommand(RegisterClientCommandsEvent event) {
-        GTClientCommands.register(event.getDispatcher(), event.getBuildContext());
-    }
-
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new GTOreLoader());
@@ -244,11 +240,6 @@ public class ForgeCommonEventListener {
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
         }
-    }
-
-    @SubscribeEvent
-    public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
-        ClientCacheManager.allowReinit();
     }
 
     @SubscribeEvent
