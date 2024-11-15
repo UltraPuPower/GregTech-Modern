@@ -183,6 +183,7 @@ public class PartsRecipeHandler {
                     .outputItems(gearPrefix, material)
                     .duration((int) material.getMass() * 10)
                     .EUt(2L * voltageMultiplier)
+                    .category(GTRecipeCategories.INGOT_MOLDING)
                     .save(provider);
 
             if (material.hasFlag(NO_SMASHING)) {
@@ -227,6 +228,7 @@ public class PartsRecipeHandler {
                         .inputItems(ingot, material, 2)
                         .notConsumable(GTItems.SHAPE_MOLD_GEAR_SMALL)
                         .outputItems(gearSmall, material)
+                        .category(GTRecipeCategories.INGOT_MOLDING)
                         .save(provider);
 
                 if (material.hasFlag(NO_SMASHING)) {
