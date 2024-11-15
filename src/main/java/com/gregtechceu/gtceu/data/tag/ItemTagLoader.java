@@ -24,8 +24,8 @@ import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 public class ItemTagLoader {
 
     public static void init(RegistrateTagsProvider<Item> provider) {
-        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).get(),
-                GTItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
+        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).get());
+        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
         create(provider, lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).get());
         create(provider, lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).get());
         create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).get());
