@@ -174,6 +174,7 @@ public class CommonProxy {
         GTEntityTypes.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
+        com.gregtechceu.gtceu.common.data.GTRecipeCategories.init();
         GTMachines.init();
         GTFoods.init();
         GTToolBehaviors.init();

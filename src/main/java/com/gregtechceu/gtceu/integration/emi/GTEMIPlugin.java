@@ -41,13 +41,9 @@ public class GTEMIPlugin implements EmiPlugin {
         registry.addCategory(GTBedrockFluidEmiCategory.CATEGORY);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.addCategory(GTBedrockOreEmiCategory.CATEGORY);
-        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
-                    for (GTRecipeCategory category : gtRecipeType.getRecipesByCategory().keySet()) {
-                        registry.addCategory(new GTRecipeEMICategory(gtRecipeType, category));
-                    }
-                }
+        for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
+            if (Platform.isDevEnv() || category.isXEIVisible()) {
+                registry.addCategory(GTRecipeEMICategory.CATEGORIES.apply(category));
             }
         }
         registry.addRecipeHandler(ModularUIContainer.MENUTYPE, new GTEmiRecipeHandler());
@@ -81,7 +77,8 @@ public class GTEMIPlugin implements EmiPlugin {
                 EmiStack.of(GTMachines.STEAM_FURNACE.right().asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_OVEN.asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.MULTI_SMELTER.asStack()));
-        registry.addWorkstation(GTRecipeEMICategory.getCategoryFor(GTRecipeCategory.of(GTRecipeTypes.CHEMICAL_RECIPES)),
+        registry.addWorkstation(
+                GTRecipeEMICategory.CATEGORIES.apply(GTRecipeCategory.of(GTRecipeTypes.CHEMICAL_RECIPES)),
                 EmiStack.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
     }
 }
