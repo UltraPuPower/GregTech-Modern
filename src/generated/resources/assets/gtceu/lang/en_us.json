@@ -2725,6 +2725,8 @@
   "gtceu.electric_furnace": "Electric Furnace",
   "gtceu.electrolyzer": "Electrolyzer",
   "gtceu.electromagnetic_separator": "Electromagnetic Separator",
+  "gtceu.empty_can.any_empty_can": "§oAny Empty Can. Any Fluid Works",
+  "gtceu.empty_can.any_filled_can": "§oAny Filled Can",
   "gtceu.evaporation": "Evaporation",
   "gtceu.extractor": "Extractor",
   "gtceu.extruder": "Extruder",

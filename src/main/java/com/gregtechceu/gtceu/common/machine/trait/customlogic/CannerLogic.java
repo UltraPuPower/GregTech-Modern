@@ -1,15 +1,23 @@
 package com.gregtechceu.gtceu.common.machine.trait.customlogic;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -17,9 +25,12 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
@@ -87,5 +98,24 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
             }
         }
         return null;
+    }
+
+    @Override
+    public @Nullable List<GTRecipe> getRepresentativeRecipes() {
+        ItemStack emptyCan = GTItems.FLUID_CELL_UNIVERSAL.asStack();
+        emptyCan.setHoverName(Component.translatable("gtceu.empty_can.any_empty_can"));
+        FluidStack water = new FluidStack(Fluids.WATER, 1000);
+        ItemStack filledCan = GTItems.FLUID_CELL_UNIVERSAL.asStack();
+        filledCan.setHoverName(Component.translatable("gtceu.empty_can.any_filled_can"));
+
+        return Collections.singletonList(
+                GTRecipeTypes.CANNER_RECIPES.recipeBuilder("fill_any_fluid_cell")
+                        .inputItems(emptyCan)
+                        .inputFluids(water)
+                        .outputItems(filledCan)
+                        .duration(16)
+                        .EUt(4)
+                        .category(GTRecipeCategories.DUMMY)
+                        .buildRawRecipe());
     }
 }
