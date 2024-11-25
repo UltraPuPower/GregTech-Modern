@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
@@ -181,40 +182,6 @@ public class GTTransferUtils {
 
         // perform the merge.
         items.forEach(stack -> ItemHandlerHelper.insertItemStacked(handler, stack, false));
-        return true;
-    }
-
-    /**
-     * Simulates the insertion of fluid into a target fluid handler, then optionally performs the insertion.
-     * <br />
-     * <br />
-     * Simulating will not modify any of the input parameters. Insertion will either succeed completely, or fail
-     * without modifying anything.
-     * This method should be called with {@code simulate} {@code true} first, then {@code simulate} {@code false},
-     * only if it returned {@code true}.
-     *
-     * @param fluidHandler the target inventory
-     * @param simulate     whether to simulate ({@code true}) or actually perform the insertion ({@code false})
-     * @param fluidStacks  the items to insert into {@code fluidHandler}.
-     * @return {@code true} if the insertion succeeded, {@code false} otherwise.
-     */
-    public static boolean addFluidsToFluidHandler(FluidHandlerList fluidHandler,
-                                                  boolean simulate,
-                                                  List<FluidStack> fluidStacks) {
-        if (simulate) {
-            OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(fluidHandler);
-            for (FluidStack fluidStack : fluidStacks) {
-                int inserted = overlayedFluidHandler.insertFluid(fluidStack, fluidStack.getAmount());
-                if (inserted != fluidStack.getAmount()) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        for (FluidStack fluidStack : fluidStacks) {
-            fillFluidAccountNotifiableList(fluidHandler, fluidStack, FluidAction.EXECUTE);
-        }
         return true;
     }
 

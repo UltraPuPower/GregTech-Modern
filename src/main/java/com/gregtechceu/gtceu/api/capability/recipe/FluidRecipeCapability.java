@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -10,14 +11,13 @@ import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
-import com.gregtechceu.gtceu.utils.OverlayedFluidHandler;
+import com.gregtechceu.gtceu.utils.OverlayedTankHandler;
 import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -160,13 +160,14 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
-        OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(new FluidHandlerList(
-                Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP),
+        OverlayedTankHandler overlayedFluidHandler = new OverlayedTankHandler(
+                Objects.requireNonNullElseGet(
+                        holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP),
                         Collections::emptyList)
                         .stream()
-                        .filter(IFluidHandler.class::isInstance)
-                        .map(IFluidHandler.class::cast)
-                        .toList()));
+                        .filter(NotifiableFluidTank.class::isInstance)
+                        .map(NotifiableFluidTank.class::cast)
+                        .toList());
 
         List<FluidStack> recipeOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP)
                 .stream()
@@ -190,7 +191,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                 } else {
                     amountToInsert = fluidStack.getAmount() * multiplier;
                 }
-                returnedAmount = amountToInsert - overlayedFluidHandler.insertFluid(fluidStack, amountToInsert);
+                returnedAmount = amountToInsert - overlayedFluidHandler.tryFill(fluidStack, amountToInsert);
                 if (returnedAmount > 0) {
                     break;
                 }

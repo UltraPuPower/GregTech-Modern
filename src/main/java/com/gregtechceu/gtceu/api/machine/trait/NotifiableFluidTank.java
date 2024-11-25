@@ -20,7 +20,6 @@ import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +43,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     @Persisted(subPersisted = true)
     @Getter
     protected final CustomFluidTank[] storages;
-    @Setter
+    @Getter
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined
                                        // while creating tanks.
     private Boolean isEmpty;
@@ -53,6 +52,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     @DescSynced
     @Getter
     protected CustomFluidTank lockedFluid = new CustomFluidTank(FluidType.BUCKET_VOLUME);
+    @Getter
+    protected Predicate<FluidStack> filter = f -> true;
 
     public NotifiableFluidTank(MetaMachine machine, int slots, int capacity, IO io, IO capabilityIO) {
         super(machine);
@@ -224,6 +225,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     }
 
     public NotifiableFluidTank setFilter(Predicate<FluidStack> filter) {
+        this.filter = filter;
         for (CustomFluidTank storage : storages) {
             storage.setValidator(filter);
         }
