@@ -293,7 +293,8 @@ public class GCYMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     ASSEMBLER_RECIPES.getName()))
-            .tooltips(GTMachines.defaultEnvironmentRequirement())
+            .conditionalTooltip(GTMachines.defaultEnvironmentRequirement(),
+                    ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
             .recipeType(ASSEMBLER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
@@ -326,7 +327,8 @@ public class GCYMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     CIRCUIT_ASSEMBLER_RECIPES.getName()))
-            .tooltips(GTMachines.defaultEnvironmentRequirement())
+            .conditionalTooltip(GTMachines.defaultEnvironmentRequirement(),
+                    ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
             .recipeType(CIRCUIT_ASSEMBLER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
@@ -394,7 +396,8 @@ public class GCYMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     LASER_ENGRAVER_RECIPES.getName()))
-            .tooltips(GTMachines.defaultEnvironmentRequirement())
+            .conditionalTooltip(GTMachines.defaultEnvironmentRequirement(),
+                    ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
             .recipeType(LASER_ENGRAVER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
