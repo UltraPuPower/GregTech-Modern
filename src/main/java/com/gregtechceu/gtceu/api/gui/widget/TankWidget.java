@@ -39,7 +39,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
@@ -573,63 +572,91 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         var handler = FluidUtil.getFluidHandler(currentStack).resolve().orElse(null);
         if (handler == null) return -1;
         int maxAttempts = isShiftKeyDown ? currentStack.getCount() : 1;
-        FluidStack initialFluid = fluidTank.getFluidInTank(tank);
+        FluidStack initialFluid = fluidTank.getFluidInTank(tank).copy();
         if (allowClickFilled && initialFluid.getAmount() > 0) {
             boolean performedFill = false;
+            ItemStack filledResult = ItemStack.EMPTY;
             for (int i = 0; i < maxAttempts; i++) {
                 FluidActionResult result = FluidUtil.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null,
                         false);
                 if (!result.isSuccess()) break;
                 ItemStack remainingStack = FluidUtil
                         .tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
-                currentStack.shrink(1);
                 performedFill = true;
-                if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
-                    Block.popResource(player.level(), player.getOnPos(), remainingStack);
-                    break;
+
+                currentStack.shrink(1);
+
+                if (filledResult.isEmpty()) {
+                    filledResult = remainingStack.copy();
+                } else if (ItemStack.isSameItemSameTags(filledResult, remainingStack)) {
+                    if (filledResult.getCount() < filledResult.getMaxStackSize())
+                        filledResult.grow(1);
+                    else
+                        player.getInventory().placeItemBackInInventory(remainingStack);
+                } else {
+                    player.getInventory().placeItemBackInInventory(filledResult);
+                    filledResult = remainingStack.copy();
                 }
             }
             if (performedFill) {
                 SoundEvent soundevent = initialFluid.getFluid().getFluidType().getSound(initialFluid,
                         SoundActions.BUCKET_FILL);
+                if (soundevent == null)
+                    soundevent = SoundEvents.BUCKET_FILL;
+                player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
+                        soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
 
-                if (soundevent != null) {
-                    player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
-                            soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (currentStack.isEmpty()) {
+                    gui.getModularUIContainer().setCarried(filledResult);
                 } else {
-                    player.level().playSound(player, player.position().x, player.position().y + 0.5,
-                            player.position().z, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
+                    gui.getModularUIContainer().setCarried(currentStack);
+                    player.getInventory().placeItemBackInInventory(filledResult);
                 }
-                gui.getModularUIContainer().setCarried(currentStack);
-                return currentStack.getCount();
+                return gui.getModularUIContainer().getCarried().getCount();
             }
         }
 
         if (allowClickDrained) {
             boolean performedEmptying = false;
+            ItemStack drainedResult = ItemStack.EMPTY;
             for (int i = 0; i < maxAttempts; i++) {
                 FluidActionResult result = FluidUtil.tryEmptyContainer(currentStack, fluidTank, Integer.MAX_VALUE, null,
                         false);
                 if (!result.isSuccess()) break;
                 ItemStack remainingStack = FluidUtil
                         .tryEmptyContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
-                currentStack.shrink(1);
                 performedEmptying = true;
-                if (!remainingStack.isEmpty() && !player.getInventory().add(remainingStack)) {
-                    Block.popResource(player.level(), player.getOnPos(), remainingStack);
-                    break;
+
+                currentStack.shrink(1);
+
+                if (drainedResult.isEmpty()) {
+                    drainedResult = remainingStack.copy();
+                } else if (ItemStack.isSameItemSameTags(drainedResult, remainingStack)) {
+                    if (drainedResult.getCount() < drainedResult.getMaxStackSize())
+                        drainedResult.grow(1);
+                    else
+                        player.getInventory().placeItemBackInInventory(remainingStack);
+                } else {
+                    player.getInventory().placeItemBackInInventory(drainedResult);
+                    drainedResult = remainingStack.copy();
                 }
             }
             var filledFluid = fluidTank.getFluidInTank(tank);
             if (performedEmptying) {
                 SoundEvent soundevent = filledFluid.getFluid().getFluidType().getSound(filledFluid,
                         SoundActions.BUCKET_EMPTY);
-                if (soundevent != null) {
-                    player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
-                            soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (soundevent == null)
+                    soundevent = SoundEvents.BUCKET_EMPTY;
+                player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
+                        soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+                if (currentStack.isEmpty()) {
+                    gui.getModularUIContainer().setCarried(drainedResult);
+                } else {
+                    gui.getModularUIContainer().setCarried(currentStack);
+                    player.getInventory().placeItemBackInInventory(drainedResult);
                 }
-                gui.getModularUIContainer().setCarried(currentStack);
-                return currentStack.getCount();
+                return gui.getModularUIContainer().getCarried().getCount();
             }
         }
 
