@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TransformTexture;
-import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -100,13 +100,13 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             var frontFacing = machine.getFrontFacing();
             float tick = level.getGameTime() + partialTicks;
             renderChest(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(), tick,
-                    machine.getLockedItem().getStackInSlot(0), machine instanceof CreativeChestMachine);
+                    machine.getLockedItem(), machine instanceof CreativeChestMachine);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public void renderChest(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, ItemStack stored,
-                            int storedAmount,
+                            long storedAmount,
                             float tick, ItemStack locked, boolean isCreative) {
         ItemStack itemStack = !stored.isEmpty() ? stored : locked;
         if (itemStack.isEmpty()) return;
@@ -140,7 +140,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
         if (isCreative) {
             text = new TextTexture("∞").setDropShadow(false).scale(3.0f);
         } else {
-            var amount = stored.isEmpty() ? "*" : TextFormattingUtil.formatLongToCompactString(storedAmount, 4);
+            var amount = stored.isEmpty() ? "*" : FormattingUtil.formatNumberReadable(storedAmount, false);
             text = new TextTexture(amount).setDropShadow(false);
         }
         text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
