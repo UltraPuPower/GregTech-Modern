@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
@@ -135,15 +135,9 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         var stack = context.getItemInHand();
         int circuitSetting = getCircuitConfiguration(stack);
         BlockEntity entity = context.getLevel().getBlockEntity(context.getClickedPos());
-        if (entity instanceof MetaMachineBlockEntity machineEntity && context.getPlayer().isCrouching()) {
-            if (machineEntity.metaMachine instanceof SimpleTieredMachine tieredMachine) {
-                setCircuitConfig(tieredMachine.getCircuitInventory(), circuitSetting);
-            } else if (machineEntity.metaMachine instanceof FluidHatchPartMachine fluidHatch) {
-                setCircuitConfig(fluidHatch.getCircuitInventory(), circuitSetting);
-            } else if (machineEntity.metaMachine instanceof ItemBusPartMachine itemBus) {
-                setCircuitConfig(itemBus.getCircuitInventory(), circuitSetting);
-            } else if (machineEntity.metaMachine instanceof MEPatternBufferPartMachine patternBuffer) {
-                setCircuitConfig(patternBuffer.getCircuitInventorySimulated(), circuitSetting);
+        if (entity instanceof MetaMachineBlockEntity machineEntity && context.isSecondaryUseActive()) {
+            if (machineEntity.metaMachine instanceof IHasCircuitSlot hasCircuitSlot) {
+                setCircuitConfig(hasCircuitSlot.getCircuitInventory(), circuitSetting);
             }
 
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit)
