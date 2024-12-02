@@ -30,10 +30,7 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -137,6 +134,19 @@ public class StandardVeinGenerator extends VeinGenerator {
     @Override
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof StandardVeinGenerator that)) return false;
+
+        return blocks.equals(that.blocks);
+    }
+
+    @Override
+    public int hashCode() {
+        return blocks.hashCode();
     }
 
     @Override

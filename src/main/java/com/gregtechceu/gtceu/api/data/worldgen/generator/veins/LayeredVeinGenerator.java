@@ -234,4 +234,17 @@ public class LayeredVeinGenerator extends VeinGenerator {
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
     }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof LayeredVeinGenerator that)) return false;
+
+        return getLayerPatterns().equals(that.getLayerPatterns());
+    }
+
+    @Override
+    public int hashCode() {
+        return getLayerPatterns().hashCode();
+    }
 }

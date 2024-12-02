@@ -9,6 +9,7 @@ import net.minecraft.world.level.biome.Biome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -32,5 +33,20 @@ public class BiomeWeightModifier implements Function<Holder<Biome>, Integer> {
     @Override
     public Integer apply(Holder<Biome> biome) {
         return biomes.get().contains(biome) ? addedWeight : 0;
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof BiomeWeightModifier that)) return false;
+
+        return addedWeight == that.addedWeight && biomes.get().equals(that.biomes.get());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(biomes.get());
+        result = 31 * result + addedWeight;
+        return result;
     }
 }

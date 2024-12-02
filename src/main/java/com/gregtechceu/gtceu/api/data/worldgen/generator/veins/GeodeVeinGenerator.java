@@ -318,6 +318,43 @@ public class GeodeVeinGenerator extends VeinGenerator {
         return CODEC;
     }
 
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof GeodeVeinGenerator that)) return false;
+
+        return Double.compare(usePotentialPlacementsChance, that.usePotentialPlacementsChance) == 0 &&
+                Double.compare(useAlternateLayer0Chance, that.useAlternateLayer0Chance) == 0 &&
+                placementsRequireLayer0Alternate == that.placementsRequireLayer0Alternate &&
+                minGenOffset == that.minGenOffset && maxGenOffset == that.maxGenOffset &&
+                Double.compare(noiseMultiplier, that.noiseMultiplier) == 0 &&
+                invalidBlocksThreshold == that.invalidBlocksThreshold &&
+                geodeBlockSettings.equals(that.geodeBlockSettings) &&
+                geodeLayerSettings.equals(that.geodeLayerSettings) &&
+                geodeCrackSettings.equals(that.geodeCrackSettings) &&
+                outerWallDistance.equals(that.outerWallDistance) &&
+                distributionPoints.equals(that.distributionPoints) &&
+                pointOffset.equals(that.pointOffset);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = geodeBlockSettings.hashCode();
+        result = 31 * result + geodeLayerSettings.hashCode();
+        result = 31 * result + geodeCrackSettings.hashCode();
+        result = 31 * result + Double.hashCode(usePotentialPlacementsChance);
+        result = 31 * result + Double.hashCode(useAlternateLayer0Chance);
+        result = 31 * result + Boolean.hashCode(placementsRequireLayer0Alternate);
+        result = 31 * result + outerWallDistance.hashCode();
+        result = 31 * result + distributionPoints.hashCode();
+        result = 31 * result + pointOffset.hashCode();
+        result = 31 * result + minGenOffset;
+        result = 31 * result + maxGenOffset;
+        result = 31 * result + Double.hashCode(noiseMultiplier);
+        result = 31 * result + invalidBlocksThreshold;
+        return result;
+    }
+
     public record GeodeBlockSettings(Either<BlockStateProvider, Material> fillingProvider,
                                      Either<BlockStateProvider, Material> innerLayerProvider,
                                      Either<BlockStateProvider, Material> alternateInnerLayerProvider,

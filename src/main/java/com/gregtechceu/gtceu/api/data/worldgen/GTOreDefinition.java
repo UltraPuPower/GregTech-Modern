@@ -324,6 +324,48 @@ public class GTOreDefinition {
         return generator;
     }
 
+    /**
+     * equality check. crashes when not in a world because of the biome list.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        GTOreDefinition that = (GTOreDefinition) object;
+        return Float.compare(density, that.density) == 0 &&
+                weight == that.weight &&
+                Float.compare(discardChanceOnAirExposure, that.discardChanceOnAirExposure) == 0 &&
+                clusterSize.equals(that.clusterSize) &&
+                layer.equals(that.layer) &&
+                dimensionFilter.equals(that.dimensionFilter) &&
+                // this line makes this equality check crash when not in a world
+                (biomes == null ? that.biomes == null : biomes.get().equals(that.biomes.get())) &&
+                Objects.equals(biomeWeightModifier, that.biomeWeightModifier) &&
+                veinGenerator.equals(that.veinGenerator) &&
+                indicatorGenerators.equals(that.indicatorGenerators);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = clusterSize.hashCode();
+        result = 31 * result + Float.hashCode(density);
+        result = 31 * result + weight;
+        result = 31 * result + layer.hashCode();
+        result = 31 * result + dimensionFilter.hashCode();
+        result = 31 * result + range.hashCode();
+        result = 31 * result + Float.hashCode(discardChanceOnAirExposure);
+        if (biomes != null) {
+            result = 31 * result + Objects.hashCode(biomes);
+        } else {
+            result = 313 * result;
+        }
+        result = 31 * result + Objects.hashCode(biomeWeightModifier);
+        result = 31 * result + veinGenerator.hashCode();
+        result = 31 * result + indicatorGenerators.hashCode();
+        return result;
+    }
+
     private static class InferredProperties {
 
         public Pair<Integer, Integer> heightRange = null;

@@ -288,6 +288,41 @@ public class VeinedVeinGenerator extends VeinGenerator {
         return CODEC;
     }
 
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof VeinedVeinGenerator that)) return false;
+
+        return minYLevel == that.minYLevel && maxYLevel == that.maxYLevel &&
+                Float.compare(veininessThreshold, that.veininessThreshold) == 0 &&
+                edgeRoundoffBegin == that.edgeRoundoffBegin &&
+                Double.compare(maxEdgeRoundoff, that.maxEdgeRoundoff) == 0 &&
+                Float.compare(minRichness, that.minRichness) == 0 &&
+                Float.compare(maxRichness, that.maxRichness) == 0 &&
+                Float.compare(maxRichnessThreshold, that.maxRichnessThreshold) == 0 &&
+                Float.compare(rareBlockChance, that.rareBlockChance) == 0 &&
+                oreBlocks.equals(that.oreBlocks) &&
+                rareBlocks.equals(that.rareBlocks) &&
+                fillerBlock == that.fillerBlock;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = oreBlocks.hashCode();
+        result = 31 * result + rareBlocks.hashCode();
+        result = 31 * result + fillerBlock.hashCode();
+        result = 31 * result + minYLevel;
+        result = 31 * result + maxYLevel;
+        result = 31 * result + Float.hashCode(veininessThreshold);
+        result = 31 * result + edgeRoundoffBegin;
+        result = 31 * result + Double.hashCode(maxEdgeRoundoff);
+        result = 31 * result + Float.hashCode(minRichness);
+        result = 31 * result + Float.hashCode(maxRichness);
+        result = 31 * result + Float.hashCode(maxRichnessThreshold);
+        result = 31 * result + Float.hashCode(rareBlockChance);
+        return result;
+    }
+
     public VeinedVeinGenerator oreBlock(Material block, int weight) {
         return this.oreBlock(new VeinBlockDefinition(block, weight));
     }

@@ -102,4 +102,8 @@ public abstract class VeinGenerator {
     }
 
     public abstract Codec<? extends VeinGenerator> codec();
+
+    public abstract boolean equals(Object that);
+
+    public abstract int hashCode();
 }

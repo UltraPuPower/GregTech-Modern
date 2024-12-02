@@ -46,4 +46,14 @@ public class NoopVeinGenerator extends VeinGenerator {
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
     }
+
+    @Override
+    public boolean equals(Object that) {
+        return this == that;
+    }
+
+    @Override
+    public int hashCode() {
+        return -1;
+    }
 }

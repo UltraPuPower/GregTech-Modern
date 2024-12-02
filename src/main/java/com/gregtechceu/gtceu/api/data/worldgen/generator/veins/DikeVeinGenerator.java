@@ -168,6 +168,22 @@ public class DikeVeinGenerator extends VeinGenerator {
         return CODEC;
     }
 
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof DikeVeinGenerator that)) return false;
+
+        return minYLevel == that.minYLevel && maxYLevel == that.maxYLevel && blocks.equals(that.blocks);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = blocks.hashCode();
+        result = 31 * result + minYLevel;
+        result = 31 * result + maxYLevel;
+        return result;
+    }
+
     public DikeVeinGenerator withBlock(Material block, int weight, int minY, int maxY) {
         return this.withBlock(new DikeBlockDefinition(block, weight, minY, maxY));
     }

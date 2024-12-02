@@ -207,6 +207,36 @@ public class ClassicVeinGenerator extends VeinGenerator {
         return CODEC;
     }
 
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof ClassicVeinGenerator that)) return false;
+
+        return yRadius == that.yRadius &&
+                sporadicDivisor == that.sporadicDivisor &&
+                startPrimary == that.startPrimary &&
+                startBetween == that.startBetween &&
+                primary.equals(that.primary) &&
+                secondary.equals(that.secondary) &&
+                between.equals(that.between) &&
+                sporadic.equals(that.sporadic) &&
+                Arrays.equals(rules, that.rules);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = primary.hashCode();
+        result = 31 * result + secondary.hashCode();
+        result = 31 * result + between.hashCode();
+        result = 31 * result + sporadic.hashCode();
+        result = 31 * result + yRadius;
+        result = 31 * result + sporadicDivisor;
+        result = 31 * result + startPrimary;
+        result = 31 * result + startBetween;
+        result = 31 * result + Arrays.hashCode(rules);
+        return result;
+    }
+
     public ClassicVeinGenerator primary(Consumer<Layer.Builder> builder) {
         Layer.Builder layerBuilder = new Layer.Builder(
                 rules != null ? rules : new RuleTest[] { AlwaysTrueTest.INSTANCE });
@@ -283,6 +313,21 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
         public Layer copy() {
             return new Layer(this.target.mapBoth(ArrayList::new, Function.identity()), layers);
+        }
+
+        @Override
+        public final boolean equals(Object object) {
+            if (this == object) return true;
+            if (!(object instanceof Layer layer)) return false;
+
+            return layers == layer.layers && target.equals(layer.target);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = target.hashCode();
+            result = 31 * result + layers;
+            return result;
         }
 
         public static class Builder {

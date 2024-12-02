@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -47,6 +48,19 @@ public class GTLayerPattern {
                 return layer;
         }
         return null;
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof GTLayerPattern that)) return false;
+
+        return layers.equals(that.layers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(layers);
     }
 
     public static Builder builder(RuleTest... rules) {
@@ -107,6 +121,25 @@ public class GTLayerPattern {
             if (targets.size() == 1)
                 return targets.get(0);
             return targets.get(random.nextInt(targets.size()));
+        }
+
+        @Override
+        public final boolean equals(Object object) {
+            if (this == object) return true;
+            if (!(object instanceof Layer layer)) return false;
+
+            return minSize == layer.minSize && maxSize == layer.maxSize &&
+                    weight == layer.weight &&
+                    targets.equals(layer.targets);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = targets.hashCode();
+            result = 31 * result + minSize;
+            result = 31 * result + maxSize;
+            result = 31 * result + weight;
+            return result;
         }
 
         public static class Builder {

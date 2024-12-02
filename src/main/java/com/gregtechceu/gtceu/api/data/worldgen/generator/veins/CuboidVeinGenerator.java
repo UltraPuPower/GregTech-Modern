@@ -305,6 +305,29 @@ public class CuboidVeinGenerator extends VeinGenerator {
         return CODEC;
     }
 
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof CuboidVeinGenerator that)) return false;
+
+        return minY == that.minY && maxY == that.maxY &&
+                top.equals(that.top) &&
+                middle.equals(that.middle) &&
+                bottom.equals(that.bottom) &&
+                spread.equals(that.spread);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = top.hashCode();
+        result = 31 * result + middle.hashCode();
+        result = 31 * result + bottom.hashCode();
+        result = 31 * result + spread.hashCode();
+        result = 31 * result + minY;
+        result = 31 * result + maxY;
+        return result;
+    }
+
     public CuboidVeinGenerator top(Consumer<ClassicVeinGenerator.Layer.Builder> builder) {
         ClassicVeinGenerator.Layer.Builder layerBuilder = new ClassicVeinGenerator.Layer.Builder(
                 AlwaysTrueTest.INSTANCE);
