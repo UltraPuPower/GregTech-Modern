@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.integration.rei.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
 
+import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
+
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 
 import java.util.Optional;
 
@@ -18,13 +20,8 @@ public class GTRecipeDisplay extends ModularDisplay<WidgetGroup> {
     private final GTRecipeREICategory category;
     private final RecipeHolder<GTRecipe> recipe;
 
-    public GTRecipeDisplay(GTRecipeREICategory category, RecipeHolder<GTRecipe> recipe) {
-        super(() -> new GTRecipeWidget(recipe), GTRecipeREICategory.CATEGORIES.apply(recipe.recipeCategory));
-        this.recipe = recipe;
-    }
-
-    public GTRecipeDisplay(GTRecipe recipe, GTRecipeCategory category) {
-        super(() -> new GTRecipeWidget(recipe), GTRecipeREICategory.CATEGORIES.apply(category));
+    public GTRecipeDisplay(RecipeHolder<GTRecipe> recipe, CategoryIdentifier<?> category) {
+        super(() -> new GTRecipeWidget(recipe), category);
         this.recipe = recipe;
     }
 

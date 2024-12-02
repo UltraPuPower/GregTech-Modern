@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -103,7 +104,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
         this.recipeType = recipeType;
-        this.recipeCategory = GTRecipeCategory.of(recipeType);
+        this.recipeCategory = recipeType.getCategory();
     }
 
     public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
@@ -159,7 +160,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
-        return builder.copy(builder.id).onSave(null).recipeType(recipeType);
+        return builder.copy(builder.id).onSave(null).recipeType(recipeType).category(recipeCategory);
     }
 
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T obj) {
@@ -1102,8 +1103,8 @@ public class GTRecipeBuilder {
                 this.input, this.output, this.tickInput, this.tickOutput,
                 this.inputChanceLogic, this.outputChanceLogic,
                 this.tickInputChanceLogic, this.tickOutputChanceLogic,
-                this.conditions,
-                List.of(), this.data, this.duration, this.isFuel);
+                List.of(), this.conditions,
+                this.data, this.duration, this.isFuel, this.recipeCategory);
     }
 
     public void save(RecipeOutput consumer) {
@@ -1121,7 +1122,7 @@ public class GTRecipeBuilder {
         if (recipeType != null) {
             if (recipeCategory == null) {
                 GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
-            } else if (recipeCategory != GTRecipeCategory.EMPTY && recipeCategory.getRecipeType() != recipeType) {
+            } else if (recipeCategory != GTRecipeCategory.DEFAULT && recipeCategory.getRecipeType() != recipeType) {
                 GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
                         new IllegalArgumentException());
             }
