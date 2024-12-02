@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
+import dev.ftb.mods.ftbteams.api.property.TeamProperty;
+import dev.ftb.mods.ftbteams.api.property.TeamPropertyType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -50,6 +52,13 @@ public final class FTBOwner implements IMachineOwner {
     public boolean isPlayerFriendly(Player player) {
         if (team.getRankForPlayer(player.getUUID()).isAllyOrBetter()) return true;
         return false;
+    }
+
+    @Override
+    public boolean canPlayerEditChunks(Player player) {
+
+        if(team.getProperties().get(TeamPropertyType))
+        return true;
     }
 
     @Override

@@ -337,7 +337,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
         if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
         if (machine.getOwner() == null) return true;
-        return machine.getOwner().isPlayerInTeam(player);
+        return machine.getOwner().isPlayerInTeam(player) || machine.getOwner().canPlayerEditChunks(player);
     }
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {

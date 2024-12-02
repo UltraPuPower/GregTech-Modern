@@ -42,6 +42,11 @@ public final class PlayerOwner implements IMachineOwner {
     }
 
     @Override
+    public boolean canPlayerEditChunks(Player player) {
+        return true;
+    }
+
+    @Override
     public void displayInfo(List<Component> compList) {
         compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
         var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(playerUUID);
