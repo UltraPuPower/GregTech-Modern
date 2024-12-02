@@ -44,6 +44,8 @@ public class BlockTagLoader {
         provider.addTag(BlockTags.MINEABLE_WITH_AXE)
                 .add(TagEntry.element(GTMachines.WOODEN_DRUM.getId()))
                 .add(TagEntry.element(GTMachines.WOODEN_CRATE.getId()));
+
+        create(provider, CustomTags.CLEANROOM_FLOORS, GTBlocks.PLASTCRETE.get(), GTBlocks.CLEANROOM_GLASS.get());
     }
 
     private static void create(RegistrateTagsProvider<Block> provider, TagPrefix prefix, Material material,
