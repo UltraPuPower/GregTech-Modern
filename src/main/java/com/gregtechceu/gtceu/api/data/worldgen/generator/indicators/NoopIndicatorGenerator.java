@@ -49,4 +49,14 @@ public class NoopIndicatorGenerator extends IndicatorGenerator {
     public Codec<? extends IndicatorGenerator> codec() {
         return CODEC;
     }
+
+    @Override
+    public boolean equals(Object that) {
+        return this == that;
+    }
+
+    @Override
+    public int hashCode() {
+        return -1;
+    }
 }

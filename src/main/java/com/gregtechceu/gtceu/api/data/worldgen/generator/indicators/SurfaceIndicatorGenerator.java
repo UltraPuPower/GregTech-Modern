@@ -185,6 +185,26 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         return CODEC;
     }
 
+    @Override
+    public final boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof SurfaceIndicatorGenerator that)) return false;
+
+        return block.equals(that.block) &&
+                radius.equals(that.radius) &&
+                density.equals(that.density) &&
+                placement == that.placement;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = block.hashCode();
+        result = 31 * result + radius.hashCode();
+        result = 31 * result + density.hashCode();
+        result = 31 * result + placement.hashCode();
+        return result;
+    }
+
     @AllArgsConstructor
     public enum IndicatorPlacement implements StringRepresentable {
 

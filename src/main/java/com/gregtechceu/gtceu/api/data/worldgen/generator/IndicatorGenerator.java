@@ -69,5 +69,9 @@ public abstract class IndicatorGenerator {
 
     public abstract Codec<? extends IndicatorGenerator> codec();
 
+    public abstract boolean equals(Object that);
+
+    public abstract int hashCode();
+
     public abstract int getSearchRadiusModifier(int veinRadius);
 }
