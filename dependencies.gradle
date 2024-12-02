@@ -80,8 +80,9 @@ dependencies {
     modCompileOnly(forge.journeymap.api)
     modCompileOnly(forge.journeymap.forge)
 
-    // Need to stay in cleanClient otherwise will brick existing dev worlds
-    modRuntimeOnly(forge.javd)
+    modRuntimeOnly("curse.maven:spark-361579:4738952")
+
+    modRuntimeOnly(forge.javd) // Needs to stay in cleanClient otherwise will brick existing dev worlds
     modRuntimeOnly("curse.maven:trenzalore-870210:4848244")
     modRuntimeOnly("curse.maven:kotlin-for-forge-351264:5402061")
 
@@ -102,7 +103,6 @@ dependencies {
 
     modExtraRuntimeOnly("top.theillusivec4.curios:curios-forge:${forge.versions.curios.get()}")
 
-    modExtraRuntimeOnly("curse.maven:spark-361579:4738952")
     modExtraRuntimeOnly("curse.maven:observable-509575:5643037")
 
     //////////////////////////
