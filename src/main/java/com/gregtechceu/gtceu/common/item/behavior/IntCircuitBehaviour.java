@@ -45,7 +45,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     public static final int CIRCUIT_MAX = 32;
 
     public static ItemStack stack(int configuration) {
-        var stack = GTItems.INTEGRATED_CIRCUIT.asStack();
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack();
         setCircuitConfiguration(stack, configuration);
         return stack;
     }
