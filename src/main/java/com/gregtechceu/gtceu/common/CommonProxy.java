@@ -149,9 +149,7 @@ public class CommonProxy {
 
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
-        GTRegistries.COMPASS_NODES.unfreeze();
-        GTRegistration.REGISTRATE.registerRegistrate(modBus);
-
+        GTNetwork.init();
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
@@ -165,8 +163,6 @@ public class CommonProxy {
         TagPrefix.init();
         GTSoundEntries.init();
         GTDamageTypes.init();
-        GTCompassSections.init();
-        GTCompassNodes.init();
         GTCovers.init();
         GTFluids.init();
         GTCreativeModeTabs.init();

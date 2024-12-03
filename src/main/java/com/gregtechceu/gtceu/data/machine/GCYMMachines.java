@@ -73,7 +73,6 @@ public class GCYMMachines {
                     .abilities(PartAbility.PARALLEL_HATCH)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
                     .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"))
-                    .compassNode("parallel_hatch")
                     .register(),
             IV, LuV, ZPM, UV);
 
@@ -103,8 +102,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/secure_maceration_casing"),
                     GTCEu.id("block/multiblock/gcym/large_maceration_tower"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CHEMICAL_BATH = REGISTRATE
@@ -136,8 +133,6 @@ public class GCYMMachines {
                     .where(' ', Predicates.air())
                     .where('T', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
                     .build())
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE
@@ -167,8 +162,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
                     GTCEu.id("block/multiblock/gcym/large_centrifuge"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_MIXER = REGISTRATE
@@ -201,8 +194,6 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE
@@ -229,8 +220,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/nonconducting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_electrolyzer"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ELECTROMAGNET = REGISTRATE
@@ -258,8 +247,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/nonconducting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_electrolyzer"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_PACKER = REGISTRATE
@@ -288,8 +275,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
                     GTCEu.id("block/multiblock/gcym/large_packer"))
-            .compassSections(GTCompassSections.TIER[HV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ASSEMBLER = REGISTRATE
@@ -322,8 +307,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
                     GTCEu.id("block/multiblock/gcym/large_assembler"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CIRCUIT_ASSEMBLER = REGISTRATE
@@ -360,8 +343,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
                     GTCEu.id("block/multiblock/gcym/large_circuit_assembler"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ARC_SMELTER = REGISTRATE
@@ -392,8 +373,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_arc_smelter"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ENGRAVING_LASER = REGISTRATE
@@ -426,8 +405,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"),
                     GTCEu.id("block/multiblock/gcym/large_engraving_laser"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_SIFTING_FUNNEL = REGISTRATE
@@ -457,8 +434,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
                     GTCEu.id("block/multiblock/gcym/large_sifting_funnel"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE
@@ -527,8 +502,6 @@ public class GCYMMachines {
                                     .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
                 }
             })
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_AUTOCLAVE = REGISTRATE
@@ -557,8 +530,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_autoclave"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_MATERIAL_PRESS = REGISTRATE
@@ -587,8 +558,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_material_press"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_BREWER = REGISTRATE
@@ -621,8 +590,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/corrosion_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_brewer"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CUTTER = REGISTRATE
@@ -652,8 +619,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/shock_proof_cutting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_cutter"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_DISTILLERY = REGISTRATE
@@ -745,8 +710,6 @@ public class GCYMMachines {
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_distillery"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_EXTRACTOR = REGISTRATE
@@ -773,8 +736,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_extractor"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_EXTRUDER = REGISTRATE
@@ -805,8 +766,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_extruder"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_SOLIDIFIER = REGISTRATE
@@ -836,8 +795,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_solidifier"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition LARGE_WIREMILL = REGISTRATE
@@ -864,8 +821,6 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_wiremill"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition ROTARY_HEARTH_FURNACE = REGISTRATE
@@ -1044,8 +999,6 @@ public class GCYMMachines {
                                     .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
                 }
             })
-            .compassSections(GTCompassSections.TIER[LuV])
-            .compassNodeSelf()
             .register();
 
     public final static MultiblockMachineDefinition MEGA_VACUUM_FREEZER = REGISTRATE
@@ -1085,7 +1038,5 @@ public class GCYMMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/multiblock/gcym/mega_vacuum_freezer"))
-            .compassSections(GTCompassSections.TIER[LuV])
-            .compassNodeSelf()
             .register();
 }
