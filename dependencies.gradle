@@ -34,14 +34,12 @@ dependencies {
     // EMI
     //modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
     modCompileOnly(forge.emi)
-    modRuntimeOnly(forge.emi)
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }
 
     // Jade
     modCompileOnly(forge.jade)
-    modRuntimeOnly(forge.jade)
 
     // Curios
     modCompileOnly("top.theillusivec4.curios:curios-forge:${forge.versions.curios.get()}:api")
@@ -49,7 +47,6 @@ dependencies {
     // AE2
     modCompileOnly(forge.ae2) { transitive = false }
     modCompileOnly("curse.maven:ae2wtlib-459929:5217955")
-    modRuntimeOnly(forge.ae2)
 
     // KJS
     modCompileOnly(forge.kubejs) { transitive = false }
@@ -80,11 +77,18 @@ dependencies {
     modCompileOnly(forge.journeymap.api)
     modCompileOnly(forge.journeymap.forge)
 
-    modRuntimeOnly("curse.maven:spark-361579:4738952")
-
-    modRuntimeOnly(forge.javd) // Needs to stay in cleanClient otherwise will brick existing dev worlds
-    modRuntimeOnly("curse.maven:trenzalore-870210:4848244")
+    modRuntimeOnly(forge.jade)
+    modRuntimeOnly(forge.ae2)
     modRuntimeOnly("curse.maven:kotlin-for-forge-351264:5402061")
+
+    // Runtime Recipe Viewer
+    modRuntimeOnly(forge.emi)
+
+//    modRuntimeOnly(forge.jei.forge.impl)
+
+//    modRuntimeOnly(forge.rei.forge)
+//    modRuntimeOnly(forge.architectury)
+//    modRuntimeOnly("me.shedaniel.cloth:cloth-config-forge:11.1.136")
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //
@@ -102,7 +106,7 @@ dependencies {
     modExtraRuntimeOnly(forge.journeymap.forge)
 
     modExtraRuntimeOnly("top.theillusivec4.curios:curios-forge:${forge.versions.curios.get()}")
-
+    modExtraRuntimeOnly("curse.maven:spark-361579:4738952")
     modExtraRuntimeOnly("curse.maven:observable-509575:5643037")
 
     //////////////////////////
