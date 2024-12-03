@@ -356,9 +356,9 @@ public class GTOreDefinition {
         result = 31 * result + range.hashCode();
         result = 31 * result + Float.hashCode(discardChanceOnAirExposure);
         if (biomes != null) {
-            result = 31 * result + Objects.hashCode(biomes);
+            result = 31 * result + Objects.hashCode(biomes.get());
         } else {
-            result = 313 * result;
+            result *= 31;
         }
         result = 31 * result + Objects.hashCode(biomeWeightModifier);
         result = 31 * result + veinGenerator.hashCode();

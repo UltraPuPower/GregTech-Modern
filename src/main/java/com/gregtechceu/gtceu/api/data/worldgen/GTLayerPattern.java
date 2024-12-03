@@ -60,7 +60,7 @@ public class GTLayerPattern {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(layers);
+        return layers.hashCode();
     }
 
     public static Builder builder(RuleTest... rules) {

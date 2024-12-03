@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Accessors(fluent = true)
@@ -103,7 +104,7 @@ public final class GeneratedVeinMetadata {
         if (this == object) return true;
         if (!(object instanceof GeneratedVeinMetadata that)) return false;
 
-        return id.equals(that.id) && originChunk.equals(that.originChunk) && center.equals(that.center) &&
+        return Objects.equals(id, that.id) && originChunk.equals(that.originChunk) && center.equals(that.center) &&
                 definition.equals(that.definition);
     }
 
