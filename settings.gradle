@@ -1,9 +1,11 @@
 pluginManagement {
     repositories {
-        mavenLocal()
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
         maven { url = "https://maven.quiltmc.org/repository/release" }
+    }
+    plugins {
+        id 'org.jetbrains.kotlin.jvm' version '2.0.21'
     }
 }
 
@@ -47,6 +49,7 @@ dependencyResolutionManagement {
         def ftblibraryForgeFile = "5754910"
         def argonautsForgeFile = "5263580"
         def resourcefulForgeFile = "5659871"
+        def kffVersion = "4.11.0"
 
         // Libs
         def parchmentVersion = "2024.07.28" // https://parchmentmc.org/docs/getting-started
@@ -139,6 +142,9 @@ dependencyResolutionManagement {
 
             def resourceful = version("resourceful", resourcefulForgeFile)
             library("resourceful", "curse.maven", "resourceful-lib-570073").versionRef(resourceful)
+
+            def kotlinForForge = version("kotlinForForge", kffVersion)
+            library("kotlinforforge", "thedarkcolour", "kotlinforforge").versionRef(kotlinForForge)
         }
 
         libs {

@@ -11,9 +11,13 @@ dependencies {
     api(forge.configuration)
     jarJar(forge.configuration)
 
-    // Create and its dependencies
-    createCompileOnly("com.simibubi.create:create-${libs.versions.minecraftVeryOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
-    createCompileOnly forge.flywheel
+    // Configuration
+    modApi(forge.configuration)
+    jarJar(forge.configuration)
+
+    // Create and Flywheel
+    modCompileOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim") { transitive = false }
+    modCompileOnly(forge.flywheel)
 
     // JEI
     jeiCompileOnly(forge.jei.common.api) { transitive = false }
@@ -21,38 +25,31 @@ dependencies {
     jeiCompileOnly(forge.jei.forge.impl) { transitive = false }
 
     // REI
-    reiCompileOnlyApi forge.rei.plugin
-    reiCompileOnlyApi forge.rei.api
-    reiCompileOnly forge.rei.forge
+    modCompileOnly(forge.rei.plugin)
+    modCompileOnly(forge.rei.api)
+    modCompileOnly(forge.rei.forge)
 
     // EMI
-    emiCompileOnlyApi("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    emiImplementation forge.emi
+    //modCompileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
+    modCompileOnly(forge.emi)
 
     // TOP
     topCompileOnlyApi(forge.theoneprobe) { transitive = false }
 
     // Jade
-    jadeCompileOnlyApi(forge.jade)
+    modCompileOnly(forge.jade)
 
     // Curios
-    curiosCompileOnlyApi("top.theillusivec4.curios:curios-neoforge:${forge.versions.curios.get()}:api")
-    curiosRuntimeOnly(forge.curios)
+    modCompileOnly("top.theillusivec4.curios:curios-neoforge:${forge.versions.curios.get()}:api")
 
     // AE2
-    ae2CompileOnlyApi(forge.ae2) { transitive = false }
-    compileOnly("curse.maven:ae2wtlib-459929:5217955")
+    modCompileOnly(forge.ae2) { transitive = false }
+    modCompileOnly("curse.maven:ae2wtlib-459929:5217955")
 
     // KJS
-    kjsImplementation forge.kubejs
-
-    // xaerosWorldMap
-    xaerosImplementation(forge.xaerosminimap)
-    xaerosImplementation(forge.xaerosworldmap)
-
-    // journeyMap
-    journeymapCompileOnly(forge.journeymap.api)
-    journeymapImplementation(forge.journeymap.forge)
+    modCompileOnly(forge.kubejs) { transitive = false }
+    modCompileOnly(forge.architectury)
+    modCompileOnly(forge.rhino)
 
     // Shimmer
     shimmerCompileOnly(forge.shimmer.forge) { transitive = false }
@@ -61,11 +58,60 @@ dependencies {
     shimmerCompileOnly("maven.modrinth:oculus:1.20.1-1.6.9")
 
     // JAVD
-    compileOnly(forge.javd) { transitive = false }
+    modCompileOnly(forge.javd) { transitive = false }
 
-    compileOnly(forge.ftbteams)
-    compileOnly(forge.ftblibrary)
+    // FTB Teams
+    modCompileOnly(forge.ftbteams)
+    modCompileOnly(forge.ftblibrary)
 
-    compileOnly(forge.argonauts)
-    compileOnly(forge.resourceful)
+    // Argonauts
+    modCompileOnly(forge.argonauts)
+    modCompileOnly(forge.resourceful)
+
+    // xaerosWorldMap
+    modCompileOnly(forge.xaerosminimap)
+    modCompileOnly(forge.xaerosworldmap)
+
+    // journeyMap
+    modCompileOnly(forge.journeymap.api)
+    modCompileOnly(forge.journeymap.forge)
+
+    // Standard runtime mods //
+    modRuntimeOnly(forge.jade)
+    modRuntimeOnly(forge.ae2)
+    modRuntimeOnly(forge.kotlinforforge)
+
+    // Runtime Recipe Viewers - uncomment whichever group you want to use //
+    modRuntimeOnly(forge.emi)
+
+//    modRuntimeOnly(forge.jei.forge.impl)
+
+//    modRuntimeOnly(forge.rei.forge)
+//    modRuntimeOnly(forge.architectury)
+//    modRuntimeOnly("me.shedaniel.cloth:cloth-config-forge:11.1.136")
+
+    //////////////////////////////////////////////////////
+    // Runtime mods for dev testing with unclean client //
+    // Non-transitive by default                        //
+    //////////////////////////////////////////////////////
+    modExtraRuntimeOnly(forge.javd)
+    modExtraRuntimeOnly("curse.maven:trenzalore-870210:4848244")
+
+    modExtraRuntimeOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim")
+    modExtraRuntimeOnly(forge.flywheel)
+
+    modExtraRuntimeOnly(forge.kubejs)
+    modExtraRuntimeOnly(forge.architectury)
+    modExtraRuntimeOnly(forge.rhino)
+
+    modExtraRuntimeOnly(forge.xaerosminimap)
+    modExtraRuntimeOnly(forge.xaerosworldmap)
+    modExtraRuntimeOnly(forge.journeymap.forge)
+
+    modExtraRuntimeOnly("top.theillusivec4.curios:curios-forge:${forge.versions.curios.get()}")
+    modExtraRuntimeOnly("curse.maven:spark-361579:4738952")
+    modExtraRuntimeOnly("curse.maven:observable-509575:5643037")
+    //////////////////////////
+
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
