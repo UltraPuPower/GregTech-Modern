@@ -10,6 +10,23 @@ tasks.register('sourcesJar', Jar) {
     archiveClassifier = "sources"
 }
 
+jar.archiveClassifier = "dev"
+reobfJar.archiveClassifier = ""
+
 base {
     archivesName = "${project.name}-${libs.versions.minecraft.get()}"
+}
+
+afterEvaluate {
+    tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
+        destinationDirectory = file('build/libs/')
+        manifest.attributes([
+                'Specification-Title': project.name,
+                'Specification-Version': mod_version,
+                'Specification-Vendor': 'GregTechCEu Team',
+                'Implementation-Title': base.archivesName,
+                'Implementation-Version': version,
+                'Implementation-Vendor': 'GregTechCEu Team',
+        ])
+    }
 }
