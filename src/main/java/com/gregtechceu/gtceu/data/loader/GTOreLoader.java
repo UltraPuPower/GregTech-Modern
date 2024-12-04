@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.data.worldgen.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
+import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -79,6 +80,9 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
         if (!GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.freeze();
         }
+
+        ServerCache.instance.oreVeinDefinitionsChanged(GTRegistries.ORE_VEINS.registry());
+        WorldGeneratorUtils.invalidateOreVeinCache();
     }
 
     public static void buildVeinGenerator() {
