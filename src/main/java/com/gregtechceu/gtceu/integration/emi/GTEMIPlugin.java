@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.integration.emi.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluidEmiCategory;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
 
 /**
@@ -33,6 +35,7 @@ public class GTEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
+        // Categories
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
@@ -46,6 +49,7 @@ public class GTEMIPlugin implements EmiPlugin {
             }
         }
         registry.addRecipeHandler(ModularUIContainer.MENUTYPE, new GTEmiRecipeHandler());
+        registry.addCategory(GTProgrammedCircuitCategory.CATEGORY);
         // recipes
         try {
             MultiblockInfoEmiCategory.registerDisplays(registry);
@@ -57,6 +61,8 @@ public class GTEMIPlugin implements EmiPlugin {
         GTBedrockFluidEmiCategory.registerDisplays(registry);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreEmiCategory.registerDisplays(registry);
+        GTProgrammedCircuitCategory.registerDisplays(registry);
+
         // workstations
         GTRecipeEMICategory.registerWorkStations(registry);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
@@ -67,5 +73,8 @@ public class GTEMIPlugin implements EmiPlugin {
             GTBedrockOreEmiCategory.registerWorkStations(registry);
         registry.addWorkstation(GTRecipeEMICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
                 EmiStack.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+
+        // Comparators
+        registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT.asItem(), Comparison.compareNbt());
     }
 }
