@@ -12,83 +12,83 @@ dependencies {
     jarJar(forge.configuration)
 
     // Configuration
-    modApi(forge.configuration)
+    api(forge.configuration)
     jarJar(forge.configuration)
 
     // Create and Flywheel
-    modCompileOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim") { transitive = false }
-    modCompileOnly(forge.flywheel)
+    compileOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim") { transitive = false }
+    compileOnly(forge.flywheel)
 
     // JEI
-    jeiCompileOnly(forge.jei.common.api) { transitive = false }
-    jeiCompileOnly(forge.jei.forge.api) { transitive = false }
-    jeiCompileOnly(forge.jei.forge.impl) { transitive = false }
+    compileOnly(forge.jei.common.api) { transitive = false }
+    compileOnly(forge.jei.forge.api) { transitive = false }
+    compileOnly(forge.jei.forge.impl) { transitive = false }
 
     // REI
-    modCompileOnly(forge.rei.plugin)
-    modCompileOnly(forge.rei.api)
-    modCompileOnly(forge.rei.forge)
+    compileOnly(forge.rei.plugin)
+    compileOnly(forge.rei.api)
+    compileOnly(forge.rei.forge)
 
     // EMI
-    //modCompileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    modCompileOnly(forge.emi)
+    //compileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
+    compileOnly(forge.emi)
 
     // TOP
-    topCompileOnlyApi(forge.theoneprobe) { transitive = false }
+    compileOnlyApi(forge.theoneprobe) { transitive = false }
 
     // Jade
-    modCompileOnly(forge.jade)
+    compileOnly(forge.jade)
 
     // Curios
-    modCompileOnly("top.theillusivec4.curios:curios-neoforge:${forge.versions.curios.get()}:api")
+    compileOnly("top.theillusivec4.curios:curios-neoforge:${forge.versions.curios.get()}:api")
 
     // AE2
-    modCompileOnly(forge.ae2) { transitive = false }
-    modCompileOnly("curse.maven:ae2wtlib-459929:5217955")
+    compileOnly(forge.ae2) { transitive = false }
+    compileOnly("curse.maven:ae2wtlib-459929:5217955")
 
     // KJS
-    modCompileOnly(forge.kubejs) { transitive = false }
-    modCompileOnly(forge.architectury)
-    modCompileOnly(forge.rhino)
+    implementation(forge.kubejs) { transitive = false }
+    implementation(forge.architectury)
+    implementation(forge.rhino)
 
     // Shimmer
-    shimmerCompileOnly(forge.shimmer.forge) { transitive = false }
+    compileOnly(forge.shimmer.forge) { transitive = false }
     compileOnly("maven.modrinth:embeddium:1.0.0-beta.1+mc1.21")
     runtimeOnly("maven.modrinth:embeddium:1.0.0-beta.1+mc1.21")
-    shimmerCompileOnly("maven.modrinth:oculus:1.20.1-1.6.9")
+    compileOnly("maven.modrinth:oculus:1.20.1-1.6.9")
 
     // JAVD
-    modCompileOnly(forge.javd) { transitive = false }
+    compileOnly(forge.javd) { transitive = false }
 
     // FTB Teams
-    modCompileOnly(forge.ftbteams)
-    modCompileOnly(forge.ftblibrary)
+    compileOnly(forge.ftbteams)
+    compileOnly(forge.ftblibrary)
 
     // Argonauts
-    modCompileOnly(forge.argonauts)
-    modCompileOnly(forge.resourceful)
+    compileOnly(forge.argonauts)
+    compileOnly(forge.resourceful)
 
     // xaerosWorldMap
-    modCompileOnly(forge.xaerosminimap)
-    modCompileOnly(forge.xaerosworldmap)
+    compileOnly(forge.xaerosminimap)
+    compileOnly(forge.xaerosworldmap)
 
     // journeyMap
-    modCompileOnly(forge.journeymap.api)
-    modCompileOnly(forge.journeymap.forge)
+    compileOnly(forge.journeymap.api)
+    compileOnly(forge.journeymap.forge)
 
     // Standard runtime mods //
-    modRuntimeOnly(forge.jade)
-    modRuntimeOnly(forge.ae2)
-    modRuntimeOnly(forge.kotlinforforge)
+    runtimeOnly(forge.jade)
+    runtimeOnly(forge.ae2)
+    runtimeOnly(forge.kotlinforforge)
 
     // Runtime Recipe Viewers - uncomment whichever group you want to use //
-    modRuntimeOnly(forge.emi)
+    runtimeOnly(forge.emi)
 
-//    modRuntimeOnly(forge.jei.forge.impl)
+//    runtimeOnly(forge.jei.forge.impl)
 
-//    modRuntimeOnly(forge.rei.forge)
-//    modRuntimeOnly(forge.architectury)
-//    modRuntimeOnly("me.shedaniel.cloth:cloth-config-forge:11.1.136")
+//    runtimeOnly(forge.rei.forge)
+//    runtimeOnly(forge.architectury)
+//    runtimeOnly("me.shedaniel.cloth:cloth-config-forge:11.1.136")
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //

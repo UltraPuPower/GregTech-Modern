@@ -51,10 +51,6 @@ configurations {
     extraRuntimeClasspath.transitive(false)
 }
 
-obfuscation {
-    createRemappingConfiguration(configurations.extraRuntimeOnly)
-}
-
 apply from: "$rootDir/gradle/scripts/moddevgradle.gradle"
 apply from: "$rootDir/gradle/scripts/repositories.gradle"
 apply from: "$rootDir/gradle/scripts/jars.gradle"
