@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.SimpleGeneratorMachineRenderer;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -19,8 +20,6 @@ import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
-import static com.gregtechceu.gtceu.common.data.GTMachines.defaultTankSizeFunction;
-import static com.gregtechceu.gtceu.common.data.GTMachines.explosion;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
@@ -47,7 +46,7 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
         for (int tier : tiers) {
             var register = new GeneratorBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
                     holder -> new SimpleGeneratorMachine(holder, tier, hazardStrengthPerOperation * tier,
-                            defaultTankSizeFunction))
+                            GTMachineUtils.defaultTankSizeFunction))
                     .tier(tier);
             builderConsumer.accept(register, tier);
             builders[tier] = register;
@@ -64,7 +63,7 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
                 .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier,
                         GTCEu.id("block/generators/" + builder.id.getPath())))
-                .tooltips(explosion());
+                .tooltips(GTMachineUtils.explosion());
         // .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
         // tankScalingFunction.apply(tier), false))
     }

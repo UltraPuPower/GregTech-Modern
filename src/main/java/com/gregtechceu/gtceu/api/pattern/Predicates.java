@@ -250,6 +250,16 @@ public class Predicates {
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
     }
 
+    public static TraceabilityPredicate dataHatchPredicate(TraceabilityPredicate def) {
+        // if research is enabled, require the data hatch, otherwise use a grate instead
+        if (ConfigHolder.INSTANCE.machines.enableResearch) {
+            return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
+                    .setExactLimit(1)
+                    .or(def);
+        }
+        return def;
+    }
+
     /**
      * Use this predicate for Frames in your Multiblock. Allows for Framed Pipes as well as normal Frame blocks.
      */

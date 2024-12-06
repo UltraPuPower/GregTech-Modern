@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.client.instance.SplitShaftInstance;
 import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMachineRenderer;
 import com.gregtechceu.gtceu.common.block.KineticMachineBlock;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.SimpleKineticElectricWorkableMachine;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
@@ -29,7 +29,6 @@ import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
-import static com.gregtechceu.gtceu.common.data.GTMachines.explosion;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
@@ -44,10 +43,11 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
 
     public KineticMachineBuilder(String name, boolean isSource, int tier, Object... args) {
         super(GTRegistration.REGISTRATE, name, (id) -> new KineticMachineDefinition(id, isSource, GTValues.V[tier]),
-                (holder) -> new SimpleKineticElectricWorkableMachine(holder, tier, GTMachines.defaultTankSizeFunction,
+                (holder) -> new SimpleKineticElectricWorkableMachine(holder, tier,
+                        GTMachineUtils.defaultTankSizeFunction,
                         args),
                 KineticMachineBlock::new, MetaMachineItem::new, KineticMachineBlockEntity::create);
-        this.tankScalingFunction = GTMachines.defaultTankSizeFunction;
+        this.tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
         this.passedArguments = args;
     }
 
@@ -107,7 +107,7 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
                 .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier,
                         GTCEu.id("block/machine/kinetic_electric_machine"),
                         GTCEu.id("block/machines/" + builder.id.getPath())))
-                .tooltips(explosion());
+                .tooltips(GTMachineUtils.explosion());
         // .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
         // defaultTankSizeFunction.apply(tier), true));
     }

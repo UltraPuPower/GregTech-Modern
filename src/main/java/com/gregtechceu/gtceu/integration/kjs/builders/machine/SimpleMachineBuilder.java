@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -21,8 +21,6 @@ import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
-import static com.gregtechceu.gtceu.common.data.GTMachines.defaultTankSizeFunction;
-import static com.gregtechceu.gtceu.common.data.GTMachines.explosion;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
@@ -37,7 +35,7 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
     public SimpleMachineBuilder(String name, Function<IMachineBlockEntity, MetaMachine> machineConstructor) {
         super(GTRegistration.REGISTRATE, name, MachineDefinition::createDefinition, machineConstructor,
                 MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
-        this.tankScalingFunction = GTMachines.defaultTankSizeFunction;
+        this.tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
     }
 
     @SuppressWarnings("unused") // Accessed via reflection
@@ -59,7 +57,7 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
         for (int tier : tiers) {
             SimpleMachineBuilder register = new SimpleMachineBuilder(
                     GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
-                    holder -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
+                    holder -> new SimpleTieredMachine(holder, tier, GTMachineUtils.defaultTankSizeFunction)).tier(tier);
             builderConsumer.accept(register, tier);
             builders[tier] = register;
         }
@@ -75,7 +73,7 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
                 // .recipeType(recipeType)
                 .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + builder.name))
-                .tooltips(explosion());
+                .tooltips(GTMachineUtils.explosion());
         // .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
         // tankScalingFunction.apply(tier), true))
     }

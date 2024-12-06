@@ -42,7 +42,6 @@ import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
-import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
@@ -53,12 +52,16 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
  */
 public class GTCreateMachines {
 
-    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2, LOW_TIERS);
-    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_8A = registerElectricGearBox(8, LOW_TIERS);
-    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_16A = registerElectricGearBox(16, LOW_TIERS);
-    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_32A = registerElectricGearBox(32, LOW_TIERS);
+    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_2A = registerElectricGearBox(2,
+            GTMachineUtils.LOW_TIERS);
+    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_8A = registerElectricGearBox(8,
+            GTMachineUtils.LOW_TIERS);
+    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_16A = registerElectricGearBox(16,
+            GTMachineUtils.LOW_TIERS);
+    public static final KineticMachineDefinition[] ELECTRIC_GEAR_BOX_32A = registerElectricGearBox(32,
+            GTMachineUtils.LOW_TIERS);
     public static final KineticMachineDefinition[] KINETIC_MIXER = registerSimpleKineticElectricMachine("kinetic_mixer",
-            GTRecipeTypes.CREATE_MIXER_RECIPES, LOW_TIERS);
+            GTRecipeTypes.CREATE_MIXER_RECIPES, GTMachineUtils.LOW_TIERS);
     public static final KineticMachineDefinition[] KINETIC_INPUT_BOX = registerTieredMachines("kinetic_input_box",
             (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]).setFrontRotation(true),
             (holder, tier) -> new KineticPartMachine(holder, tier, IO.IN), (tier, builder) -> builder
@@ -70,7 +73,7 @@ public class GTCreateMachines {
                     .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
                             GTCEu.id("block/machine/part/kinetic_input_box")))
                     .register(),
-            () -> SplitShaftInstance::new, false, ELECTRIC_TIERS);
+            () -> SplitShaftInstance::new, false, GTMachineUtils.ELECTRIC_TIERS);
     public static final KineticMachineDefinition[] KINETIC_OUTPUT_BOX = registerTieredMachines("kinetic_output_box",
             (tier, id) -> new KineticMachineDefinition(id, true, GTValues.V[tier]).setFrontRotation(true),
             (holder, tier) -> new KineticPartMachine(holder, tier, IO.OUT), (tier, builder) -> builder
@@ -82,7 +85,7 @@ public class GTCreateMachines {
                     .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
                             GTCEu.id("block/machine/part/kinetic_output_box")))
                     .register(),
-            () -> SplitShaftInstance::new, false, ELECTRIC_TIERS);
+            () -> SplitShaftInstance::new, false, GTMachineUtils.ELECTRIC_TIERS);
 
     @SuppressWarnings("unchecked")
     public static KineticMachineDefinition[] registerElectricGearBox(int maxAmps, int... tiers) {
@@ -96,7 +99,7 @@ public class GTCreateMachines {
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
                         .renderer(() -> new SplitShaftTieredHullMachineRenderer(tier,
                                 GTCEu.id("block/machine/electric_gear_box_%sa".formatted(maxAmps))))
-                        .tooltips(explosion())
+                        .tooltips(GTMachineUtils.explosion())
                         .register(),
                 () -> SplitShaftInstance::new, false, tiers);
     }
@@ -104,7 +107,8 @@ public class GTCreateMachines {
     public static KineticMachineDefinition[] registerSimpleKineticElectricMachine(String name, GTRecipeType recipeType,
                                                                                   int... tiers) {
         return registerTieredMachines(name, (tier, id) -> new KineticMachineDefinition(id, false, GTValues.V[tier]),
-                (holder, tier) -> new SimpleKineticElectricWorkableMachine(holder, tier, defaultTankSizeFunction),
+                (holder, tier) -> new SimpleKineticElectricWorkableMachine(holder, tier,
+                        GTMachineUtils.defaultTankSizeFunction),
                 (tier, builder) -> builder
                         .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                         .rotationState(RotationState.NON_Y_AXIS)
@@ -116,9 +120,10 @@ public class GTCreateMachines {
                                 GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
                         .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier,
                                 GTCEu.id("block/machine/kinetic_electric_machine"), GTCEu.id("block/machines/" + name)))
-                        .tooltips(explosion())
-                        .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
-                                defaultTankSizeFunction.apply(tier), true))
+                        .tooltips(GTMachineUtils.explosion())
+                        .tooltips(
+                                GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+                                        GTMachineUtils.defaultTankSizeFunction.apply(tier), true))
                         .register(),
                 () -> SplitShaftInstance::new, false, tiers);
     }

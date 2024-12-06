@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -464,9 +464,10 @@ public class MachineFunctionPresets {
                     if (builder == null) continue;
                     int tier = builder.tier();
                     Function<Integer, Integer> tankScalingFunction = getTankScalingFunction(builder);
-                    builder.tooltips(GTMachines.workableTiered(
+                    builder.tooltips(GTMachineUtils.workableTiered(
                             tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction != null ?
-                                    tankScalingFunction.apply(tier) : GTMachines.defaultTankSizeFunction.apply(tier),
+                                    tankScalingFunction.apply(tier) :
+                                    GTMachineUtils.defaultTankSizeFunction.apply(tier),
                             true));
                 }
                 return this;
