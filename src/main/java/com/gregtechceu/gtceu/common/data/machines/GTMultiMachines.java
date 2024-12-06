@@ -104,7 +104,6 @@ public class GTMultiMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_coke_bricks"),
                     GTCEu.id("block/multiblock/coke_oven"))
-
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_BLAST_FURNACE = REGISTRATE
@@ -123,7 +122,6 @@ public class GTMultiMachines {
                     .where('#', Predicates.air())
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
-
             .register();
 
     public static final MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE
@@ -185,7 +183,6 @@ public class GTMultiMachines {
                                     .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
                 }
             })
-
             .register();
 
     public static final MultiblockMachineDefinition LARGE_CHEMICAL_REACTOR = REGISTRATE
@@ -255,7 +252,6 @@ public class GTMultiMachines {
             })
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
                     GTCEu.id("block/multiblock/large_chemical_reactor"))
-
             .register();
 
     public static final MultiblockMachineDefinition IMPLOSION_COMPRESSOR = REGISTRATE
@@ -277,7 +273,6 @@ public class GTMultiMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/implosion_compressor"))
-
             .register();
 
     public static final MultiblockMachineDefinition PYROLYSE_OVEN = REGISTRATE
@@ -334,7 +329,6 @@ public class GTMultiMachines {
                             coilMachine.getCoilTier() == 0 ? 75 : 50 * (coilMachine.getCoilTier() + 1)));
                 }
             })
-
             .register();
 
     public static final MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE
@@ -391,7 +385,6 @@ public class GTMultiMachines {
                             coilMachine.getCoilType().getEnergyDiscount()));
                 }
             })
-
             .register();
 
     public static final MultiblockMachineDefinition CRACKER = REGISTRATE
@@ -441,7 +434,6 @@ public class GTMultiMachines {
                             100 - 10 * coilMachine.getCoilTier()));
                 }
             })
-
             .register();
 
     public static final MultiblockMachineDefinition DISTILLATION_TOWER = REGISTRATE
@@ -507,7 +499,6 @@ public class GTMultiMachines {
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
-
             .register();
 
     public static final MultiblockMachineDefinition EVAPORATION_PLANT = REGISTRATE
@@ -562,7 +553,6 @@ public class GTMultiMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/multiblock/vacuum_freezer"))
-
             .register();
 
     public static final MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE
@@ -599,7 +589,6 @@ public class GTMultiMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/assembly_line"))
-
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE
@@ -620,7 +609,6 @@ public class GTMultiMachines {
                     .build())
             .allowExtendedFacing(false)
             .sidedWorkableCasingRenderer("block/casings/pump_deck", GTCEu.id("block/multiblock/primitive_pump"))
-
             .register();
 
     public static final MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE
@@ -643,7 +631,6 @@ public class GTMultiMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_grinder"))
-
             .register();
 
     public static final MultiblockMachineDefinition STEAM_OVEN = REGISTRATE
@@ -669,7 +656,6 @@ public class GTMultiMachines {
             .renderer(() -> new LargeBoilerRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     BoilerFireboxType.BRONZE_FIREBOX,
                     GTCEu.id("block/multiblock/steam_oven")))
-
             .register();
 
     public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerTieredMultis("fusion_reactor",
@@ -761,7 +747,6 @@ public class GTMultiMachines {
                     .renderer(() -> new FusionReactorRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor")))
                     .hasTESR(true)
-
                     .register(),
             LuV, ZPM, UV);
 
@@ -795,7 +780,6 @@ public class GTMultiMachines {
                             .build())
                     .workableCasingRenderer(FluidDrillMachine.getBaseTexture(tier),
                             GTCEu.id("block/multiblock/fluid_drilling_rig"))
-
                     .register(),
             MV, HV, EV);
 
@@ -839,7 +823,6 @@ public class GTMultiMachines {
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range",
                                 GTValues.VNF[tier], GTValues.VNF[tier + 1]));
                     })
-
                     .register(),
             EV, IV, LuV);
 
@@ -925,7 +908,6 @@ public class GTMultiMachines {
             .allowFlip(false)
             .workableCasingRenderer(GTCEu.id("block/casings/cleanroom/plascrete"),
                     GTCEu.id("block/multiblock/cleanroom"))
-
             .register();
 
     public static final MultiblockMachineDefinition LARGE_COMBUSTION_ENGINE = registerLargeCombustionEngine(
