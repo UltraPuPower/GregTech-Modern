@@ -426,7 +426,6 @@ public class GTMachineUtils {
         return definition;
     }
 
-
     //////////////////////////////////////
     // ********** Misc **********//
     //////////////////////////////////////
@@ -460,14 +459,14 @@ public class GTMachineUtils {
     }
 
     public static MachineDefinition registerTankValve(String name, String displayName, boolean isMetal,
-                                                       BiConsumer<MachineBuilder<?>, ResourceLocation> rendererSetup) {
+                                                      BiConsumer<MachineBuilder<?>, ResourceLocation> rendererSetup) {
         MachineBuilder<MachineDefinition> builder = REGISTRATE
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
                 .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"))
                 .rotationState(RotationState.ALL)
 
-                ;
+        ;
 
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/tank_valve"));
         return builder.register();

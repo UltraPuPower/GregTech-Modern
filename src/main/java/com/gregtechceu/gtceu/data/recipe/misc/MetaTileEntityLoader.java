@@ -740,10 +740,12 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_multiblock_tank",
                 GTMultiMachines.STEEL_MULTIBLOCK_TANK.asStack(), " R ", "hCw", " R ", 'R',
                 new UnificationEntry(TagPrefix.ring, GTMaterials.Steel), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_tank_valve", GTMultiMachines.WOODEN_TANK_VALVE.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_tank_valve",
+                GTMultiMachines.WOODEN_TANK_VALVE.asStack(),
                 " R ", "rCs", " O ", 'O', new UnificationEntry(TagPrefix.rotor, GTMaterials.Copper), 'R',
                 new UnificationEntry(TagPrefix.ring, GTMaterials.Copper), 'C', GTBlocks.CASING_WOOD_WALL.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_tank_valve", GTMultiMachines.STEEL_TANK_VALVE.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_tank_valve",
+                GTMultiMachines.STEEL_TANK_VALVE.asStack(),
                 " R ", "hCw", " O ", 'O', new UnificationEntry(TagPrefix.rotor, GTMaterials.Steel), 'R',
                 new UnificationEntry(TagPrefix.ring, GTMaterials.Steel), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_wall", GTBlocks.CASING_WOOD_WALL.asStack(), "W W",
