@@ -185,7 +185,7 @@ public class ChemicalHelper {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
                     FluidStorageKey.allKeys().stream()
-                            .map(key -> property.get(key))
+                            .map(property::get)
                             .filter(Objects::nonNull)
                             .map(f -> Pair.of(f, TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(f).getPath())))
                             .filter(pair -> allFluidTags.contains(pair.getSecond()))
