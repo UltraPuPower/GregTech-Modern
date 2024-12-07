@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.GuiGraphicsAccessor;
 
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 

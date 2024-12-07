@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
+
 import net.minecraft.util.Mth;
+
 import org.w3c.dom.Element;
 
 import java.util.Locale;
@@ -43,8 +45,7 @@ public class Positioning implements Animatable<Positioning> {
         return new Positioning(
                 Mth.lerpInt(delta, this.x, next.x),
                 Mth.lerpInt(delta, this.y, next.y),
-                this.type
-        );
+                this.type);
     }
 
     /**
@@ -63,9 +64,9 @@ public class Positioning implements Animatable<Positioning> {
      * inside the parent. This respect the size of
      * the component itself. As such:
      * <ul>
-     *     <li>50,50 centers the component inside the parent</li>
-     *     <li>100,50 centers to component vertically and pushes it all the way to the right</li>
-     *     <li>100,100 pushes the component all the way into the bottom right corner of the parent</li>
+     * <li>50,50 centers the component inside the parent</li>
+     * <li>100,50 centers to component vertically and pushes it all the way to the right</li>
+     * <li>100,100 pushes the component all the way into the bottom right corner of the parent</li>
      * </ul>
      *
      * @param xPercent The offset on the x-axis
@@ -95,13 +96,17 @@ public class Positioning implements Animatable<Positioning> {
     }
 
     public enum Type {
-        RELATIVE, ACROSS, ABSOLUTE, LAYOUT
+        RELATIVE,
+        ACROSS,
+        ABSOLUTE,
+        LAYOUT
     }
 
     public static Positioning parse(Element positioningElement) {
         var typeString = positioningElement.getAttribute("type");
         if (typeString.isBlank()) {
-            throw new UIModelParsingException("Missing 'type' attribute on positioning declaration. Must be one of: relative, absolute, layout");
+            throw new UIModelParsingException(
+                    "Missing 'type' attribute on positioning declaration. Must be one of: relative, absolute, layout");
         }
 
         var type = Type.valueOf(typeString.toUpperCase(Locale.ROOT));

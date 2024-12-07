@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.event;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 
 public interface MouseDrag {
+
     boolean onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY, int button);
 
     static EventStream<MouseDrag> newStream() {

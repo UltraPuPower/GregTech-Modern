@@ -15,6 +15,7 @@ neoForge {
 
     // This line is optional. Access Transformers are automatically detected
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+    interfaceInjectionData.from "interface_injection/interfaces.json"
 
     addModdingDependenciesTo(sourceSets.test)
     addModdingDependenciesTo(sourceSets.extra)

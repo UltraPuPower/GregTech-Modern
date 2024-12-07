@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
+
 import net.minecraft.util.Mth;
 
 import java.util.Arrays;
@@ -92,6 +93,7 @@ public class Animation<A extends Animatable<A>> {
     }
 
     public enum Direction {
+
         FORWARDS(1, 1),
         BACKWARDS(-1, 0);
 
@@ -112,6 +114,7 @@ public class Animation<A extends Animatable<A>> {
     }
 
     public interface Finished {
+
         void onFinished(Direction direction, boolean looping);
 
         static EventStream<Finished> newStream() {
@@ -124,6 +127,7 @@ public class Animation<A extends Animatable<A>> {
     }
 
     public static class Composed {
+
         private final List<Animation<?>> elements;
 
         private Composed(Animation<?>... elements) {

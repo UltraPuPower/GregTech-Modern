@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.MultilineEditBoxAccessor;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.MultilineTextFieldAccessor;
 import com.gregtechceu.gtceu.api.ui.core.CursorStyle;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -11,12 +9,16 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.MultilineEditBoxAccessor;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.MultilineTextFieldAccessor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.MultilineTextField;
 import net.minecraft.client.gui.components.Whence;
 import net.minecraft.network.chat.Component;
+
 import org.lwjgl.glfw.GLFW;
 import org.w3c.dom.Element;
 
@@ -34,13 +36,13 @@ public class TextAreaComponent extends MultiLineEditBox {
 
     protected TextAreaComponent(Sizing horizontalSizing, Sizing verticalSizing) {
         super(Minecraft.getInstance().font, 0, 0, 0, 0, Component.empty(), Component.empty());
-        this.editBox = ((MultilineEditBoxAccessor) this).ui$getTextField();
+        this.editBox = ((MultilineEditBoxAccessor) this).gtceu$getTextField();
         this.sizing(horizontalSizing, verticalSizing);
 
         this.textValue.observe(this.changedEvents.sink()::onChanged);
         Observable.observeAll(this.widgetWrapper()::notifyParentIfMounted, this.displayCharCount, this.maxLines);
 
-        super.setChangeListener(s -> {
+        super.setValueListener(s -> {
             this.textValue.set(s);
 
             if (this.maxLines.get() < 0) return;
@@ -50,18 +52,19 @@ public class TextAreaComponent extends MultiLineEditBox {
 
     @Override
     @Deprecated(forRemoval = true)
-    public void setChangeListener(Consumer<String> changeListener) {
+    public void setValueListener(Consumer<String> changeListener) {
         GTCEu.LOGGER.warn("setChangeListener stub on TextAreaComponent invoked");
     }
 
     @Override
     public void update(float delta, int mouseX, int mouseY) {
         super.update(delta, mouseX, mouseY);
-        this.cursorStyle(this.overflows() && mouseX >= this.getX() + this.width - 9 ? CursorStyle.NONE : CursorStyle.TEXT);
+        this.cursorStyle(this.scrollbarVisible() && mouseX >= this.getX() + this.width - 9 ? CursorStyle.NONE :
+                CursorStyle.TEXT);
     }
 
     @Override
-    protected void renderOverlay(GuiGraphics graphics) {
+    protected void renderDecorations(GuiGraphics graphics) {
         this.height -= 1;
 
         var pose = graphics.pose();
@@ -71,7 +74,7 @@ public class TextAreaComponent extends MultiLineEditBox {
         int previousMaxLength = this.editBox.characterLimit();
         this.editBox.setCharacterLimit(Integer.MAX_VALUE);
 
-        super.renderOverlay(graphics);
+        super.renderDecorations(graphics);
 
         this.editBox.setCharacterLimit(previousMaxLength);
 
@@ -79,12 +82,14 @@ public class TextAreaComponent extends MultiLineEditBox {
         this.height += 1;
 
         if (this.displayCharCount.get()) {
-            var text = this.editBox.hasCharacterLimit()
-                    ? Component.translatable("gui.multiLineEditBox.character_limit", this.editBox.value().length(), this.editBox.characterLimit())
-                    : Component.literal(String.valueOf(this.editBox.value().length()));
+            var text = this.editBox.hasCharacterLimit() ?
+                    Component.translatable("gui.multiLineEditBox.character_limit", this.editBox.value().length(),
+                            this.editBox.characterLimit()) :
+                    Component.literal(String.valueOf(this.editBox.value().length()));
 
             var textRenderer = Minecraft.getInstance().font;
-            graphics.drawCenteredString(textRenderer, text, this.getX() + this.width - textRenderer.width(text), this.getY() + this.height + 3, 0xa0a0a0);
+            graphics.drawCenteredString(textRenderer, text, this.getX() + this.width - textRenderer.width(text),
+                    this.getY() + this.height + 3, 0xa0a0a0);
         }
     }
 
@@ -114,16 +119,16 @@ public class TextAreaComponent extends MultiLineEditBox {
         super.inflate(space);
 
         int cursor = this.editBox.cursor();
-        int selection = ((MultilineTextFieldAccessor) this.editBox).ui$getSelectCursor();
+        int selection = ((MultilineTextFieldAccessor) this.editBox).gtceu$getSelectCursor();
 
-        ((MultilineTextFieldAccessor) this.editBox).ui$setWidth(this.width() - this.getPaddingDoubled() - 9);
-        this.editBox.setValue(this.getText());
+        ((MultilineTextFieldAccessor) this.editBox).gtceu$setWidth(this.width() - this.totalInnerPadding() - 9);
+        this.editBox.setValue(this.getValue());
 
         super.inflate(space);
-        this.editBox.setValue(this.getText());
+        this.editBox.setValue(this.getValue());
 
         this.editBox.seekCursor(Whence.ABSOLUTE, cursor);
-        ((MultilineTextFieldAccessor) this.editBox).ui$setSelectCursor(selection);
+        ((MultilineTextFieldAccessor) this.editBox).gtceu$setSelectCursor(selection);
     }
 
     public EventSource<OnChanged> onChanged() {
@@ -149,7 +154,7 @@ public class TextAreaComponent extends MultiLineEditBox {
     }
 
     public TextAreaComponent text(String text) {
-        this.setText(text);
+        this.setValue(text);
         return this;
     }
 
@@ -163,12 +168,13 @@ public class TextAreaComponent extends MultiLineEditBox {
         super.parseProperties(model, element, children);
 
         UIParsing.apply(children, "display-char-count", UIParsing::parseBool, this::displayCharCount);
-        UIParsing.apply(children, "max-length", UIParsing::parseUnsignedInt, this::setMaxLength);
+        UIParsing.apply(children, "max-length", UIParsing::parseUnsignedInt, this::setCharacterLimit);
         UIParsing.apply(children, "max-lines", UIParsing::parseUnsignedInt, this::maxLines);
         UIParsing.apply(children, "text", $ -> $.getTextContent().strip(), this::text);
     }
 
     public interface OnChanged {
+
         void onChanged(String value);
 
         static EventStream<OnChanged> newStream() {

@@ -14,6 +14,7 @@ public class EventSource<T> {
     }
 
     public class Subscription {
+
         protected final T subscriber;
 
         public Subscription(T subscriber) {

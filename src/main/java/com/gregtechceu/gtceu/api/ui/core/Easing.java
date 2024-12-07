@@ -28,11 +28,8 @@ public interface Easing {
         if (x == 0) return 0;
         if (x == 1) return 1;
 
-        return x < 0.5
-                ? (float) Math.pow(2, 20 * x - 10) / 2
-                : (2 - (float) Math.pow(2, -20 * x + 10)) / 2;
+        return x < 0.5 ? (float) Math.pow(2, 20 * x - 10) / 2 : (2 - (float) Math.pow(2, -20 * x + 10)) / 2;
     };
 
     float apply(float x);
-
 }

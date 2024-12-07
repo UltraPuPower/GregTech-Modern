@@ -5,6 +5,10 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -23,10 +27,12 @@ import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ItemLike;
 
+import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
+import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
@@ -84,6 +90,30 @@ public class GTREIPlugin implements REIClientPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreDisplayCategory.registerDisplays(registry);
         registry.add(new GTProgrammedCircuitCategory.GTProgrammedCircuitDisplay());
+    }
+
+    @Override
+    public void registerExclusionZones(ExclusionZones zones) {
+        zones.register(BaseContainerScreen.class, screen -> {
+            if (screen.children().isEmpty()) return List.of();
+
+            var adapter = screen.getUiAdapter();
+            if (adapter == null) return List.of();
+
+            var rootComponent = adapter.rootComponent;
+            var children = new ArrayList<UIComponent>();
+            rootComponent.collectDescendants(children);
+            children.remove(rootComponent);
+
+            var rectangles = new ArrayList<Rectangle>();
+            children.forEach(component -> {
+                if (component instanceof ParentUIComponent parent && parent.surface() == Surface.BLANK) return;
+
+                var size = component.fullSize();
+                rectangles.add(new Rectangle(component.x(), component.y(), size.width(), size.height()));
+            });
+            return rectangles;
+        });
     }
 
     @Override

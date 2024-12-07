@@ -4,6 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -29,6 +33,9 @@ import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.Bounds;
+
+import java.util.ArrayList;
 
 /**
  * @author KilaBash
@@ -88,5 +95,24 @@ public class GTEMIPlugin implements EmiPlugin {
 
         // Comparators
         registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT.asItem(), Comparison.compareNbt());
+
+        registry.addGenericExclusionArea((screen, consumer) -> {
+            if (screen.children().isEmpty() || !(screen instanceof BaseContainerScreen<?, ?> container)) return;
+
+            var adapter = container.getUiAdapter();
+            if (adapter == null) return;
+
+            var rootComponent = adapter.rootComponent;
+            var children = new ArrayList<UIComponent>();
+            rootComponent.collectDescendants(children);
+            children.remove(rootComponent);
+
+            children.forEach(component -> {
+                if (component instanceof ParentUIComponent parent && parent.surface() == Surface.BLANK) return;
+
+                var size = component.fullSize();
+                consumer.accept(new Bounds(component.x(), component.y(), size.width(), size.height()));
+            });
+        });
     }
 }

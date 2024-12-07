@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.ui.container.Containers;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class UIComponents {
+
     private UIComponents() {}
 
     // -----------------------
@@ -59,7 +62,8 @@ public class UIComponents {
     // Default Components
     // ------------------
 
-    public static <E extends Entity> EntityComponent<E> entity(Sizing sizing, EntityType<E> type, @Nullable CompoundTag nbt) {
+    public static <E extends Entity> EntityComponent<E> entity(Sizing sizing, EntityType<E> type,
+                                                               @Nullable CompoundTag nbt) {
         return new EntityComponent<>(sizing, type, nbt);
     }
 
@@ -116,7 +120,8 @@ public class UIComponents {
         return new SpriteComponent(sprite);
     }
 
-    public static TextureComponent texture(ResourceLocation texture, int u, int v, int regionWidth, int regionHeight, int textureWidth, int textureHeight) {
+    public static TextureComponent texture(ResourceLocation texture, int u, int v, int regionWidth, int regionHeight,
+                                           int textureWidth, int textureHeight) {
         return new TextureComponent(texture, u, v, regionWidth, regionHeight, textureWidth, textureHeight);
     }
 
@@ -144,8 +149,10 @@ public class UIComponents {
     // Utility
     // -------
 
-    public static <T, C extends UIComponent> FlowLayout list(List<T> data, Consumer<FlowLayout> layoutConfigurator, Function<T, C> componentMaker, boolean vertical) {
-        var layout = vertical ? Containers.verticalFlow(Sizing.content(), Sizing.content()) : Containers.horizontalFlow(Sizing.content(), Sizing.content());
+    public static <T, C extends UIComponent> FlowLayout list(List<T> data, Consumer<FlowLayout> layoutConfigurator,
+                                                             Function<T, C> componentMaker, boolean vertical) {
+        var layout = vertical ? Containers.verticalFlow(Sizing.content(), Sizing.content()) :
+                Containers.horizontalFlow(Sizing.content(), Sizing.content());
         layoutConfigurator.accept(layout);
 
         for (var value : data) {
@@ -159,7 +166,8 @@ public class UIComponents {
         return new VanillaWidgetComponent(widget);
     }
 
-    public static <T extends UIComponent> T createWithSizing(Supplier<T> componentMaker, Sizing horizontalSizing, Sizing verticalSizing) {
+    public static <T extends UIComponent> T createWithSizing(Supplier<T> componentMaker, Sizing horizontalSizing,
+                                                             Sizing verticalSizing) {
         var component = componentMaker.get();
         component.sizing(horizontalSizing, verticalSizing);
         return component;

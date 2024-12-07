@@ -1,16 +1,13 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractWidgetAccessor;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.ButtonAccessor;
-import com.gregtechceu.gtceu.api.ui.core.Color;
-import com.gregtechceu.gtceu.api.ui.core.CursorStyle;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractWidgetAccessor;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.ButtonAccessor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -18,6 +15,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -46,18 +45,22 @@ public class ButtonComponent extends Button {
         int color = this.active ? 0xffffff : 0xa0a0a0;
 
         if (this.textShadow) {
-            graphics.drawCenteredString(textRenderer, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, color);
+            graphics.drawCenteredString(textRenderer, this.getMessage(), this.getX() + this.width / 2,
+                    this.getY() + (this.height - 8) / 2, color);
         } else {
-            graphics.drawString(textRenderer, this.getMessage(), (int) (this.getX() + this.width / 2f - textRenderer.width(this.getMessage()) / 2f), (int) (this.getY() + (this.height - 8) / 2f), color, false);
+            graphics.drawString(textRenderer, this.getMessage(),
+                    (int) (this.getX() + this.width / 2f - textRenderer.width(this.getMessage()) / 2f),
+                    (int) (this.getY() + (this.height - 8) / 2f), color, false);
         }
 
-        Tooltip tooltip = ((AbstractWidgetAccessor) this).ui$getTooltip();
+        Tooltip tooltip = ((AbstractWidgetAccessor) this).gtceu$getTooltip();
         if (this.isHovered && tooltip != null)
-            graphics.renderTooltip(textRenderer, tooltip.toCharSequence(Minecraft.getInstance()), DefaultTooltipPositioner.INSTANCE, mouseX, mouseY);
+            graphics.renderTooltip(textRenderer, tooltip.toCharSequence(Minecraft.getInstance()),
+                    DefaultTooltipPositioner.INSTANCE, mouseX, mouseY);
     }
 
     public ButtonComponent onPress(Consumer<ButtonComponent> onPress) {
-        ((ButtonAccessor) this).ui$setOnPress(button -> onPress.accept((ButtonComponent) button));
+        ((ButtonAccessor) this).gtceu$setOnPress(button -> onPress.accept((ButtonComponent) button));
         return this;
     }
 
@@ -96,18 +99,17 @@ public class ButtonComponent extends Button {
         UIParsing.apply(children, "renderer", Renderer::parse, this::renderer);
     }
 
-    protected CursorStyle ui$preferredCursorStyle() {
+    protected CursorStyle gtceu$preferredCursorStyle() {
         return CursorStyle.HAND;
     }
 
     @FunctionalInterface
     public interface Renderer {
+
         Renderer VANILLA = (matrices, button, delta) -> {
             RenderSystem.enableDepthTest();
 
-            var texture = button.active
-                    ? button.isHovered ? HOVERED_TEXTURE : ACTIVE_TEXTURE
-                    : DISABLED_TEXTURE;
+            var texture = button.active ? button.isHovered ? HOVERED_TEXTURE : ACTIVE_TEXTURE : DISABLED_TEXTURE;
             NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.width, button.height);
         };
 
@@ -117,12 +119,15 @@ public class ButtonComponent extends Button {
 
                 if (button.active) {
                     if (button.isHovered) {
-                        context.fill(button.getX(), button.getY(), button.getX() + button.width, button.getY() + button.height, hoveredColor);
+                        context.fill(button.getX(), button.getY(), button.getX() + button.width,
+                                button.getY() + button.height, hoveredColor);
                     } else {
-                        context.fill(button.getX(), button.getY(), button.getX() + button.width, button.getY() + button.height, color);
+                        context.fill(button.getX(), button.getY(), button.getX() + button.width,
+                                button.getY() + button.height, color);
                     }
                 } else {
-                    context.fill(button.getX(), button.getY(), button.getX() + button.width, button.getY() + button.height, disabledColor);
+                    context.fill(button.getX(), button.getY(), button.getX() + button.width,
+                            button.getY() + button.height, disabledColor);
                 }
             };
         }
@@ -137,7 +142,8 @@ public class ButtonComponent extends Button {
                 }
 
                 RenderSystem.enableDepthTest();
-                context.blit(texture, button.getX(), button.getY(), u, renderV, button.width, button.height, textureWidth, textureHeight);
+                context.blit(texture, button.getX(), button.getY(), u, renderV, button.width, button.height,
+                        textureWidth, textureHeight);
             };
         }
 
@@ -156,8 +162,7 @@ public class ButtonComponent extends Button {
                     yield flat(
                             Color.parseAndPack(rendererElement.getAttributeNode("color")),
                             Color.parseAndPack(rendererElement.getAttributeNode("hovered-color")),
-                            Color.parseAndPack(rendererElement.getAttributeNode("disabled-color"))
-                    );
+                            Color.parseAndPack(rendererElement.getAttributeNode("disabled-color")));
                 }
                 case "texture" -> {
                     UIParsing.expectAttributes(rendererElement, "texture", "u", "v", "texture-width", "texture-height");
@@ -166,11 +171,10 @@ public class ButtonComponent extends Button {
                             UIParsing.parseUnsignedInt(rendererElement.getAttributeNode("u")),
                             UIParsing.parseUnsignedInt(rendererElement.getAttributeNode("v")),
                             UIParsing.parseUnsignedInt(rendererElement.getAttributeNode("texture-width")),
-                            UIParsing.parseUnsignedInt(rendererElement.getAttributeNode("texture-height"))
-                    );
+                            UIParsing.parseUnsignedInt(rendererElement.getAttributeNode("texture-height")));
                 }
-                default ->
-                        throw new UIModelParsingException("Unknown button renderer '" + rendererElement.getNodeName() + "'");
+                default -> throw new UIModelParsingException(
+                        "Unknown button renderer '" + rendererElement.getNodeName() + "'");
             };
         }
     }

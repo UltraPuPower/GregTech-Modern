@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
@@ -16,6 +17,7 @@ import org.w3c.dom.Node;
 import java.util.*;
 
 public class GridLayout extends BaseParentUIComponent {
+
     protected final int rows, columns;
 
     protected final UIComponent[] children;
@@ -72,11 +74,11 @@ public class GridLayout extends BaseParentUIComponent {
                 this.mountChild(this.getChild(row, column), child -> {
                     child.mount(
                             this,
-                            layoutX.intValue() + child.margins().get().left() + this.horizontalAlignment().align(child.fullSize().width(), columnSize),
-                            layoutY.intValue() + child.margins().get().top() + this.verticalAlignment().align(child.fullSize().height(), rowSize)
-                    );
+                            layoutX.intValue() + child.margins().get().left() +
+                                    this.horizontalAlignment().align(child.fullSize().width(), columnSize),
+                            layoutY.intValue() + child.margins().get().top() +
+                                    this.verticalAlignment().align(child.fullSize().height(), rowSize));
                 });
-
 
                 layoutX.add(columnSizes[column]);
             }
@@ -99,7 +101,8 @@ public class GridLayout extends BaseParentUIComponent {
 
     protected void determineSizes(int[] sizes, boolean rows) {
         if (!(rows ? this.verticalSizing : this.horizontalSizing).get().isContent()) {
-            Arrays.fill(sizes, (rows ? this.height - this.padding().get().vertical() : this.width - this.padding().get().horizontal()) / (rows ? this.rows : this.columns));
+            Arrays.fill(sizes, (rows ? this.height - this.padding().get().vertical() :
+                    this.width - this.padding().get().horizontal()) / (rows ? this.rows : this.columns));
         } else {
             for (int row = 0; row < this.rows; row++) {
                 for (int column = 0; column < this.columns; column++) {
@@ -178,8 +181,10 @@ public class GridLayout extends BaseParentUIComponent {
 
             final var existingChild = this.getChild(row, column);
             if (existingChild != null) {
-                throw new UIModelParsingException("Tried to populate cell " + row + "," + column + " in grid layout twice. " +
-                        "Present component: " + existingChild.getClass().getSimpleName() + "\nNew element: " + child.getNodeName());
+                throw new UIModelParsingException(
+                        "Tried to populate cell " + row + "," + column + " in grid layout twice. " +
+                                "Present component: " + existingChild.getClass().getSimpleName() + "\nNew element: " +
+                                child.getNodeName());
             }
 
             this.child(model.parseComponent(UIComponent.class, child), row, column);

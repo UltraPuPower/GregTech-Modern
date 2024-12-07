@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.container;
 
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+
 import net.minecraft.network.chat.Component;
 
 public final class Containers {
@@ -36,23 +37,28 @@ public final class Containers {
     // Scroll
     // ------
 
-    public static <C extends UIComponent> ScrollContainer<C> verticalScroll(Sizing horizontalSizing, Sizing verticalSizing, C child) {
+    public static <C extends UIComponent> ScrollContainer<C> verticalScroll(Sizing horizontalSizing,
+                                                                            Sizing verticalSizing, C child) {
         return new ScrollContainer<>(ScrollContainer.ScrollDirection.VERTICAL, horizontalSizing, verticalSizing, child);
     }
 
-    public static <C extends UIComponent> ScrollContainer<C> horizontalScroll(Sizing horizontalSizing, Sizing verticalSizing, C child) {
-        return new ScrollContainer<>(ScrollContainer.ScrollDirection.HORIZONTAL, horizontalSizing, verticalSizing, child);
+    public static <C extends UIComponent> ScrollContainer<C> horizontalScroll(Sizing horizontalSizing,
+                                                                              Sizing verticalSizing, C child) {
+        return new ScrollContainer<>(ScrollContainer.ScrollDirection.HORIZONTAL, horizontalSizing, verticalSizing,
+                child);
     }
 
     // ----------------
     // Utility wrappers
     // ----------------
 
-    public static <C extends UIComponent> DraggableContainer<C> draggable(Sizing horizontalSizing, Sizing verticalSizing, C child) {
+    public static <C extends UIComponent> DraggableContainer<C> draggable(Sizing horizontalSizing,
+                                                                          Sizing verticalSizing, C child) {
         return new DraggableContainer<>(horizontalSizing, verticalSizing, child);
     }
 
-    public static CollapsibleContainer collapsible(Sizing horizontalSizing, Sizing verticalSizing, Component title, boolean expanded) {
+    public static CollapsibleContainer collapsible(Sizing horizontalSizing, Sizing verticalSizing, Component title,
+                                                   boolean expanded) {
         return new CollapsibleContainer(horizontalSizing, verticalSizing, title, expanded);
     }
 

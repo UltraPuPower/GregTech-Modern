@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.Delta;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.lwjgl.glfw.GLFW;
@@ -20,12 +22,18 @@ import java.util.function.Function;
 
 public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComponent<C> {
 
-    public static final ResourceLocation VERTICAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo", "scrollbar/vanilla_vertical");
-    public static final ResourceLocation DISABLED_VERTICAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo", "scrollbar/vanilla_vertical_disabled");
-    public static final ResourceLocation HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo", "scrollbar/vanilla_horizontal_disabled");
-    public static final ResourceLocation DISABLED_HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo", "scrollbar/vanilla_horizontal_disabled");
-    public static final ResourceLocation VANILLA_SCROLLBAR_TRACK_TEXTURE = new ResourceLocation("owo", "scrollbar/track");
-    public static final ResourceLocation FLAT_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo", "scrollbar/vanilla_flat");
+    public static final ResourceLocation VERTICAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo",
+            "scrollbar/vanilla_vertical");
+    public static final ResourceLocation DISABLED_VERTICAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo",
+            "scrollbar/vanilla_vertical_disabled");
+    public static final ResourceLocation HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo",
+            "scrollbar/vanilla_horizontal_disabled");
+    public static final ResourceLocation DISABLED_HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo",
+            "scrollbar/vanilla_horizontal_disabled");
+    public static final ResourceLocation VANILLA_SCROLLBAR_TRACK_TEXTURE = new ResourceLocation("owo",
+            "scrollbar/track");
+    public static final ResourceLocation FLAT_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo",
+            "scrollbar/vanilla_flat");
 
     protected double scrollOffset = 0;
     protected double currentScrollPosition = 0;
@@ -74,7 +82,8 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
     public void layout(Size space) {
         super.layout(space);
 
-        this.maxScroll = Math.max(0, this.direction.sizeGetter.apply(child) - (this.direction.sizeGetter.apply(this) - this.direction.insetGetter.apply(this.padding.get())));
+        this.maxScroll = Math.max(0, this.direction.sizeGetter.apply(child) -
+                (this.direction.sizeGetter.apply(this) - this.direction.insetGetter.apply(this.padding.get())));
         this.scrollOffset = Mth.clamp(this.scrollOffset, 0, this.maxScroll + .5);
         this.childSize = this.direction.sizeGetter.apply(this.child);
         this.lastScrollPosition = -1;
@@ -101,19 +110,18 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
         super.draw(graphics, mouseX, mouseY, partialTicks, delta);
 
         // Update child
-        int effectiveScrollOffset = this.scrollStep > 0
-                ? ((int) this.scrollOffset / this.scrollStep) * this.scrollStep
-                : (int) this.currentScrollPosition;
+        int effectiveScrollOffset = this.scrollStep > 0 ?
+                ((int) this.scrollOffset / this.scrollStep) * this.scrollStep : (int) this.currentScrollPosition;
         if (this.scrollStep > 0 && this.maxScroll - this.scrollOffset == -1) {
             effectiveScrollOffset += this.scrollOffset % this.scrollStep;
         }
 
         int newScrollPosition = this.direction.coordinateGetter.apply(this) - effectiveScrollOffset;
         if (newScrollPosition != this.lastScrollPosition) {
-            this.direction.coordinateSetter.accept(this.child, newScrollPosition + (this.direction == ScrollDirection.VERTICAL
-                    ? this.padding.get().top() + this.child.margins().get().top()
-                    : this.padding.get().left() + this.child.margins().get().left())
-            );
+            this.direction.coordinateSetter.accept(this.child,
+                    newScrollPosition + (this.direction == ScrollDirection.VERTICAL ?
+                            this.padding.get().top() + this.child.margins().get().top() :
+                            this.padding.get().left() + this.child.margins().get().left()));
             this.lastScrollPosition = newScrollPosition;
         }
 
@@ -141,16 +149,15 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
 
         // Determine the offset of the scrollbar on the
         // *opposite* axis to the one we scroll on
-        this.scrollbarOffset = this.direction == ScrollDirection.VERTICAL
-                ? this.x + this.width - padding.right() - scrollbarThiccness
-                : this.y + this.height - padding.bottom() - scrollbarThiccness;
+        this.scrollbarOffset = this.direction == ScrollDirection.VERTICAL ?
+                this.x + this.width - padding.right() - scrollbarThiccness :
+                this.y + this.height - padding.bottom() - scrollbarThiccness;
 
-        this.lastScrollbarLength = this.fixedScrollbarLength == 0
-                ? Math.min(Math.floor(((float) selfSize / this.childSize) * contentSize), contentSize)
-                : this.fixedScrollbarLength;
-        double scrollbarPosition = this.maxScroll != 0
-                ? (this.currentScrollPosition / this.maxScroll) * (contentSize - this.lastScrollbarLength)
-                : 0;
+        this.lastScrollbarLength = this.fixedScrollbarLength == 0 ?
+                Math.min(Math.floor(((float) selfSize / this.childSize) * contentSize), contentSize) :
+                this.fixedScrollbarLength;
+        double scrollbarPosition = this.maxScroll != 0 ?
+                (this.currentScrollPosition / this.maxScroll) * (contentSize - this.lastScrollbarLength) : 0;
 
         if (this.direction == ScrollDirection.VERTICAL) {
             this.scrollbar.draw(graphics,
@@ -161,8 +168,7 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
                     this.scrollbarOffset, this.y + padding.top(),
                     this.scrollbarThiccness, this.height - padding.vertical(),
                     lastScrollbarInteractTime, this.direction,
-                    this.maxScroll > 0
-            );
+                    this.maxScroll > 0);
         } else {
             this.scrollbar.draw(graphics,
                     (int) (this.x + scrollbarPosition + padding.left()),
@@ -172,8 +178,7 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
                     this.x + padding.left(), this.scrollbarOffset,
                     this.width - padding.horizontal(), this.scrollbarThiccness,
                     lastScrollbarInteractTime, this.direction,
-                    this.maxScroll > 0
-            );
+                    this.maxScroll > 0);
         }
     }
 
@@ -268,9 +273,12 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
      */
     public ScrollContainer<C> scrollTo(UIComponent component) {
         if (this.direction == ScrollDirection.VERTICAL) {
-            this.scrollOffset = Mth.clamp(this.scrollOffset - (this.y - component.y() + component.margins().get().top()), 0, this.maxScroll);
+            this.scrollOffset = Mth.clamp(
+                    this.scrollOffset - (this.y - component.y() + component.margins().get().top()), 0, this.maxScroll);
         } else {
-            this.scrollOffset = Mth.clamp(this.scrollOffset - (this.x - component.x() + component.margins().get().right()), 0, this.maxScroll);
+            this.scrollOffset = Mth.clamp(
+                    this.scrollOffset - (this.x - component.x() + component.margins().get().right()), 0,
+                    this.maxScroll);
         }
         return this;
     }
@@ -295,7 +303,7 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
 
     /**
      * @return The thickness of this container's scrollbar,
-     * in logical pixels
+     *         in logical pixels
      */
     public int scrollbarThiccness() {
         return this.scrollbarThiccness;
@@ -345,7 +353,7 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
 
     /**
      * @return The current fixed length of this container's scrollbar,
-     * or {@code 0} if it adjusts based on the content
+     *         or {@code 0} if it adjusts based on the content
      */
     public int fixedScrollbarLength() {
         return this.fixedScrollbarLength;
@@ -362,9 +370,9 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
     }
 
     public static ScrollContainer<?> parse(Element element) {
-        return element.getAttribute("direction").equals("vertical")
-                ? Containers.verticalScroll(Sizing.content(), Sizing.content(), null)
-                : Containers.horizontalScroll(Sizing.content(), Sizing.content(), null);
+        return element.getAttribute("direction").equals("vertical") ?
+                Containers.verticalScroll(Sizing.content(), Sizing.content(), null) :
+                Containers.horizontalScroll(Sizing.content(), Sizing.content(), null);
     }
 
     @FunctionalInterface
@@ -376,16 +384,17 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
         static Scrollbar flat(Color color) {
             int scrollbarColor = color.argb();
 
-            return (graphics, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction, active) -> {
+            return (graphics, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction,
+                    active) -> {
                 if (!active) return;
 
-                final var progress = Easing.SINE.apply(Mth.clamp(lastInteractTime - System.currentTimeMillis(), 0, 750) / 750f);
+                final var progress = Easing.SINE
+                        .apply(Mth.clamp(lastInteractTime - System.currentTimeMillis(), 0, 750) / 750f);
                 int alpha = (int) (progress * (scrollbarColor >>> 24));
 
                 graphics.fill(
                         x, y, x + width, y + height,
-                        alpha << 24 | (scrollbarColor & 0xFFFFFF)
-                );
+                        alpha << 24 | (scrollbarColor & 0xFFFFFF));
             };
         }
 
@@ -393,12 +402,14 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
          * The vanilla scrollbar used by the creative inventory screen
          */
         static Scrollbar vanilla() {
-            return (graphics, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction, active) -> {
-                NinePatchTexture.draw(VANILLA_SCROLLBAR_TRACK_TEXTURE, graphics, trackX, trackY, trackWidth, trackHeight);
+            return (graphics, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction,
+                    active) -> {
+                NinePatchTexture.draw(VANILLA_SCROLLBAR_TRACK_TEXTURE, graphics, trackX, trackY, trackWidth,
+                        trackHeight);
 
-                var texture = direction == ScrollDirection.VERTICAL
-                        ? active ? VERTICAL_VANILLA_SCROLLBAR_TEXTURE : DISABLED_VERTICAL_VANILLA_SCROLLBAR_TEXTURE
-                        : active ? HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE : DISABLED_HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE;
+                var texture = direction == ScrollDirection.VERTICAL ?
+                        active ? VERTICAL_VANILLA_SCROLLBAR_TEXTURE : DISABLED_VERTICAL_VANILLA_SCROLLBAR_TEXTURE :
+                        active ? HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE : DISABLED_HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE;
 
                 NinePatchTexture.draw(texture, graphics, x + 1, y + 1, width - 2, height - 2);
             };
@@ -409,13 +420,15 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
          * game options screens
          */
         static Scrollbar vanillaFlat() {
-            return (graphics, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction, active) -> {
+            return (graphics, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction,
+                    active) -> {
                 graphics.fill(trackX, trackY, trackX + trackWidth, trackY + trackHeight, Color.BLACK.argb());
                 NinePatchTexture.draw(FLAT_VANILLA_SCROLLBAR_TEXTURE, graphics, x, y, width, height);
             };
         }
 
-        void draw(UIGuiGraphics graphics, int x, int y, int width, int height, int trackX, int trackY, int trackWidth, int trackHeight,
+        void draw(UIGuiGraphics graphics, int x, int y, int width, int height, int trackX, int trackY, int trackWidth,
+                  int trackHeight,
                   long lastInteractTime, ScrollDirection direction, boolean active);
 
         static Scrollbar parse(Element element) {
@@ -428,15 +441,18 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
                 case "vanilla" -> vanilla();
                 case "vanilla-flat" -> vanillaFlat();
                 case "flat" -> flat(Color.parse(scrollbarElement));
-                default ->
-                        throw new UIModelParsingException("Unknown scrollbar type '" + scrollbarElement.getNodeName() + "'");
+                default -> throw new UIModelParsingException(
+                        "Unknown scrollbar type '" + scrollbarElement.getNodeName() + "'");
             };
         }
     }
 
     public enum ScrollDirection {
-        VERTICAL(UIComponent::height, UIComponent::updateY, UIComponent::y, Insets::vertical, GLFW.GLFW_KEY_UP, GLFW.GLFW_KEY_DOWN),
-        HORIZONTAL(UIComponent::width, UIComponent::updateX, UIComponent::x, Insets::horizontal, GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_RIGHT);
+
+        VERTICAL(UIComponent::height, UIComponent::updateY, UIComponent::y, Insets::vertical, GLFW.GLFW_KEY_UP,
+                GLFW.GLFW_KEY_DOWN),
+        HORIZONTAL(UIComponent::width, UIComponent::updateX, UIComponent::x, Insets::horizontal, GLFW.GLFW_KEY_LEFT,
+                GLFW.GLFW_KEY_RIGHT);
 
         public final Function<UIComponent, Integer> sizeGetter;
         public final BiConsumer<UIComponent, Integer> coordinateSetter;
@@ -445,7 +461,9 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
 
         public final int lessKeycode, moreKeycode;
 
-        ScrollDirection(Function<UIComponent, Integer> sizeGetter, BiConsumer<UIComponent, Integer> coordinateSetter, Function<ScrollContainer<?>, Integer> coordinateGetter, Function<Insets, Integer> insetGetter, int lessKeycode, int moreKeycode) {
+        ScrollDirection(Function<UIComponent, Integer> sizeGetter, BiConsumer<UIComponent, Integer> coordinateSetter,
+                        Function<ScrollContainer<?>, Integer> coordinateGetter, Function<Insets, Integer> insetGetter,
+                        int lessKeycode, int moreKeycode) {
             this.sizeGetter = sizeGetter;
             this.coordinateSetter = coordinateSetter;
             this.coordinateGetter = coordinateGetter;
@@ -460,6 +478,5 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
                 case HORIZONTAL -> horizontal;
             };
         }
-
     }
 }

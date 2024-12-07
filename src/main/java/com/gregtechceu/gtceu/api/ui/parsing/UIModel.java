@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.ui.parsing;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -14,9 +16,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -29,6 +28,10 @@ import java.util.function.Function;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * A model of a UI hierarchy parsed from an
@@ -45,7 +48,8 @@ public class UIModel {
         try {
             DOCUMENT_BUILDER = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            throw new RuntimeException("we love checked exceptions, we love checked exceptions, we love checked exceptions", e);
+            throw new RuntimeException(
+                    "we love checked exceptions, we love checked exceptions, we love checked exceptions", e);
         }
     }
 
@@ -71,7 +75,8 @@ public class UIModel {
             if (componentsList.size() == 1) {
                 this.componentsElement = componentsList.get(0);
             } else {
-                throw new UIModelParsingException("Invalid number of children in 'components' element - a single child must be declared");
+                throw new UIModelParsingException(
+                        "Invalid number of children in 'components' element - a single child must be declared");
             }
         } else {
             this.componentsElement = null;
@@ -124,7 +129,8 @@ public class UIModel {
      * @param stream The input stream to decode and read
      * @return The parsed UI model
      */
-    public static UIModel load(InputStream stream) throws ParserConfigurationException, IOException, SAXException, UIModelParsingException {
+    public static UIModel load(InputStream stream) throws ParserConfigurationException, IOException, SAXException,
+                                                   UIModelParsingException {
         return new UIModel(DOCUMENT_BUILDER.parse(stream).getDocumentElement());
     }
 
@@ -141,8 +147,10 @@ public class UIModel {
      *                                   are no specific expectations about the type of
      *                                   root component to create, pass {@link UIComponent}
      */
-    public <T extends ParentUIComponent> UIAdapter<T> createAdapter(Class<T> expectedRootComponentClass, Screen screen) {
-        return UIAdapter.create(screen, (horizontalSizing, verticalSizing) -> this.parseComponentTree(expectedRootComponentClass));
+    public <T extends ParentUIComponent> UIAdapter<T> createAdapter(Class<T> expectedRootComponentClass,
+                                                                    Screen screen) {
+        return UIAdapter.create(screen,
+                (horizontalSizing, verticalSizing) -> this.parseComponentTree(expectedRootComponentClass));
     }
 
     /**
@@ -158,8 +166,10 @@ public class UIModel {
      *                                   are no specific expectations about the type of
      *                                   root component to create, pass {@link UIComponent}
      */
-    public <T extends ParentUIComponent> UIAdapter<T> createAdapterWithoutScreen(int x, int y, int width, int height, Class<T> expectedRootComponentClass) {
-        return UIAdapter.createWithoutScreen(x, y, width, height, (horizontalSizing, verticalSizing) -> this.parseComponentTree(expectedRootComponentClass));
+    public <T extends ParentUIComponent> UIAdapter<T> createAdapterWithoutScreen(int x, int y, int width, int height,
+                                                                                 Class<T> expectedRootComponentClass) {
+        return UIAdapter.createWithoutScreen(x, y, width, height,
+                (horizontalSizing, verticalSizing) -> this.parseComponentTree(expectedRootComponentClass));
     }
 
     /**
@@ -190,8 +200,7 @@ public class UIModel {
                 if (element.getNodeName().equals("child")) {
                     childParams.put(
                             element.getAttribute("id"),
-                            UIParsing.<Element>allChildrenOfType(element, Node.ELEMENT_NODE).get(0)
-                    );
+                            UIParsing.<Element>allChildrenOfType(element, Node.ELEMENT_NODE).get(0));
                 } else {
                     templateParams.put(element.getNodeName(), element.getTextContent());
                 }
@@ -204,15 +213,12 @@ public class UIModel {
         component.parseProperties(this, componentElement, UIParsing.childElements(componentElement));
 
         if (!expectedClass.isAssignableFrom(component.getClass())) {
-            var idString = componentElement.hasAttribute("id")
-                    ? " with id '" + componentElement.getAttribute("id") + "'"
-                    : "";
+            var idString = componentElement.hasAttribute("id") ?
+                    " with id '" + componentElement.getAttribute("id") + "'" : "";
 
             throw new IncompatibleUIModelException(
-                    "Expected component '" + componentElement.getNodeName() + "'"
-                            + idString + " to be a " + expectedClass.getSimpleName()
-                            + ", but it is a " + component.getClass().getSimpleName()
-            );
+                    "Expected component '" + componentElement.getNodeName() + "'" + idString + " to be a " +
+                            expectedClass.getSimpleName() + ", but it is a " + component.getClass().getSimpleName());
         }
 
         return (T) component;
@@ -236,15 +242,16 @@ public class UIModel {
      * @return The expanded template parsed into a component
      */
     @SuppressWarnings("unchecked")
-    public <T extends UIComponent> T expandTemplate(Class<T> expectedClass, String name, Function<String, String> parameterSupplier, Function<String, Element> childSupplier) {
+    public <T extends UIComponent> T expandTemplate(Class<T> expectedClass, String name,
+                                                    Function<String, String> parameterSupplier,
+                                                    Function<String, Element> childSupplier) {
         if (this.expansionStack.isEmpty()) {
             this.expansionStack.push(new ExpansionFrame(parameterSupplier, childSupplier));
         } else {
             final var currentFrame = this.expansionStack.peek();
             this.expansionStack.push(new ExpansionFrame(
                     this.cascadeIfNull(currentFrame.parameterSupplier, parameterSupplier),
-                    this.cascadeIfNull(currentFrame.childSupplier, childSupplier)
-            ));
+                    this.cascadeIfNull(currentFrame.childSupplier, childSupplier)));
         }
 
         Element template;
@@ -252,7 +259,8 @@ public class UIModel {
         if (splitTemplateName.length == 2) {
             var modelReference = UIModelLoader.get(new ResourceLocation(splitTemplateName[1]));
             if (modelReference == null) {
-                throw new UIModelParsingException("Unknown UI model " + splitTemplateName[1] + ", referenced by template " + splitTemplateName[0]);
+                throw new UIModelParsingException("Unknown UI model " + splitTemplateName[1] +
+                        ", referenced by template " + splitTemplateName[0]);
             }
 
             template = modelReference.templates.get(splitTemplateName[0]);
@@ -269,13 +277,12 @@ public class UIModel {
         this.expandChildren(template);
         this.applySubstitutions(template);
 
-        final var component = this.parseComponent(UIComponent.class, UIParsing.<Element>allChildrenOfType(template, Node.ELEMENT_NODE).get(0));
+        final var component = this.parseComponent(UIComponent.class,
+                UIParsing.<Element>allChildrenOfType(template, Node.ELEMENT_NODE).get(0));
         if (!expectedClass.isAssignableFrom(component.getClass())) {
             throw new IncompatibleUIModelException(
-                    "Expected template '" + name + "'"
-                            + " to expand into a " + expectedClass.getSimpleName()
-                            + ", but it expanded into a " + component.getClass().getSimpleName()
-            );
+                    "Expected template '" + name + "'" + " to expand into a " + expectedClass.getSimpleName() +
+                            ", but it expanded into a " + component.getClass().getSimpleName());
         }
 
         this.expansionStack.pop();
@@ -297,13 +304,15 @@ public class UIModel {
      *                      expanding the template
      * @return The expanded template parsed into a component
      */
-    public <T extends UIComponent> T expandTemplate(Class<T> expectedClass, String name, Map<String, String> parameters) {
+    public <T extends UIComponent> T expandTemplate(Class<T> expectedClass, String name,
+                                                    Map<String, String> parameters) {
         return this.expandTemplate(expectedClass, name, parameters::get, s -> null);
     }
 
     protected <T extends ParentUIComponent> T parseComponentTree(Class<T> expectedRootComponentClass) {
         if (this.componentsElement == null) {
-            throw new IncompatibleUIModelException("This UI model does not declare a component tree and can thus only provide templates");
+            throw new IncompatibleUIModelException(
+                    "This UI model does not declare a component tree and can thus only provide templates");
         }
 
         var documentComponent = this.parseComponent(expectedRootComponentClass, this.componentsElement);
@@ -317,7 +326,8 @@ public class UIModel {
             final var paramName = matchResult.group().substring(2, matchResult.group().length() - 2);
             final var substitution = parameterSupplier.apply(paramName);
             if (substitution == null) {
-                throw new IncompatibleUIModelException("No substitution provided for template parameter '" + paramName + "'");
+                throw new IncompatibleUIModelException(
+                        "No substitution provided for template parameter '" + paramName + "'");
             }
 
             return Matcher.quoteReplacement(substitution);
@@ -356,7 +366,8 @@ public class UIModel {
 
                     template.replaceChild(expanded, child);
                 } else {
-                    throw new IncompatibleUIModelException("No expansion provided for template child '" + childId + "'");
+                    throw new IncompatibleUIModelException(
+                            "No expansion provided for template child '" + childId + "'");
                 }
             }
 

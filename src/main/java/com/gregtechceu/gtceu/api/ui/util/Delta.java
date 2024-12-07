@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.util;
 
 public final class Delta {
+
     private Delta() {}
 
     /**

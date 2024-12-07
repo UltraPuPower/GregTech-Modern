@@ -6,10 +6,14 @@ import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
+
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,8 +23,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class DropdownComponent extends BaseUIComponent {
-    protected static final ResourceLocation ICONS_TEXTURE = new ResourceLocation("owo", "textures/gui/dropdown_icons.png");
+public class DropdownComponent extends FlowLayout {
+
+    protected static final ResourceLocation ICONS_TEXTURE = new ResourceLocation("owo",
+            "textures/gui/dropdown_icons.png");
     protected final FlowLayout entries;
     protected boolean closeWhenNotHovered = false;
 
@@ -46,7 +52,11 @@ public class DropdownComponent extends BaseUIComponent {
      * @param mouseY        The y-coordinate at which to open the dropdown
      * @param builder       A function to add entries to the dropdown
      */
-    public static <R extends ParentUIComponent> DropdownComponent openContextMenu(Screen screen, R rootComponent, BiConsumer<R, DropdownComponent> mountFunction, double mouseX, double mouseY, Consumer<DropdownComponent> builder) {
+    public static <
+            R extends ParentUIComponent> DropdownComponent openContextMenu(Screen screen, R rootComponent,
+                                                                           BiConsumer<R, DropdownComponent> mountFunction,
+                                                                           double mouseX, double mouseY,
+                                                                           Consumer<DropdownComponent> builder) {
         var dropdown = new DropdownComponent(Sizing.content());
         builder.accept(dropdown);
 
@@ -65,8 +75,8 @@ public class DropdownComponent extends BaseUIComponent {
         dropdown.positioning(Positioning.absolute(xLocation, yLocation));
 
         var dismounted = new MutableBoolean(false);
-        ScreenMouseEvents.beforeMouseClick(screen).register((screen_, mouseX_, mouseY_, button) -> {
-            if (dismounted.isTrue() || dropdown.isInBoundingBox(mouseX_, mouseY_)) return;
+        MinecraftForge.EVENT_BUS.addListener((ScreenEvent.MouseButtonPressed.Pre event) -> {
+            if (dismounted.isTrue() || dropdown.isInBoundingBox(event.getMouseX(), event.getMouseY())) return;
 
             rootComponent.removeChild(dropdown);
             dismounted.setTrue();
@@ -96,11 +106,11 @@ public class DropdownComponent extends BaseUIComponent {
         super.layout(space);
 
         var entries = this.entries.children();
-        for (int i = 0; i < entries.size(); i++) {
-            var entry = entries.get(i);
+        for (UIComponent entry : entries) {
             if (!(entry instanceof ResizeableComponent sizeable)) continue;
 
-            sizeable.setWidth(this.entries.width() - this.entries.padding().get().horizontal() - entry.margins().get().horizontal());
+            sizeable.setWidth(this.entries.width() - this.entries.padding().get().horizontal() -
+                    entry.margins().get().horizontal());
         }
     }
 
@@ -110,7 +120,8 @@ public class DropdownComponent extends BaseUIComponent {
     }
 
     public DropdownComponent text(Component text) {
-        this.entries.child(UIComponents.label(text).color(Color.ofFormatting(ChatFormatting.GRAY)).margins(Insets.of(2)));
+        this.entries
+                .child(UIComponents.label(text).color(Color.ofFormatting(ChatFormatting.GRAY)).margins(Insets.of(2)));
         return this;
     }
 
@@ -132,7 +143,7 @@ public class DropdownComponent extends BaseUIComponent {
     }
 
     @Override
-    public FlowLayout removeChild(Component child) {
+    public FlowLayout removeChild(UIComponent child) {
         if (child == this.entries) {
             this.queue(() -> {
                 this.closeWhenNotHovered(false);
@@ -170,8 +181,7 @@ public class DropdownComponent extends BaseUIComponent {
                     UIParsing.expectChildren(entry, children, "text");
 
                     var text = UIParsing.parseText(children.get("text"));
-                    this.button(text, dropdownComponent -> {
-                    });
+                    this.button(text, dropdownComponent -> {});
                 }
                 case "checkbox" -> {
                     var children = UIParsing.childElements(entry);
@@ -180,14 +190,14 @@ public class DropdownComponent extends BaseUIComponent {
                     var text = UIParsing.parseText(children.get("text"));
                     var checked = UIParsing.parseBool(children.get("checked"));
 
-                    this.checkbox(text, checked, aBoolean -> {
-                    });
+                    this.checkbox(text, checked, aBoolean -> {});
                 }
                 case "nested" -> {
-                    var text = entry.getAttribute("translate").equals("true")
-                            ? Component.translatable(entry.getAttribute("name"))
-                            : Component.literal(entry.getAttribute("name"));
-                    this.nested(text, Sizing.content(), dropdownComponent -> dropdownComponent.parseAndApplyEntries(entry));
+                    var text = entry.getAttribute("translate").equals("true") ?
+                            Component.translatable(entry.getAttribute("name")) :
+                            Component.literal(entry.getAttribute("name"));
+                    this.nested(text, Sizing.content(),
+                            dropdownComponent -> dropdownComponent.parseAndApplyEntries(entry));
                 }
             }
         }
@@ -198,11 +208,11 @@ public class DropdownComponent extends BaseUIComponent {
                 dropdown.x() + dropdown.width() - dropdown.padding().get().right() - 10, y,
                 u, v,
                 9, 9,
-                32, 32
-        );
+                32, 32);
     }
 
     protected interface ResizeableComponent {
+
         void setWidth(int width);
     }
 
@@ -220,8 +230,7 @@ public class DropdownComponent extends BaseUIComponent {
                     this.y - margins.top(),
                     this.x + this.width + margins.right(),
                     this.y + this.height + margins.bottom(),
-                    0xFF121212
-            );
+                    0xFF121212);
         }
 
         @Override
@@ -253,7 +262,8 @@ public class DropdownComponent extends BaseUIComponent {
             super.draw(graphics, mouseX, mouseY, partialTicks, delta);
             drawIconFromTexture(graphics, this.parent, this.y, 0, 16);
 
-            this.child.closeWhenNotHovered(!PositionedRectangle.of(this.x, this.y, this.parent.width(), this.height).isInBoundingBox(mouseX, mouseY));
+            this.child.closeWhenNotHovered(!PositionedRectangle.of(this.x, this.y, this.parent.width(), this.height)
+                    .isInBoundingBox(mouseX, mouseY));
         }
 
         @Override
@@ -285,7 +295,6 @@ public class DropdownComponent extends BaseUIComponent {
             super.onMouseDown(mouseX, mouseY, button);
 
             this.onClick.accept(this.parentDropdown);
-            this.playInteractionSound();
 
             return true;
         }
@@ -299,15 +308,10 @@ public class DropdownComponent extends BaseUIComponent {
                         this.y - margins.top(),
                         this.x + this.width + margins.right(),
                         this.y + this.height + margins.bottom(),
-                        0x44FFFFFF
-                );
+                        0x44FFFFFF);
             }
 
-            super.draw(context, mouseX, mouseY, partialTicks, delta);
-        }
-
-        protected void playInteractionSound() {
-            UISounds.playButtonSound();
+            super.draw(graphics, mouseX, mouseY, partialTicks, delta);
         }
     }
 
@@ -316,8 +320,7 @@ public class DropdownComponent extends BaseUIComponent {
         protected boolean state;
 
         public Checkbox(DropdownComponent parentDropdown, Component text, boolean state, Consumer<Boolean> onClick) {
-            super(parentDropdown, text, dropdownComponent -> {
-            });
+            super(parentDropdown, text, dropdownComponent -> {});
 
             this.state = state;
             this.onClick = dropdownComponent -> {
@@ -335,11 +338,6 @@ public class DropdownComponent extends BaseUIComponent {
         @Override
         protected int determineHorizontalContentSize(Sizing sizing) {
             return super.determineHorizontalContentSize(sizing) + 17;
-        }
-
-        @Override
-        protected void playInteractionSound() {
-            UISounds.playInteractionSound();
         }
     }
 }

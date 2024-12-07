@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.event;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 
 public interface MouseScroll {
+
     boolean onMouseScroll(double mouseX, double mouseY, double amount);
 
     static EventStream<MouseScroll> newStream() {

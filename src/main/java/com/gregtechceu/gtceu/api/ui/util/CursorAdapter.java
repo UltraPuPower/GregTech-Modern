@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.ui.util;
 
 import com.gregtechceu.gtceu.api.ui.core.CursorStyle;
+
+import net.minecraft.client.Minecraft;
+
 import com.mojang.blaze3d.platform.Window;
 import org.lwjgl.glfw.GLFW;
 
@@ -8,7 +11,8 @@ import java.util.EnumMap;
 
 public class CursorAdapter {
 
-    protected static final CursorStyle[] ACTIVE_STYLES = {CursorStyle.POINTER, CursorStyle.TEXT, CursorStyle.HAND, CursorStyle.MOVE};
+    protected static final CursorStyle[] ACTIVE_STYLES = { CursorStyle.POINTER, CursorStyle.TEXT, CursorStyle.HAND,
+            CursorStyle.MOVE };
 
     protected final EnumMap<CursorStyle, Long> cursors = new EnumMap<>(CursorStyle.class);
     protected final long windowHandle;
@@ -24,7 +28,7 @@ public class CursorAdapter {
     }
 
     public static CursorAdapter ofClientWindow() {
-        return new CursorAdapter(MinecraftClient.getInstance().getWindow().getHandle());
+        return new CursorAdapter(Minecraft.getInstance().getWindow().getWindow());
     }
 
     public static CursorAdapter ofWindow(Window window) {

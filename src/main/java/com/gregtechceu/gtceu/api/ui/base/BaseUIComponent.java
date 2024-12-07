@@ -6,16 +6,20 @@ import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class BaseUIComponent implements UIComponent {
+
     @Nullable
     protected ParentUIComponent parent = null;
-    @Nullable protected String id = null;
+    @Nullable
+    protected String id = null;
     protected int zIndex = 0;
 
     protected boolean mounted = false;
@@ -59,14 +63,16 @@ public abstract class BaseUIComponent implements UIComponent {
      * @return The horizontal size this component needs to fit its contents
      */
     protected int determineHorizontalContentSize(Sizing sizing) {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not support Sizing.content() on the horizontal axis");
+        throw new UnsupportedOperationException(
+                this.getClass().getSimpleName() + " does not support Sizing.content() on the horizontal axis");
     }
 
     /**
      * @return The vertical size this component needs to fit its contents
      */
     protected int determineVerticalContentSize(Sizing sizing) {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not support Sizing.content() on the vertical axis");
+        throw new UnsupportedOperationException(
+                this.getClass().getSimpleName() + " does not support Sizing.content() on the vertical axis");
     }
 
     @Override
@@ -86,8 +92,10 @@ public abstract class BaseUIComponent implements UIComponent {
 
         final var margins = this.margins.get();
 
-        this.width = horizontalSizing.inflate(this.space.width() - margins.horizontal(), this::determineHorizontalContentSize);
-        this.height = verticalSizing.inflate(this.space.height() - margins.vertical(), this::determineVerticalContentSize);
+        this.width = horizontalSizing.inflate(this.space.width() - margins.horizontal(),
+                this::determineHorizontalContentSize);
+        this.height = verticalSizing.inflate(this.space.height() - margins.vertical(),
+                this::determineVerticalContentSize);
     }
 
     protected void notifyParentIfMounted() {
@@ -110,8 +118,7 @@ public abstract class BaseUIComponent implements UIComponent {
         } catch (ClassCastException theUserDidBadItWasNotMyFault) {
             throw new IllegalArgumentException(
                     "Invalid target class passed when configuring component of type " + this.getClass().getSimpleName(),
-                    theUserDidBadItWasNotMyFault
-            );
+                    theUserDidBadItWasNotMyFault);
         }
 
         return (C) this;

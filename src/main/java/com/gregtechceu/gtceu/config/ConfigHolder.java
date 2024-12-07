@@ -748,6 +748,13 @@ public class ConfigHolder {
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
         }
+
+        public static class RendererConfigs {
+
+            @Configurable
+            @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
+            public boolean renderFluids = true;
+        }
     }
 
     public static class DeveloperConfigs {
@@ -769,12 +776,12 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
-    }
-
-    public static class RendererConfigs {
 
         @Configurable
-        @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
-        public boolean renderFluids = true;
+        @Configurable.Comment({ "`id;path` mappings to hot reload GUI files from.",
+                "Paths are relative to the instance root.",
+                "Example: \"gtceu:assembler;./kubejs/assets/gtceu/gui/assembler.xml\"",
+                "Default: []" })
+        public String[] guiHotReloadPaths = {};
     }
 }

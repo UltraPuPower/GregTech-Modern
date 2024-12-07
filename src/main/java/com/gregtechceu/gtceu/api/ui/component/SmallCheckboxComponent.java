@@ -10,9 +10,13 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.w3c.dom.Element;
@@ -43,7 +47,8 @@ public class SmallCheckboxComponent extends BaseUIComponent {
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         if (this.label.get() != null) {
-            graphics.drawString(Minecraft.getInstance().font, this.label.get(), this.x + 13 + 2, this.y + 3, Color.WHITE.argb(), this.labelShadow);
+            graphics.drawString(Minecraft.getInstance().font, this.label.get(), this.x + 13 + 2, this.y + 3,
+                    Color.WHITE.argb(), this.labelShadow);
         }
 
         graphics.blit(TEXTURE, this.x, this.y, 13, 13, 0, 0, 13, 13, 32, 16);
@@ -54,9 +59,7 @@ public class SmallCheckboxComponent extends BaseUIComponent {
 
     @Override
     protected int determineHorizontalContentSize(Sizing sizing) {
-        return this.label.get() != null
-                ? 13 + 2 + Minecraft.getInstance().font.width(this.label.get())
-                : 13;
+        return this.label.get() != null ? 13 + 2 + Minecraft.getInstance().font.width(this.label.get()) : 13;
     }
 
     @Override
@@ -95,7 +98,7 @@ public class SmallCheckboxComponent extends BaseUIComponent {
 
     public void toggle() {
         this.checked(!this.checked);
-        UISounds.playInteractionSound();
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 
     public EventSource<OnChanged> onChanged() {
@@ -141,6 +144,7 @@ public class SmallCheckboxComponent extends BaseUIComponent {
     }
 
     public interface OnChanged {
+
         void onChanged(boolean nowChecked);
 
         static EventStream<OnChanged> newStream() {

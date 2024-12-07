@@ -7,9 +7,7 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
@@ -23,9 +21,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.w3c.dom.Element;
@@ -33,7 +33,6 @@ import org.w3c.dom.Element;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ItemComponent extends BaseUIComponent {
 
@@ -87,7 +86,8 @@ public class ItemComponent extends BaseUIComponent {
 
         var client = Minecraft.getInstance();
 
-        this.itemRenderer.renderStatic(this.stack, ItemDisplayContext.GUI, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, pose, entityBuffers, client.level, 0);
+        this.itemRenderer.renderStatic(this.stack, ItemDisplayContext.GUI, LightTexture.FULL_BRIGHT,
+                OverlayTexture.NO_OVERLAY, pose, entityBuffers, client.level, 0);
         this.entityBuffers.endBatch();
 
         // Clean up
@@ -151,9 +151,11 @@ public class ItemComponent extends BaseUIComponent {
      * @param context The tooltip context - {@code null} to fall back to the default provided by
      *                {@link net.minecraft.client.Options#advancedItemTooltips}
      */
-    public static List<ClientTooltipComponent> tooltipFromItem(ItemStack stack, @Nullable LocalPlayer player, @Nullable TooltipFlag.Default context) {
+    public static List<ClientTooltipComponent> tooltipFromItem(ItemStack stack, @Nullable LocalPlayer player,
+                                                               @Nullable TooltipFlag.Default context) {
         if (context == null) {
-            context = Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
+            context = Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED :
+                    TooltipFlag.Default.NORMAL;
         }
 
         var tooltip = new ArrayList<ClientTooltipComponent>();
@@ -165,11 +167,11 @@ public class ItemComponent extends BaseUIComponent {
 
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         stack.getTooltipImage().ifPresent(data -> {
-            //tooltip.add(1, Objects.requireNonNullElseGet( // TODO event fire here i think
-                    //bus.post(new RenderTooltipEvent())
-                    //TooltipComponentCallback.EVENT.invoker().getComponent(data),
-                    //() -> ClientTooltipComponent.create(data)
-            //));
+            // tooltip.add(1, Objects.requireNonNullElseGet( // TODO event fire here i think
+            // bus.post(new RenderTooltipEvent())
+            // TooltipComponentCallback.EVENT.invoker().getComponent(data),
+            // () -> ClientTooltipComponent.create(data)
+            // ));
         });
 
         return tooltip;
@@ -184,7 +186,8 @@ public class ItemComponent extends BaseUIComponent {
         UIParsing.apply(children, "item", UIParsing::parseResourceLocation, itemId -> {
             GTCEu.LOGGER.warn("Deprecated <item> property populated on item component - migrate to <stack> instead");
 
-            var item = BuiltInRegistries.ITEM.getOptional(itemId).orElseThrow(() -> new UIModelParsingException("Unknown item " + itemId));
+            var item = BuiltInRegistries.ITEM.getOptional(itemId)
+                    .orElseThrow(() -> new UIModelParsingException("Unknown item " + itemId));
             this.stack(item.getDefaultInstance());
         });
 

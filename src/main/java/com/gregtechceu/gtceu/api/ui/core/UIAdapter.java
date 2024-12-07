@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.util.CursorAdapter;
+
 import com.lowdragmc.lowdraglib.Platform;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -12,6 +11,9 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiFunction;
@@ -23,11 +25,11 @@ import java.util.function.BiFunction;
  * <p>
  * Additionally, the adapter implements all interfaces required for it
  * to be treated as a normal widget by the vanilla screen system - this means
- * even if you choose to not use {@link io.wispforest.owo.ui.base.BaseOwoScreen}
+ * even if you choose to not use {@link com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen}
  * you can always simply add it as a widget and get most of the functionality
  * working out of the box
  *
- * @see io.wispforest.owo.ui.base.BaseOwoScreen
+ * @see com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen
  */
 public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener, Renderable, NarratableEntry {
 
@@ -66,7 +68,8 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
      * @param <R>                The type of root component the created adapter will use
      * @return The new UI adapter, already set up for the given screen
      */
-    public static <R extends ParentUIComponent> UIAdapter<R> create(Screen screen, BiFunction<Sizing, Sizing, R> rootComponentMaker) {
+    public static <R extends ParentUIComponent> UIAdapter<R> create(Screen screen,
+                                                                    BiFunction<Sizing, Sizing, R> rootComponentMaker) {
         var rootComponent = rootComponentMaker.apply(Sizing.fill(100), Sizing.fill(100));
 
         var adapter = new UIAdapter<>(0, 0, screen.width, screen.height, rootComponent);
@@ -88,7 +91,9 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
      * @param <R>                The type of root component the created adapter will use
      * @return The new UI adapter, ready for layout inflation
      */
-    public static <R extends ParentUIComponent> UIAdapter<R> createWithoutScreen(int x, int y, int width, int height, BiFunction<Sizing, Sizing, R> rootComponentMaker) {
+    public static <
+            R extends ParentUIComponent> UIAdapter<R> createWithoutScreen(int x, int y, int width, int height,
+                                                                          BiFunction<Sizing, Sizing, R> rootComponentMaker) {
         var rootComponent = rootComponentMaker.apply(Sizing.fill(100), Sizing.fill(100));
         return new UIAdapter<>(x, y, width, height, rootComponent);
     }
@@ -134,7 +139,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
     /**
      * @return Toggle the inspector between
-     * hovered and global mode
+     *         hovered and global mode
      */
     public boolean toggleGlobalInspector() {
         return this.globalInspector = !this.globalInspector;
@@ -164,7 +169,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
         try {
             isRendering = true;
 
-            //if (this.captureFrame) RenderDoc.startFrameCapture();
+            // if (this.captureFrame) RenderDoc.startFrameCapture();
 
             final var delta = Minecraft.getInstance().getDeltaFrameTime();
             final var window = Minecraft.getInstance().getWindow();
@@ -193,7 +198,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
                 graphics.pose().translate(0, 0, -this.inspectorZOffset);
             }
 
-            //if (this.captureFrame) RenderDoc.endFrameCapture();
+            // if (this.captureFrame) RenderDoc.endFrameCapture();
         } finally {
             isRendering = false;
             this.captureFrame = false;
@@ -243,7 +248,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             }
         }
 
-        if (Platform.isDevEnv() && keyCode == GLFW.GLFW_KEY_R /*&& RenderDoc.isAvailable()*/) {
+        if (Platform.isDevEnv() && keyCode == GLFW.GLFW_KEY_R /* && RenderDoc.isAvailable() */) {
             if ((modifiers & GLFW.GLFW_MOD_ALT) != 0 && (modifiers & GLFW.GLFW_MOD_CONTROL) != 0) {
                 this.captureFrame = true;
             }

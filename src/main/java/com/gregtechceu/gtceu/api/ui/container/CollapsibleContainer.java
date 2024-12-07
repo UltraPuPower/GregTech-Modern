@@ -7,9 +7,11 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.Delta;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
-import com.mojang.math.Axis;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+
+import com.mojang.math.Axis;
 import org.lwjgl.glfw.GLFW;
 import org.w3c.dom.Element;
 
@@ -19,13 +21,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class CollapsibleContainer extends FlowLayout {
+
     public static final Surface SURFACE = (context, component) -> context.fill(
             component.x() + 5,
             component.y(),
             component.x() + 6,
             component.y() + component.height(),
-            0x77FFFFFF
-    );
+            0x77FFFFFF);
 
     protected final EventStream<OnToggled> toggledEvents = OnToggled.newStream();
 
@@ -119,7 +121,6 @@ public class CollapsibleContainer extends FlowLayout {
 
         if (mouseY <= this.titleLayout.fullSize().height() && !superResult) {
             this.toggleExpansion();
-            UISounds.playInteractionSound();
             return true;
         } else {
             return superResult;
@@ -164,12 +165,13 @@ public class CollapsibleContainer extends FlowLayout {
         var textElement = UIParsing.childElements(element).get("text");
         var title = textElement == null ? Component.empty() : UIParsing.parseText(textElement);
 
-        return element.getAttribute("expanded").equals("true")
-                ? Containers.collapsible(Sizing.content(), Sizing.content(), title, true)
-                : Containers.collapsible(Sizing.content(), Sizing.content(), title, false);
+        return element.getAttribute("expanded").equals("true") ?
+                Containers.collapsible(Sizing.content(), Sizing.content(), title, true) :
+                Containers.collapsible(Sizing.content(), Sizing.content(), title, false);
     }
 
     public interface OnToggled {
+
         void onToggle(boolean nowExpanded);
 
         static EventStream<OnToggled> newStream() {

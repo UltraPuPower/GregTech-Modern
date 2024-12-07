@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.ui.util;
 
-import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+
+import net.minecraft.client.Minecraft;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -30,8 +32,7 @@ public final class ScissorStack {
                 (int) (window.getGuiScaledHeight() - (y / scale) - height / scale),
                 (int) (width / scale),
                 (int) (height / scale),
-                null
-        );
+                null);
     }
 
     public static void push(int x, int y, int width, int height, @Nullable PoseStack poseStack) {
@@ -73,8 +74,7 @@ public final class ScissorStack {
                 (int) (newFrame.x() * scale),
                 (int) (window.getHeight() - (newFrame.y() * scale) - newFrame.height() * scale),
                 (int) (newFrame.width() * scale),
-                (int) (newFrame.height() * scale)
-        );
+                (int) (newFrame.height() * scale));
     }
 
     public static void drawUnclipped(Runnable action) {
@@ -105,9 +105,7 @@ public final class ScissorStack {
 
         return top.intersects(
                 withGlTransform(
-                        x, y, 0, 0, poseStack
-                )
-        );
+                        x, y, 0, 0, poseStack));
     }
 
     public static boolean isVisible(UIComponent component, @Nullable PoseStack poseStack) {
@@ -121,12 +119,11 @@ public final class ScissorStack {
                         component.y() - margins.top(),
                         component.width() + margins.right(),
                         component.height() + margins.bottom(),
-                        poseStack
-                )
-        );
+                        poseStack));
     }
 
-    private static PositionedRectangle withGlTransform(int x, int y, int width, int height, @Nullable PoseStack poseStack) {
+    private static PositionedRectangle withGlTransform(int x, int y, int width, int height,
+                                                       @Nullable PoseStack poseStack) {
         if (poseStack == null) poseStack = EMPTY_STACK;
 
         poseStack.pushPose();
@@ -148,5 +145,4 @@ public final class ScissorStack {
 
         return PositionedRectangle.of(x, y, width, height);
     }
-
 }

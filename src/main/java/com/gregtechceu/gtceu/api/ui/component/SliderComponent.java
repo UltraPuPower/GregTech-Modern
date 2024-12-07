@@ -5,16 +5,18 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
-import com.lowdragmc.shimmer.client.auxiliaryScreen.SliderWidget;
+
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+
 import org.w3c.dom.Element;
 
 import java.util.Map;
 import java.util.function.Function;
 
 public class SliderComponent extends AbstractSliderButton {
+
     protected final EventStream<OnChanged> changedEvents = OnChanged.newStream();
     protected final EventStream<OnSlideEnd> slideEndEvents = OnSlideEnd.newStream();
 
@@ -134,8 +136,8 @@ public class SliderComponent extends AbstractSliderButton {
 
     /**
      * @deprecated Use {@link #message(Function)} instead,
-     * as the message set by this method will be overwritten
-     * the next time this slider is moved
+     *             as the message set by this method will be overwritten
+     *             the next time this slider is moved
      */
     @Override
     @Deprecated
@@ -144,6 +146,7 @@ public class SliderComponent extends AbstractSliderButton {
     }
 
     public interface OnChanged {
+
         void onChanged(double value);
 
         static EventStream<OnChanged> newStream() {
@@ -156,6 +159,7 @@ public class SliderComponent extends AbstractSliderButton {
     }
 
     public interface OnSlideEnd {
+
         void onSlideEnd();
 
         static EventStream<OnSlideEnd> newStream() {

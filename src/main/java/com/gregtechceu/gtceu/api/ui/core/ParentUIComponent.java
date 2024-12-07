@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
+import com.gregtechceu.gtceu.api.ui.parsing.IncompatibleUIModelException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
@@ -95,7 +97,7 @@ public interface ParentUIComponent extends UIComponent {
 
     /**
      * @return {@code true} if this component allows its
-     * children to overflow its bounding box
+     *         children to overflow its bounding box
      */
     boolean allowOverflow();
 
@@ -127,7 +129,8 @@ public interface ParentUIComponent extends UIComponent {
 
         if (!this.allowOverflow()) {
             var padding = this.padding().get();
-            ScissorStack.push(this.x() + padding.left(), this.y() + padding.top(), this.width() - padding.horizontal(), this.height() - padding.vertical(), g.pose());
+            ScissorStack.push(this.x() + padding.left(), this.y() + padding.top(), this.width() - padding.horizontal(),
+                    this.height() - padding.vertical(), g.pose());
         }
 
         for (var child : this.children()) {
@@ -175,7 +178,7 @@ public interface ParentUIComponent extends UIComponent {
 
     /**
      * @apiNote When overriding update and calling {@code ParentComponent.super.update()},
-     * ensure that {@link UIComponent#update(float, int, int)} is called as well, through some means
+     *          ensure that {@link UIComponent#update(float, int, int)} is called as well, through some means
      */
     @Override
     default void update(float delta, int mouseX, int mouseY) {
@@ -202,7 +205,7 @@ public interface ParentUIComponent extends UIComponent {
      *
      * @param id The id to search for
      * @return The child with the given id, or {@code null} if
-     * none was found
+     *         none was found
      */
     @SuppressWarnings("unchecked")
     default <T extends UIComponent> T childById(@NotNull Class<T> expectedClass, @NotNull String id) {
@@ -214,10 +217,8 @@ public interface ParentUIComponent extends UIComponent {
 
                 if (!expectedClass.isAssignableFrom(child.getClass())) {
                     throw new IncompatibleUIModelException(
-                            "Expected child with id '" + id + "'"
-                                    + " to be a " + expectedClass.getSimpleName()
-                                    + " but it is a " + child.getClass().getSimpleName()
-                    );
+                            "Expected child with id '" + id + "'" + " to be a " + expectedClass.getSimpleName() +
+                                    " but it is a " + child.getClass().getSimpleName());
                 }
 
                 return (T) child;
@@ -236,7 +237,7 @@ public interface ParentUIComponent extends UIComponent {
      * @param x The x-coordinate to query
      * @param y The y-coordinate to query
      * @return The most specific child at the given coordinates,
-     * or {@code null} if there is none
+     *         or {@code null} if there is none
      */
     default @Nullable UIComponent childAt(int x, int y) {
         var iter = this.children().listIterator(this.children().size());
@@ -261,7 +262,7 @@ public interface ParentUIComponent extends UIComponent {
      *
      * @param into The list into which to collect the hierarchy
      * @deprecated Use {@link #collectDescendants(ArrayList)} instead, it has
-     * a much clearer name
+     *             a much clearer name
      */
     @Deprecated(forRemoval = true)
     default void collectChildren(ArrayList<UIComponent> into) {

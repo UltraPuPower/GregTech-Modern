@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.ui.util;
 /**
  * Screens that wish to be notified when the players navigates back to
  * the game instead of to another screen may implement this interface
- * for a more reliable alternative to {@link Screen#removed()}
+ * for a more reliable alternative to {@link net.minecraft.client.gui.screens.Screen#removed()}
  */
 public interface DisposableScreen {
 
@@ -13,5 +13,4 @@ public interface DisposableScreen {
      * another screen - ensured to be called too often than too rarely
      */
     void dispose();
-
 }

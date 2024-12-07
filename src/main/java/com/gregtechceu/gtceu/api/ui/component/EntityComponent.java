@@ -6,14 +6,8 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.lowdragmc.shimmer.client.light.LightManager;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Axis;
+import com.gregtechceu.gtceu.api.ui.util.pond.UIEntityRenderDispatcherExtension;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -22,7 +16,6 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.Connection;
@@ -32,6 +25,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelPart;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.math.Axis;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -41,7 +42,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class EntityComponent <E extends Entity> extends BaseUIComponent {
+public class EntityComponent<E extends Entity> extends BaseUIComponent {
 
     protected final EntityRenderDispatcher dispatcher;
     protected final MultiBufferSource.BufferSource entityBuffers;
@@ -110,9 +111,9 @@ public class EntityComponent <E extends Entity> extends BaseUIComponent {
             pose.mulPose(Axis.YP.rotationDegrees(-45 + this.mouseRotation));
         }
 
-        var dispatcher = (OwoEntityRenderDispatcherExtension) this.dispatcher;
-        dispatcher.owo$setCounterRotate(true);
-        dispatcher.owo$setShowNametag(this.showNametag);
+        var dispatcher = (UIEntityRenderDispatcherExtension) this.dispatcher;
+        dispatcher.gtceu$setCounterRotate(true);
+        dispatcher.gtceu$setShowNametag(this.showNametag);
 
         RenderSystem.setShaderLights(new Vector3f(.15f, 1, 0), new Vector3f(.15f, -1, 0));
         this.dispatcher.setRenderShadow(false);
@@ -123,8 +124,8 @@ public class EntityComponent <E extends Entity> extends BaseUIComponent {
 
         pose.popPose();
 
-        dispatcher.owo$setCounterRotate(false);
-        dispatcher.owo$setShowNametag(true);
+        dispatcher.gtceu$setCounterRotate(false);
+        dispatcher.gtceu$setShowNametag(true);
     }
 
     @Override
@@ -227,7 +228,8 @@ public class EntityComponent <E extends Entity> extends BaseUIComponent {
     public static EntityComponent<?> parse(Element element) {
         UIParsing.expectAttributes(element, "type");
         var entityId = UIParsing.parseResourceLocation(element.getAttributeNode("type"));
-        var entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(entityId).orElseThrow(() -> new UIModelParsingException("Unknown entity type " + entityId));
+        var entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(entityId)
+                .orElseThrow(() -> new UIModelParsingException("Unknown entity type " + entityId));
 
         CompoundTag nbt = null;
         if (element.hasAttribute("nbt")) {
@@ -254,10 +256,9 @@ public class EntityComponent <E extends Entity> extends BaseUIComponent {
                             new Connection(PacketFlow.CLIENTBOUND),
                             null,
                             profile,
-                            Minecraft.getInstance().getTelemetryManager().createWorldSessionManager(false, Duration.ZERO, "tetris")
-                    ),
-                    null, null, false, false
-            );
+                            Minecraft.getInstance().getTelemetryManager().createWorldSessionManager(false,
+                                    Duration.ZERO, "tetris")),
+                    null, null, false, false);
 
             this.minecraft.getSkinManager().registerSkins(this.getGameProfile(), (type, identifier, texture) -> {
                 if (type != MinecraftProfileTexture.Type.SKIN) return;

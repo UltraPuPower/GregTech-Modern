@@ -3,12 +3,13 @@ package com.gregtechceu.gtceu.api.ui.container;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
-public class DraggableContainer <C extends UIComponent> extends WrappingParentUIComponent<C> {
+public class DraggableContainer<C extends UIComponent> extends WrappingParentUIComponent<C> {
 
     protected int foreheadSize = 10;
     protected boolean alwaysOnTop = false;
@@ -84,7 +85,8 @@ public class DraggableContainer <C extends UIComponent> extends WrappingParentUI
 
     @Override
     public ParentUIComponent padding(Insets padding) {
-        return super.padding(Insets.of(padding.top() + this.foreheadSize, padding.bottom(), padding.left(), padding.right()));
+        return super.padding(
+                Insets.of(padding.top() + this.foreheadSize, padding.bottom(), padding.left(), padding.right()));
     }
 
     public DraggableContainer<C> foreheadSize(int foreheadSize) {

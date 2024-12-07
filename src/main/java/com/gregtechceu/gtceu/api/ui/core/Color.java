@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
-import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
+
+import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Node;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -35,8 +36,7 @@ public record Color(float red, float green, float blue, float alpha) implements 
                 ((argb >> 16) & 0xFF) / 255f,
                 ((argb >> 8) & 0xFF) / 255f,
                 (argb & 0xFF) / 255f,
-                (argb >>> 24) / 255f
-        );
+                (argb >>> 24) / 255f);
     }
 
     public static Color ofRgb(int rgb) {
@@ -44,8 +44,7 @@ public record Color(float red, float green, float blue, float alpha) implements 
                 ((rgb >> 16) & 0xFF) / 255f,
                 ((rgb >> 8) & 0xFF) / 255f,
                 (rgb & 0xFF) / 255f,
-                1f
-        );
+                1f);
     }
 
     public static Color ofHsv(float hue, float saturation, float value) {
@@ -70,16 +69,12 @@ public record Color(float red, float green, float blue, float alpha) implements 
     }
 
     public int rgb() {
-        return (int) (this.red * 255) << 16
-                | (int) (this.green * 255) << 8
-                | (int) (this.blue * 255);
+        return (int) (this.red * 255) << 16 | (int) (this.green * 255) << 8 | (int) (this.blue * 255);
     }
 
     public int argb() {
-        return (int) (this.alpha * 255) << 24
-                | (int) (this.red * 255) << 16
-                | (int) (this.green * 255) << 8
-                | (int) (this.blue * 255);
+        return (int) (this.alpha * 255) << 24 | (int) (this.red * 255) << 16 | (int) (this.green * 255) << 8 |
+                (int) (this.blue * 255);
     }
 
     public float[] hsv() {
@@ -114,13 +109,11 @@ public record Color(float red, float green, float blue, float alpha) implements 
             if (hue < 0) hue = hue + 1.0f;
         }
 
-        return new float[]{hue, saturation, value, this.alpha};
+        return new float[] { hue, saturation, value, this.alpha };
     }
 
     public String asHexString(boolean includeAlpha) {
-        return includeAlpha
-                ? String.format("#%08X", this.argb())
-                : String.format("#%06X", this.rgb());
+        return includeAlpha ? String.format("#%08X", this.argb()) : String.format("#%06X", this.rgb());
     }
 
     @Override
@@ -129,8 +122,7 @@ public record Color(float red, float green, float blue, float alpha) implements 
                 Mth.lerp(delta, this.red, next.red),
                 Mth.lerp(delta, this.green, next.green),
                 Mth.lerp(delta, this.blue, next.blue),
-                Mth.lerp(delta, this.alpha, next.alpha)
-        );
+                Mth.lerp(delta, this.alpha, next.alpha));
     }
 
     /**
@@ -150,15 +142,16 @@ public record Color(float red, float green, float blue, float alpha) implements 
             if (color != null) {
                 return color;
             } else {
-                throw new UIModelParsingException("Invalid color value '" + text + "', expected hex color of format #RRGGBB or #AARRGGBB or named text color");
+                throw new UIModelParsingException("Invalid color value '" + text +
+                        "', expected hex color of format #RRGGBB or #AARRGGBB or named text color");
             }
         } else {
             if (text.matches("#([A-Fa-f\\d]{2}){3,4}")) {
-                return text.length() == 7
-                        ? Color.ofRgb(Integer.parseUnsignedInt(text.substring(1), 16))
-                        : Color.ofArgb(Integer.parseUnsignedInt(text.substring(1), 16));
+                return text.length() == 7 ? Color.ofRgb(Integer.parseUnsignedInt(text.substring(1), 16)) :
+                        Color.ofArgb(Integer.parseUnsignedInt(text.substring(1), 16));
             } else {
-                throw new UIModelParsingException("Invalid color value '" + text + "', expected hex color of format #RRGGBB or #AARRGGBB or named text color");
+                throw new UIModelParsingException("Invalid color value '" + text +
+                        "', expected hex color of format #RRGGBB or #AARRGGBB or named text color");
             }
         }
     }

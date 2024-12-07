@@ -54,7 +54,7 @@ repositories {
             includeGroup "thedarkcolour"
         }
     }
-    maven { url "https://maven.architectury.dev/" }
+    maven { url = "https://maven.architectury.dev/" }
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
-    maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
+    maven { url = 'https://jitpack.io' } // Mixin Extras, Fabric ASM
 }

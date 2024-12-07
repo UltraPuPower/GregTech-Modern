@@ -5,7 +5,10 @@ import org.w3c.dom.Element;
 import java.util.Locale;
 
 public enum VerticalAlignment {
-    TOP, CENTER, BOTTOM;
+
+    TOP,
+    CENTER,
+    BOTTOM;
 
     public int align(int componentWidth, int span) {
         return switch (this) {

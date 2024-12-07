@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,13 +66,15 @@ public interface UIComponent extends PositionedRectangle {
      * @return The parent of this component
      */
     @Contract(pure = true)
-    @Nullable ParentUIComponent parent();
+    @Nullable
+    ParentUIComponent parent();
 
     /**
      * @return The focus handler of this component hierarchy
      */
     @Contract(pure = true)
-    @Nullable FocusHandler focusHandler();
+    @Nullable
+    FocusHandler focusHandler();
 
     /**
      * Update this component's positioning and notify the parent
@@ -156,7 +160,8 @@ public interface UIComponent extends PositionedRectangle {
     /**
      * @return The current id of this component
      */
-    @Nullable String id();
+    @Nullable
+    String id();
 
     /**
      * Set the tooltip this component should display
@@ -192,10 +197,11 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The tooltip this component currently
-     * display while hovered
+     *         display while hovered
      */
     @Contract(pure = true)
-    @Nullable List<ClientTooltipComponent> tooltip();
+    @Nullable
+    List<ClientTooltipComponent> tooltip();
 
     /**
      * Set the Z-Index of this component. This is used
@@ -271,6 +277,7 @@ public interface UIComponent extends PositionedRectangle {
      * this component can be represented as - otherwise an exception is thrown</b>
      * <p>
      * Example:
+     * 
      * <pre>
      * container.child(Components.label(Text.of("Click")).&lt;LabelComponent&gt;configure(label -> {
      *     label.mouseDown().subscribe((mouseX, mouseY, button) -> {
@@ -296,7 +303,7 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The root component of this component's
-     * tree, or {@code null} if this component is not mounted
+     *         tree, or {@code null} if this component is not mounted
      */
     default ParentUIComponent root() {
         var root = this.parent();
@@ -328,7 +335,7 @@ public interface UIComponent extends PositionedRectangle {
      * @param button The mouse button which was clicked, refer to the constants
      *               in {@link org.lwjgl.glfw.GLFW}
      * @return {@code true} if this component handled the click and no more
-     * components should be notified
+     *         components should be notified
      */
     boolean onMouseDown(double mouseX, double mouseY, int button);
 
@@ -341,7 +348,7 @@ public interface UIComponent extends PositionedRectangle {
      * @param button The mouse button which was released, refer to the constants
      *               in {@link org.lwjgl.glfw.GLFW}
      * @return {@code true} if this component handled the event and no more
-     * components should be notified
+     *         components should be notified
      */
     boolean onMouseUp(double mouseX, double mouseY, int button);
 
@@ -357,7 +364,7 @@ public interface UIComponent extends PositionedRectangle {
      *               to this component's bounding box root
      * @param amount How far the mouse was scrolled
      * @return {@code true} if this component handled the scroll event
-     * and no more components should be notified
+     *         and no more components should be notified
      */
     boolean onMouseScroll(double mouseX, double mouseY, double amount);
 
@@ -376,7 +383,7 @@ public interface UIComponent extends PositionedRectangle {
      * @param button The mouse button which was clicked, refer to the constants
      *               in {@link org.lwjgl.glfw.GLFW}
      * @return {@code true} if this component handled the mouse move and no more
-     * components should be notified
+     *         components should be notified
      */
     boolean onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY, int button);
 
@@ -391,7 +398,7 @@ public interface UIComponent extends PositionedRectangle {
      * @param modifiers A bitfield describing which modifier keys were pressed,
      *                  refer to <a href="https://www.glfw.org/docs/3.3/group__mods.html">GLFW Modifier key flags</a>
      * @return {@code true} if this component handled the key-press and no
-     * more components should be notified
+     *         more components should be notified
      */
     boolean onKeyPress(int keyCode, int scanCode, int modifiers);
 
@@ -406,7 +413,7 @@ public interface UIComponent extends PositionedRectangle {
      * @param modifiers A bitfield describing which modifier keys were pressed,
      *                  refer to <a href="https://www.glfw.org/docs/3.3/group__mods.html">GLFW Modifier key flags</a>
      * @return {@code true} if this component handled the input and no
-     * * more components should be notified
+     *         * more components should be notified
      */
     boolean onCharTyped(char chr, int modifiers);
 
@@ -440,7 +447,7 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The style of cursor to use while the mouse is
-     * hovering this component
+     *         hovering this component
      */
     CursorStyle cursorStyle();
 
@@ -472,7 +479,7 @@ public interface UIComponent extends PositionedRectangle {
      * @param x The x-coordinate to test
      * @param y The y-coordinate to test
      * @return {@code true} if this component's bounding box encloses
-     * the given coordinates
+     *         the given coordinates
      */
     @Override
     default boolean isInBoundingBox(double x, double y) {
@@ -517,7 +524,7 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The current width of the bounding box
-     * of this component
+     *         of this component
      */
     @Override
     @Contract(pure = true)
@@ -525,7 +532,7 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The current height of the bounding box
-     * of this component
+     *         of this component
      */
     @Override
     @Contract(pure = true)
@@ -533,13 +540,13 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The current x-coordinate of the top-left
-     * corner of the bounding box of this component
-     * <p>
-     * As a general rule of thumb, this property should be used
-     * whenever the component's position is queried during rendering,
-     * input processing and s on. If however, the position is required
-     * in the context of a layout operation, {@link #baseX()} is almost
-     * always the correct choice instead
+     *         corner of the bounding box of this component
+     *         <p>
+     *         As a general rule of thumb, this property should be used
+     *         whenever the component's position is queried during rendering,
+     *         input processing and s on. If however, the position is required
+     *         in the context of a layout operation, {@link #baseX()} is almost
+     *         always the correct choice instead
      */
     @Override
     @Contract(pure = true)
@@ -547,13 +554,13 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The current x-coordinate of this component's
-     * <i>base point</i> - the point on which it bases
-     * layout calculations.
-     * <p>
-     * For the majority of components this will be identical
-     * to {@link #x()} as they don't have special logic. A notable
-     * exception is the {@link io.wispforest.owo.ui.container.DraggableContainer}
-     * which internally applies a separate offset from dragging
+     *         <i>base point</i> - the point on which it bases
+     *         layout calculations.
+     *         <p>
+     *         For the majority of components this will be identical
+     *         to {@link #x()} as they don't have special logic. A notable
+     *         exception is the {@link com.gregtechceu.gtceu.api.ui.container.DraggableContainer}
+     *         which internally applies a separate offset from dragging
      */
     default int baseX() {
         return this.x();
@@ -577,13 +584,13 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The current y-coordinate of the top-left
-     * corner of the bounding box of this component
-     * <p>
-     * As a general rule of thumb, this property should be used
-     * whenever the component's position is queried during rendering,
-     * input processing and s on. If however, the position is required
-     * in the context of a layout operation, {@link #baseY()} is almost
-     * always the correct choice instead
+     *         corner of the bounding box of this component
+     *         <p>
+     *         As a general rule of thumb, this property should be used
+     *         whenever the component's position is queried during rendering,
+     *         input processing and s on. If however, the position is required
+     *         in the context of a layout operation, {@link #baseY()} is almost
+     *         always the correct choice instead
      */
     @Override
     @Contract(pure = true)
@@ -591,13 +598,13 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * @return The current y-coordinate of this component's
-     * <i>base point</i> - the point on which it bases
-     * layout calculations.
-     * <p>
-     * For the majority of components this will be identical
-     * to {@link #y()} as they don't have special logic. A notable
-     * exception is the {@link io.wispforest.owo.ui.container.DraggableContainer}
-     * which internally applies a separate offset from dragging
+     *         <i>base point</i> - the point on which it bases
+     *         layout calculations.
+     *         <p>
+     *         For the majority of components this will be identical
+     *         to {@link #y()} as they don't have special logic. A notable
+     *         exception is the {@link com.gregtechceu.gtceu.api.ui.container.DraggableContainer}
+     *         which internally applies a separate offset from dragging
      */
     default int baseY() {
         return this.y();

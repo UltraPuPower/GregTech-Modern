@@ -7,8 +7,10 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.w3c.dom.Element;
 
 import java.util.Map;
@@ -23,7 +25,8 @@ public class TextureComponent extends BaseUIComponent {
     protected final AnimatableProperty<PositionedRectangle> visibleArea;
     protected boolean blend = false;
 
-    protected TextureComponent(ResourceLocation texture, int u, int v, int regionWidth, int regionHeight, int textureWidth, int textureHeight) {
+    protected TextureComponent(ResourceLocation texture, int u, int v, int regionWidth, int regionHeight,
+                               int textureWidth, int textureHeight) {
         this.texture = texture;
         this.u = u;
         this.v = v;
@@ -79,8 +82,7 @@ public class TextureComponent extends BaseUIComponent {
                 this.v + visibleArea.y(),
                 rightEdge - visibleArea.x(),
                 bottomEdge - visibleArea.y(),
-                this.textureWidth, this.textureHeight
-        );
+                this.textureWidth, this.textureHeight);
 
         if (this.blend) {
             RenderSystem.disableBlend();

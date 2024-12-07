@@ -1,0 +1,12 @@
+{
+    "net/minecraft/client/gui/components/AbstractWidget": [
+        "com/gregtechceu/gtceu/api/ui/inject/UIComponentStub"
+    ],
+    "net/minecraft/client/renderer/entity/EntityRenderDispatcher": [
+        "com/gregtechceu/gtceu/api/ui/util/pond/UIEntityRenderDispatcherExtension"
+    ],
+    "net/minecraft/world/inventory/AbstractContainerMenu": [
+        "com/gregtechceu/gtceu/client/ui/screens/UIAbstractContainerMenu",
+        "com/gregtechceu/gtceu/api/ui/util/pond/UIAbstractContainerMenuExtension"
+    ]
+}

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.ui.mixin;
 
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.component.VanillaWidgetComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.event.*;
@@ -8,9 +9,11 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
+
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,198 +27,199 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-
 @Mixin(AbstractWidget.class)
 public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventListener {
-    @Shadow public boolean active;
+
+    @Shadow
+    public boolean active;
 
     @Unique
-    protected VanillaWidgetComponent ui$wrapper = null;
+    protected VanillaWidgetComponent gtceu$wrapper = null;
 
     @Override
     public void inflate(Size space) {
-        this.ui$getWrapper().inflate(space);
+        this.gtceu$getWrapper().inflate(space);
     }
 
     @Override
     public void mount(ParentUIComponent parent, int x, int y) {
-        this.ui$getWrapper().mount(parent, x, y);
+        this.gtceu$getWrapper().mount(parent, x, y);
     }
 
     @Override
     public void dismount(DismountReason reason) {
-        this.ui$getWrapper().dismount(reason);
+        this.gtceu$getWrapper().dismount(reason);
     }
 
     @Nullable
     @Override
     public ParentUIComponent parent() {
-        return this.ui$getWrapper().parent();
+        return this.gtceu$getWrapper().parent();
     }
 
     @Override
     public @Nullable FocusHandler focusHandler() {
-        return this.ui$getWrapper().focusHandler();
+        return this.gtceu$getWrapper().focusHandler();
     }
 
     @Override
     public UIComponent positioning(Positioning positioning) {
-        this.ui$getWrapper().positioning(positioning);
+        this.gtceu$getWrapper().positioning(positioning);
         return this;
     }
 
     @Override
     public AnimatableProperty<Positioning> positioning() {
-        return this.ui$getWrapper().positioning();
+        return this.gtceu$getWrapper().positioning();
     }
 
     @Override
     public UIComponent margins(Insets margins) {
-        this.ui$getWrapper().margins(margins);
+        this.gtceu$getWrapper().margins(margins);
         return this;
     }
 
     @Override
     public AnimatableProperty<Insets> margins() {
-        return this.ui$getWrapper().margins();
+        return this.gtceu$getWrapper().margins();
     }
 
     @Override
     public UIComponent horizontalSizing(Sizing horizontalSizing) {
-        this.ui$getWrapper().horizontalSizing(horizontalSizing);
+        this.gtceu$getWrapper().horizontalSizing(horizontalSizing);
         return this;
     }
 
     @Override
     public UIComponent verticalSizing(Sizing verticalSizing) {
-        this.ui$getWrapper().verticalSizing(verticalSizing);
+        this.gtceu$getWrapper().verticalSizing(verticalSizing);
         return this;
     }
 
     @Override
     public AnimatableProperty<Sizing> horizontalSizing() {
-        return this.ui$getWrapper().horizontalSizing();
+        return this.gtceu$getWrapper().horizontalSizing();
     }
 
     @Override
     public AnimatableProperty<Sizing> verticalSizing() {
-        return this.ui$getWrapper().verticalSizing();
+        return this.gtceu$getWrapper().verticalSizing();
     }
 
     @Override
     public EventSource<MouseDown> mouseDown() {
-        return this.ui$getWrapper().mouseDown();
+        return this.gtceu$getWrapper().mouseDown();
     }
 
     @Override
     public int x() {
-        return this.ui$getWrapper().x();
+        return this.gtceu$getWrapper().x();
     }
 
     @Override
     public int y() {
-        return this.ui$getWrapper().y();
+        return this.gtceu$getWrapper().y();
     }
 
     @Override
     public int width() {
-        return this.ui$getWrapper().width();
+        return this.gtceu$getWrapper().width();
     }
 
     @Override
     public int height() {
-        return this.ui$getWrapper().height();
+        return this.gtceu$getWrapper().height();
     }
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
-        this.ui$getWrapper().draw(graphics, mouseX, mouseY, partialTicks, delta);
+        this.gtceu$getWrapper().draw(graphics, mouseX, mouseY, partialTicks, delta);
     }
 
     @Override
     public boolean shouldDrawTooltip(double mouseX, double mouseY) {
-        return this.ui$getWrapper().shouldDrawTooltip(mouseX, mouseY);
+        return this.gtceu$getWrapper().shouldDrawTooltip(mouseX, mouseY);
     }
 
     @Override
     public void update(float delta, int mouseX, int mouseY) {
-        this.ui$getWrapper().update(delta, mouseX, mouseY);
-        this.cursorStyle(this.active ? this.ui$preferredCursorStyle() : CursorStyle.POINTER);
+        this.gtceu$getWrapper().update(delta, mouseX, mouseY);
+        this.cursorStyle(this.active ? this.gtceu$preferredCursorStyle() : CursorStyle.POINTER);
     }
 
     @Override
     public boolean onMouseDown(double mouseX, double mouseY, int button) {
-        return this.ui$getWrapper().onMouseDown(mouseX, mouseY, button);
+        return this.gtceu$getWrapper().onMouseDown(mouseX, mouseY, button);
     }
 
     @Override
     public boolean onMouseUp(double mouseX, double mouseY, int button) {
-        return this.ui$getWrapper().onMouseUp(mouseX, mouseY, button);
+        return this.gtceu$getWrapper().onMouseUp(mouseX, mouseY, button);
     }
 
     @Override
     public EventSource<MouseUp> mouseUp() {
-        return this.ui$getWrapper().mouseUp();
+        return this.gtceu$getWrapper().mouseUp();
     }
 
     @Override
     public EventSource<MouseScroll> mouseScroll() {
-        return this.ui$getWrapper().mouseScroll();
+        return this.gtceu$getWrapper().mouseScroll();
     }
 
     @Override
     public EventSource<MouseDrag> mouseDrag() {
-        return this.ui$getWrapper().mouseDrag();
+        return this.gtceu$getWrapper().mouseDrag();
     }
 
     @Override
     public EventSource<KeyPress> keyPress() {
-        return this.ui$getWrapper().keyPress();
+        return this.gtceu$getWrapper().keyPress();
     }
 
     @Override
     public EventSource<CharTyped> charTyped() {
-        return this.ui$getWrapper().charTyped();
+        return this.gtceu$getWrapper().charTyped();
     }
 
     @Override
     public EventSource<FocusGained> focusGained() {
-        return this.ui$getWrapper().focusGained();
+        return this.gtceu$getWrapper().focusGained();
     }
 
     @Override
     public EventSource<FocusLost> focusLost() {
-        return this.ui$getWrapper().focusLost();
+        return this.gtceu$getWrapper().focusLost();
     }
 
     @Override
     public EventSource<MouseEnter> mouseEnter() {
-        return this.ui$getWrapper().mouseEnter();
+        return this.gtceu$getWrapper().mouseEnter();
     }
 
     @Override
     public EventSource<MouseLeave> mouseLeave() {
-        return this.ui$getWrapper().mouseLeave();
+        return this.gtceu$getWrapper().mouseLeave();
     }
 
     @Override
     public boolean onMouseScroll(double mouseX, double mouseY, double amount) {
-        return this.ui$getWrapper().onMouseScroll(mouseX, mouseY, amount);
+        return this.gtceu$getWrapper().onMouseScroll(mouseX, mouseY, amount);
     }
 
     @Override
     public boolean onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY, int button) {
-        return this.ui$getWrapper().onMouseDrag(mouseX, mouseY, deltaX, deltaY, button);
+        return this.gtceu$getWrapper().onMouseDrag(mouseX, mouseY, deltaX, deltaY, button);
     }
 
     @Override
     public boolean onKeyPress(int keyCode, int scanCode, int modifiers) {
-        return this.ui$getWrapper().onKeyPress(keyCode, scanCode, modifiers);
+        return this.gtceu$getWrapper().onKeyPress(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean onCharTyped(char chr, int modifiers) {
-        return this.ui$getWrapper().onCharTyped(chr, modifiers);
+        return this.gtceu$getWrapper().onCharTyped(chr, modifiers);
     }
 
     @Override
@@ -226,18 +230,18 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     @Override
     public void onFocusGained(FocusSource source) {
         this.setFocused(source == FocusSource.KEYBOARD_CYCLE);
-        this.ui$getWrapper().onFocusGained(source);
+        this.gtceu$getWrapper().onFocusGained(source);
     }
 
     @Override
     public void onFocusLost() {
         this.setFocused(false);
-        this.ui$getWrapper().onFocusLost();
+        this.gtceu$getWrapper().onFocusLost();
     }
 
     @Override
     public <C extends UIComponent> C configure(Consumer<C> closure) {
-        return this.ui$getWrapper().configure(closure);
+        return this.gtceu$getWrapper().configure(closure);
     }
 
     @Override
@@ -267,57 +271,57 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
 
     @Override
     public CursorStyle cursorStyle() {
-        return this.ui$getWrapper().cursorStyle();
+        return this.gtceu$getWrapper().cursorStyle();
     }
 
     @Override
     public UIComponent cursorStyle(CursorStyle style) {
-        return this.ui$getWrapper().cursorStyle(style);
+        return this.gtceu$getWrapper().cursorStyle(style);
     }
 
     @Override
     public UIComponent tooltip(List<ClientTooltipComponent> tooltip) {
-        return this.ui$getWrapper().tooltip(tooltip);
+        return this.gtceu$getWrapper().tooltip(tooltip);
     }
 
     @Override
     public List<ClientTooltipComponent> tooltip() {
-        return this.ui$getWrapper().tooltip();
+        return this.gtceu$getWrapper().tooltip();
     }
 
     @Override
     public UIComponent zIndex(int zIndex) {
-        return this.ui$getWrapper().zIndex(zIndex);
+        return this.gtceu$getWrapper().zIndex(zIndex);
     }
 
     @Override
     public int zIndex() {
-        return this.ui$getWrapper().zIndex();
+        return this.gtceu$getWrapper().zIndex();
     }
 
     @Override
     public UIComponent id(@Nullable String id) {
-        this.ui$getWrapper().id(id);
+        this.gtceu$getWrapper().id(id);
         return this;
     }
 
     @Override
     public @Nullable String id() {
-        return this.ui$getWrapper().id();
+        return this.gtceu$getWrapper().id();
     }
 
     @Unique
-    protected VanillaWidgetComponent ui$getWrapper() {
-        if (this.ui$wrapper == null) {
-            this.ui$wrapper = UIComponents.wrapVanillaWidget((AbstractWidget) (Object) this);
+    protected VanillaWidgetComponent gtceu$getWrapper() {
+        if (this.gtceu$wrapper == null) {
+            this.gtceu$wrapper = UIComponents.wrapVanillaWidget((AbstractWidget) (Object) this);
         }
 
-        return this.ui$wrapper;
+        return this.gtceu$wrapper;
     }
 
     @Override
     public @Nullable VanillaWidgetComponent widgetWrapper() {
-        return this.ui$wrapper;
+        return this.gtceu$wrapper;
     }
 
     @Override
@@ -342,7 +346,7 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
 
     @Inject(method = "setWidth", at = @At("HEAD"), cancellable = true)
     private void applyWidthToWrapper(int width, CallbackInfo ci) {
-        var wrapper = this.ui$wrapper;
+        var wrapper = this.gtceu$wrapper;
         if (wrapper != null) {
             wrapper.horizontalSizing(Sizing.fixed(width));
             ci.cancel();
@@ -351,15 +355,15 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
 
     @Override
     public void updateX(int x) {
-        this.ui$getWrapper().updateX(x);
+        this.gtceu$getWrapper().updateX(x);
     }
 
     @Override
     public void updateY(int y) {
-        this.ui$getWrapper().updateY(y);
+        this.gtceu$getWrapper().updateY(y);
     }
 
-    protected CursorStyle ui$preferredCursorStyle() {
+    protected CursorStyle gtceu$preferredCursorStyle() {
         return CursorStyle.POINTER;
     }
 }

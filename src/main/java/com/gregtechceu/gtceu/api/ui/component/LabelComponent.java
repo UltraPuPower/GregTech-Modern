@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
+
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -147,7 +149,8 @@ public class LabelComponent extends BaseUIComponent {
     }
 
     private void wrapLines() {
-        this.wrappedText = this.textRenderer.split(this.text, this.horizontalSizing.get().isContent() ? this.maxWidth : this.width);
+        this.wrappedText = this.textRenderer.split(this.text,
+                this.horizontalSizing.get().isContent() ? this.maxWidth : this.width);
     }
 
     @Override
@@ -194,7 +197,8 @@ public class LabelComponent extends BaseUIComponent {
                 int renderY = lambdaY + i * (this.lineHeight() + 2);
                 renderY += this.lineHeight() - this.textRenderer.lineHeight;
 
-                graphics.drawString(this.textRenderer, renderText, renderX, renderY, this.color.get().argb(), this.shadow);
+                graphics.drawString(this.textRenderer, renderText, renderX, renderY, this.color.get().argb(),
+                        this.shadow);
             }
         });
 
@@ -206,16 +210,19 @@ public class LabelComponent extends BaseUIComponent {
         super.drawTooltip(graphics, mouseX, mouseY, partialTicks, delta);
 
         if (!this.isInBoundingBox(mouseX, mouseY)) return;
-        graphics.renderComponentHoverEffect(this.textRenderer, this.styleAt(mouseX - this.x, mouseY - this.y), mouseX, mouseY);
+        graphics.renderComponentHoverEffect(this.textRenderer, this.styleAt(mouseX - this.x, mouseY - this.y), mouseX,
+                mouseY);
     }
 
     @Override
     public boolean onMouseDown(double mouseX, double mouseY, int button) {
-        return this.textClickHandler.apply(this.styleAt((int) mouseX, (int) mouseY)) | super.onMouseDown(mouseX, mouseY, button);
+        return this.textClickHandler.apply(this.styleAt((int) mouseX, (int) mouseY)) |
+                super.onMouseDown(mouseX, mouseY, button);
     }
 
     protected Style styleAt(int mouseX, int mouseY) {
-        return this.textRenderer.getSplitter().componentStyleAtWidth(this.wrappedText.get(Math.min(mouseY / (this.lineHeight() + 2), this.wrappedText.size() - 1)), mouseX);
+        return this.textRenderer.getSplitter().componentStyleAtWidth(
+                this.wrappedText.get(Math.min(mouseY / (this.lineHeight() + 2), this.wrappedText.size() - 1)), mouseX);
     }
 
     @Override
@@ -228,6 +235,7 @@ public class LabelComponent extends BaseUIComponent {
         UIParsing.apply(children, "line-height", UIParsing::parseUnsignedInt, this::lineHeight);
 
         UIParsing.apply(children, "vertical-text-alignment", VerticalAlignment::parse, this::verticalTextAlignment);
-        UIParsing.apply(children, "horizontal-text-alignment", HorizontalAlignment::parse, this::horizontalTextAlignment);
+        UIParsing.apply(children, "horizontal-text-alignment", HorizontalAlignment::parse,
+                this::horizontalTextAlignment);
     }
 }

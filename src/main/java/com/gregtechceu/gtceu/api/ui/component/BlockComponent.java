@@ -1,30 +1,31 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.BlockEntityAccessor;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Axis;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.BlockEntityAccessor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.math.Axis;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.w3c.dom.Element;
 
 public class BlockComponent extends BaseUIComponent {
+
     private final Minecraft mc = Minecraft.getInstance();
 
     private final BlockState state;
@@ -53,14 +54,14 @@ public class BlockComponent extends BaseUIComponent {
             if (this.state.getRenderShape() != RenderShape.ENTITYBLOCK_ANIMATED) {
                 this.mc.getBlockRenderer().renderSingleBlock(
                         this.state, graphics.pose(), vertexConsumers,
-                        LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY
-                );
+                        LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             }
 
             if (this.entity != null) {
                 var entityRender = this.mc.getBlockEntityRenderDispatcher().getRenderer(this.entity);
                 if (entityRender != null) {
-                    entityRender.render(entity, partialTicks, graphics.pose(), vertexConsumers, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+                    entityRender.render(entity, partialTicks, graphics.pose(), vertexConsumers,
+                            LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
                 }
             }
 
@@ -75,7 +76,7 @@ public class BlockComponent extends BaseUIComponent {
     protected static void prepareBlockEntity(BlockState state, BlockEntity blockEntity, @Nullable CompoundTag nbt) {
         if (blockEntity == null) return;
 
-        ((BlockEntityAccessor) blockEntity).ui$setBlockState(state);
+        ((BlockEntityAccessor) blockEntity).gtceu$setBlockState(state);
         blockEntity.setLevel(Minecraft.getInstance().level);
 
         if (nbt == null) return;
@@ -93,7 +94,8 @@ public class BlockComponent extends BaseUIComponent {
         UIParsing.expectAttributes(element, "state");
 
         try {
-            var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), element.getAttribute("state"), true);
+            var result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(),
+                    element.getAttribute("state"), true);
             return UIComponents.block(result.blockState(), result.nbt());
         } catch (CommandSyntaxException cse) {
             throw new UIModelParsingException("Invalid block state", cse);

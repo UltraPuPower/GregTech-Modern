@@ -35,14 +35,11 @@ public interface PositionedRectangle extends Animatable<PositionedRectangle> {
     }
 
     default boolean intersects(PositionedRectangle other) {
-        return other.x() < this.x() + this.width()
-                && other.x() + other.width() >= this.x()
-                && other.y() < this.y() + this.height()
-                && other.y() + other.height() >= this.y();
+        return other.x() < this.x() + this.width() && other.x() + other.width() >= this.x() &&
+                other.y() < this.y() + this.height() && other.y() + other.height() >= this.y();
     }
 
     default PositionedRectangle intersection(PositionedRectangle other) {
-
         // my brain is fucking dead on the floor
         // this code is really, really simple
         // and honestly quite obvious
@@ -60,8 +57,7 @@ public interface PositionedRectangle extends Animatable<PositionedRectangle> {
                 leftEdge,
                 topEdge,
                 Math.max(rightEdge - leftEdge, 0),
-                Math.max(bottomEdge - topEdge, 0)
-        );
+                Math.max(bottomEdge - topEdge, 0));
     }
 
     @Override
@@ -70,8 +66,7 @@ public interface PositionedRectangle extends Animatable<PositionedRectangle> {
                 (int) Mth.lerp(delta, this.x(), next.x()),
                 (int) Mth.lerp(delta, this.y(), next.y()),
                 (int) Mth.lerp(delta, this.width(), next.width()),
-                (int) Mth.lerp(delta, this.height(), next.height())
-        );
+                (int) Mth.lerp(delta, this.height(), next.height()));
     }
 
     static PositionedRectangle of(int x, int y, Size size) {
@@ -80,6 +75,7 @@ public interface PositionedRectangle extends Animatable<PositionedRectangle> {
 
     static PositionedRectangle of(int x, int y, int width, int height) {
         return new PositionedRectangle() {
+
             @Override
             public int x() {
                 return x;

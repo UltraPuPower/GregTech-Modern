@@ -1,30 +1,40 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
-import com.google.common.base.Preconditions;
+import com.gregtechceu.gtceu.api.ui.event.WindowEvent;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.GuiGraphicsAccessor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraftforge.common.MinecraftForge;
+
+import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UIGuiGraphics extends GuiGraphics {
+
     @Deprecated
     public static final ResourceLocation PANEL_TEXTURE = new ResourceLocation("owo", "textures/gui/panel.png");
     @Deprecated
-    public static final ResourceLocation DARK_PANEL_TEXTURE = new ResourceLocation("owo", "textures/gui/dark_panel.png");
+    public static final ResourceLocation DARK_PANEL_TEXTURE = new ResourceLocation("owo",
+            "textures/gui/dark_panel.png");
     @Deprecated
-    public static final ResourceLocation PANEL_INSET_TEXTURE = new ResourceLocation("owo", "textures/gui/panel_inset.png");
+    public static final ResourceLocation PANEL_INSET_TEXTURE = new ResourceLocation("owo",
+            "textures/gui/panel_inset.png");
 
     public static final ResourceLocation PANEL_NINE_PATCH_TEXTURE = new ResourceLocation("owo", "panel/default");
     public static final ResourceLocation DARK_PANEL_NINE_PATCH_TEXTURE = new ResourceLocation("owo", "panel/dark");
@@ -38,10 +48,11 @@ public class UIGuiGraphics extends GuiGraphics {
 
     public static UIGuiGraphics of(GuiGraphics g) {
         var graphics = new UIGuiGraphics(Minecraft.getInstance(), g.bufferSource());
-        ((DrawContextInvoker) graphics).owo$setScissorStack(((DrawContextInvoker) graphics).owo$getScissorStack());
-        ((DrawContextInvoker) graphics).owo$setMatrices(((DrawContextInvoker) graphics).owo$getMatrices());
+        ((GuiGraphicsAccessor) graphics)
+                .gtceu$setScissorStack(((GuiGraphicsAccessor) graphics).gtceu$getScissorStack());
+        ((GuiGraphicsAccessor) graphics).gtceu$setPose(((GuiGraphicsAccessor) graphics).gtceu$getPose());
 
-        return owoContext;
+        return graphics;
     }
 
     public static UtilityScreen utilityScreen() {
@@ -90,7 +101,8 @@ public class UIGuiGraphics extends GuiGraphics {
      * @param bottomRightColor The color at the rectangle's bottom right corner
      * @param bottomLeftColor  The color at the rectangle's bottom left corner
      */
-    public void drawGradientRect(int x, int y, int width, int height, int topLeftColor, int topRightColor, int bottomRightColor, int bottomLeftColor) {
+    public void drawGradientRect(int x, int y, int width, int height, int topLeftColor, int topRightColor,
+                                 int bottomRightColor, int bottomLeftColor) {
         var buffer = Tesselator.getInstance().getBuilder();
         var matrix = this.pose().last().pose();
 
@@ -120,7 +132,8 @@ public class UIGuiGraphics extends GuiGraphics {
      * @param dark   Whether to use the dark version of the panel texture
      */
     public void drawPanel(int x, int y, int width, int height, boolean dark) {
-        NinePatchTexture.draw(dark ? DARK_PANEL_NINE_PATCH_TEXTURE : PANEL_NINE_PATCH_TEXTURE, this, x, y, width, height);
+        NinePatchTexture.draw(dark ? DARK_PANEL_NINE_PATCH_TEXTURE : PANEL_NINE_PATCH_TEXTURE, this, x, y, width,
+                height);
     }
 
     public void drawSpectrum(int x, int y, int width, int height, boolean vertical) {
@@ -133,15 +146,15 @@ public class UIGuiGraphics extends GuiGraphics {
         buffer.vertex(matrix, x + width, y + height, 0).color(0f, 1f, 1f, 1f).endVertex();
         buffer.vertex(matrix, x + width, y, 0).color(vertical ? 1f : 0f, 1f, 1f, 1f).endVertex();
 
-        //OwoClient.HSV_PROGRAM.use();
+        // OwoClient.HSV_PROGRAM.use();
         Tesselator.getInstance().end();
     }
 
-    public void drawText(net.minecraft.network.chat.Component text, float x, float y, float scale, int color) {
+    public void drawText(Component text, float x, float y, float scale, int color) {
         drawText(text, x, y, scale, color, TextAnchor.TOP_LEFT);
     }
 
-    public void drawText(net.minecraft.network.chat.Component text, float x, float y, float scale, int color, TextAnchor anchorPoint) {
+    public void drawText(Component text, float x, float y, float scale, int color, TextAnchor anchorPoint) {
         final var textRenderer = Minecraft.getInstance().font;
 
         this.pose().pushPose();
@@ -156,13 +169,15 @@ public class UIGuiGraphics extends GuiGraphics {
             }
         }
 
-
         this.drawString(textRenderer, text, (int) (x * (1 / scale)), (int) (y * (1 / scale)), color, false);
         this.pose().popPose();
     }
 
     public enum TextAnchor {
-        TOP_RIGHT, BOTTOM_RIGHT, TOP_LEFT, BOTTOM_LEFT
+        TOP_RIGHT,
+        BOTTOM_RIGHT,
+        TOP_LEFT,
+        BOTTOM_LEFT
     }
 
     public void drawLine(int x1, int y1, int x2, int y2, double thiccness, Color color) {
@@ -190,7 +205,8 @@ public class UIGuiGraphics extends GuiGraphics {
         drawCircle(centerX, centerY, 0, 360, segments, radius, color);
     }
 
-    public void drawCircle(int centerX, int centerY, double angleFrom, double angleTo, int segments, double radius, Color color) {
+    public void drawCircle(int centerX, int centerY, double angleFrom, double angleTo, int segments, double radius,
+                           Color color) {
         Preconditions.checkArgument(angleFrom < angleTo, "angleFrom must be less than angleTo");
 
         var buffer = Tesselator.getInstance().getBuilder();
@@ -204,7 +220,8 @@ public class UIGuiGraphics extends GuiGraphics {
 
         for (int i = segments; i >= 0; i--) {
             double theta = Math.toRadians(angleFrom) + i * angleStep;
-            buffer.vertex(matrix, (float) (centerX - Math.cos(theta) * radius), (float) (centerY - Math.sin(theta) * radius), 0)
+            buffer.vertex(matrix, (float) (centerX - Math.cos(theta) * radius),
+                    (float) (centerY - Math.sin(theta) * radius), 0)
                     .color(vColor).endVertex();
         }
 
@@ -215,11 +232,13 @@ public class UIGuiGraphics extends GuiGraphics {
         Tesselator.getInstance().end();
     }
 
-    public void drawRing(int centerX, int centerY, int segments, double innerRadius, double outerRadius, Color innerColor, Color outerColor) {
+    public void drawRing(int centerX, int centerY, int segments, double innerRadius, double outerRadius,
+                         Color innerColor, Color outerColor) {
         drawRing(centerX, centerY, 0d, 360d, segments, innerRadius, outerRadius, innerColor, outerColor);
     }
 
-    public void drawRing(int centerX, int centerY, double angleFrom, double angleTo, int segments, double innerRadius, double outerRadius, Color innerColor, Color outerColor) {
+    public void drawRing(int centerX, int centerY, double angleFrom, double angleTo, int segments, double innerRadius,
+                         double outerRadius, Color innerColor, Color outerColor) {
         Preconditions.checkArgument(angleFrom < angleTo, "angleFrom must be less than angleTo");
         Preconditions.checkArgument(innerRadius < outerRadius, "innerRadius must be less than outerRadius");
 
@@ -235,9 +254,11 @@ public class UIGuiGraphics extends GuiGraphics {
         for (int i = 0; i <= segments; i++) {
             double theta = Math.toRadians(angleFrom) + i * angleStep;
 
-            buffer.vertex(matrix, (float) (centerX - Math.cos(theta) * outerRadius), (float) (centerY - Math.sin(theta) * outerRadius), 0)
+            buffer.vertex(matrix, (float) (centerX - Math.cos(theta) * outerRadius),
+                    (float) (centerY - Math.sin(theta) * outerRadius), 0)
                     .color(outColor).endVertex();
-            buffer.vertex(matrix, (float) (centerX - Math.cos(theta) * innerRadius), (float) (centerY - Math.sin(theta) * innerRadius), 0)
+            buffer.vertex(matrix, (float) (centerX - Math.cos(theta) * innerRadius),
+                    (float) (centerY - Math.sin(theta) * innerRadius), 0)
                     .color(inColor).endVertex();
         }
 
@@ -248,8 +269,9 @@ public class UIGuiGraphics extends GuiGraphics {
         Tesselator.getInstance().end();
     }
 
-    public void drawTooltip(Font textRenderer, int x, int y, List<TooltipComponent> components) {
-        ((DrawContextInvoker) this).owo$renderTooltipFromComponents(textRenderer, components, x, y, HoveredTooltipPositioner.INSTANCE);
+    public void drawTooltip(Font textRenderer, int x, int y, List<ClientTooltipComponent> components) {
+        ((GuiGraphicsAccessor) this).gtceu$renderTooltipFromComponents(textRenderer, components, x, y,
+                DefaultTooltipPositioner.INSTANCE);
     }
 
     // --- debug rendering ---
@@ -319,12 +341,15 @@ public class UIGuiGraphics extends GuiGraphics {
                     }
                 }
 
-                final var nameText = Component.nullToEmpty(child.getClass().getSimpleName() + (child.id() != null ? " '" + child.id() + "'" : ""));
-                final var descriptor = Component.literal(child.x() + "," + child.y() + " (" + child.width() + "," + child.height() + ")"
-                        + " <" + margins.top() + "," + margins.bottom() + "," + margins.left() + "," + margins.right() + "> ");
+                final var nameText = Component.nullToEmpty(
+                        child.getClass().getSimpleName() + (child.id() != null ? " '" + child.id() + "'" : ""));
+                final var descriptor = Component.literal(child.x() + "," + child.y() + " (" + child.width() + "," +
+                        child.height() + ")" + " <" + margins.top() + "," + margins.bottom() + "," + margins.left() +
+                        "," + margins.right() + "> ");
                 if (child instanceof ParentUIComponent parentComponent) {
                     var padding = parentComponent.padding().get();
-                    descriptor.append(" >" + padding.top() + "," + padding.bottom() + "," + padding.left() + "," + padding.right() + "<");
+                    descriptor.append(" >" + padding.top() + "," + padding.bottom() + "," + padding.left() + "," +
+                            padding.right() + "<");
                 }
 
                 int width = Math.max(font.width(nameText), font.width(descriptor));
@@ -355,18 +380,20 @@ public class UIGuiGraphics extends GuiGraphics {
                 INSTANCE.init(
                         client,
                         client.getWindow().getGuiScaledWidth(),
-                        client.getWindow().getGuiScaledHeight()
-                );
+                        client.getWindow().getGuiScaledHeight());
             }
 
             return INSTANCE;
         }
 
         static {
-            WindowResizeCallback.EVENT.register((client, window) -> {
-                if (INSTANCE == null) return;
-                INSTANCE.init(client, window.getGuiScaledWidth(), window.getGuiScaledHeight());
-            });
+            MinecraftForge.EVENT_BUS.addListener(UtilityScreen::onWindowResized);
+        }
+
+        private static void onWindowResized(WindowEvent.Resized event) {
+            if (INSTANCE == null) return;
+            Window window = event.getWindow();
+            INSTANCE.init(event.getMinecraft(), window.getGuiScaledWidth(), window.getGuiScaledHeight());
         }
     }
 }

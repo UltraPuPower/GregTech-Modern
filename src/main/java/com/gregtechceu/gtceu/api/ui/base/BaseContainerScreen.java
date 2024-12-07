@@ -2,7 +2,12 @@ package com.gregtechceu.gtceu.api.ui.base;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
 import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
+import com.gregtechceu.gtceu.api.ui.util.UIErrorToast;
+import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -11,6 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -18,13 +25,15 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.function.BiFunction;
 
-public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends AbstractContainerMenu> extends AbstractContainerScreen<S> implements DisposableScreen {
+public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends AbstractContainerMenu>
+                                         extends AbstractContainerScreen<S> implements DisposableScreen {
 
     /**
      * The UI adapter of this screen. This handles
      * all user input as well as setting up GL state for rendering
      * and managing component focus
      */
+    @Getter
     protected UIAdapter<R> uiAdapter = null;
 
     /**
@@ -91,7 +100,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * @param index The index of the slot to disable
      */
     protected void disableSlot(int index) {
-        ((SlotExtension) this.menu.slots.get(index)).owo$setDisabledOverride(true);
+        ((UISlotExtension) this.menu.slots.get(index)).gtceu$setDisabledOverride(true);
     }
 
     /**
@@ -100,7 +109,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * re-enable itself
      */
     protected void disableSlot(Slot slot) {
-        ((SlotExtension) slot).owo$setDisabledOverride(true);
+        ((UISlotExtension) slot).gtceu$setDisabledOverride(true);
     }
 
     /**
@@ -111,7 +120,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * @param index The index of the slot to enable
      */
     protected void enableSlot(int index) {
-        ((SlotExtension) this.menu.slots.get(index)).owo$setDisabledOverride(false);
+        ((UISlotExtension) this.menu.slots.get(index)).gtceu$setDisabledOverride(false);
     }
 
     /**
@@ -120,15 +129,15 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * a slot that is disabled through its own will
      */
     protected void enableSlot(Slot slot) {
-        ((SlotExtension) slot).owo$setDisabledOverride(true);
+        ((UISlotExtension) slot).gtceu$setDisabledOverride(true);
     }
 
     protected boolean isSlotEnabled(int index) {
-        return ((SlotExtension) this.menu.slots.get(index)).owo$getDisabledOverride();
+        return ((UISlotExtension) this.menu.slots.get(index)).gtceu$getDisabledOverride();
     }
 
     protected boolean isSlotEnabled(Slot slot) {
-        return ((SlotExtension) slot).owo$getDisabledOverride();
+        return ((UISlotExtension) slot).gtceu$getDisabledOverride();
     }
 
     /**
@@ -144,15 +153,15 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
 
     /**
      * A convenience shorthand for querying a component from the adapter's
-     * root component via {@link ParentComponent#childById(Class, String)}
+     * root component via {@link ParentUIComponent#childById(Class, String)}
      */
-    protected <C extends Component> @Nullable C component(Class<C> expectedClass, String id) {
+    protected <C extends UIComponent> @Nullable C component(Class<C> expectedClass, String id) {
         return this.uiAdapter.rootComponent.childById(expectedClass, id);
     }
 
     @Override
-    public void render(GuiGraphics vanillaContext, int mouseX, int mouseY, float delta) {
-        var context = UIGuiGraphics.of(vanillaContext);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        var context = UIGuiGraphics.of(guiGraphics);
         if (!this.invalid) {
             super.render(context, mouseX, mouseY, delta);
 
@@ -164,13 +173,11 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
                     if (!slot.hasItem()) continue;
 
                     context.drawText(Component.literal("H:" + i),
-                            this.x + slot.x + 15, this.y + slot.y + 9, .5f, 0x0096FF,
-                            UIGuiGraphics.TextAnchor.BOTTOM_RIGHT
-                    );
+                            this.leftPos + slot.x + 15, this.topPos + slot.y + 9, .5f, 0x0096FF,
+                            UIGuiGraphics.TextAnchor.BOTTOM_RIGHT);
                     context.drawText(Component.literal("I:" + slot.getContainerSlot()),
-                            this.x + slot.x + 15, this.y + slot.y + 15, .5f, 0x5800FF,
-                            UIGuiGraphics.TextAnchor.BOTTOM_RIGHT
-                    );
+                            this.leftPos + slot.x + 15, this.topPos + slot.y + 15, .5f, 0x5800FF,
+                            UIGuiGraphics.TextAnchor.BOTTOM_RIGHT);
                 }
 
                 context.pose().translate(0, 0, -500);
@@ -189,14 +196,16 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
             return true;
         }
 
-        return (modifiers & GLFW.GLFW_MOD_CONTROL) == 0 && this.uiAdapter.rootComponent.focusHandler().focused() instanceof GreedyInputComponent inputComponent
-                ? inputComponent.onKeyPress(keyCode, scanCode, modifiers)
-                : super.keyPressed(keyCode, scanCode, modifiers);
+        return (modifiers & GLFW.GLFW_MOD_CONTROL) == 0 &&
+                this.uiAdapter.rootComponent.focusHandler().focused() instanceof GreedyInputUIComponent inputComponent ?
+                        inputComponent.onKeyPress(keyCode, scanCode, modifiers) :
+                        super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        return this.uiAdapter.mouseDragged(mouseX, mouseY, button, deltaX, deltaY) || super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return this.uiAdapter.mouseDragged(mouseX, mouseY, button, deltaX, deltaY) ||
+                super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
     @Nullable
@@ -237,16 +246,15 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
             int[] scissor = new int[4];
             GL11.glGetIntegerv(GL11.GL_SCISSOR_BOX, scissor);
 
-            ((SlotExtension) this.slot).owo$setScissorArea(PositionedRectangle.of(
-                    scissor[0], scissor[1], scissor[2], scissor[3]
-            ));
+            ((UISlotExtension) this.slot).gtceu$setScissorArea(PositionedRectangle.of(
+                    scissor[0], scissor[1], scissor[2], scissor[3]));
         }
 
         @Override
         public void update(float delta, int mouseX, int mouseY) {
             super.update(delta, mouseX, mouseY);
 
-            ((SlotExtension) this.slot).owo$setDisabledOverride(!this.didDraw);
+            ((UISlotExtension) this.slot).gtceu$setDisabledOverride(!this.didDraw);
 
             this.didDraw = false;
         }
@@ -276,13 +284,13 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
         @Override
         public void updateX(int x) {
             super.updateX(x);
-            ((SlotAccessor) this.slot).owo$setX(x - BaseContainerScreen.this.x);
+            ((SlotAccessor) this.slot).gtceu$setX(x - BaseContainerScreen.this.leftPos);
         }
 
         @Override
         public void updateY(int y) {
             super.updateY(y);
-            ((SlotAccessor) this.slot).owo$setY(y - BaseContainerScreen.this.y);
+            ((SlotAccessor) this.slot).gtceu$setY(y - BaseContainerScreen.this.topPos);
         }
     }
 }

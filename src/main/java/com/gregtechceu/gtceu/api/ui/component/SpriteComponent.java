@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+
 import org.w3c.dom.Element;
 
 public class SpriteComponent extends BaseUIComponent {
@@ -28,7 +30,7 @@ public class SpriteComponent extends BaseUIComponent {
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
-        //SpriteUtilInvoker.markSpriteActive(this.sprite);
+        // SpriteUtilInvoker.markSpriteActive(this.sprite);
         graphics.blit(this.x, this.y, 0, this.width, this.height, this.sprite);
     }
 

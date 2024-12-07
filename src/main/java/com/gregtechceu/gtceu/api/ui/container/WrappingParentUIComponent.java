@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -15,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class WrappingParentUIComponent <C extends UIComponent> extends BaseParentUIComponent {
+public class WrappingParentUIComponent<C extends UIComponent> extends BaseParentUIComponent {
 
     protected C child;
     protected List<UIComponent> childView;

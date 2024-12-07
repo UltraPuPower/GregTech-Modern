@@ -8,15 +8,18 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+
+import net.minecraft.util.Mth;
+
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.util.Mth;
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
 public class ColorPickerComponent extends BaseUIComponent {
+
     protected EventStream<OnChanged> changedEvents = OnChanged.newStream();
     protected Observable<Color> selectedColor = Observable.of(Color.BLACK);
 
@@ -35,7 +38,6 @@ public class ColorPickerComponent extends BaseUIComponent {
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
-
         // Color area
 
         var buffer = Tesselator.getInstance().getBuilder();
@@ -51,37 +53,36 @@ public class ColorPickerComponent extends BaseUIComponent {
         buffer.vertex(matrix, this.renderX() + this.colorAreaWidth(), this.renderY(), 0)
                 .color(this.hue, 1f, 1f, 1f).endVertex();
 
-        //OwoClient.HSV_PROGRAM.use();
+        // OwoClient.HSV_PROGRAM.use();
         Tesselator.getInstance().end();
 
         graphics.drawRectOutline(
                 (int) (this.renderX() + (this.saturation * this.colorAreaWidth()) - 1),
                 (int) (this.renderY() + ((1 - this.value) * (this.renderHeight() - 1)) - 1),
                 3, 3,
-                Color.WHITE.argb()
-        );
+                Color.WHITE.argb());
 
         // Hue selector
 
-        graphics.drawSpectrum(this.renderX() + this.hueSelectorX(), this.renderY(), this.selectorWidth, this.renderHeight(), true);
+        graphics.drawSpectrum(this.renderX() + this.hueSelectorX(), this.renderY(), this.selectorWidth,
+                this.renderHeight(), true);
         graphics.drawRectOutline(
                 this.renderX() + this.hueSelectorX() - 1,
                 this.renderY() + (int) ((this.renderHeight() - 1) * (1 - this.hue) - 1),
                 this.selectorWidth + 2, 3,
-                Color.WHITE.argb()
-        );
+                Color.WHITE.argb());
 
         // Alpha selector
 
         if (this.showAlpha) {
             var color = 0xFF << 24 | this.selectedColor.get().rgb();
-            graphics.drawGradientRect(this.renderX() + this.alphaSelectorX(), this.renderY(), this.selectorWidth, this.renderHeight(), color, color, 0, 0);
+            graphics.drawGradientRect(this.renderX() + this.alphaSelectorX(), this.renderY(), this.selectorWidth,
+                    this.renderHeight(), color, color, 0, 0);
             graphics.drawRectOutline(
                     this.renderX() + this.alphaSelectorX() - 1,
                     this.renderY() + (int) ((this.renderHeight() - 1) * (1 - this.alpha) - 1),
                     this.selectorWidth + 2, 3,
-                    Color.WHITE.argb()
-            );
+                    Color.WHITE.argb());
         }
     }
 
@@ -139,15 +140,13 @@ public class ColorPickerComponent extends BaseUIComponent {
     }
 
     protected int colorAreaWidth() {
-        return this.showAlpha
-                ? this.renderWidth() - this.selectorPadding - this.selectorWidth - this.selectorPadding - this.selectorWidth
-                : this.renderWidth() - this.selectorPadding - this.selectorWidth;
+        return this.showAlpha ? this.renderWidth() - this.selectorPadding - this.selectorWidth - this.selectorPadding -
+                this.selectorWidth : this.renderWidth() - this.selectorPadding - this.selectorWidth;
     }
 
     protected int hueSelectorX() {
-        return this.showAlpha
-                ? this.renderWidth() - this.selectorWidth - this.selectorPadding - this.selectorWidth
-                : this.renderWidth() - this.selectorWidth;
+        return this.showAlpha ? this.renderWidth() - this.selectorWidth - this.selectorPadding - this.selectorWidth :
+                this.renderWidth() - this.selectorWidth;
     }
 
     protected int alphaSelectorX() {
@@ -223,6 +222,7 @@ public class ColorPickerComponent extends BaseUIComponent {
     }
 
     public interface OnChanged {
+
         void onChanged(Color color);
 
         static EventStream<OnChanged> newStream() {

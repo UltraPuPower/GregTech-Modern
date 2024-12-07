@@ -92,7 +92,5 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerReloadListeners(RegisterClientReloadListenersEvent event) {
-
-    }
+    public void registerReloadListeners(RegisterClientReloadListenersEvent event) {}
 }

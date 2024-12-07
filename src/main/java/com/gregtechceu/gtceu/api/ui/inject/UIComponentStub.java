@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.event.*;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
+
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

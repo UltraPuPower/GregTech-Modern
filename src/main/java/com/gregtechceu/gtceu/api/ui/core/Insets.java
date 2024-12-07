@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import net.minecraft.util.Mth;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,8 +55,7 @@ public record Insets(int top, int bottom, int left, int right) implements Animat
                 (int) Mth.lerp(delta, this.top, next.top),
                 (int) Mth.lerp(delta, this.bottom, next.bottom),
                 (int) Mth.lerp(delta, this.left, next.left),
-                (int) Mth.lerp(delta, this.right, next.right)
-        );
+                (int) Mth.lerp(delta, this.right, next.right));
     }
 
     public static Insets both(int horizontal, int vertical) {

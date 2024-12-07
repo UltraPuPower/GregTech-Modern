@@ -1,16 +1,15 @@
 package com.gregtechceu.gtceu.api.ui.parsing;
 
 import com.gregtechceu.gtceu.api.ui.component.*;
-import com.gregtechceu.gtceu.api.ui.container.CollapsibleContainer;
-import com.gregtechceu.gtceu.api.ui.container.Containers;
-import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+
 import net.minecraft.ResourceLocationException;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,13 +28,14 @@ public class UIParsing {
 
     /**
      * @deprecated In order to more properly separate factories added by different
-     * mods, use {@link #registerFactory(ResourceLocation, Function)}, which takes an
-     * identifier instead
+     *             mods, use {@link #registerFactory(ResourceLocation, Function)}, which takes a ResourceLocation
+     *             instead
      */
     @ApiStatus.Internal
     public static void registerFactory(String componentTagName, Function<Element, UIComponent> factory) {
         if (COMPONENT_FACTORIES.containsKey(componentTagName)) {
-            throw new IllegalStateException("A component factory with name " + componentTagName + " is already registered");
+            throw new IllegalStateException(
+                    "A component factory with name " + componentTagName + " is already registered");
         }
 
         COMPONENT_FACTORIES.put(componentTagName, factory);
@@ -96,7 +96,7 @@ public class UIParsing {
      * name to element. An exception is thrown if a tag name appears twice
      *
      * @return All element children of {@code element} mapped from
-     * tag name to element
+     *         tag name to element
      * @throws UIModelParsingException If two or more children share the same tag name
      */
     public static Map<String, Element> childElements(Element element) {
@@ -108,7 +108,8 @@ public class UIParsing {
             if (child.getNodeType() != Node.ELEMENT_NODE) continue;
 
             if (map.containsKey(child.getNodeName())) {
-                throw new UIModelParsingException("Duplicate child " + child.getNodeName() + " in element " + element.getNodeName());
+                throw new UIModelParsingException(
+                        "Duplicate child " + child.getNodeName() + " in element " + element.getNodeName());
             }
 
             map.put(child.getNodeName(), (Element) child);
@@ -167,7 +168,8 @@ public class UIParsing {
         if (data.matches("-?\\d+(\\.\\d+)?")) {
             return Double.parseDouble(data);
         } else {
-            throw new UIModelParsingException("Invalid value '" + data + "', expected a double-precision floating point number");
+            throw new UIModelParsingException(
+                    "Invalid value '" + data + "', expected a double-precision floating point number");
         }
     }
 
@@ -204,9 +206,9 @@ public class UIParsing {
      * returned literally
      */
     public static net.minecraft.network.chat.Component parseText(Element element) {
-        return element.getAttribute("translate").equalsIgnoreCase("true")
-                ? net.minecraft.network.chat.Component.translatable(element.getTextContent())
-                : net.minecraft.network.chat.Component.literal(element.getTextContent());
+        return element.getAttribute("translate").equalsIgnoreCase("true") ?
+                net.minecraft.network.chat.Component.translatable(element.getTextContent()) :
+                net.minecraft.network.chat.Component.literal(element.getTextContent());
     }
 
     public static <E extends Enum<E>> Function<Element, E> parseEnum(Class<E> enumClass) {
@@ -228,7 +230,7 @@ public class UIParsing {
      * @param parser     The parsing function to use
      * @param <T>        The type of object to parse
      * @return An optional containing the parsed property, or an empty optional
-     * if the requested property was not contained in the given map
+     *         if the requested property was not contained in the given map
      */
     public static <T, E extends Node> Optional<T> get(Map<String, E> properties, String key, Function<E, T> parser) {
         if (!properties.containsKey(key)) return Optional.empty();
@@ -246,7 +248,8 @@ public class UIParsing {
      *                   in the map and successfully parsed
      * @param <T>        The type of object to parse
      */
-    public static <T, E extends Node> void apply(Map<String, E> properties, String key, Function<E, T> parser, Consumer<T> consumer) {
+    public static <T, E extends Node> void apply(Map<String, E> properties, String key, Function<E, T> parser,
+                                                 Consumer<T> consumer) {
         if (!properties.containsKey(key)) return;
         consumer.accept(parser.apply(properties.get(key)));
     }
@@ -261,7 +264,8 @@ public class UIParsing {
     public static void expectAttributes(Element element, String... attributes) {
         for (var attr : attributes) {
             if (!element.hasAttribute(attr)) {
-                throw new UIModelParsingException("Element '" + element.getNodeName() + "' is missing attribute '" + attr + "'");
+                throw new UIModelParsingException(
+                        "Element '" + element.getNodeName() + "' is missing attribute '" + attr + "'");
             }
         }
     }
@@ -277,7 +281,8 @@ public class UIParsing {
     public static void expectChildren(Element element, Map<String, Element> children, String... expected) {
         for (var childName : expected) {
             if (!children.containsKey(childName)) {
-                throw new UIModelParsingException("Element '" + element.getNodeName() + "' is missing element '" + childName + "'");
+                throw new UIModelParsingException(
+                        "Element '" + element.getNodeName() + "' is missing element '" + childName + "'");
             }
         }
     }
@@ -287,7 +292,8 @@ public class UIParsing {
         if (data.matches((allowNegative ? "-?" : "") + "\\d+")) {
             return Integer.parseInt(data);
         } else {
-            throw new UIModelParsingException("Invalid value '" + data + "', expected " + (allowNegative ? "" : "positive") + " integer");
+            throw new UIModelParsingException(
+                    "Invalid value '" + data + "', expected " + (allowNegative ? "" : "positive") + " integer");
         }
     }
 
@@ -315,7 +321,7 @@ public class UIParsing {
         registerFactory("label", element -> UIComponents.label(Component.empty()));
         registerFactory("box", element -> UIComponents.box(Sizing.content(), Sizing.content()));
         registerFactory("button", element -> UIComponents.button(Component.empty(), (ButtonComponent button) -> {}));
-        registerFactory("checkbox", element -> UIComponents.checkbox(Text.empty()));
+        registerFactory("checkbox", element -> UIComponents.checkbox(Component.empty()));
         registerFactory("text-box", element -> UIComponents.textBox(Sizing.content()));
         registerFactory("text-area", element -> UIComponents.textArea(Sizing.content(), Sizing.content()));
         registerFactory("slider", element -> UIComponents.slider(Sizing.content()));
@@ -325,5 +331,4 @@ public class UIParsing {
         registerFactory("slim-slider", SlimSliderComponent::parse);
         registerFactory("small-checkbox", element -> new SmallCheckboxComponent());
     }
-
 }

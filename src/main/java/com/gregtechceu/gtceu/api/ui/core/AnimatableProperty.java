@@ -1,15 +1,16 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
-        * A container which holds an animatable object,
-        * used to manage to properties of UI components. Extends
+ * A container which holds an animatable object,
+ * used to manage to properties of UI components. Extends
  * the {@link Observable} container so that changes in its value
  * can be propagated to the holder of the property
  *
-         * @param <A> The type of animatable object this property describes
+ * @param <A> The type of animatable object this property describes
  */
 public class AnimatableProperty<A extends Animatable<A>> extends Observable<A> {
 
@@ -47,8 +48,8 @@ public class AnimatableProperty<A extends Animatable<A>> extends Observable<A> {
 
     /**
      * @return The current animation object of this property,
-     * potentially {@code null} if {@link #animate(int, Easing, Animatable)}
-     * was never called
+     *         potentially {@code null} if {@link #animate(int, Easing, Animatable)}
+     *         was never called
      */
     public @Nullable Animation<A> animation() {
         return this.animation;

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.MountingHelper;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,7 +47,8 @@ public class StackLayout extends BaseParentUIComponent {
         var layout = new ArrayList<UIComponent>();
         var helper = MountingHelper.mountEarly(this::mountChild, this.childrenView, child -> {
             layout.add(child);
-            child.mount(this, this.x + this.padding.get().left() + child.margins().get().left(), this.y + this.padding.get().top() + child.margins().get().top());
+            child.mount(this, this.x + this.padding.get().left() + child.margins().get().left(),
+                    this.y + this.padding.get().top() + child.margins().get().top());
 
             var fullChildSize = child.fullSize();
             layoutWidth.setValue(Math.max(layoutWidth.getValue(), fullChildSize.width()));
@@ -60,8 +62,10 @@ public class StackLayout extends BaseParentUIComponent {
         var verticalAlignment = this.verticalAlignment();
 
         for (var child : layout) {
-            child.updateX(child.baseX() + horizontalAlignment.align(child.fullSize().width(), this.width - this.padding.get().horizontal()));
-            child.updateY(child.baseY() + verticalAlignment.align(child.fullSize().height(), this.height - this.padding.get().vertical()));
+            child.updateX(child.baseX() +
+                    horizontalAlignment.align(child.fullSize().width(), this.width - this.padding.get().horizontal()));
+            child.updateY(child.baseY() +
+                    verticalAlignment.align(child.fullSize().height(), this.height - this.padding.get().vertical()));
         }
 
         helper.mountLate();

@@ -3,18 +3,21 @@ package com.gregtechceu.gtceu.api.ui.core;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public interface Surface {
+
     Surface PANEL = (graphics, component) -> {
         graphics.drawPanel(component.x(), component.y(), component.width(), component.height(), false);
     };
@@ -30,13 +33,13 @@ public interface Surface {
     Surface VANILLA_TRANSLUCENT = (graphics, component) -> {
         graphics.drawGradientRect(
                 component.x(), component.y(), component.width(), component.height(),
-                0xC0101010, 0xC0101010, 0xD0101010, 0xD0101010
-        );
+                0xC0101010, 0xC0101010, 0xD0101010, 0xD0101010);
     };
 
     Surface OPTIONS_BACKGROUND = (graphics, component) -> {
         RenderSystem.setShaderColor(64 / 255f, 64 / 255f, 64 / 255f, 1);
-        graphics.blit(Screen.BACKGROUND_LOCATION, component.x(), component.y(), 0, 0, component.width(), component.height(), 32, 32);
+        graphics.blit(Screen.BACKGROUND_LOCATION, component.x(), component.y(), 0, 0, component.width(),
+                component.height(), 32, 32);
         RenderSystem.setShaderColor(1, 1, 1, 1);
     };
 
@@ -44,7 +47,8 @@ public interface Surface {
         var builder = Tesselator.getInstance().getBuilder();
         builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        TooltipRenderUtil.renderTooltipBackground(graphics, component.x() + 4, component.y() + 4, component.width() - 8, component.height() - 8, 0);
+        TooltipRenderUtil.renderTooltipBackground(graphics, component.x() + 4, component.y() + 4, component.width() - 8,
+                component.height() - 8, 0);
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -61,11 +65,12 @@ public interface Surface {
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
             builder.vertex(matrix, component.x(), component.y(), 0).endVertex();
             builder.vertex(matrix, component.x(), component.y() + component.height(), 0).endVertex();
-            builder.vertex(matrix, component.x() + component.width(), component.y() + component.height(), 0).endVertex();
+            builder.vertex(matrix, component.x() + component.width(), component.y() + component.height(), 0)
+                    .endVertex();
             builder.vertex(matrix, component.x() + component.width(), component.y(), 0).endVertex();
 
-            //OwoClient.BLUR_PROGRAM.setParameters(16, quality, size);
-            //OwoClient.BLUR_PROGRAM.use();
+            // OwoClient.BLUR_PROGRAM.setParameters(16, quality, size);
+            // OwoClient.BLUR_PROGRAM.use();
             Tesselator.getInstance().end();
         };
     }
@@ -73,16 +78,19 @@ public interface Surface {
     Surface BLANK = (graphics, component) -> {};
 
     static Surface flat(int color) {
-        return (graphics, component) -> graphics.fill(component.x(), component.y(), component.x() + component.width(), component.y() + component.height(), color);
+        return (graphics, component) -> graphics.fill(component.x(), component.y(), component.x() + component.width(),
+                component.y() + component.height(), color);
     }
 
     static Surface outline(int color) {
-        return (graphics, component) -> graphics.drawRectOutline(component.x(), component.y(), component.width(), component.height(), color);
+        return (graphics, component) -> graphics.drawRectOutline(component.x(), component.y(), component.width(),
+                component.height(), color);
     }
 
     static Surface tiled(ResourceLocation texture, int textureWidth, int textureHeight) {
         return (graphics, component) -> {
-            graphics.blit(texture, component.x(), component.y(), 0, 0, component.width(), component.height(), textureWidth, textureHeight);
+            graphics.blit(texture, component.x(), component.y(), 0, 0, component.width(), component.height(),
+                    textureWidth, textureHeight);
         };
     }
 
@@ -94,8 +102,7 @@ public interface Surface {
                     component.x() + insetWidth,
                     component.y() + insetWidth,
                     component.width() - insetWidth * 2,
-                    component.height() - insetWidth * 2
-            );
+                    component.height() - insetWidth * 2);
         });
     }
 
@@ -114,23 +121,19 @@ public interface Surface {
 
         for (var child : children) {
             surface = switch (child.getNodeName()) {
-                case "panel" -> surface.and(child.getAttribute("dark").equalsIgnoreCase("true")
-                        ? DARK_PANEL
-                        : PANEL);
+                case "panel" -> surface.and(child.getAttribute("dark").equalsIgnoreCase("true") ? DARK_PANEL : PANEL);
                 case "tiled" -> {
                     UIParsing.expectAttributes(child, "texture-width", "texture-height");
                     yield surface.and(tiled(
                             UIParsing.parseResourceLocation(child),
                             UIParsing.parseUnsignedInt(child.getAttributeNode("texture-width")),
-                            UIParsing.parseUnsignedInt(child.getAttributeNode("texture-height")))
-                    );
+                            UIParsing.parseUnsignedInt(child.getAttributeNode("texture-height"))));
                 }
                 case "blur" -> {
                     UIParsing.expectAttributes(child, "size", "quality");
                     yield surface.and(blur(
                             UIParsing.parseFloat(child.getAttributeNode("quality")),
-                            UIParsing.parseFloat(child.getAttributeNode("size"))
-                    ));
+                            UIParsing.parseFloat(child.getAttributeNode("size"))));
                 }
                 case "panel-with-inset" -> surface.and(panelWithInset(UIParsing.parseUnsignedInt(child)));
                 case "options-background" -> surface.and(OPTIONS_BACKGROUND);

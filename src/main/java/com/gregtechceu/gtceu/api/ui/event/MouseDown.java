@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.event;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 
 public interface MouseDown {
+
     boolean onMouseDown(double mouseX, double mouseY, int button);
 
     static EventStream<MouseDown> newStream() {

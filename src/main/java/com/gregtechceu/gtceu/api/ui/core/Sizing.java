@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
+
 import net.minecraft.util.Mth;
+
 import org.w3c.dom.Element;
 
 import java.util.Locale;
@@ -74,7 +76,7 @@ public class Sizing implements Animatable<Sizing> {
 
     /**
      * @return {@code true} if this sizing instance
-     * uses the {@linkplain Method#CONTENT CONTENT} method
+     *         uses the {@linkplain Method#CONTENT CONTENT} method
      */
     public boolean isContent() {
         return this.method == Method.CONTENT;
@@ -97,18 +99,21 @@ public class Sizing implements Animatable<Sizing> {
         if (next.method != this.method) {
             return new MergedSizing(this, next, delta);
         } else {
-            return new Sizing(Mth.lerp(delta, this.value, next.value), this.method);
+            return new Sizing(Mth.lerpInt(delta, this.value, next.value), this.method);
         }
     }
 
     public enum Method {
-        FIXED, CONTENT, FILL
+        FIXED,
+        CONTENT,
+        FILL
     }
 
     public static Sizing parse(Element sizingElement) {
         var methodString = sizingElement.getAttribute("method");
         if (methodString.isBlank()) {
-            throw new UIModelParsingException("Missing 'method' attribute on sizing declaration. Must be one of: fixed, content, fill");
+            throw new UIModelParsingException(
+                    "Missing 'method' attribute on sizing declaration. Must be one of: fixed, content, fill");
         }
 
         var method = Method.valueOf(methodString.toUpperCase(Locale.ROOT));
@@ -159,8 +164,7 @@ public class Sizing implements Animatable<Sizing> {
             return Mth.lerpInt(
                     this.delta,
                     this.first.inflate(space, contentSizeFunction),
-                    this.second.inflate(space, contentSizeFunction)
-            );
+                    this.second.inflate(space, contentSizeFunction));
         }
 
         @Override
@@ -192,7 +196,8 @@ public class Sizing implements Animatable<Sizing> {
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
             MergedSizing that = (MergedSizing) o;
-            return Float.compare(delta, that.delta) == 0 && Objects.equals(first, that.first) && Objects.equals(second, that.second);
+            return Float.compare(delta, that.delta) == 0 && Objects.equals(first, that.first) &&
+                    Objects.equals(second, that.second);
         }
 
         @Override
@@ -200,5 +205,4 @@ public class Sizing implements Animatable<Sizing> {
             return Objects.hash(super.hashCode(), first, second, delta);
         }
     }
-
 }

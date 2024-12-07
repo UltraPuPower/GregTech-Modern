@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.core;
 import org.lwjgl.glfw.GLFW;
 
 public enum CursorStyle {
+
     /**
      * The default cursor style defined by
      * the operating system
@@ -31,5 +32,7 @@ public enum CursorStyle {
 
     public final int glfw;
 
-    CursorStyle(int glfw) {this.glfw = glfw;}
+    CursorStyle(int glfw) {
+        this.glfw = glfw;
+    }
 }

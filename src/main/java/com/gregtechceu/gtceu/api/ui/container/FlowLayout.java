@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.MountingHelper;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.util.*;
-
 
 public class FlowLayout extends BaseParentUIComponent {
 
@@ -134,7 +134,7 @@ public class FlowLayout extends BaseParentUIComponent {
 
     /**
      * @return The gap, in logical pixels, this layout
-     * inserts between all child components
+     *         inserts between all child components
      */
     public int gap() {
         return this.gap.get();
@@ -173,6 +173,7 @@ public class FlowLayout extends BaseParentUIComponent {
 
     @FunctionalInterface
     public interface Algorithm {
+
         void layout(FlowLayout container);
 
         Algorithm HORIZONTAL = container -> {
@@ -206,16 +207,19 @@ public class FlowLayout extends BaseParentUIComponent {
 
             if (container.verticalAlignment() != VerticalAlignment.TOP) {
                 for (var component : layout) {
-                    component.updateY(component.baseY() + container.verticalAlignment().align(component.fullSize().height(), container.height - padding.vertical()));
+                    component.updateY(component.baseY() + container.verticalAlignment()
+                            .align(component.fullSize().height(), container.height - padding.vertical()));
                 }
             }
 
             if (container.horizontalAlignment() != HorizontalAlignment.LEFT) {
                 for (var component : layout) {
                     if (container.horizontalAlignment() == HorizontalAlignment.CENTER) {
-                        component.updateX(component.baseX() + (container.width - padding.horizontal() - layoutWidth.intValue()) / 2);
+                        component.updateX(component.baseX() +
+                                (container.width - padding.horizontal() - layoutWidth.intValue()) / 2);
                     } else {
-                        component.updateX(component.baseX() + (container.width - padding.horizontal() - layoutWidth.intValue()));
+                        component.updateX(
+                                component.baseX() + (container.width - padding.horizontal() - layoutWidth.intValue()));
                     }
                 }
             }
@@ -254,16 +258,19 @@ public class FlowLayout extends BaseParentUIComponent {
 
             if (container.horizontalAlignment() != HorizontalAlignment.LEFT) {
                 for (var component : layout) {
-                    component.updateX(component.baseX() + container.horizontalAlignment().align(component.fullSize().width(), container.width - padding.horizontal()));
+                    component.updateX(component.baseX() + container.horizontalAlignment()
+                            .align(component.fullSize().width(), container.width - padding.horizontal()));
                 }
             }
 
             if (container.verticalAlignment() != VerticalAlignment.TOP) {
                 for (var component : layout) {
                     if (container.verticalAlignment() == VerticalAlignment.CENTER) {
-                        component.updateY(component.baseY() + (container.height - padding.vertical() - layoutHeight.intValue()) / 2);
+                        component.updateY(component.baseY() +
+                                (container.height - padding.vertical() - layoutHeight.intValue()) / 2);
                     } else {
-                        component.updateY(component.baseY() + (container.height - padding.vertical() - layoutHeight.intValue()));
+                        component.updateY(
+                                component.baseY() + (container.height - padding.vertical() - layoutHeight.intValue()));
                     }
                 }
             }
@@ -273,7 +280,8 @@ public class FlowLayout extends BaseParentUIComponent {
 
         Algorithm LTR_TEXT = container -> {
             if (container.horizontalSizing.get().isContent()) {
-                throw new IllegalStateException("An LTR-text-flow layout must use content-independent horizontal sizing");
+                throw new IllegalStateException(
+                        "An LTR-text-flow layout must use content-independent horizontal sizing");
             }
 
             var layoutWidth = new MutableInt(0);
@@ -321,16 +329,19 @@ public class FlowLayout extends BaseParentUIComponent {
 
             if (container.verticalAlignment() != VerticalAlignment.TOP) {
                 for (var component : layout) {
-                    component.updateY(component.baseY() + container.verticalAlignment().align(layoutHeight.intValue(), container.height - padding.vertical()));
+                    component.updateY(component.baseY() + container.verticalAlignment().align(layoutHeight.intValue(),
+                            container.height - padding.vertical()));
                 }
             }
 
             if (container.horizontalAlignment() != HorizontalAlignment.LEFT) {
                 for (var component : layout) {
                     if (container.horizontalAlignment() == HorizontalAlignment.CENTER) {
-                        component.updateX(component.baseX() + (container.width - padding.horizontal() - layoutWidth.intValue()) / 2);
+                        component.updateX(component.baseX() +
+                                (container.width - padding.horizontal() - layoutWidth.intValue()) / 2);
                     } else {
-                        component.updateX(component.baseX() + (container.width - padding.horizontal() - layoutWidth.intValue()));
+                        component.updateX(
+                                component.baseX() + (container.width - padding.horizontal() - layoutWidth.intValue()));
                     }
                 }
             }

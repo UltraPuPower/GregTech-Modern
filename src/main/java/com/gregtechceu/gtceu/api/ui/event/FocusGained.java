@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 
 public interface FocusGained {
+
     void onFocusGained(UIComponent.FocusSource source);
 
     static EventStream<FocusGained> newStream() {

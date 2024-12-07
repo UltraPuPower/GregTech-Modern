@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.util;
 
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -9,10 +10,12 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 
 public class FocusHandler {
+
     protected final ParentUIComponent root;
     @Nullable
     protected UIComponent focused = null;
-    @Nullable protected UIComponent.FocusSource lastFocusSource = null;
+    @Nullable
+    protected UIComponent.FocusSource lastFocusSource = null;
 
     public FocusHandler(ParentUIComponent root) {
         this.root = root;
@@ -20,7 +23,8 @@ public class FocusHandler {
 
     public void updateClickFocus(double mouseX, double mouseY) {
         var clicked = this.root.childAt((int) mouseX, (int) mouseY);
-        this.focus(clicked != null && clicked.canFocus(UIComponent.FocusSource.MOUSE_CLICK) ? clicked : null, UIComponent.FocusSource.MOUSE_CLICK);
+        this.focus(clicked != null && clicked.canFocus(UIComponent.FocusSource.MOUSE_CLICK) ? clicked : null,
+                UIComponent.FocusSource.MOUSE_CLICK);
     }
 
     @Contract(pure = true)
@@ -39,9 +43,8 @@ public class FocusHandler {
         allChildren.removeIf(component -> !component.canFocus(UIComponent.FocusSource.KEYBOARD_CYCLE));
         if (allChildren.isEmpty()) return;
 
-        int newIndex = this.focused == null
-                ? forwards ? 0 : allChildren.size() - 1
-                : (allChildren.indexOf(this.focused)) + (forwards ? 1 : -1);
+        int newIndex = this.focused == null ? forwards ? 0 : allChildren.size() - 1 :
+                (allChildren.indexOf(this.focused)) + (forwards ? 1 : -1);
 
         if (newIndex >= allChildren.size()) newIndex -= allChildren.size();
         if (newIndex < 0) newIndex += allChildren.size();
@@ -66,7 +69,8 @@ public class FocusHandler {
                 for (var child : allChildren) {
                     if (child == this.focused) continue;
                     if (child.x() < this.focused.x() + this.focused.width() ||
-                            child.x() > closestX || Math.abs(child.y() - this.focused.y()) > closestY) continue;
+                            child.x() > closestX || Math.abs(child.y() - this.focused.y()) > closestY)
+                        continue;
 
                     closest = child;
                     closestX = child.x();
@@ -79,7 +83,8 @@ public class FocusHandler {
                 for (var child : allChildren) {
                     if (child == this.focused) continue;
                     if (child.x() + child.width() > this.focused.x() ||
-                            child.x() + child.width() < closestX || Math.abs(child.y() - this.focused.y()) > closestY) continue;
+                            child.x() + child.width() < closestX || Math.abs(child.y() - this.focused.y()) > closestY)
+                        continue;
 
                     closest = child;
                     closestX = child.x() + child.width();
@@ -92,7 +97,8 @@ public class FocusHandler {
                 for (var child : allChildren) {
                     if (child == this.focused) continue;
                     if (child.y() + child.height() > this.focused.y() ||
-                            child.y() + child.height() < closestY || Math.abs(child.x() - this.focused.x()) > closestX) continue;
+                            child.y() + child.height() < closestY || Math.abs(child.x() - this.focused.x()) > closestX)
+                        continue;
 
                     closest = child;
                     closestX = Math.abs(child.x() - this.focused.x());
@@ -105,7 +111,8 @@ public class FocusHandler {
                 for (var child : allChildren) {
                     if (child == this.focused) continue;
                     if (child.y() < this.focused.y() + this.focused.height() ||
-                            child.y() + child.height() > closestY || Math.abs(child.x() - this.focused.x()) > closestX) continue;
+                            child.y() + child.height() > closestY || Math.abs(child.x() - this.focused.x()) > closestX)
+                        continue;
 
                     closest = child;
                     closestX = Math.abs(child.x() - this.focused.x());

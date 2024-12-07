@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.api.ui.component;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import net.minecraft.network.chat.Component;
+
 import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
@@ -11,6 +13,7 @@ import java.math.RoundingMode;
 import java.util.Map;
 
 public class DiscreteSliderComponent extends SliderComponent {
+
     protected double min, max;
 
     protected int decimalPlaces = 0;
@@ -37,7 +40,8 @@ public class DiscreteSliderComponent extends SliderComponent {
     }
 
     public double discreteValue() {
-        return new BigDecimal(this.min + this.value * (this.max - this.min)).setScale(this.decimalPlaces, RoundingMode.HALF_UP).doubleValue();
+        return new BigDecimal(this.min + this.value * (this.max - this.min))
+                .setScale(this.decimalPlaces, RoundingMode.HALF_UP).doubleValue();
     }
 
     public DiscreteSliderComponent setFromDiscreteValue(double discreteValue) {
@@ -84,7 +88,6 @@ public class DiscreteSliderComponent extends SliderComponent {
         return new DiscreteSliderComponent(
                 Sizing.content(),
                 UIParsing.parseDouble(element.getAttributeNode("min")),
-                UIParsing.parseDouble(element.getAttributeNode("max"))
-        );
+                UIParsing.parseDouble(element.getAttributeNode("max")));
     }
 }

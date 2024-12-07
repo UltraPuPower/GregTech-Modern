@@ -11,10 +11,12 @@ import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
 
@@ -26,7 +28,8 @@ import java.util.function.Function;
 
 public class SlimSliderComponent extends BaseUIComponent {
 
-    public static final Function<Double, Component> VALUE_TOOLTIP_SUPPLIER = value -> Component.literal(String.valueOf(value));
+    public static final Function<Double, Component> VALUE_TOOLTIP_SUPPLIER = value -> Component
+            .literal(String.valueOf(value));
 
     protected static final ResourceLocation TEXTURE = new ResourceLocation("owo", "textures/gui/slim_slider.png");
     protected static final ResourceLocation TRACK_TEXTURE = new ResourceLocation("owo", "slim_slider_track");
@@ -56,7 +59,8 @@ public class SlimSliderComponent extends BaseUIComponent {
         if (this.axis == Axis.VERTICAL) {
             return 9;
         } else {
-            throw new UnsupportedOperationException("Horizontal SlimSliderComponent cannot be horizontally content-sized");
+            throw new UnsupportedOperationException(
+                    "Horizontal SlimSliderComponent cannot be horizontally content-sized");
         }
     }
 
@@ -73,10 +77,12 @@ public class SlimSliderComponent extends BaseUIComponent {
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         if (this.axis == Axis.HORIZONTAL) {
             NinePatchTexture.draw(TRACK_TEXTURE, graphics, this.x + 1, this.y + 3, this.width - 2, 3);
-            graphics.blit(TEXTURE, (int) (this.x + (this.width - 4) * this.value.get()), this.y + 1, 4, 7, 0, 3, 4, 7, 16, 16);
+            graphics.blit(TEXTURE, (int) (this.x + (this.width - 4) * this.value.get()), this.y + 1, 4, 7, 0, 3, 4, 7,
+                    16, 16);
         } else {
             NinePatchTexture.draw(TRACK_TEXTURE, graphics, this.x + 3, this.y + 1, 3, this.height - 2);
-            graphics.blit(TEXTURE, this.x + 1, (int) (this.y + (this.height - 4) * this.value.get()), 7, 4, 4, 3, 7, 4, 16, 16);
+            graphics.blit(TEXTURE, this.x + 1, (int) (this.y + (this.height - 4) * this.value.get()), 7, 4, 4, 3, 7, 4,
+                    16, 16);
         }
     }
 
@@ -102,9 +108,8 @@ public class SlimSliderComponent extends BaseUIComponent {
     }
 
     protected void setValueFromMouse(double mouseX, double mouseY) {
-        this.value(this.axis == Axis.VERTICAL
-                ? this.min + (mouseY / this.height) * (this.max - this.min)
-                : this.min + (mouseX / this.width) * (this.max - this.min));
+        this.value(this.axis == Axis.VERTICAL ? this.min + (mouseY / this.height) * (this.max - this.min) :
+                this.min + (mouseX / this.width) * (this.max - this.min));
     }
 
     @Override
@@ -191,20 +196,22 @@ public class SlimSliderComponent extends BaseUIComponent {
     }
 
     public static UIComponent parse(Element element) {
-        return element.getAttribute("direction").equals("vertical")
-                ? new SlimSliderComponent(Axis.VERTICAL)
-                : new SlimSliderComponent(Axis.HORIZONTAL);
+        return element.getAttribute("direction").equals("vertical") ? new SlimSliderComponent(Axis.VERTICAL) :
+                new SlimSliderComponent(Axis.HORIZONTAL);
     }
 
     public static Function<Double, Component> valueTooltipSupplier(int decimalPlaces) {
-        return value -> Component.literal(new BigDecimal(value).setScale(decimalPlaces, RoundingMode.HALF_UP).toPlainString());
+        return value -> Component
+                .literal(new BigDecimal(value).setScale(decimalPlaces, RoundingMode.HALF_UP).toPlainString());
     }
 
     public enum Axis {
-        VERTICAL, HORIZONTAL
+        VERTICAL,
+        HORIZONTAL
     }
 
     public interface OnChanged {
+
         void onChanged(double value);
 
         static EventStream<OnChanged> newStream() {
@@ -217,6 +224,7 @@ public class SlimSliderComponent extends BaseUIComponent {
     }
 
     public interface OnSlideEnd {
+
         void onSlideEnd();
 
         static EventStream<OnSlideEnd> newStream() {

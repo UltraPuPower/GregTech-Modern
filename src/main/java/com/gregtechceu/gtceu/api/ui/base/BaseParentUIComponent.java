@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
+
 import net.minecraft.util.Mth;
+
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -19,6 +21,7 @@ import java.util.function.Consumer;
  * especially {@link io.wispforest.owo.ui.container.WrappingParentComponent} is often useful
  */
 public abstract class BaseParentUIComponent extends BaseUIComponent implements ParentUIComponent {
+
     protected final Observable<VerticalAlignment> verticalAlignment = Observable.of(VerticalAlignment.TOP);
     protected final Observable<HorizontalAlignment> horizontalAlignment = Observable.of(HorizontalAlignment.LEFT);
 
@@ -207,8 +210,7 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
             this.focusHandler.updateClickFocus(this.x + mouseX, this.y + mouseY);
         }
 
-        return ParentUIComponent.super.onMouseDown(mouseX, mouseY, button)
-                || super.onMouseDown(mouseX, mouseY, button);
+        return ParentUIComponent.super.onMouseDown(mouseX, mouseY, button) || super.onMouseDown(mouseX, mouseY, button);
     }
 
     @Override
@@ -223,14 +225,16 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
     @Override
     public boolean onMouseScroll(double mouseX, double mouseY, double amount) {
-        return ParentUIComponent.super.onMouseScroll(mouseX, mouseY, amount) || super.onMouseScroll(mouseX, mouseY, amount);
+        return ParentUIComponent.super.onMouseScroll(mouseX, mouseY, amount) ||
+                super.onMouseScroll(mouseX, mouseY, amount);
     }
 
     @Override
     public boolean onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY, int button) {
         if (this.focusHandler != null && this.focusHandler.focused() != null) {
             final var focused = this.focusHandler.focused();
-            return focused.onMouseDrag(this.x + mouseX - focused.x(), this.y + mouseY - focused.y(), deltaX, deltaY, button);
+            return focused.onMouseDrag(this.x + mouseX - focused.x(), this.y + mouseY - focused.y(), deltaX, deltaY,
+                    button);
         } else {
             return super.onMouseDrag(mouseX, mouseY, deltaX, deltaY, button);
         }
@@ -242,12 +246,13 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
         if (keyCode == GLFW.GLFW_KEY_TAB) {
             this.focusHandler.cycle((modifiers & GLFW.GLFW_MOD_SHIFT) == 0);
-        } else if ((keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_DOWN || keyCode == GLFW.GLFW_KEY_UP)
-                && (modifiers & GLFW.GLFW_MOD_ALT) != 0) {
-            this.focusHandler.moveFocus(keyCode);
-        } else if (this.focusHandler.focused() != null) {
-            return this.focusHandler.focused().onKeyPress(keyCode, scanCode, modifiers);
-        }
+        } else if ((keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_DOWN ||
+                keyCode == GLFW.GLFW_KEY_UP) && (modifiers & GLFW.GLFW_MOD_ALT) != 0) {
+                    this.focusHandler.moveFocus(keyCode);
+                } else
+            if (this.focusHandler.focused() != null) {
+                return this.focusHandler.focused().onKeyPress(keyCode, scanCode, modifiers);
+            }
 
         return super.onKeyPress(keyCode, scanCode, modifiers);
     }
@@ -285,8 +290,8 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
     /**
      * @return The offset from the origin of this component
-     * at which children can start to be mounted. Accumulates
-     * padding as well as padding from content sizing
+     *         at which children can start to be mounted. Accumulates
+     *         padding as well as padding from content sizing
      */
     protected Size childMountingOffset() {
         var padding = this.padding.get();
@@ -295,8 +300,8 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
     /**
      * @deprecated Use {@link #mountChild(UIComponent, Consumer)} instead. This new
-     * overload no longer inflates the child prior to mounting, as that is
-     * rarely ever necessary and was simply causing unnecessary calculations
+     *             overload no longer inflates the child prior to mounting, as that is
+     *             rarely ever necessary and was simply causing unnecessary calculations
      */
     @Deprecated(forRemoval = true)
     protected void mountChild(@Nullable UIComponent child, Size space, Consumer<UIComponent> layoutFunc) {
@@ -326,18 +331,20 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
             case ABSOLUTE -> child.mount(
                     this,
                     this.x + positioning.x + componentMargins.left() + padding.left(),
-                    this.y + positioning.y + componentMargins.top() + padding.top()
-            );
+                    this.y + positioning.y + componentMargins.top() + padding.top());
             case RELATIVE -> child.mount(
                     this,
-                    this.x + padding.left() + componentMargins.left() + Math.round((positioning.x / 100f) * (this.width() - child.fullSize().width() - padding.horizontal())),
-                    this.y + padding.top() + componentMargins.top() + Math.round((positioning.y / 100f) * (this.height() - child.fullSize().height() - padding.vertical()))
-            );
+                    this.x + padding.left() + componentMargins.left() +
+                            Math.round((positioning.x / 100f) *
+                                    (this.width() - child.fullSize().width() - padding.horizontal())),
+                    this.y + padding.top() + componentMargins.top() + Math.round(
+                            (positioning.y / 100f) * (this.height() - child.fullSize().height() - padding.vertical())));
             case ACROSS -> child.mount(
                     this,
-                    this.x + padding.left() + componentMargins.left() + Math.round((positioning.x / 100f) * (this.width() - padding.horizontal())),
-                    this.y + padding.top() + componentMargins.top() + Math.round((positioning.y / 100f) * (this.height() - padding.vertical()))
-            );
+                    this.x + padding.left() + componentMargins.left() +
+                            Math.round((positioning.x / 100f) * (this.width() - padding.horizontal())),
+                    this.y + padding.top() + componentMargins.top() +
+                            Math.round((positioning.y / 100f) * (this.height() - padding.vertical())));
         }
     }
 
@@ -348,14 +355,16 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
      *
      * @param children The list of children to draw
      */
-    protected void drawChildren(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta, List<? extends UIComponent> children) {
+    protected void drawChildren(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta,
+                                List<? extends UIComponent> children) {
         if (!this.allowOverflow) {
             var padding = this.padding.get();
-            ScissorStack.push(this.x + padding.left(), this.y + padding.top(), this.width - padding.horizontal(), this.height - padding.vertical(), graphics.pose());
+            ScissorStack.push(this.x + padding.left(), this.y + padding.top(), this.width - padding.horizontal(),
+                    this.height - padding.vertical(), graphics.pose());
         }
 
         var focusHandler = this.focusHandler();
-        //noinspection ForLoopReplaceableByForEach
+        // noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < children.size(); i++) {
             final var child = children.get(i);
 
@@ -386,9 +395,10 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
         final var padding = this.padding.get();
 
         return Size.of(
-                Mth.lerpInt(this.horizontalSizing.get().contentFactor(), this.width - padding.horizontal(), thisSpace.width() - padding.horizontal()),
-                Mth.lerpInt(this.verticalSizing.get().contentFactor(), this.height - padding.vertical(), thisSpace.height() - padding.vertical())
-        );
+                Mth.lerpInt(this.horizontalSizing.get().contentFactor(), this.width - padding.horizontal(),
+                        thisSpace.width() - padding.horizontal()),
+                Mth.lerpInt(this.verticalSizing.get().contentFactor(), this.height - padding.vertical(),
+                        thisSpace.height() - padding.vertical()));
     }
 
     @Override

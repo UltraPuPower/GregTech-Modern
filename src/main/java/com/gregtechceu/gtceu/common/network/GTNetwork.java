@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.network;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.ui.ScreenInternals;
 import com.gregtechceu.gtceu.common.network.packets.*;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
@@ -12,7 +13,7 @@ import com.lowdragmc.lowdraglib.networking.forge.LDLNetworkingImpl;
 
 public class GTNetwork {
 
-    public static final INetworking NETWORK = LDLNetworkingImpl.createNetworking(GTCEu.id("network"), "0.0.1");
+    public static final INetworking NETWORK = LDLNetworkingImpl.createNetworking(GTCEu.id("network"), "0.0.5");
 
     public static void init() {
         NETWORK.registerC2S(CPacketKeysPressed.class);
@@ -28,5 +29,8 @@ public class GTNetwork {
         NETWORK.registerS2C(SPacketSendWorldID.class);
 
         NETWORK.registerBoth(SCPacketShareProspection.class);
+
+        NETWORK.registerBoth(ScreenInternals.LocalPacket.class);
+        NETWORK.registerBoth(ScreenInternals.SyncPropertiesPacket.class);
     }
 }

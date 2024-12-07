@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.EditBoxAccessor;
 import com.gregtechceu.gtceu.api.ui.core.CursorStyle;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
@@ -9,9 +8,12 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.EditBoxAccessor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+
 import org.lwjgl.glfw.GLFW;
 import org.w3c.dom.Element;
 
@@ -20,7 +22,8 @@ import java.util.function.Consumer;
 
 public class TextBoxComponent extends EditBox {
 
-    protected final Observable<Boolean> showsBackground = Observable.of(((EditBoxAccessor) this).ui$drawsBackground());
+    protected final Observable<Boolean> showsBackground = Observable
+            .of(((EditBoxAccessor) this).gtceu$drawsBackground());
 
     protected final Observable<String> textValue = Observable.of("");
     protected final EventStream<OnChanged> changedEvents = OnChanged.newStream();
@@ -61,7 +64,7 @@ public class TextBoxComponent extends EditBox {
     }
 
     @Override
-    public void setDrawsBackground(boolean drawsBackground) {
+    public void setBordered(boolean drawsBackground) {
         super.setBordered(drawsBackground);
         this.showsBackground.set(drawsBackground);
     }
@@ -79,16 +82,17 @@ public class TextBoxComponent extends EditBox {
     @Override
     public void parseProperties(UIModel spec, Element element, Map<String, Element> children) {
         super.parseProperties(spec, element, children);
-        UIParsing.apply(children, "show-background", UIParsing::parseBool, this::setDrawsBackground);
+        UIParsing.apply(children, "show-background", UIParsing::parseBool, this::setBordered);
         UIParsing.apply(children, "max-length", UIParsing::parseUnsignedInt, this::setMaxLength);
         UIParsing.apply(children, "text", e -> e.getTextContent().strip(), this::text);
     }
 
-    protected CursorStyle ui$preferredCursorStyle() {
+    protected CursorStyle gtceu$preferredCursorStyle() {
         return CursorStyle.TEXT;
     }
 
     public interface OnChanged {
+
         void onChanged(String value);
 
         static EventStream<OnChanged> newStream() {

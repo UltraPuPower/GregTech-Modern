@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
 public class BoxComponent extends BaseUIComponent {
+
     protected boolean fill = false;
     protected GradientDirection direction = GradientDirection.TOP_TO_BOTTOM;
 
@@ -58,7 +60,7 @@ public class BoxComponent extends BaseUIComponent {
 
     /**
      * @return {@code true} if this component is currently
-     * filled with color, {@code false} if it is outlined
+     *         filled with color, {@code false} if it is outlined
      */
     public boolean fill() {
         return this.fill;
@@ -75,7 +77,7 @@ public class BoxComponent extends BaseUIComponent {
 
     /**
      * @return The direction in which the gradient inside
-     * this component currently travels
+     *         this component currently travels
      */
     public GradientDirection direction() {
         return this.direction;
@@ -138,9 +140,9 @@ public class BoxComponent extends BaseUIComponent {
     }
 
     public enum GradientDirection {
-        TOP_TO_BOTTOM, /*TOP_LEFT_TO_BOTTOM_RIGHT,*/
-        RIGHT_TO_LEFT, /*TOP_RIGHT_TO_BOTTOM_LEFT,*/
-        BOTTOM_TO_TOP, /*BOTTOM_RIGHT_TO_TOP_LEFT,*/
-        LEFT_TO_RIGHT, /*BOTTOM_LEFT_TO_TOP_RIGHT*/
+        TOP_TO_BOTTOM, /* TOP_LEFT_TO_BOTTOM_RIGHT, */
+        RIGHT_TO_LEFT, /* TOP_RIGHT_TO_BOTTOM_LEFT, */
+        BOTTOM_TO_TOP, /* BOTTOM_RIGHT_TO_TOP_LEFT, */
+        LEFT_TO_RIGHT, /* BOTTOM_LEFT_TO_TOP_RIGHT */
     }
 }
