@@ -10,13 +10,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.AllArgsConstructor;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
@@ -65,6 +66,7 @@ public class ScreenInternals {
         }
     }
 
+    @AllArgsConstructor
     public static class SyncPropertiesPacket implements IPacket {
 
         public FriendlyByteBuf payload;
@@ -98,13 +100,14 @@ public class ScreenInternals {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
     public static class Client {
 
         public static void init() {
             MinecraftForge.EVENT_BUS.addListener(ScreenInternals.Client::afterScreenOpened);
         }
 
+        @SubscribeEvent
         private static void afterScreenOpened(ScreenEvent.Opening event) {
             if (event.getNewScreen() instanceof MenuAccess<?> handled) {
                 ((UIAbstractContainerMenuExtension) handled.getMenu())
