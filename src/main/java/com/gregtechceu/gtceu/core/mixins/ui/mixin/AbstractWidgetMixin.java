@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.core.mixins.ui.mixin;
 
-import com.gregtechceu.gtceu.ui.component.VanillaWidgetComponent;
-import com.gregtechceu.gtceu.ui.core.*;
-import com.gregtechceu.gtceu.ui.event.*;
-import com.gregtechceu.gtceu.ui.inject.UIComponentStub;
-import com.gregtechceu.gtceu.ui.parsing.UIModel;
-import com.gregtechceu.gtceu.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.ui.util.EventSource;
-import com.gregtechceu.gtceu.ui.util.FocusHandler;
+import com.gregtechceu.gtceu.api.ui.component.VanillaWidgetComponent;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.event.*;
+import com.gregtechceu.gtceu.api.ui.inject.UIComponentStub;
+import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
+import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+import com.gregtechceu.gtceu.api.ui.util.EventSource;
+import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
