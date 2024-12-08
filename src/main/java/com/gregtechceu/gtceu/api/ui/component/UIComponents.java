@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
+import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
 import com.gregtechceu.gtceu.api.ui.container.Containers;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -19,6 +20,8 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -62,6 +65,10 @@ public class UIComponents {
     // Default Components
     // ------------------
 
+    public static SlotComponent slot(BaseContainerScreen<?, ?> screen, IItemHandlerModifiable handler, int index) {
+        return new SlotComponent(screen, handler, index);
+    }
+
     public static <E extends Entity> EntityComponent<E> entity(Sizing sizing, EntityType<E> type,
                                                                @Nullable CompoundTag nbt) {
         return new EntityComponent<>(sizing, type, nbt);
@@ -94,6 +101,10 @@ public class UIComponents {
         }
 
         return new BlockComponent(state, blockEntity);
+    }
+
+    public static FluidComponent fluid(FluidStack fluid) {
+        return new FluidComponent(fluid);
     }
 
     public static LabelComponent label(Component text) {

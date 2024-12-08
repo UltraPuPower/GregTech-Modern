@@ -1945,8 +1945,10 @@ public class GTItems {
             .tag(CustomTags.RESISTORS).register();
     public static ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("smd_capacitor", Item::new).lang("SMD Capacitor")
             .tag(CustomTags.CAPACITORS).register();
-    public static ItemEntry<Item> SMD_DIODE = REGISTRATE.item("smd_diode", Item::new).lang("SMD Diode")
-            .tag(CustomTags.DIODES).register();
+    public static ItemEntry<ComponentItem> SMD_DIODE = REGISTRATE.item("smd_diode", ComponentItem::create).lang("SMD Diode")
+            .tag(CustomTags.DIODES)
+            .onRegister(attach(new ItemUIBehaviour()))
+            .register();
     public static ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("smd_inductor", Item::new).lang("SMD Inductor")
             .tag(CustomTags.INDUCTORS).register();
     public static ItemEntry<Item> ADVANCED_SMD_TRANSISTOR = REGISTRATE.item("advanced_smd_transistor", Item::new)

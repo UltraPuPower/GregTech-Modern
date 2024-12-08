@@ -26,13 +26,13 @@ public interface UIComponent extends PositionedRectangle {
     /**
      * Draw the current state of this component onto the screen
      *
-     * @param context      The transformation stack
+     * @param graphics      The transformation stack
      * @param mouseX       The mouse pointer's x-coordinate
      * @param mouseY       The mouse pointer's y-coordinate
      * @param partialTicks The fraction of the current tick that has passed
      * @param delta        The duration of the last frame, in partial ticks
      */
-    void draw(UIGuiGraphics context, int mouseX, int mouseY, float partialTicks, float delta);
+    void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta);
 
     /**
      * Draw the current tooltip of this component onto the screen

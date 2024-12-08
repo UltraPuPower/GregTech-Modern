@@ -13,11 +13,14 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 import lombok.Getter;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -147,9 +150,9 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * @param index The index the slot occupies in the handler's slot list
      * @return The wrapped slot
      */
-    protected SlotComponent slotAsComponent(int index) {
+    /*protected SlotComponent slotAsComponent(int index) {
         return new SlotComponent(index);
-    }
+    }*/
 
     /**
      * A convenience shorthand for querying a component from the adapter's
@@ -229,68 +232,4 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
 
     @Override
     protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {}
-
-    public class SlotComponent extends BaseUIComponent {
-
-        protected final Slot slot;
-        protected boolean didDraw = false;
-
-        protected SlotComponent(int index) {
-            this.slot = BaseContainerScreen.this.menu.getSlot(index);
-        }
-
-        @Override
-        public void draw(UIGuiGraphics context, int mouseX, int mouseY, float partialTicks, float delta) {
-            this.didDraw = true;
-
-            int[] scissor = new int[4];
-            GL11.glGetIntegerv(GL11.GL_SCISSOR_BOX, scissor);
-
-            ((UISlotExtension) this.slot).gtceu$setScissorArea(PositionedRectangle.of(
-                    scissor[0], scissor[1], scissor[2], scissor[3]));
-        }
-
-        @Override
-        public void update(float delta, int mouseX, int mouseY) {
-            super.update(delta, mouseX, mouseY);
-
-            ((UISlotExtension) this.slot).gtceu$setDisabledOverride(!this.didDraw);
-
-            this.didDraw = false;
-        }
-
-        @Override
-        public void drawTooltip(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
-            if (!this.slot.hasItem()) {
-                super.drawTooltip(graphics, mouseX, mouseY, partialTicks, delta);
-            }
-        }
-
-        @Override
-        public boolean shouldDrawTooltip(double mouseX, double mouseY) {
-            return super.shouldDrawTooltip(mouseX, mouseY);
-        }
-
-        @Override
-        protected int determineHorizontalContentSize(Sizing sizing) {
-            return 16;
-        }
-
-        @Override
-        protected int determineVerticalContentSize(Sizing sizing) {
-            return 16;
-        }
-
-        @Override
-        public void updateX(int x) {
-            super.updateX(x);
-            ((SlotAccessor) this.slot).gtceu$setX(x - BaseContainerScreen.this.leftPos);
-        }
-
-        @Override
-        public void updateY(int y) {
-            super.updateY(y);
-            ((SlotAccessor) this.slot).gtceu$setY(y - BaseContainerScreen.this.topPos);
-        }
-    }
 }

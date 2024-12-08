@@ -31,6 +31,7 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     @Override
     protected ModularUI createUITemplate(MetaMachine holder, Player entityPlayer) {
         if (holder instanceof IUIMachine machine) {
+            //return null;
             return machine.createUI(entityPlayer);
         }
         return null;

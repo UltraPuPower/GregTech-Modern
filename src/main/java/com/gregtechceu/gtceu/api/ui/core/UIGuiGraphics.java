@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.event.WindowEvent;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.GuiGraphicsAccessor;
@@ -12,14 +13,23 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
@@ -36,8 +46,8 @@ public class UIGuiGraphics extends GuiGraphics {
     public static final ResourceLocation PANEL_INSET_TEXTURE = new ResourceLocation("owo",
             "textures/gui/panel_inset.png");
 
-    public static final ResourceLocation PANEL_NINE_PATCH_TEXTURE = new ResourceLocation("owo", "panel/default");
-    public static final ResourceLocation DARK_PANEL_NINE_PATCH_TEXTURE = new ResourceLocation("owo", "panel/dark");
+    public static final ResourceLocation PANEL_NINE_PATCH_TEXTURE = GTCEu.id("gui/base/background_steel");
+    public static final ResourceLocation DARK_PANEL_NINE_PATCH_TEXTURE = GTCEu.id("gui/base/background_bronze");
     public static final ResourceLocation PANEL_INSET_NINE_PATCH_TEXTURE = new ResourceLocation("owo", "panel/inset");
 
     private boolean recording = false;
@@ -71,6 +81,84 @@ public class UIGuiGraphics extends GuiGraphics {
         recording = false;
         Tesselator.getInstance().end();
     }
+
+    public void drawFluid(FluidStack stack, int capacity, int x, int y, int width, int height) {
+        var sprite = getStillTexture(stack);
+        if(sprite == null) {
+            sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MissingTextureAtlasSprite.getLocation());
+            if(!FMLLoader.isProduction()) {
+                GTCEu.LOGGER.error("Missing fluid texture for fluid: {}", stack.getDisplayName().getString());
+            }
+        }
+        Color fluidColor = Color.ofRgb(IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack));
+        int scaledAmount = (int) (stack.getAmount() * height / capacity);
+        if(stack.getAmount() > 0 && scaledAmount < 1) {
+            scaledAmount = 1;
+        }
+        if(scaledAmount > height || scaledAmount == capacity) {
+            scaledAmount = height;
+        }
+
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+
+        final int xCount = width / 16;
+        final int xRemainder = width - xCount * 16;
+        final int yCount = scaledAmount / 16;
+        final int yRemainder = scaledAmount - yCount * 16;
+
+        final int yStart = y + height;
+        for(int xTile = 0; xTile <= xCount; xTile++) {
+            for(int yTile = 0; yTile <= yCount; yTile++) {
+                int w = xTile == xCount ? xRemainder : 16;
+                int h = yTile == yCount ? yRemainder : 16;
+                int xCoord = x + xTile * 16;
+                int yCoord = yStart - (yTile + 1) * 16;
+                if(width > 0 && height > 0) {
+                    int maskT = 16 - h;
+                    int maskR = 16 - w;
+                    drawFluidTexture(xCoord, yCoord, sprite, maskT, maskR, 0, fluidColor);
+                }
+            }
+        }
+        RenderSystem.enableBlend();
+    }
+
+    public void drawFluidTexture(int xCoord, int yCoord, TextureAtlasSprite sprite, int maskTop, int maskRight, int zLevel, Color fluidColor) {
+        float uMin = sprite.getU0();
+        float uMax = sprite.getU1();
+        float vMin = sprite.getV0();
+        float vMax = sprite.getV1();
+        uMax = uMax - maskRight / 16f * (uMax - uMin);
+        vMax = vMax - maskTop / 16f * (vMax - vMin);
+
+        var builder = Tesselator.getInstance().getBuilder();
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        var pose = this.pose().last().pose();
+        builder.vertex(pose, xCoord, yCoord + 16, zLevel).uv(uMin, vMax).color(fluidColor.argb()).endVertex();
+        builder.vertex(pose, xCoord + 16 - maskRight, yCoord + 16, zLevel).uv(uMax, vMax).color(fluidColor.argb()).endVertex();
+        builder.vertex(pose, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).uv(uMax, vMin).color(fluidColor.argb()).endVertex();
+        builder.vertex(pose, xCoord, yCoord + maskTop, zLevel).uv(uMin, vMin).color(fluidColor.argb()).endVertex();
+
+        BufferUploader.drawWithShader(builder.end());
+    }
+
+    @Nullable
+    public TextureAtlasSprite getStillTexture(FluidStack stack) {
+        ResourceLocation blocksTexture = InventoryMenu.BLOCK_ATLAS;
+        ResourceLocation still = IClientFluidTypeExtensions.of(stack.getFluid()).getStillTexture(stack);
+        return still == null ? null : Minecraft.getInstance().getTextureAtlas(blocksTexture).apply(still);
+    }
+
+    @Nullable
+    public TextureAtlasSprite getFlowingTexture(FluidStack stack) {
+        ResourceLocation blocksTexture = InventoryMenu.BLOCK_ATLAS;
+        ResourceLocation still = IClientFluidTypeExtensions.of(stack.getFluid()).getFlowingTexture(stack);
+        return still == null ? null : Minecraft.getInstance().getTextureAtlas(blocksTexture).apply(still);
+    }
+
+
 
     /**
      * Draw the outline of a rectangle

@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
-
 import com.gregtechceu.gtceu.api.ui.UIContainer;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,26 +11,19 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote A machine that has gui. can be opened via right click.
- */
-public interface IUIMachine extends IUIHolder, IMachineFeature {
+public interface IUIMachine2 extends MenuProvider, IMachineFeature {
 
     default boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return true;
     }
 
-    default InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        if (this.shouldOpenUI(player, hand, hit)) {
-            if (player instanceof ServerPlayer serverPlayer) {
-                MachineUIFactory.INSTANCE.openUI(self(), serverPlayer);
+    default InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult result) {
+        if(this.shouldOpenUI(player, hand, result)) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                NetworkHooks.openScreen(serverPlayer, this);
             }
         } else {
             return InteractionResult.PASS;
@@ -42,19 +31,19 @@ public interface IUIMachine extends IUIHolder, IMachineFeature {
         return InteractionResult.sidedSuccess(player.level().isClientSide);
     }
 
-    @Override
-    default boolean isInvalid() {
-        return self().isInValid();
-    }
-
-    @Override
     default boolean isRemote() {
         var level = self().getLevel();
         return level == null ? LDLib.isRemote() : level.isClientSide;
     }
 
+    @Nullable
     @Override
-    default void markAsDirty() {
-        self().markDirty();
+    default AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+        return new UIContainer(i, inventory);
+    }
+
+    @Override
+    default Component getDisplayName() {
+        return Component.empty();
     }
 }

@@ -108,7 +108,7 @@ public class ScreenInternals {
         }
 
         @SubscribeEvent
-        private static void afterScreenOpened(ScreenEvent.Opening event) {
+        public static void afterScreenOpened(ScreenEvent.Opening event) {
             if (event.getNewScreen() instanceof MenuAccess<?> handled) {
                 ((UIAbstractContainerMenuExtension) handled.getMenu())
                         .gtceu$attachToPlayer(Minecraft.getInstance().player);
