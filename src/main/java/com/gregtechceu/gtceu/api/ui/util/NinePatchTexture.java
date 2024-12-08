@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.ui.util;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.google.gson.GsonBuilder;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.gregtechceu.gtceu.forge.GTResourceReloadListener;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -53,8 +52,6 @@ public class NinePatchTexture {
     }
 
     public void draw(UIGuiGraphics context, int x, int y, int width, int height) {
-        context.recordQuads();
-
         int rightEdge = this.cornerPatchSize.width() + this.centerPatchSize.width();
         int bottomEdge = this.cornerPatchSize.height() + this.centerPatchSize.height();
 
@@ -75,7 +72,6 @@ public class NinePatchTexture {
         } else {
             this.drawStretched(context, x, y, width, height);
         }
-        context.submitQuads();
     }
 
     protected void drawStretched(UIGuiGraphics context, int x, int y, int width, int height) {
@@ -193,22 +189,24 @@ public class NinePatchTexture {
         action.accept(MetadataLoader.LOADED_TEXTURES.get(texture));
     }
 
-    public static class MetadataLoader extends SimpleJsonResourceReloadListener implements GTResourceReloadListener {
+    public static class MetadataLoader extends SimpleJsonResourceReloadListener {
 
         private static final Map<ResourceLocation, NinePatchTexture> LOADED_TEXTURES = new HashMap<>();
 
-        public MetadataLoader() {
-            super(new Gson(), "nine_patch_textures");
-        }
+        private static final Gson GSON = new GsonBuilder()
+                .setLenient()
+                .setPrettyPrinting()
+                .create();
+        private static final String LOCATION = "gtceu/nine_patch_textures";
 
-        @Override
-        public ResourceLocation getId() {
-            return GTCEu.id("nine_patch_metadata");
+        public MetadataLoader() {
+            super(GSON, LOCATION);
         }
 
         @Override
         protected void apply(Map<ResourceLocation, JsonElement> prepared, ResourceManager manager,
                              ProfilerFiller profiler) {
+            LOADED_TEXTURES.clear();
             prepared.forEach((resourceId, jsonElement) -> {
                 if (!(jsonElement instanceof JsonObject object)) return;
 

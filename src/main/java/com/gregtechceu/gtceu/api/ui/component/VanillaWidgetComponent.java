@@ -60,7 +60,7 @@ public class VanillaWidgetComponent extends BaseUIComponent {
                 this.widget instanceof SliderComponent) {
             return 20;
         } else if (this.widget instanceof EditBox textField) {
-            if (((EditBoxAccessor) textField).gtceu$drawsBackground()) {
+            if (((EditBoxAccessor) textField).gtceu$isBordered()) {
                 return 20;
             } else {
                 return 9;
@@ -96,21 +96,24 @@ public class VanillaWidgetComponent extends BaseUIComponent {
     }
 
     @Override
-    public void inflate(Size space) {
+    public VanillaWidgetComponent inflate(Size space) {
         super.inflate(space);
         this.applyToWidget();
+        return this;
     }
 
     @Override
-    public void updateX(int x) {
-        super.updateX(x);
+    public VanillaWidgetComponent x(int x) {
+        super.x(x);
         this.applyToWidget();
+        return this;
     }
 
     @Override
-    public void updateY(int y) {
-        super.updateY(y);
+    public VanillaWidgetComponent y(int y) {
+        super.y(y);
         this.applyToWidget();
+        return this;
     }
 
     private void applyToWidget() {

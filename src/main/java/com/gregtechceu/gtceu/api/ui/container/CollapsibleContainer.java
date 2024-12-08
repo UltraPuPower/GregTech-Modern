@@ -44,7 +44,7 @@ public class CollapsibleContainer extends FlowLayout {
 
         // Title
 
-        this.titleLayout = Containers.horizontalFlow(Sizing.content(), Sizing.content());
+        this.titleLayout = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
         this.titleLayout.padding(Insets.of(5, 5, 5, 0));
         this.allowOverflow(true);
 
@@ -62,7 +62,7 @@ public class CollapsibleContainer extends FlowLayout {
 
         // Content
 
-        this.contentLayout = Containers.verticalFlow(Sizing.content(), Sizing.content());
+        this.contentLayout = UIContainers.verticalFlow(Sizing.content(), Sizing.content());
         this.contentLayout.padding(Insets.left(15));
         this.contentLayout.surface(SURFACE);
 
@@ -166,8 +166,8 @@ public class CollapsibleContainer extends FlowLayout {
         var title = textElement == null ? Component.empty() : UIParsing.parseText(textElement);
 
         return element.getAttribute("expanded").equals("true") ?
-                Containers.collapsible(Sizing.content(), Sizing.content(), title, true) :
-                Containers.collapsible(Sizing.content(), Sizing.content(), title, false);
+                UIContainers.collapsible(Sizing.content(), Sizing.content(), title, true) :
+                UIContainers.collapsible(Sizing.content(), Sizing.content(), title, false);
     }
 
     public interface OnToggled {

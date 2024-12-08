@@ -4,30 +4,49 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Color;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
+import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
+import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.common.commands.arguments.FluidParser;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
+import org.w3c.dom.Element;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@Accessors(fluent = true, chain = true)
 public class FluidComponent extends BaseUIComponent {
 
     protected final MultiBufferSource.BufferSource bufferBuilder;
     protected FluidStack stack;
-    protected boolean setTooltipfromStack = false;
+    protected boolean setTooltipFromStack = false;
+    @Setter
     protected boolean showAmount = false;
+    @Getter @Setter
+    protected boolean showOverlay = false;
 
     protected FluidComponent(FluidStack stack) {
         this.bufferBuilder = Minecraft.getInstance().renderBuffers().bufferSource();
         this.stack = stack;
-    }
-
-    public FluidComponent showAmount(boolean amount) {
-        this.showAmount = amount;
-        return this;
     }
 
     @Override
@@ -69,5 +88,91 @@ public class FluidComponent extends BaseUIComponent {
 
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1, 1, 1, 1);
+    }
+
+    protected void updateTooltipForStack() {
+        if (!this.setTooltipFromStack) return;
+
+        if (!this.stack.isEmpty()) {
+            this.tooltip(tooltipFromFluid(this.stack, Minecraft.getInstance().player, null));
+        } else {
+            this.tooltip((List<ClientTooltipComponent>) null);
+        }
+    }
+
+    public FluidComponent setTooltipFromStack(boolean setTooltipFromStack) {
+        this.setTooltipFromStack = setTooltipFromStack;
+        this.updateTooltipForStack();
+
+        return this;
+    }
+
+    public boolean setTooltipFromStack() {
+        return setTooltipFromStack;
+    }
+
+    public FluidComponent stack(FluidStack stack) {
+        this.stack = stack;
+        this.updateTooltipForStack();
+
+        return this;
+    }
+
+    public FluidStack stack() {
+        return this.stack;
+    }
+
+    public FluidComponent showOverlay(boolean drawOverlay) {
+        this.showOverlay = drawOverlay;
+        return this;
+    }
+
+    public boolean showOverlay() {
+        return this.showOverlay;
+    }
+
+    /**
+     * Obtain the full item stack tooltip, including custom components
+     * provided via {@link net.minecraft.world.item.Item#getTooltipImage(ItemStack)}
+     *
+     * @param stack   The item stack from which to obtain the tooltip
+     * @param player  The player to use for context, may be {@code null}
+     * @param context The tooltip context - {@code null} to fall back to the default provided by
+     *                {@link net.minecraft.client.Options#advancedItemTooltips}
+     */
+    public static List<ClientTooltipComponent> tooltipFromFluid(FluidStack stack, @Nullable LocalPlayer player,
+                                                                @Nullable TooltipFlag.Default context) {
+        if (context == null) {
+            context = Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED :
+                    TooltipFlag.Default.NORMAL;
+        }
+
+        var tooltip = new ArrayList<ClientTooltipComponent>();
+        tooltip.add(ClientTooltipComponent.create(stack.getDisplayName().getVisualOrderText()));
+        TooltipsHandler.appendFluidTooltips(stack.getFluid(), stack.getAmount(),
+                c -> tooltip.add(ClientTooltipComponent.create(c.getVisualOrderText())),
+                context);
+
+        return tooltip;
+    }
+
+    @Override
+    public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
+        super.parseProperties(model, element, children);
+        UIParsing.apply(children, "show-overlay", UIParsing::parseBool, this::showOverlay);
+        UIParsing.apply(children, "set-tooltip-from-stack", UIParsing::parseBool, this::setTooltipFromStack);
+
+        UIParsing.apply(children, "stack", e -> e.getTextContent().strip(), stackString -> {
+            try {
+                var result = FluidParser.parseForFluid(BuiltInRegistries.FLUID.asLookup(), new StringReader(stackString));
+
+                var stack = new FluidStack(result.fluid().value(), 1);
+                stack.setTag(result.nbt());
+
+                this.stack(stack);
+            } catch (CommandSyntaxException cse) {
+                throw new UIModelParsingException("Invalid item stack", cse);
+            }
+        });
     }
 }

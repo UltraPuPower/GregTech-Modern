@@ -371,8 +371,8 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
 
     public static ScrollContainer<?> parse(Element element) {
         return element.getAttribute("direction").equals("vertical") ?
-                Containers.verticalScroll(Sizing.content(), Sizing.content(), null) :
-                Containers.horizontalScroll(Sizing.content(), Sizing.content(), null);
+                UIContainers.verticalScroll(Sizing.content(), Sizing.content(), null) :
+                UIContainers.horizontalScroll(Sizing.content(), Sizing.content(), null);
     }
 
     @FunctionalInterface
@@ -449,9 +449,9 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
 
     public enum ScrollDirection {
 
-        VERTICAL(UIComponent::height, UIComponent::updateY, UIComponent::y, Insets::vertical, GLFW.GLFW_KEY_UP,
+        VERTICAL(UIComponent::height, UIComponent::y, UIComponent::y, Insets::vertical, GLFW.GLFW_KEY_UP,
                 GLFW.GLFW_KEY_DOWN),
-        HORIZONTAL(UIComponent::width, UIComponent::updateX, UIComponent::x, Insets::horizontal, GLFW.GLFW_KEY_LEFT,
+        HORIZONTAL(UIComponent::width, UIComponent::x, UIComponent::x, Insets::horizontal, GLFW.GLFW_KEY_LEFT,
                 GLFW.GLFW_KEY_RIGHT);
 
         public final Function<UIComponent, Integer> sizeGetter;

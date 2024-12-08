@@ -21,7 +21,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.brigadier.StringReader;
@@ -165,14 +164,7 @@ public class ItemComponent extends BaseUIComponent {
                 .map(ClientTooltipComponent::create)
                 .forEach(tooltip::add);
 
-        var bus = FMLJavaModLoadingContext.get().getModEventBus();
-        stack.getTooltipImage().ifPresent(data -> {
-            // tooltip.add(1, Objects.requireNonNullElseGet( // TODO event fire here i think
-            // bus.post(new RenderTooltipEvent())
-            // TooltipComponentCallback.EVENT.invoker().getComponent(data),
-            // () -> ClientTooltipComponent.create(data)
-            // ));
-        });
+        stack.getTooltipImage().ifPresent(data -> tooltip.add(ClientTooltipComponent.create(data)));
 
         return tooltip;
     }

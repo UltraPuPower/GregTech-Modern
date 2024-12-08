@@ -30,7 +30,7 @@ import java.util.function.BiFunction;
  * <p>
  * Should you be locked into a different superclass on your screen already,
  * you can easily copy all code from this class into your screen - as you
- * can see supporting the entire feature-set of owo-ui only requires
+ * can see supporting the entire feature-set of gtceu-ui only requires
  * very few changes to how a vanilla screen works
  *
  * @param <R> The type of root component this screen uses
@@ -92,11 +92,18 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
         } else {
             try {
                 this.uiAdapter = this.createAdapter();
-                this.build(this.uiAdapter.rootComponent);
+                if (this.uiAdapter == null) {
+                    this.invalid = true;
+                    this.onClose();
+                    return;
+                }
 
-                this.uiAdapter.inflateAndMount();
+                this.build(this.uiAdapter.rootComponent);
+                this.uiAdapter.rootComponent.setAdapter(this.uiAdapter);
+
+                this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
             } catch (Exception error) {
-                GTCEu.LOGGER.warn("Could not initialize owo screen", error);
+                GTCEu.LOGGER.warn("Could not initialize gtceu screen", error);
                 UIErrorToast.report(error);
                 this.invalid = true;
             }

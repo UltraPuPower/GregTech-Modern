@@ -761,6 +761,7 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({ "Debug general events? (will print recipe conficts etc. to server's debug.log)",
+                "Also enables UI inspector/debugger",
                 "Default: false" })
         public boolean debug = false;
         @Configurable

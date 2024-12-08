@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.BlockEntityAccessor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -76,7 +75,7 @@ public class BlockComponent extends BaseUIComponent {
     protected static void prepareBlockEntity(BlockState state, BlockEntity blockEntity, @Nullable CompoundTag nbt) {
         if (blockEntity == null) return;
 
-        ((BlockEntityAccessor) blockEntity).gtceu$setBlockState(state);
+        blockEntity.setBlockState(state);
         blockEntity.setLevel(Minecraft.getInstance().level);
 
         if (nbt == null) return;

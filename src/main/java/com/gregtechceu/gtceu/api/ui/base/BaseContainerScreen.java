@@ -1,30 +1,30 @@
 package com.gregtechceu.gtceu.api.ui.base;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.ui.UIContainer;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
 import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
 import com.gregtechceu.gtceu.api.ui.util.UIErrorToast;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 import lombok.Getter;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.SlotItemHandler;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import java.util.function.BiFunction;
 
@@ -37,6 +37,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * and managing component focus
      */
     @Getter
+    @Nullable
     protected UIAdapter<R> uiAdapter = null;
 
     /**
@@ -57,21 +58,19 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      *
      * @return The UI adapter for this screen to use
      */
-    protected abstract @NotNull UIAdapter<R> createAdapter();
+    protected abstract @Nullable UIAdapter<R> createAdapter();
 
     /**
      * Build the component hierarchy of this screen,
      * called after the adapter and root component have been
      * initialized by {@link #createAdapter()}
      *
-     * @param rootComponent The root component created
-     *                      in the previous initialization step
+     * @param rootComponent The root component created in the previous initialization step
      */
     protected abstract void build(R rootComponent);
 
     @Override
     protected void init() {
-        super.init();
 
         if (this.invalid) return;
 
@@ -84,11 +83,46 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
         } else {
             try {
                 this.uiAdapter = this.createAdapter();
-                this.build(this.uiAdapter.rootComponent);
+                if (this.uiAdapter == null) {
+                    this.invalid = true;
+                    this.onClose();
+                    return;
+                }
+                MutableInt width = new MutableInt(0);
+                MutableInt height = new MutableInt(0);
+                this.uiAdapter.rootComponent.forEachDescendant(child -> {
+                    if (child.width() > width.getValue()) {
+                        width.setValue(child.width());
+                    }
+                    if (child.height() > height.getValue()) {
+                        height.setValue(child.height());
+                    }
+                });
+                this.imageWidth = width.getValue();
+                this.imageHeight = height.getValue();
+                super.init();
 
-                this.uiAdapter.inflateAndMount();
+                this.addRenderableWidget(this.uiAdapter);
+                this.setFocused(this.uiAdapter);
+                this.uiAdapter.container(this.menu);
+
+                this.build(this.uiAdapter.rootComponent);
+                this.uiAdapter.rootComponent.setAdapter(this.uiAdapter);
+
+                this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
+
+                this.uiAdapter.leftPos(leftPos);
+                this.uiAdapter.topPos(topPos);
+                for (UIComponent child : this.uiAdapter.rootComponent.children()) {
+                    child.x(child.x() + leftPos);
+                    child.y(child.y() + topPos);
+                }
+                this.menu.slots.forEach(slot -> {
+                    ((SlotAccessor) slot).gtceu$setX(slot.x - leftPos);
+                    ((SlotAccessor) slot).gtceu$setY(slot.y - topPos);
+                });
             } catch (Exception error) {
-                GTCEu.LOGGER.warn("Could not initialize screen", error);
+                GTCEu.LOGGER.warn("Could not initialize gtceu screen", error);
                 UIErrorToast.report(error);
                 this.invalid = true;
             }
@@ -150,9 +184,12 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * @param index The index the slot occupies in the handler's slot list
      * @return The wrapped slot
      */
-    /*protected SlotComponent slotAsComponent(int index) {
-        return new SlotComponent(index);
-    }*/
+    protected SlotComponent slotAsComponent(int index) {
+        if (this.getMenu() instanceof UIContainer container) {
+            return container.getSlotMap().get(container.getSlot(index));
+        }
+        return null;
+    }
 
     /**
      * A convenience shorthand for querying a component from the adapter's
@@ -191,6 +228,10 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
             this.onClose();
         }
     }
+
+    // stop the MC labels from rendering entirely.
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {}
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {

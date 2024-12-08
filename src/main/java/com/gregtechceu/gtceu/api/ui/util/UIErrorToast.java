@@ -61,16 +61,16 @@ public class UIErrorToast implements Toast {
 
     @Override
     public Visibility render(GuiGraphics guiGraphics, ToastComponent component, long startTime) {
-        var owoContext = UIGuiGraphics.of(guiGraphics);
+        var uiContext = UIGuiGraphics.of(guiGraphics);
 
-        owoContext.fill(0, 0, this.width(), this.height(), 0x77000000);
-        owoContext.drawRectOutline(0, 0, this.width(), this.height(), 0xA7FF0000);
+        uiContext.fill(0, 0, this.width(), this.height(), 0x77000000);
+        uiContext.drawRectOutline(0, 0, this.width(), this.height(), 0xA7FF0000);
 
         int xOffset = this.width() / 2 - this.textRenderer.width(this.errorMessage.get(0)) / 2;
-        owoContext.drawString(this.textRenderer, this.errorMessage.get(0), 4 + xOffset, 4, 0xFFFFFF, true);
+        uiContext.drawString(this.textRenderer, this.errorMessage.get(0), 4 + xOffset, 4, 0xFFFFFF, true);
 
         for (int i = 1; i < this.errorMessage.size(); i++) {
-            owoContext.drawString(this.textRenderer, this.errorMessage.get(i), 4, 4 + i * 11, 0xFFFFFF, false);
+            uiContext.drawString(this.textRenderer, this.errorMessage.get(i), 4, 4 + i * 11, 0xFFFFFF, false);
         }
 
         return startTime > 10000 ? Visibility.HIDE : Visibility.SHOW;
@@ -88,7 +88,7 @@ public class UIErrorToast implements Toast {
 
     private List<Component> initText(String errorMessage, Consumer<Consumer<Component>> contextAppender) {
         final var texts = new ArrayList<Component>();
-        texts.add(Component.literal("owo-ui error").withStyle(ChatFormatting.RED));
+        texts.add(Component.literal("gtceu-ui error").withStyle(ChatFormatting.RED));
 
         texts.add(Component.literal(" "));
         contextAppender.accept(texts::add);

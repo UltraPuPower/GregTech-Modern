@@ -11,5 +11,5 @@ public interface ButtonAccessor {
 
     @Mutable
     @Accessor("onPress")
-    void gtceu$setOnPress(Button.OnPress onPress);
+    void setOnPress(Button.OnPress onPress);
 }

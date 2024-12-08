@@ -19,6 +19,7 @@ import net.minecraft.client.gui.components.MultilineTextField;
 import net.minecraft.client.gui.components.Whence;
 import net.minecraft.network.chat.Component;
 
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.w3c.dom.Element;
 
@@ -52,7 +53,7 @@ public class TextAreaComponent extends MultiLineEditBox {
 
     @Override
     @Deprecated(forRemoval = true)
-    public void setValueListener(Consumer<String> changeListener) {
+    public void setValueListener(@NotNull Consumer<String> changeListener) {
         GTCEu.LOGGER.warn("setChangeListener stub on TextAreaComponent invoked");
     }
 
@@ -115,7 +116,7 @@ public class TextAreaComponent extends MultiLineEditBox {
     }
 
     @Override
-    public void inflate(Size space) {
+    public TextAreaComponent inflate(Size space) {
         super.inflate(space);
 
         int cursor = this.editBox.cursor();
@@ -129,6 +130,7 @@ public class TextAreaComponent extends MultiLineEditBox {
 
         this.editBox.seekCursor(Whence.ABSOLUTE, cursor);
         ((MultilineTextFieldAccessor) this.editBox).gtceu$setSelectCursor(selection);
+        return this;
     }
 
     public EventSource<OnChanged> onChanged() {

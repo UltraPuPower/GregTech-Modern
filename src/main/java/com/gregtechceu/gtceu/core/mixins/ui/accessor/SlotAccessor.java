@@ -9,6 +9,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Slot.class)
 public interface SlotAccessor {
 
+    @Accessor("index")
+    void gtceu$setSlotIndex(int i);
+
     @Mutable
     @Accessor("x")
     void gtceu$setX(int x);

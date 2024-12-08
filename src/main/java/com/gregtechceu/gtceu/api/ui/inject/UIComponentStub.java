@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -22,6 +23,17 @@ public interface UIComponentStub extends UIComponent {
 
     @Override
     default @Nullable ParentUIComponent parent() {
+        throw new IllegalStateException("Interface stub method called");
+    }
+
+    @Override
+    default @Nullable UIAdapter<?> adapter() {
+        throw new IllegalStateException("Interface stub method called");
+    }
+
+    @ApiStatus.Internal
+    @Override
+    default void setAdapter(UIAdapter<?> adapter) {
         throw new IllegalStateException("Interface stub method called");
     }
 
@@ -111,7 +123,12 @@ public interface UIComponentStub extends UIComponent {
     }
 
     @Override
-    default void inflate(Size space) {
+    default UIComponent inflate(Size space) {
+        throw new IllegalStateException("Interface stub method called");
+    }
+
+    @Override
+    default void applySizing() {
         throw new IllegalStateException("Interface stub method called");
     }
 
@@ -226,7 +243,7 @@ public interface UIComponentStub extends UIComponent {
     }
 
     @Override
-    default void updateX(int x) {
+    default UIComponent x(int x) {
         throw new IllegalStateException("Interface stub method called");
     }
 
@@ -236,7 +253,7 @@ public interface UIComponentStub extends UIComponent {
     }
 
     @Override
-    default void updateY(int y) {
+    default UIComponent y(int y) {
         throw new IllegalStateException("Interface stub method called");
     }
 

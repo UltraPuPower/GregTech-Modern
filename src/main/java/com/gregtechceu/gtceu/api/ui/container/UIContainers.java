@@ -5,13 +5,17 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
 import net.minecraft.network.chat.Component;
 
-public final class Containers {
+public final class UIContainers {
 
-    private Containers() {}
+    private UIContainers() {}
 
     // ------
     // Layout
     // ------
+
+    public static RootContainer root(Sizing horizontalSizing, Sizing verticalSizing) {
+        return new RootContainer(horizontalSizing, verticalSizing);
+    }
 
     public static GridLayout grid(Sizing horizontalSizing, Sizing verticalSizing, int rows, int columns) {
         return new GridLayout(horizontalSizing, verticalSizing, rows, columns);

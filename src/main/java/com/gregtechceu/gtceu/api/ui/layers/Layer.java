@@ -150,8 +150,8 @@ public class Layer<S extends Screen, R extends ParentUIComponent> {
 
             this.layoutUpdaters.add(() -> {
                 component.positioning(Positioning.absolute(
-                        ((AbstractContainerScreenAccessor) handledScreen).gtceu$getRootX() + x,
-                        ((AbstractContainerScreenAccessor) handledScreen).gtceu$getRootY() + y));
+                        ((AbstractContainerScreenAccessor) handledScreen).gtceu$getLeftPos() + x,
+                        ((AbstractContainerScreenAccessor) handledScreen).gtceu$getTopPos() + y));
             });
         }
 

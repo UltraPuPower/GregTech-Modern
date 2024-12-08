@@ -47,8 +47,8 @@ public class DraggableContainer<C extends UIComponent> extends WrappingParentUIC
         this.xOffset += deltaX;
         this.yOffset += deltaY;
 
-        super.updateX((int) (this.baseX + Math.round(this.xOffset)));
-        super.updateY((int) (this.baseY + Math.round(this.yOffset)));
+        super.x((int) (this.baseX + Math.round(this.xOffset)));
+        super.y((int) (this.baseY + Math.round(this.yOffset)));
         return super.onMouseDrag(mouseX, mouseY, deltaX, deltaY, button);
     }
 
@@ -62,15 +62,17 @@ public class DraggableContainer<C extends UIComponent> extends WrappingParentUIC
     }
 
     @Override
-    public void updateX(int x) {
+    public DraggableContainer<C> x(int x) {
         this.baseX = x;
-        super.updateX((int) (x + Math.round(this.xOffset)));
+        super.x((int) (x + Math.round(this.xOffset)));
+        return this;
     }
 
     @Override
-    public void updateY(int y) {
+    public DraggableContainer<C> y(int y) {
         this.baseY = y;
-        super.updateY((int) (y + Math.round(this.yOffset)));
+        super.y((int) (y + Math.round(this.yOffset)));
+        return this;
     }
 
     @Override

@@ -143,9 +143,10 @@ public class LabelComponent extends BaseUIComponent {
     }
 
     @Override
-    public void inflate(Size space) {
+    public LabelComponent inflate(Size space) {
         this.wrapLines();
         super.inflate(space);
+        return this;
     }
 
     private void wrapLines() {

@@ -16,9 +16,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
-import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
-import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
@@ -26,9 +23,11 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.ui.UIContainer;
+import com.gregtechceu.gtceu.api.ui.factory.HeldItemUIFactory;
+import com.gregtechceu.gtceu.api.ui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.ui.factory.UIFactory;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
-import com.gregtechceu.gtceu.common.item.ItemUIBehaviour;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -53,14 +52,11 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -68,7 +64,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoader;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -81,11 +76,8 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.List;
-
-import static com.gregtechceu.gtceu.api.ui.UIContainer.DEFAULT_TYPE;
 
 public class CommonProxy {
 
@@ -115,9 +107,13 @@ public class CommonProxy {
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
+        //UIFactory.register(MachineUIFactory.INSTANCE);
+        //UIFactory.register(CoverUIFactory.INSTANCE);
+        //UIFactory.register(GTUIEditorFactory.INSTANCE);
+
+        UIFactory.register(HeldItemUIFactory.INSTANCE);
         UIFactory.register(MachineUIFactory.INSTANCE);
-        UIFactory.register(CoverUIFactory.INSTANCE);
-        UIFactory.register(GTUIEditorFactory.INSTANCE);
+
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
@@ -136,6 +132,7 @@ public class CommonProxy {
         GTBlocks.init();
         GTEntityTypes.init();
         GTBlockEntities.init();
+        UIContainer.initType();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
         GTMachines.init();
@@ -290,11 +287,6 @@ public class CommonProxy {
                     Pack.Position.BOTTOM,
                     GTDynamicDataPack::new));
         }
-    }
-
-    @SubscribeEvent
-    public static void setupClient(FMLClientSetupEvent evt) {
-        MenuScreens.register(DEFAULT_TYPE, ItemUIBehaviour.BaseContainerScreen2::new);
     }
 
     public static final class KJSEventWrapper {

@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface EditBoxAccessor {
 
     @Accessor("bordered")
-    boolean gtceu$drawsBackground();
+    boolean gtceu$isBordered();
 }

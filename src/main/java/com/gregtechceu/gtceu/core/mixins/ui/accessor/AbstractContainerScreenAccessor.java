@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AbstractContainerScreenAccessor {
 
     @Accessor("leftPos")
-    int gtceu$getRootX();
+    int gtceu$getLeftPos();
 
     @Accessor("topPos")
-    int gtceu$getRootY();
+    int gtceu$getTopPos();
 }

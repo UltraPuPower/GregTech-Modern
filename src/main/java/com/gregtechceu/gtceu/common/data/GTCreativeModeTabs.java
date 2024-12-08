@@ -33,7 +33,7 @@ public class GTCreativeModeTabs {
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_fluid", REGISTRATE))
                     .icon(() -> GTItems.FLUID_CELL.asStack())
                     .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_fluid"),
-                            GTCEu.NAME + " Material Fluid Containers"))
+                            GTCEu.NAME + " Material Fluid UIContainers"))
                     .build())
             .register();
     public static RegistryEntry<CreativeModeTab> MATERIAL_ITEM = REGISTRATE.defaultCreativeTab("material_item",

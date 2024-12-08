@@ -44,6 +44,12 @@ public class FlowLayout extends BaseParentUIComponent {
         this.algorithm.layout(this);
     }
 
+    @Override
+    public FlowLayout inflate(Size space) {
+        super.inflate(space);
+        return this;
+    }
+
     /**
      * Add a single child to this layout. If you need to add multiple
      * children, use {@link #children(Collection)} instead
@@ -165,9 +171,9 @@ public class FlowLayout extends BaseParentUIComponent {
         UIParsing.expectAttributes(element, "direction");
 
         return switch (element.getAttribute("direction")) {
-            case "horizontal" -> Containers.horizontalFlow(Sizing.content(), Sizing.content());
-            case "ltr-text-flow" -> Containers.ltrTextFlow(Sizing.content(), Sizing.content());
-            default -> Containers.verticalFlow(Sizing.content(), Sizing.content());
+            case "horizontal" -> UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
+            case "ltr-text-flow" -> UIContainers.ltrTextFlow(Sizing.content(), Sizing.content());
+            default -> UIContainers.verticalFlow(Sizing.content(), Sizing.content());
         };
     }
 
@@ -207,7 +213,7 @@ public class FlowLayout extends BaseParentUIComponent {
 
             if (container.verticalAlignment() != VerticalAlignment.TOP) {
                 for (var component : layout) {
-                    component.updateY(component.baseY() + container.verticalAlignment()
+                    component.y(component.baseY() + container.verticalAlignment()
                             .align(component.fullSize().height(), container.height - padding.vertical()));
                 }
             }
@@ -215,10 +221,10 @@ public class FlowLayout extends BaseParentUIComponent {
             if (container.horizontalAlignment() != HorizontalAlignment.LEFT) {
                 for (var component : layout) {
                     if (container.horizontalAlignment() == HorizontalAlignment.CENTER) {
-                        component.updateX(component.baseX() +
+                        component.x(component.baseX() +
                                 (container.width - padding.horizontal() - layoutWidth.intValue()) / 2);
                     } else {
-                        component.updateX(
+                        component.x(
                                 component.baseX() + (container.width - padding.horizontal() - layoutWidth.intValue()));
                     }
                 }
@@ -258,7 +264,7 @@ public class FlowLayout extends BaseParentUIComponent {
 
             if (container.horizontalAlignment() != HorizontalAlignment.LEFT) {
                 for (var component : layout) {
-                    component.updateX(component.baseX() + container.horizontalAlignment()
+                    component.x(component.baseX() + container.horizontalAlignment()
                             .align(component.fullSize().width(), container.width - padding.horizontal()));
                 }
             }
@@ -266,10 +272,10 @@ public class FlowLayout extends BaseParentUIComponent {
             if (container.verticalAlignment() != VerticalAlignment.TOP) {
                 for (var component : layout) {
                     if (container.verticalAlignment() == VerticalAlignment.CENTER) {
-                        component.updateY(component.baseY() +
+                        component.y(component.baseY() +
                                 (container.height - padding.vertical() - layoutHeight.intValue()) / 2);
                     } else {
-                        component.updateY(
+                        component.y(
                                 component.baseY() + (container.height - padding.vertical() - layoutHeight.intValue()));
                     }
                 }
@@ -329,7 +335,7 @@ public class FlowLayout extends BaseParentUIComponent {
 
             if (container.verticalAlignment() != VerticalAlignment.TOP) {
                 for (var component : layout) {
-                    component.updateY(component.baseY() + container.verticalAlignment().align(layoutHeight.intValue(),
+                    component.y(component.baseY() + container.verticalAlignment().align(layoutHeight.intValue(),
                             container.height - padding.vertical()));
                 }
             }
@@ -337,10 +343,10 @@ public class FlowLayout extends BaseParentUIComponent {
             if (container.horizontalAlignment() != HorizontalAlignment.LEFT) {
                 for (var component : layout) {
                     if (container.horizontalAlignment() == HorizontalAlignment.CENTER) {
-                        component.updateX(component.baseX() +
+                        component.x(component.baseX() +
                                 (container.width - padding.horizontal() - layoutWidth.intValue()) / 2);
                     } else {
-                        component.updateX(
+                        component.x(
                                 component.baseX() + (container.width - padding.horizontal() - layoutWidth.intValue()));
                     }
                 }

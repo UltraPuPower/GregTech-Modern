@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.ui.event.WindowEvent;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.GuiGraphicsAccessor;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +29,6 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
@@ -35,6 +36,7 @@ import org.joml.Vector2d;
 import java.util.ArrayList;
 import java.util.List;
 
+@Accessors(fluent = true)
 public class UIGuiGraphics extends GuiGraphics {
 
     @Deprecated
@@ -49,8 +51,6 @@ public class UIGuiGraphics extends GuiGraphics {
     public static final ResourceLocation PANEL_NINE_PATCH_TEXTURE = GTCEu.id("gui/base/background_steel");
     public static final ResourceLocation DARK_PANEL_NINE_PATCH_TEXTURE = GTCEu.id("gui/base/background_bronze");
     public static final ResourceLocation PANEL_INSET_NINE_PATCH_TEXTURE = new ResourceLocation("owo", "panel/inset");
-
-    private boolean recording = false;
 
     private UIGuiGraphics(Minecraft mc, MultiBufferSource.BufferSource bufferSource) {
         super(mc, bufferSource);
@@ -69,19 +69,6 @@ public class UIGuiGraphics extends GuiGraphics {
         return UtilityScreen.get();
     }
 
-    public void recordQuads() {
-        recording = true;
-    }
-
-    public boolean recording() {
-        return recording;
-    }
-
-    public void submitQuads() {
-        recording = false;
-        Tesselator.getInstance().end();
-    }
-
     public void drawFluid(FluidStack stack, int capacity, int x, int y, int width, int height) {
         var sprite = getStillTexture(stack);
         if(sprite == null) {
@@ -91,7 +78,7 @@ public class UIGuiGraphics extends GuiGraphics {
             }
         }
         Color fluidColor = Color.ofRgb(IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack));
-        int scaledAmount = (int) (stack.getAmount() * height / capacity);
+        int scaledAmount = stack.getAmount() * height / capacity;
         if(stack.getAmount() > 0 && scaledAmount < 1) {
             scaledAmount = 1;
         }
@@ -99,7 +86,7 @@ public class UIGuiGraphics extends GuiGraphics {
             scaledAmount = height;
         }
 
-        RenderSystem.enableBlend();
+        RenderSystem.disableBlend();
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
         final int xCount = width / 16;

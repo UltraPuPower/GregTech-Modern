@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 
+import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
+import com.gregtechceu.gtceu.common.item.IItemUIBehaviour;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
@@ -58,7 +61,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item
-                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
+                           implements HeldItemUIFactory.IHeldItemUIHolder, HeldItemUIHolder.IHeldItemUIConstructor,
+                            IItemRendererProvider, IComponentItem {
 
     protected int burnTime = -1;
 
@@ -300,6 +304,16 @@ public class ComponentItem extends Item
             }
         }
         return null;
+    }
+
+    @Override
+    public void loadUITemplate(Player entityPlayer, RootContainer rootComponent, HeldItemUIHolder holder) {
+        for (IItemComponent component : components) {
+            if (component instanceof IItemUIBehaviour uiBehaviour) {
+                uiBehaviour.loadUITemplate(entityPlayer, rootComponent, holder);
+                return;
+            }
+        }
     }
 
     @Nullable

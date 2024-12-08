@@ -87,7 +87,7 @@ public class UIModelLoader implements ResourceManagerReloadListener {
         return Collections.unmodifiableSet(LOADED_MODELS.keySet());
     }
 
-    private static final String PATH_PREFIX = "gtceu/gui", PATH_SUFFIX = ".xml";
+    private static final String PATH_PREFIX = "gtceu/ui", PATH_SUFFIX = ".xml";
 
     @Override
     public void onResourceManagerReload(ResourceManager manager) {

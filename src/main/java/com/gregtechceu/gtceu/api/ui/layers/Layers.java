@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
- * A system for adding owo-ui components onto existing screens.
+ * A system for adding gtceu-ui components onto existing screens.
  * <p>
  * You can create a new layer by calling {@link #add(BiFunction, Consumer, Class[])}. The
  * second argument to this function is the instance initializer, which is where you configure
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * configure the UI adapter of your layer as well as building your UI tree onto the root
  * component of said adapter
  * <p>
- * Just like proper owo-ui screens, layers preserve state when the client's window
+ * Just like proper gtceu-ui screens, layers preserve state when the client's window
  * is resized - they are only initialized once, when the screen is first opened
  */
 public final class Layers {

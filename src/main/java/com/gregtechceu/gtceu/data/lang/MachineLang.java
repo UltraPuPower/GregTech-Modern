@@ -167,7 +167,7 @@ public class MachineLang {
 
         standardTooltips(provider, "gtceu.machine",
                 "canner",
-                "Puts things into and out of Containers",
+                "Puts things into and out of UIContainers",
                 "Can Operator",
                 "Can Actuator");
 

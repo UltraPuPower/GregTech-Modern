@@ -6,12 +6,20 @@ import org.jetbrains.annotations.Nullable;
 
 public interface UISlotExtension {
 
-    void gtceu$setDisabledOverride(boolean disabled);
+    default void gtceu$setDisabledOverride(boolean disabled) {
+        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+    }
 
-    boolean gtceu$getDisabledOverride();
+    default boolean gtceu$getDisabledOverride() {
+        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+    }
 
-    void gtceu$setScissorArea(@Nullable PositionedRectangle scissor);
+    default void gtceu$setScissorArea(@Nullable PositionedRectangle scissor) {
+        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+    }
 
     @Nullable
-    PositionedRectangle gtceu$getScissorArea();
+    default PositionedRectangle gtceu$getScissorArea() {
+        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+    }
 }

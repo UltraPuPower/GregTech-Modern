@@ -7,29 +7,43 @@ import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+@Accessors(fluent = true, chain = true)
 public abstract class BaseUIComponent implements UIComponent {
 
     @Nullable
+    @Getter
     protected ParentUIComponent parent = null;
     @Nullable
+    protected UIAdapter<?> adapter = null;
+    @Nullable
+    @Getter @Setter
     protected String id = null;
+    @Getter @Setter
     protected int zIndex = 0;
 
     protected boolean mounted = false;
 
     protected int batchedEvents = 0;
 
+    @Getter
     protected final AnimatableProperty<Insets> margins = AnimatableProperty.of(Insets.none());
 
+    @Getter
     protected final AnimatableProperty<Positioning> positioning = AnimatableProperty.of(Positioning.layout());
+    @Getter
     protected final AnimatableProperty<Sizing> horizontalSizing = AnimatableProperty.of(Sizing.content());
+    @Getter
     protected final AnimatableProperty<Sizing> verticalSizing = AnimatableProperty.of(Sizing.content());
 
     protected final EventStream<MouseDown> mouseDownEvents = MouseDown.newStream();
@@ -50,7 +64,9 @@ public abstract class BaseUIComponent implements UIComponent {
     protected CursorStyle cursorStyle = CursorStyle.NONE;
     protected List<ClientTooltipComponent> tooltip = List.of();
 
+    @Getter @Setter
     protected int x, y;
+    @Getter @Setter
     protected int width, height;
 
     protected Size space = Size.zero();
@@ -76,17 +92,18 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
-    public void inflate(Size space) {
+    public BaseUIComponent inflate(Size space) {
         this.space = space;
         this.applySizing();
         this.dirty = false;
+        return this;
     }
 
     /**
      * Calculate and apply the sizing of this component
      * according to the last known expansion space
      */
-    protected void applySizing() {
+    public void applySizing() {
         final var horizontalSizing = this.horizontalSizing.get();
         final var verticalSizing = this.verticalSizing.get();
 
@@ -280,8 +297,15 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
-    public ParentUIComponent parent() {
-        return this.parent;
+    public UIAdapter<?> adapter() {
+        return this.adapter != null ? this.adapter :
+                this.parent() != null ? this.parent().adapter() : null;
+    }
+
+    @ApiStatus.Internal
+    @Override
+    public void setAdapter(@Nullable UIAdapter<?> adapter) {
+        this.adapter = adapter;
     }
 
     @Override
@@ -296,19 +320,9 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
-    public AnimatableProperty<Positioning> positioning() {
-        return this.positioning;
-    }
-
-    @Override
     public BaseUIComponent margins(Insets margins) {
         this.margins.set(margins);
         return this;
-    }
-
-    @Override
-    public AnimatableProperty<Insets> margins() {
-        return this.margins;
     }
 
     @Override
@@ -318,70 +332,8 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
-    public AnimatableProperty<Sizing> horizontalSizing() {
-        return this.horizontalSizing;
-    }
-
-    @Override
     public UIComponent verticalSizing(Sizing verticalSizing) {
         this.verticalSizing.set(verticalSizing);
         return this;
-    }
-
-    @Override
-    public AnimatableProperty<Sizing> verticalSizing() {
-        return this.verticalSizing;
-    }
-
-    @Override
-    public UIComponent id(@Nullable String id) {
-        this.id = id;
-        return this;
-    }
-
-    @Override
-    public @Nullable String id() {
-        return this.id;
-    }
-
-    @Override
-    public UIComponent zIndex(int zIndex) {
-        this.zIndex = zIndex;
-        return this;
-    }
-
-    @Override
-    public int zIndex() {
-        return this.zIndex;
-    }
-
-    @Override
-    public int x() {
-        return this.x;
-    }
-
-    @Override
-    public void updateX(int x) {
-        this.x = x;
-    }
-
-    @Override
-    public int y() {
-        return this.y;
-    }
-
-    @Override
-    public void updateY(int y) {
-        this.y = y;
-    }
-
-    @Override
-    public int width() {
-        return this.width;
-    }
-
-    @Override
-    public int height() {
-        return this.height;
     }
 }

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
-import com.gregtechceu.gtceu.api.ui.container.Containers;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
@@ -33,7 +33,7 @@ public class DropdownComponent extends FlowLayout {
     protected DropdownComponent(Sizing horizontalSizing) {
         super(Sizing.content(), Sizing.content(), FlowLayout.Algorithm.HORIZONTAL);
 
-        this.entries = Containers.verticalFlow(horizontalSizing, Sizing.content());
+        this.entries = UIContainers.verticalFlow(horizontalSizing, Sizing.content());
         this.entries.padding(Insets.of(1));
         this.entries.allowOverflow(true);
         this.entries.surface(Surface.flat(0xC7000000).and(Surface.blur(3, 5)).and(Surface.outline(0xFF121212)));

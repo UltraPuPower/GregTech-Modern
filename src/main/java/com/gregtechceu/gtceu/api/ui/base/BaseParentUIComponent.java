@@ -16,9 +16,9 @@ import java.util.function.Consumer;
 
 /**
  * The reference implementation of the {@link ParentUIComponent} interface,
- * serving as a base for all parent components on owo-ui. If you need your own parent
- * component, it is often beneficial to subclass one of owo-ui's existing layout classes,
- * especially {@link io.wispforest.owo.ui.container.WrappingParentComponent} is often useful
+ * serving as a base for all parent components on gtceu-ui. If you need your own parent
+ * component, it is often beneficial to subclass one of gtceu-ui's existing layout classes,
+ * especially {@link com.gregtechceu.gtceu.api.ui.container.WrappingParentUIComponent} is often useful
  */
 public abstract class BaseParentUIComponent extends BaseUIComponent implements ParentUIComponent {
 
@@ -153,8 +153,8 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
     }
 
     @Override
-    public void inflate(Size space) {
-        if (this.space.equals(space) && !this.dirty) return;
+    public BaseParentUIComponent inflate(Size space) {
+        if (this.space.equals(space) && !this.dirty) return this;
         this.space = space;
 
         for (var child : this.children()) {
@@ -164,6 +164,7 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
         super.inflate(space);
         this.layout(space);
         super.inflate(space);
+        return this;
     }
 
     protected void updateLayout() {
@@ -269,23 +270,25 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
     }
 
     @Override
-    public void updateX(int x) {
+    public BaseParentUIComponent x(int x) {
         int offset = x - this.x;
-        super.updateX(x);
+        super.x(x);
 
         for (var child : this.children()) {
-            child.updateX(child.baseX() + offset);
+            child.x(child.baseX() + offset);
         }
+        return this;
     }
 
     @Override
-    public void updateY(int y) {
+    public BaseParentUIComponent y(int y) {
         int offset = y - this.y;
-        super.updateY(y);
+        super.y(y);
 
         for (var child : this.children()) {
-            child.updateY(child.baseY() + offset);
+            child.y(child.baseY() + offset);
         }
+        return this;
     }
 
     /**
@@ -296,19 +299,6 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
     protected Size childMountingOffset() {
         var padding = this.padding.get();
         return Size.of(padding.left(), padding.top());
-    }
-
-    /**
-     * @deprecated Use {@link #mountChild(UIComponent, Consumer)} instead. This new
-     *             overload no longer inflates the child prior to mounting, as that is
-     *             rarely ever necessary and was simply causing unnecessary calculations
-     */
-    @Deprecated(forRemoval = true)
-    protected void mountChild(@Nullable UIComponent child, Size space, Consumer<UIComponent> layoutFunc) {
-        if (child == null) return;
-
-        child.inflate(space);
-        this.mountChild(child, layoutFunc);
     }
 
     /**
@@ -372,7 +362,8 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
             graphics.pose().translate(0, 0, child.zIndex() + 1);
 
             child.draw(graphics, mouseX, mouseY, partialTicks, delta);
-            if (focusHandler.lastFocusSource() == FocusSource.KEYBOARD_CYCLE && focusHandler.focused() == child) {
+            if (focusHandler != null && focusHandler.lastFocusSource() == FocusSource.KEYBOARD_CYCLE &&
+                    focusHandler.focused() == child) {
                 child.drawFocusHighlight(graphics, mouseX, mouseY, partialTicks, delta);
             }
 

@@ -38,7 +38,7 @@ public class Positioning implements Animatable<Positioning> {
     @Override
     public Positioning interpolate(Positioning next, float delta) {
         if (next.type != this.type) {
-            GTCEu.LOGGER.warn("Cannot interpolate between positioning of type " + this.type + " and " + next.type);
+            GTCEu.LOGGER.warn("Cannot interpolate between positioning of type {} and {}", this.type, next.type);
             return this;
         }
 

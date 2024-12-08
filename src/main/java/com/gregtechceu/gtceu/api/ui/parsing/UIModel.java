@@ -65,8 +65,8 @@ public class UIModel {
 
     protected UIModel(Element docElement) {
         docElement.normalize();
-        if (!docElement.getNodeName().equals("owo-ui")) {
-            throw new UIModelParsingException("Missing 'owo-ui' root element");
+        if (!docElement.getNodeName().equals("gtceu-ui")) {
+            throw new UIModelParsingException("Missing 'gtceu-ui' root element");
         }
 
         final var children = UIParsing.childElements(docElement);

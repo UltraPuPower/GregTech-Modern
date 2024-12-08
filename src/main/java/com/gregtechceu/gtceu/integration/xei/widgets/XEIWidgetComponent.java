@@ -52,15 +52,17 @@ public class XEIWidgetComponent extends BaseUIComponent {
     }
 
     @Override
-    public void updateX(int x) {
-        super.updateX(x);
+    public XEIWidgetComponent x(int x) {
+        super.x(x);
         this.applyToWidget();
+        return this;
     }
 
     @Override
-    public void updateY(int y) {
-        super.updateY(y);
+    public XEIWidgetComponent y(int y) {
+        super.y(y);
         this.applyToWidget();
+        return this;
     }
 
     private void applyToWidget() {

@@ -129,6 +129,8 @@ public class LangHandler {
         provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
         provider.add("command.gtceu.share_prospection_data.notification", "%s is sharing prospecting data with you!");
+        provider.add("arguments.fluid.tag.unknown", "Unknown fluid tag '%s'");
+        provider.add("argument.fluid.id.invalid", "Unknown fluid '%s'");
 
         provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
         provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");

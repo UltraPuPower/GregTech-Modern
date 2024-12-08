@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,8 +38,14 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     protected VanillaWidgetComponent gtceu$wrapper = null;
 
     @Override
-    public void inflate(Size space) {
+    public VanillaWidgetComponent inflate(Size space) {
         this.gtceu$getWrapper().inflate(space);
+        return this.gtceu$getWrapper();
+    }
+
+    @Override
+    public void applySizing() {
+        this.gtceu$getWrapper().applySizing();
     }
 
     @Override
@@ -55,6 +62,18 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     @Override
     public ParentUIComponent parent() {
         return this.gtceu$getWrapper().parent();
+    }
+
+    @Nullable
+    @Override
+    public UIAdapter<?> adapter() {
+        return this.gtceu$getWrapper().adapter();
+    }
+
+    @ApiStatus.Internal
+    @Override
+    public void setAdapter(UIAdapter<?> adapter) {
+        this.gtceu$getWrapper().setAdapter(adapter);
     }
 
     @Override
@@ -354,13 +373,15 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     }
 
     @Override
-    public void updateX(int x) {
-        this.gtceu$getWrapper().updateX(x);
+    public UIComponent x(int x) {
+        this.gtceu$getWrapper().x(x);
+        return this.gtceu$getWrapper();
     }
 
     @Override
-    public void updateY(int y) {
-        this.gtceu$getWrapper().updateY(y);
+    public UIComponent y(int y) {
+        this.gtceu$getWrapper().y(y);
+        return this.gtceu$getWrapper();
     }
 
     protected CursorStyle gtceu$preferredCursorStyle() {

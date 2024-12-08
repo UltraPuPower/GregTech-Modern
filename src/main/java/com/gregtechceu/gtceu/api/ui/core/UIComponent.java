@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,6 +69,16 @@ public interface UIComponent extends PositionedRectangle {
     @Contract(pure = true)
     @Nullable
     ParentUIComponent parent();
+
+    /**
+     * @return The UIAdapter that holds this component
+     */
+    @Contract(pure = true)
+    @Nullable
+    UIAdapter<?> adapter();
+
+    @ApiStatus.Internal
+    void setAdapter(UIAdapter<?> adapter);
 
     /**
      * @return The focus handler of this component hierarchy
@@ -184,6 +195,18 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * Set the tooltip of this component to the given
+     * text, without any wrapping applied
+     */
+    default UIComponent tooltip(@NotNull Component... tooltip) {
+        var components = new ArrayList<ClientTooltipComponent>();
+        for (var line : tooltip) components.add(ClientTooltipComponent.create(line.getVisualOrderText()));
+        this.tooltip(components);
+        return this;
+    }
+
+
+    /**
+     * Set the tooltip of this component to the given
      * text, wrapping at newline characters
      */
     default UIComponent tooltip(@NotNull Component tooltip) {
@@ -233,7 +256,13 @@ public interface UIComponent extends PositionedRectangle {
      *
      * @param space The available space for this component to expand into
      */
-    void inflate(Size space);
+    UIComponent inflate(Size space);
+
+    /**
+     * Calculate and apply the sizing of this component
+     * according to the last known expansion space
+     */
+    void applySizing();
 
     /**
      * Called when this component is mounted during the layout process,
@@ -577,10 +606,12 @@ public interface UIComponent extends PositionedRectangle {
      *
      * @param x The new x-coordinate of the top-left corner of the
      *          bounding box of this component
+     * @return this
      * @see #positioning(Positioning)
      * @see #margins(Insets)
      */
-    void updateX(int x);
+    @Contract("_ -> this")
+    UIComponent x(int x);
 
     /**
      * @return The current y-coordinate of the top-left
@@ -621,10 +652,12 @@ public interface UIComponent extends PositionedRectangle {
      *
      * @param y The new y-coordinate of the top-left corner of the
      *          bounding box of this component
+     * @return this
      * @see #positioning(Positioning)
      * @see #margins(Insets)
      */
-    void updateY(int y);
+    @Contract("_ -> this")
+    UIComponent y(int y);
 
     /**
      * Set the coordinates of the top-left corner of the
@@ -640,9 +673,10 @@ public interface UIComponent extends PositionedRectangle {
      * @see #positioning(Positioning)
      * @see #margins(Insets)
      */
-    default void moveTo(int x, int y) {
-        this.updateX(x);
-        this.updateY(y);
+    default UIComponent moveTo(int x, int y) {
+        this.x(x);
+        this.y(y);
+        return this;
     }
 
     enum FocusSource {

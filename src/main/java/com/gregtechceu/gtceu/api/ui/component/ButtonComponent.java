@@ -60,7 +60,7 @@ public class ButtonComponent extends Button {
     }
 
     public ButtonComponent onPress(Consumer<ButtonComponent> onPress) {
-        ((ButtonAccessor) this).gtceu$setOnPress(button -> onPress.accept((ButtonComponent) button));
+        ((ButtonAccessor) this).setOnPress(button -> onPress.accept((ButtonComponent) button));
         return this;
     }
 

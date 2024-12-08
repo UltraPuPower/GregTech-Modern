@@ -2,8 +2,12 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.util.CursorAdapter;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -14,12 +18,14 @@ import net.minecraft.client.gui.screens.Screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiFunction;
 
 /**
- * A UI adapter constitutes the main entrypoint to using owo-ui.
+ * A UI adapter constitutes the main entrypoint to using gtceu-ui.
  * It takes care of rendering the UI tree correctly, handles input events
  * and cursor styling as well as the component inspector.
  * <p>
@@ -31,9 +37,14 @@ import java.util.function.BiFunction;
  *
  * @see com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen
  */
+@Accessors(fluent = true, chain = true)
 public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener, Renderable, NarratableEntry {
 
     private static boolean isRendering = false;
+
+    @Nullable
+    @Setter
+    public AbstractContainerMenu container;
 
     public final R rootComponent;
     public final CursorAdapter cursorAdapter;
@@ -41,10 +52,17 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     protected boolean disposed = false;
     protected boolean captureFrame = false;
 
+    @Getter
+    @Setter
     protected int x, y;
+    @Getter
+    @Setter
+    protected int leftPos, topPos;
+    @Getter
+    @Setter
     protected int width, height;
 
-    public boolean enableInspector = false;
+    public boolean enableInspector = ConfigHolder.INSTANCE.dev.debug;
     public boolean globalInspector = false;
     public int inspectorZOffset = 1000;
 
@@ -56,6 +74,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
         this.cursorAdapter = CursorAdapter.ofClientWindow();
         this.rootComponent = rootComponent;
+        this.rootComponent.setAdapter(this);
     }
 
     /**
@@ -81,7 +100,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
     /**
      * Create a new UI adapter without the specific context of a screen - use this
-     * method when you want to embed owo-ui into a different context
+     * method when you want to embed gtceu-ui into a different context
      *
      * @param x                  The x-coordinate of the top-left corner of the root component
      * @param y                  The y-coordinate of the top-left corner of the root component
@@ -143,22 +162,6 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
      */
     public boolean toggleGlobalInspector() {
         return this.globalInspector = !this.globalInspector;
-    }
-
-    public int x() {
-        return this.x;
-    }
-
-    public int y() {
-        return this.y;
-    }
-
-    public int width() {
-        return this.width;
-    }
-
-    public int height() {
-        return this.height;
     }
 
     @Override

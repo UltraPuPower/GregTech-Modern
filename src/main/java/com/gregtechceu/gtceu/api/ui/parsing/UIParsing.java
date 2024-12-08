@@ -301,12 +301,13 @@ public class UIParsing {
         // Layout
         registerFactory("flow-layout", FlowLayout::parse);
         registerFactory("grid-layout", GridLayout::parse);
-        registerFactory("stack-layout", element -> Containers.stack(Sizing.content(), Sizing.content()));
+        registerFactory("stack-layout", element -> UIContainers.stack(Sizing.content(), Sizing.content()));
 
         // Container
+        registerFactory("root", RootContainer::parse);
         registerFactory("scroll", ScrollContainer::parse);
         registerFactory("collapsible", CollapsibleContainer::parse);
-        registerFactory("draggable", element -> Containers.draggable(Sizing.content(), Sizing.content(), null));
+        registerFactory("draggable", element -> UIContainers.draggable(Sizing.content(), Sizing.content(), null));
 
         // Textures
         registerFactory("sprite", SpriteComponent::parse);
@@ -316,6 +317,9 @@ public class UIParsing {
         registerFactory("entity", EntityComponent::parse);
         registerFactory("item", element -> UIComponents.item(ItemStack.EMPTY));
         registerFactory("block", BlockComponent::parse);
+
+        registerFactory("slot", SlotComponent::parse);
+        registerFactory("tank", TankComponent::parse);
 
         // Widgets
         registerFactory("label", element -> UIComponents.label(Component.empty()));

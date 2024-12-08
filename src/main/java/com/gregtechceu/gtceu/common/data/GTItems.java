@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -25,6 +26,13 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
@@ -50,6 +58,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
@@ -184,6 +193,7 @@ public class GTItems {
     static {
         REGISTRATE.creativeModeTab(() -> ITEM);
     }
+
     public static ItemEntry<Item> CREDIT_COPPER = REGISTRATE.item("copper_credit", Item::new).lang("Copper Credit")
             .register();
     public static ItemEntry<Item> CREDIT_CUPRONICKEL = REGISTRATE.item("cupronickel_credit", Item::new)
@@ -444,6 +454,7 @@ public class GTItems {
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
     }
+
     public static ItemEntry<Item> SPRAY_EMPTY = REGISTRATE.item("empty_spray_can", Item::new)
             .lang("Spray Can (Empty)").register();
     public static ItemEntry<ComponentItem> SPRAY_SOLVENT = REGISTRATE.item("solvent_spray_can", ComponentItem::create)
@@ -610,7 +621,7 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
             .onRegister(attach(FilteredFluidContainer.create(100, true,
-                    x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
+                            x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
@@ -622,11 +633,12 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
             .onRegister(attach(FilteredFluidContainer.create(1000, true,
-                    x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
+                            x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
-            .register();;
+            .register();
+    ;
 
     public static ItemEntry<Item> CARBON_FIBERS = REGISTRATE.item("carbon_fibers", Item::new)
             .lang("Raw Carbon Fibers")
@@ -905,31 +917,15 @@ public class GTItems {
             .tag(CustomTags.ELECTRIC_MOTORS)
             .register();
     public static ItemEntry<Item> ELECTRIC_MOTOR_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_electric_motor", Item::new).lang("UHV Electric Motor")
-
-                    .register() :
-            null;
+            REGISTRATE.item("uhv_electric_motor", Item::new).lang("UHV Electric Motor").register() : null;
     public static ItemEntry<Item> ELECTRIC_MOTOR_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_electric_motor", Item::new).lang("UEV Electric Motor")
-
-                    .register() :
-            null;
+            REGISTRATE.item("uev_electric_motor", Item::new).lang("UEV Electric Motor").register() : null;
     public static ItemEntry<Item> ELECTRIC_MOTOR_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_electric_motor", Item::new).lang("UIV Electric Motor")
-
-                    .register() :
-            null;
+            REGISTRATE.item("uiv_electric_motor", Item::new).lang("UIV Electric Motor").register() : null;
     public static ItemEntry<Item> ELECTRIC_MOTOR_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_electric_motor", Item::new).lang("UXV Electric Motor")
-
-                    .register() :
-            null;
+            REGISTRATE.item("uxv_electric_motor", Item::new).lang("UXV Electric Motor").register() : null;
     public static ItemEntry<Item> ELECTRIC_MOTOR_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_electric_motor", Item::new).lang("OpV Electric Motor")
-
-                    .register() :
-            null;
-
+            REGISTRATE.item("opv_electric_motor", Item::new).lang("OpV Electric Motor").register() : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("lv_electric_pump", ComponentItem::create)
             .lang("LV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
@@ -938,10 +934,8 @@ public class GTItems {
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                         FormattingUtil.formatNumbers(1280 / 20)));
             })))
-
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
-
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_MV = REGISTRATE.item("mv_electric_pump", ComponentItem::create)
             .lang("MV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
@@ -950,9 +944,8 @@ public class GTItems {
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                         FormattingUtil.formatNumbers(1280 * 4 / 20)));
             })))
-
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("hv_electric_pump", ComponentItem::create)
             .lang("HV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
@@ -961,9 +954,8 @@ public class GTItems {
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                         FormattingUtil.formatNumbers(1280 * 16 / 20)));
             })))
-
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = REGISTRATE.item("ev_electric_pump", ComponentItem::create)
             .lang("EV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
@@ -972,9 +964,8 @@ public class GTItems {
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                         FormattingUtil.formatNumbers(1280 * 64 / 20)));
             })))
-
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = REGISTRATE.item("iv_electric_pump", ComponentItem::create)
             .lang("IV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
@@ -983,9 +974,8 @@ public class GTItems {
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                         FormattingUtil.formatNumbers(1280 * 64 * 4 / 20)));
             })))
-
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = REGISTRATE
             .item("luv_electric_pump", ComponentItem::create)
             .lang("LuV Electric Pump")
@@ -995,9 +985,8 @@ public class GTItems {
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                         FormattingUtil.formatNumbers(1280 * 64 * 16 / 20)));
             })))
-
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = REGISTRATE
             .item("zpm_electric_pump", ComponentItem::create)
             .lang("ZPM Electric Pump")
@@ -1007,9 +996,8 @@ public class GTItems {
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                         FormattingUtil.formatNumbers(1280 * 64 * 64 / 20)));
             })))
-
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = REGISTRATE.item("uv_electric_pump", ComponentItem::create)
             .lang("UV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7])))
@@ -1019,10 +1007,8 @@ public class GTItems {
                         Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 FormattingUtil.formatNumbers(1280 * 64 * 64 * 4 / 20)));
             })))
-
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
-
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UHV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uhv_electric_pump", ComponentItem::create)
                     .lang("UHV Electric Pump")
@@ -1032,10 +1018,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-
-                    .register() :
-            null;
-
+                    .register() : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UEV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uev_electric_pump", ComponentItem::create)
                     .lang("UEV Electric Pump")
@@ -1045,10 +1028,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-
-                    .register() :
-            null;
-
+                    .register() : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UIV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uiv_electric_pump", ComponentItem::create)
                     .lang("UIV Electric Pump")
@@ -1058,10 +1038,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-
-                    .register() :
-            null;
-
+                    .register() : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UXV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uxv_electric_pump", ComponentItem::create)
                     .lang("UXV Electric Pump")
@@ -1071,10 +1048,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-
-                    .register() :
-            null;
-
+                    .register() : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_OpV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("opv_electric_pump", ComponentItem::create)
                     .lang("OpV Electric Pump")
@@ -1084,10 +1058,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-
-                    .register() :
-            null;
-
+                    .register() : null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE
             .item("lv_fluid_regulator", ComponentItem::create)
             .lang("LV Fluid Regulator")
@@ -1096,7 +1067,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
             })))
-
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = REGISTRATE
@@ -1107,7 +1077,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
             })))
-
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = REGISTRATE
@@ -1118,7 +1087,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
             })))
-
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = REGISTRATE
@@ -1129,7 +1097,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
             })))
-
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = REGISTRATE
@@ -1140,7 +1107,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
             })))
-
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_LuV = REGISTRATE
@@ -1151,7 +1117,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
             })))
-
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = REGISTRATE
@@ -1162,7 +1127,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
             })))
-
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = REGISTRATE
@@ -1174,7 +1138,6 @@ public class GTItems {
                 lines.add(
                         Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
             })))
-
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UHV = GTCEuAPI.isHighTier() ?
@@ -1186,8 +1149,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .register() :
-            null;
+                    .register() : null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UEV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uev_fluid_regulator", ComponentItem::create)
                     .lang("UEV Fluid Regulator")
@@ -1197,8 +1159,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .register() :
-            null;
+                    .register() : null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UIV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uiv_fluid_regulator", ComponentItem::create)
                     .lang("UIV Fluid Regulator")
@@ -1208,8 +1169,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .register() :
-            null;
+                    .register() : null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UXV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uxv_fluid_regulator", ComponentItem::create)
                     .lang("UXV Fluid Regulator")
@@ -1219,8 +1179,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .register() :
-            null;
+                    .register() : null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_OpV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("opv_fluid_regulator", ComponentItem::create)
                     .lang("OpV Fluid Regulator")
@@ -1230,8 +1189,7 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .register() :
-            null;
+                    .register() : null;
 
     public static ItemEntry<ComponentItem> DYNAMITE = REGISTRATE.item("dynamite", ComponentItem::create)
             .lang("Dynamite")
@@ -1247,7 +1205,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
             })))
-
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_MV = REGISTRATE
@@ -1258,7 +1215,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
             })))
-
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_HV = REGISTRATE
@@ -1269,7 +1225,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
             })))
-
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_EV = REGISTRATE
@@ -1280,7 +1235,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
             })))
-
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_IV = REGISTRATE
@@ -1291,7 +1245,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
             })))
-
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LuV = REGISTRATE
@@ -1302,7 +1255,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
             })))
-
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ZPM = REGISTRATE
@@ -1313,7 +1265,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
             })))
-
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UV = REGISTRATE
@@ -1324,7 +1275,6 @@ public class GTItems {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
             })))
-
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UHV = GTCEuAPI.isHighTier() ?
@@ -1335,9 +1285,7 @@ public class GTItems {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
-
-                    .register() :
-            null;
+                    .register() : null;
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UEV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uev_conveyor_module", ComponentItem::create)
                     .lang("UEV Conveyor Module")
@@ -1346,9 +1294,7 @@ public class GTItems {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
-
-                    .register() :
-            null;
+                    .register() : null;
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UIV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uiv_conveyor_module", ComponentItem::create)
                     .lang("UIV Conveyor Module")
@@ -1357,9 +1303,7 @@ public class GTItems {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
-
-                    .register() :
-            null;
+                    .register() : null;
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UXV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uxv_conveyor_module", ComponentItem::create)
                     .lang("UXV Conveyor Module")
@@ -1368,9 +1312,7 @@ public class GTItems {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
-
-                    .register() :
-            null;
+                    .register() : null;
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_OpV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("opv_conveyor_module", ComponentItem::create)
                     .lang("OpV Conveyor Module")
@@ -1947,7 +1889,37 @@ public class GTItems {
             .tag(CustomTags.CAPACITORS).register();
     public static ItemEntry<ComponentItem> SMD_DIODE = REGISTRATE.item("smd_diode", ComponentItem::create).lang("SMD Diode")
             .tag(CustomTags.DIODES)
-            .onRegister(attach(new ItemUIBehaviour()))
+            .onRegister(attach(new IItemUIBehaviour() {
+
+                @Override
+                public void loadUITemplate(Player player, RootContainer rootComponent, HeldItemUIHolder holder) {
+                    rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
+
+                    FlowLayout layout;
+
+                    rootComponent.child(layout = UIContainers.horizontalFlow(Sizing.content(), Sizing.content())
+                            .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
+                                    .visibleArea(PositionedRectangle.of(0, 0, 176, 166))
+                                    .sizing(Sizing.fixed(176), Sizing.fixed(166)))
+                            .child(UIComponents.box(Sizing.fixed(130), Sizing.fixed(100))
+                                    .positioning(Positioning.relative(50, 20)))
+                            .child(UIComponents.item(new ItemStack(Items.ROTTEN_FLESH, 3))
+                                    .positioning(Positioning.absolute(40, 50))
+                                    .tooltip(Component.translatable("gtceu.alloy_smelter")))
+                            .child(UIComponents.playerInventory(player.getInventory())
+                                    .positioning(Positioning.absolute(4, 85)))
+                            .inflate(Size.of(176, 166)));
+
+                    layout.applySizing();
+
+                    CustomItemStackHandler slot0 = new CustomItemStackHandler(new ItemStack(Items.ITEM_FRAME));
+                    layout.child(
+                            UIContainers.verticalFlow(Sizing.content(), Sizing.content())
+                                    .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
+                                    .child(UIComponents.slot(slot0, 0))
+                                    .positioning(Positioning.relative(25, 25)));
+                }
+            }))
             .register();
     public static ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("smd_inductor", Item::new).lang("SMD Inductor")
             .tag(CustomTags.INDUCTORS).register();
@@ -2491,6 +2463,7 @@ public class GTItems {
             .register();
 
     public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
+
     static {
         DyeColor[] colors = DyeColor.values();
         for (int i = 0; i < colors.length; i++) {
@@ -2504,6 +2477,7 @@ public class GTItems {
     }
 
     public static final ItemEntry<ComponentItem>[] SPRAY_CAN_DYES = new ItemEntry[DyeColor.values().length];
+
     static {
         for (int i = 0; i < DyeColor.values().length; i++) {
             var dyeColor = DyeColor.values()[i];
@@ -2956,4 +2930,5 @@ public class GTItems {
             prov.add(ctx.get(), names.stream().map(StringUtils::capitalize).collect(Collectors.joining(" ")));
         };
     }
+
 }

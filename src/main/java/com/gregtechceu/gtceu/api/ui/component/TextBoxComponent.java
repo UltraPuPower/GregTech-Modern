@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.w3c.dom.Element;
 
@@ -23,7 +24,7 @@ import java.util.function.Consumer;
 public class TextBoxComponent extends EditBox {
 
     protected final Observable<Boolean> showsBackground = Observable
-            .of(((EditBoxAccessor) this).gtceu$drawsBackground());
+            .of(((EditBoxAccessor) this).gtceu$isBordered());
 
     protected final Observable<String> textValue = Observable.of("");
     protected final EventStream<OnChanged> changedEvents = OnChanged.newStream();
@@ -42,7 +43,7 @@ public class TextBoxComponent extends EditBox {
      */
     @Override
     @Deprecated(forRemoval = true)
-    public void setResponder(Consumer<String> changedListener) {
+    public void setResponder(@NotNull Consumer<String> changedListener) {
         super.setResponder(changedListener);
     }
 
