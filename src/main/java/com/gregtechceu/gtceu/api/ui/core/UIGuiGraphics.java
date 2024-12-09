@@ -277,6 +277,11 @@ public class UIGuiGraphics extends GuiGraphics {
         Tesselator.getInstance().end();
     }
 
+    public void drawSolidRect(int x, int y, int width, int height, int color) {
+        this.fill(x, y, x + width, y + height, color);
+        RenderSystem.enableBlend();
+    }
+
     public void drawCircle(int centerX, int centerY, int segments, double radius, Color color) {
         drawCircle(centerX, centerY, 0, 360, segments, radius, color);
     }

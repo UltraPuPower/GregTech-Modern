@@ -18,8 +18,10 @@ public record Color(float red, float green, float blue, float alpha) implements 
     public static final Color BLACK = Color.ofRgb(0);
     public static final Color WHITE = Color.ofRgb(0xFFFFFF);
     public static final Color RED = Color.ofRgb(0xFF0000);
+    public static final Color YELLOW = Color.ofRgb(0xFFFF00);
     public static final Color GREEN = Color.ofRgb(0x00FF00);
     public static final Color BLUE = Color.ofRgb(0x0000FF);
+    public static final Color HOVER_GRAY = Color.ofArgb(0x80FFFFFF);
 
     private static final Map<String, Color> NAMED_TEXT_COLORS = Stream.of(ChatFormatting.values())
             .filter(ChatFormatting::isColor)

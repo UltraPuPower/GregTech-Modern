@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.component.BoxComponent;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
@@ -1805,17 +1806,18 @@ public class GTItems {
                     rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
                     FlowLayout layout;
+                    CustomFluidTank tank = new CustomFluidTank(new FluidStack(Fluids.LAVA, 8000));
 
                     rootComponent.child(layout = UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166))
                             .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
                                     .visibleArea(PositionedRectangle.of(0, 0, 176, 166))
                                     .sizing(Sizing.fixed(172), Sizing.fixed(166)))
-                            .child(UIComponents.box(Sizing.fixed(130), Sizing.fixed(100))
+                            /*.child(UIComponents.box(Sizing.fixed(130), Sizing.fixed(100))
                                     .startColor(Color.BLACK)
                                     .endColor(Color.GREEN)
                                     .direction(BoxComponent.GradientDirection.LEFT_TO_RIGHT)
                                     .positioning(Positioning.relative(50, 20))
-                                    .cursorStyle(CursorStyle.HAND))
+                                    .cursorStyle(CursorStyle.HAND))*/
                             .child(UIComponents.item(new ItemStack(Items.ROTTEN_FLESH, 3))
                                     .positioning(Positioning.absolute(80, 50))
                                     .tooltip(Component.translatable("gtceu.alloy_smelter")))
@@ -1824,7 +1826,9 @@ public class GTItems {
                             .child(UIComponents.button(Component.literal("✔"), (ButtonComponent button) -> {
                                 player.sendSystemMessage(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"));
                             }).tooltip(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"))
-                                    .positioning(Positioning.relative(75, 10))));
+                                    .positioning(Positioning.relative(75, 10)))
+                            .child(UIComponents.tank(tank).positioning(Positioning.relative(5, 5)))
+                    );
 
                     CustomItemStackHandler slot0 = new CustomItemStackHandler(new ItemStack(Items.ITEM_FRAME));
                     layout.child(
@@ -1832,6 +1836,8 @@ public class GTItems {
                                     .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
                                     .child(UIComponents.slot(slot0, 0))
                                     .positioning(Positioning.relative(25, 25)));
+
+
                 }
             }))
             .register();

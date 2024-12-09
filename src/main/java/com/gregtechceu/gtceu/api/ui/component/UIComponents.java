@@ -122,6 +122,10 @@ public class UIComponents {
         return new FluidComponent(fluid);
     }
 
+    public static TankComponent tank(IFluidHandler fluidHandler) {
+        return new TankComponent(fluidHandler, 0);
+    }
+
     public static TankComponent tank(IFluidHandler fluidHandler, int tank) {
         return new TankComponent(fluidHandler, tank);
     }
