@@ -318,6 +318,7 @@ public class UIParsing {
         registerFactory("item", element -> UIComponents.item(ItemStack.EMPTY));
         registerFactory("block", BlockComponent::parse);
 
+        registerFactory("player-inventory", PlayerInventoryComponent::parse);
         registerFactory("slot", SlotComponent::parse);
         registerFactory("tank", TankComponent::parse);
 

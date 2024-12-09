@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.api.ui;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.factory.UIFactory;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -22,13 +22,17 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class UIContainer extends AbstractContainerMenu {
 
@@ -93,14 +97,17 @@ public class UIContainer extends AbstractContainerMenu {
     public void addAllSlots() {
         var root = adapter.rootComponent;
         root.forEachDescendant(child -> {
+            if (child instanceof PlayerInventoryComponent inventoryComponent) {
+                inventoryComponent.setInventory(this.playerInventory);
+            }
             if (child instanceof SlotComponent slot) {
                 addSlotComponent(slot.getSlot(), slot);
             }
         });
     }
 
-    //WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
-    //OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
+    // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
+    // OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
     @Nonnull
     public Slot addSlot(@Nonnull Slot slot) {
         var emptySlotIndex = this.slots.stream()
@@ -110,31 +117,31 @@ public class UIContainer extends AbstractContainerMenu {
         if (emptySlotIndex.isPresent()) {
             ((SlotAccessor) slot).gtceu$setSlotIndex(emptySlotIndex.getAsInt());
             this.slots.set(slot.getSlotIndex(), slot);
-            ((AbstractContainerMenuAccessor)this).gtceu$getLastSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
-            ((AbstractContainerMenuAccessor)this).gtceu$getRemoteSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
+            ((AbstractContainerMenuAccessor) this).gtceu$getLastSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
+            ((AbstractContainerMenuAccessor) this).gtceu$getRemoteSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
             return slot;
         }
         return super.addSlot(slot);
     }
 
-    //WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
-    //OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
+    // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
+    // OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
     public void removeSlot(Slot slot) {
         if (this.slotMap.remove(slot) == null) {
             GTCEu.LOGGER.error("removed nonexistent slot {}", slot);
             return;
         }
 
-        //replace removed slot with empty placeholder to avoid list index shift
+        // replace removed slot with empty placeholder to avoid list index shift
         EmptySlotPlaceholder emptySlotPlaceholder = new EmptySlotPlaceholder();
         emptySlotPlaceholder.index = slot.index;
         this.slots.set(slot.getSlotIndex(), emptySlotPlaceholder);
-        ((AbstractContainerMenuAccessor)this).gtceu$getLastSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
-        ((AbstractContainerMenuAccessor)this).gtceu$getRemoteSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
+        ((AbstractContainerMenuAccessor) this).gtceu$getLastSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
+        ((AbstractContainerMenuAccessor) this).gtceu$getRemoteSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
     }
 
-    //WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
-    //OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
+    // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
+    // OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
     public void addSlotComponent(Slot slot, SlotComponent slotComponent) {
         if (this.slotMap.containsKey(slot)) {
             GTCEu.LOGGER.error("duplicated slot {}, {}", slot, slotComponent);
@@ -152,7 +159,7 @@ public class UIContainer extends AbstractContainerMenu {
         final Slot clickedSlot = this.slots.get(i);
         boolean playerSide = isPlayerSideSlot(clickedSlot);
 
-        //if(clickedSlot.isActive()) // todo disabled slots
+        // if(clickedSlot.isActive()) // todo disabled slots
 
         if (clickedSlot.hasItem()) {
             ItemStack stack = clickedSlot.getItem();
@@ -294,7 +301,5 @@ public class UIContainer extends AbstractContainerMenu {
         }
     }
 
-    public static void initType() {
-
-    }
+    public static void initType() {}
 }

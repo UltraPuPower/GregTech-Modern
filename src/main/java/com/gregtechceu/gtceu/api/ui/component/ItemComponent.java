@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
@@ -174,14 +173,6 @@ public class ItemComponent extends BaseUIComponent {
         super.parseProperties(model, element, children);
         UIParsing.apply(children, "show-overlay", UIParsing::parseBool, this::showOverlay);
         UIParsing.apply(children, "set-tooltip-from-stack", UIParsing::parseBool, this::setTooltipFromStack);
-
-        UIParsing.apply(children, "item", UIParsing::parseResourceLocation, itemId -> {
-            GTCEu.LOGGER.warn("Deprecated <item> property populated on item component - migrate to <stack> instead");
-
-            var item = BuiltInRegistries.ITEM.getOptional(itemId)
-                    .orElseThrow(() -> new UIModelParsingException("Unknown item " + itemId));
-            this.stack(item.getDefaultInstance());
-        });
 
         UIParsing.apply(children, "stack", $ -> $.getTextContent().strip(), stackString -> {
             try {
