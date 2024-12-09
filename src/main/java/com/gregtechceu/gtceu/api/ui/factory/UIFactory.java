@@ -42,7 +42,7 @@ public abstract class UIFactory<T> {
         loadUITemplate(player, adapter.rootComponent, holder);
 
         NetworkHooks.openScreen(player, new SimpleMenuProvider((containerId, inv, player1) -> {
-            return new UIContainer(containerId, inv, adapter);
+            return new UIContainer<>(containerId, inv, adapter, holder);
         }, getUITitle(holder, player)),
                 buf -> {
                     buf.writeResourceLocation(this.uiFactoryId);
@@ -53,11 +53,12 @@ public abstract class UIFactory<T> {
 
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public final UIAdapter<RootContainer> initClientUI(FriendlyByteBuf serializedHolder) {
+    public final UIAdapter<RootContainer> initClientUI(FriendlyByteBuf serializedHolder, UIContainer<T> container) {
         T holder = readHolderFromSyncData(serializedHolder);
         if (holder == null) {
             return null;
         }
+        container.setHolder(holder);
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
 

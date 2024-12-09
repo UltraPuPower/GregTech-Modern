@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
+import com.gregtechceu.gtceu.api.ui.UIContainer;
 import com.gregtechceu.gtceu.api.ui.util.CursorAdapter;
 import com.gregtechceu.gtceu.client.renderdoc.RenderDoc;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -45,7 +46,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
     @Nullable
     @Setter
-    public AbstractContainerMenu container;
+    public UIContainer<?> container;
 
     public final R rootComponent;
     public final CursorAdapter cursorAdapter;

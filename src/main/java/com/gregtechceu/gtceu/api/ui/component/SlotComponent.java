@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UILinkSetter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
@@ -36,7 +38,6 @@ public class SlotComponent extends BaseUIComponent {
     @Getter
     @Setter
     protected MutableSlotWrapper slot;
-
     protected boolean didDraw = false;
 
     protected SlotComponent(int index) {
@@ -59,6 +60,28 @@ public class SlotComponent extends BaseUIComponent {
         this.slot = new MutableSlotWrapper(new Slot(container, index, x, y));
     }
 
+    public SlotComponent setSlot(IItemHandlerModifiable handler, int index) {
+        this.slot.setInner(new SlotItemHandler(handler, index, x, y));
+        return this;
+    }
+
+    public SlotComponent setSlot(Container handler, int index) {
+        this.slot.setInner(new Slot(handler, index, x, y));
+        return this;
+    }
+
+    @UILinkSetter(IItemHandlerModifiable.class)
+    public SlotComponent setSlot(IItemHandlerModifiable handler) {
+        this.slot.setInner(new SlotItemHandler(handler, index, x, y));
+        return this;
+    }
+
+    @UILinkSetter(Container.class)
+    public SlotComponent setSlot(Container handler) {
+        this.slot.setInner(new Slot(handler, index, x, y));
+        return this;
+    }
+
     @Override
     public void draw(UIGuiGraphics context, int mouseX, int mouseY, float partialTicks, float delta) {
         this.didDraw = true;
@@ -72,7 +95,6 @@ public class SlotComponent extends BaseUIComponent {
 
     public static SlotComponent parse(Element element) {
         UIParsing.expectAttributes(element, "index");
-        UIParsing.expectAttributes(element, "name");
         int index = UIParsing.parseUnsignedInt(element.getAttributeNode("index"));
         return new SlotComponent(index);
     }
@@ -119,16 +141,21 @@ public class SlotComponent extends BaseUIComponent {
         return this;
     }
 
-    @Setter
-    @Getter
     @Accessors(fluent = false, chain = false)
     public static class MutableSlotWrapper extends Slot {
 
+        @Getter
         private Slot inner;
 
         public MutableSlotWrapper(Slot inner) {
             super(inner.container, inner.getSlotIndex(), inner.x, inner.y);
             this.inner = inner;
+        }
+
+        public void setInner(Slot slot) {
+            this.inner = slot;
+            ((SlotAccessor) inner).gtceu$setX(x);
+            ((SlotAccessor) inner).gtceu$setY(y);
         }
 
         @Override

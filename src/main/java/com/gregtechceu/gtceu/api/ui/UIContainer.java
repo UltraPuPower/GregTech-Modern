@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.factory.UIFactory;
+import com.gregtechceu.gtceu.api.ui.holder.connector.UIFieldLinker;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
@@ -34,22 +35,20 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class UIContainer extends AbstractContainerMenu {
+public class UIContainer<T> extends AbstractContainerMenu {
 
-    public final static MenuType<UIContainer> MENU_TYPE = GTRegistries.register(BuiltInRegistries.MENU,
+    public final static MenuType<UIContainer<?>> MENU_TYPE = GTRegistries.register(BuiltInRegistries.MENU,
             GTCEu.id("ui_container"), IForgeMenuType.create(UIContainer::new));
 
     @Getter
     private final HashMap<Slot, SlotComponent> slotMap = new LinkedHashMap<>();
 
-    private Inventory playerInventory;
+    private final Inventory playerInventory;
+    @Getter
+    private final UIAdapter<RootContainer> adapter;
     @Getter
     @Setter
-    private UIAdapter<RootContainer> adapter;
-
-    protected UIContainer(@Nullable MenuType<?> menuType, int containerId) {
-        super(menuType, containerId);
-    }
+    private T holder;
 
     // should work as long as someone doesn't do dumb things
     // (e.g. use a different parent component for their factory and container)
@@ -59,17 +58,22 @@ public class UIContainer extends AbstractContainerMenu {
 
         if (data != null) {
             ResourceLocation uiFactoryId = data.readResourceLocation();
-            UIFactory<?> factory = UIFactory.FACTORIES.get(uiFactoryId);
+            @SuppressWarnings("unchecked")
+            UIFactory<T> factory = (UIFactory<T>) UIFactory.FACTORIES.get(uiFactoryId);
 
-            this.adapter = factory.initClientUI(data);
+            this.adapter = factory.initClientUI(data, this);
+            init();
+        } else {
+            this.adapter = null;
+            playerInventory.player.closeContainer();
         }
-        init();
     }
 
-    public UIContainer(int containerId, Inventory playerInventory, UIAdapter<RootContainer> adapter) {
+    public UIContainer(int containerId, Inventory playerInventory, UIAdapter<RootContainer> adapter, T holder) {
         super(MENU_TYPE, containerId);
         this.playerInventory = playerInventory;
         this.adapter = adapter;
+        this.holder = holder;
         init();
     }
 
@@ -82,9 +86,10 @@ public class UIContainer extends AbstractContainerMenu {
         clear();
 
         // don't init anything if we don't have a valid adapter.
-        if (adapter == null) {
+        if (adapter == null || holder == null) {
             return;
         }
+        UIFieldLinker.findAndLinkFields(adapter, holder);
         addAllSlots();
     }
 
@@ -97,6 +102,7 @@ public class UIContainer extends AbstractContainerMenu {
     public void addAllSlots() {
         var root = adapter.rootComponent;
         root.forEachDescendant(child -> {
+            // hard-code this as I can't think of a feasible way to do it automatically
             if (child instanceof PlayerInventoryComponent inventoryComponent) {
                 inventoryComponent.setInventory(this.playerInventory);
             }

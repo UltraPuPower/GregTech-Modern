@@ -1,18 +1,23 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -42,8 +47,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
-                          IDropSaveMachine, IInteractedMachine {
+public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLife,
+        IDropSaveMachine, IInteractedMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
@@ -64,6 +69,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     private boolean isTaped;
 
     @Persisted
+    @UIFieldLink("inventory")
     public final NotifiableItemStackHandler inventory;
 
     public CrateMachine(IMachineBlockEntity holder, Material material, int inventorySize) {
@@ -74,28 +80,36 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
+    public void loadUITemplate(Player entityPlayer, RootContainer rootComponent) {
         int xOffset = inventorySize >= 90 ? 162 : 0;
         int yOverflow = xOffset > 0 ? 18 : 9;
         int yOffset = inventorySize > 3 * yOverflow ?
                 (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
-        var modularUI = new ModularUI(176 + xOffset, 166 + yOffset, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset / 2,
-                        82 + yOffset, true));
+
+        FlowLayout parent;
+        rootComponent.child(parent = UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset), Sizing.fixed(166 + yOffset))
+                .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
+                        .visibleArea(PositionedRectangle.of(0, 0, 176 + xOffset, 166 + yOffset))
+                        .sizing(Sizing.fill(), Sizing.fill()))
+                .child(UIComponents.label(getBlockState().getBlock().getName())
+                        .positioning(Positioning.absolute(5, 5)))
+                .child(UIComponents.playerInventory(entityPlayer.getInventory())
+                        .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset))));
+
         int x = 0;
         int y = 0;
         for (int slot = 0; slot < inventorySize; slot++) {
-            modularUI.widget(new SlotWidget(inventory, slot, x * 18 + 7, y * 18 + 17)
-                    .setBackgroundTexture(GuiTextures.SLOT));
+            parent.child(UIComponents.slot(inventory, slot)
+                            .id("inventory." + slot)
+                            .positioning(Positioning.absolute(x * 18 + 7, y * 18 + 17)))
+                    .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
+                            .positioning(Positioning.absolute(x * 18 + 6, y * 18 + 16)));
             x++;
             if (x == yOverflow) {
                 x = 0;
                 y++;
             }
         }
-        return modularUI;
     }
 
     @Override
@@ -148,4 +162,5 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     public void onMachineRemoved() {
         if (!isTaped) clearInventory(inventory.storage);
     }
+
 }

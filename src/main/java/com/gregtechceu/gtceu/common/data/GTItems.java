@@ -597,7 +597,7 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
             .onRegister(attach(FilteredFluidContainer.create(100, true,
-                    x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
+                            x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
@@ -609,7 +609,7 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
             .onRegister(attach(FilteredFluidContainer.create(1000, true,
-                    x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
+                            x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
@@ -1811,7 +1811,7 @@ public class GTItems {
                     rootComponent.child(layout = UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166))
                             .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
                                     .visibleArea(PositionedRectangle.of(0, 0, 176, 166))
-                                    .sizing(Sizing.fixed(172), Sizing.fixed(166)))
+                                    .sizing(Sizing.fill(), Sizing.fill()))
                             /*.child(UIComponents.box(Sizing.fixed(130), Sizing.fixed(100))
                                     .startColor(Color.BLACK)
                                     .endColor(Color.GREEN)
@@ -1824,8 +1824,8 @@ public class GTItems {
                             .child(UIComponents.playerInventory(player.getInventory())
                                     .positioning(Positioning.absolute(5, 85)))
                             .child(UIComponents.button(Component.literal("✔"), (ButtonComponent button) -> {
-                                player.sendSystemMessage(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"));
-                            }).tooltip(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"))
+                                        player.sendSystemMessage(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"));
+                                    }).tooltip(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"))
                                     .positioning(Positioning.relative(75, 10)))
                             .child(UIComponents.tank(tank).positioning(Positioning.relative(5, 5)))
                     );
@@ -1834,7 +1834,8 @@ public class GTItems {
                     layout.child(
                             UIContainers.verticalFlow(Sizing.content(), Sizing.content())
                                     .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
-                                    .child(UIComponents.slot(slot0, 0))
+                                    .child(UIComponents.slot(slot0, 0)
+                                            .id("item-in.0"))
                                     .positioning(Positioning.relative(25, 25)));
 
 
@@ -2820,4 +2821,5 @@ public class GTItems {
             prov.add(ctx.get(), names.stream().map(StringUtils::capitalize).collect(Collectors.joining(" ")));
         };
     }
+
 }

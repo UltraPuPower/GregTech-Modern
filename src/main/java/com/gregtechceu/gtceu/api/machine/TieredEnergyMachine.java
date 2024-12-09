@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -34,6 +35,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             MetaMachine.MANAGED_FIELD_HOLDER);
     @Persisted
     @DescSynced
+    @UIFieldLink("energy")
     public final NotifiableEnergyContainer energyContainer;
     protected TickableSubscription explosionSubs;
     protected ISubscription energyListener;

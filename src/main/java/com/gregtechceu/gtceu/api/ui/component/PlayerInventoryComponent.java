@@ -25,7 +25,7 @@ public class PlayerInventoryComponent extends FlowLayout {
                 this.child(UIComponents.slot(inventory, x + y * 9 + 9)
                         .positioning(Positioning.absolute(x * 18 + 1, y * 18 + 1)))
                         .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
-                                .positioning(Positioning.absolute((18 * x), (18 * y))));
+                                .positioning(Positioning.absolute(18 * x, 18 * y)));
             }
         }
 
@@ -33,7 +33,7 @@ public class PlayerInventoryComponent extends FlowLayout {
             this.child(UIComponents.slot(inventory, x)
                     .positioning(Positioning.absolute(x * 18 + 1, 59)))
                     .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
-                            .positioning(Positioning.absolute((18 * x), 58)));
+                            .positioning(Positioning.absolute(18 * x, 58)));
         }
         return this;
     }

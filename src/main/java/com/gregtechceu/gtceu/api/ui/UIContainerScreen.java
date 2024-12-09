@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import org.jetbrains.annotations.NotNull;
 
-public class UIContainerScreen extends BaseContainerScreen<RootContainer, UIContainer> {
+public class UIContainerScreen extends BaseContainerScreen<RootContainer, UIContainer<?>> {
 
     public UIContainerScreen(UIContainer handler, Inventory inventory, Component title) {
         super(handler, inventory, title);

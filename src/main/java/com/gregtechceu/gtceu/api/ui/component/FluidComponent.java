@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.commands.arguments.FluidParser;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
@@ -139,7 +140,9 @@ public class FluidComponent extends BaseUIComponent {
         var tooltip = new ArrayList<ClientTooltipComponent>();
         tooltip.add(ClientTooltipComponent.create(stack.getDisplayName().getVisualOrderText()));
         tooltip.add(ClientTooltipComponent.create(
-                Component.literal(String.format("%,d mB", stack.getAmount())).getVisualOrderText()));
+                Component.literal(String.format("%,d mB", stack.getAmount()))
+                        .withStyle(ChatFormatting.GRAY)
+                        .getVisualOrderText()));
         TooltipsHandler.appendFluidTooltips(stack,
                 c -> tooltip.add(ClientTooltipComponent.create(c.getVisualOrderText())),
                 context);

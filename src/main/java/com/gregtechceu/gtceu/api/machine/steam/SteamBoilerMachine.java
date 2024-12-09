@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -74,6 +75,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
             SteamWorkableMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
+    @UIFieldLink("fluid-in")
     public final NotifiableFluidTank waterTank;
     @Persisted
     @DescSynced

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -31,6 +32,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
             ItemBusPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
+    @UIFieldLink("tank")
     public final NotifiableFluidTank tank;
 
     @Nullable

@@ -16,19 +16,17 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiFunction;
 
-public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends AbstractContainerMenu>
+public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends UIContainer<?>>
                                          extends AbstractContainerScreen<S> implements DisposableScreen {
 
     /**
@@ -204,10 +202,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * @return The wrapped slot
      */
     protected SlotComponent slotAsComponent(int index) {
-        if (this.getMenu() instanceof UIContainer container) {
-            return container.getSlotMap().get(container.getSlot(index));
-        }
-        return null;
+        return getMenu().getSlotMap().get(getMenu().getSlot(index));
     }
 
     /**

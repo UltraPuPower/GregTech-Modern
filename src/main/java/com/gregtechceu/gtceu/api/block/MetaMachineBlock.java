@@ -322,14 +322,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
         if (shouldOpenUi && machine instanceof IUIMachine2 uiMachine &&
                 canOpenOwnerMachine(player, machine.getHolder())) {
-
+            return uiMachine.tryToOpenUI(player, hand, hit);
         }
-        /*
-         * if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
-         * canOpenOwnerMachine(player, machine.getHolder())) {
-         * return uiMachine.tryToOpenUI(player, hand, hit);
-         * }
-         */
+
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }
 
@@ -388,4 +383,5 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
+
 }

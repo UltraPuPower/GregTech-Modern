@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -61,8 +62,10 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     @DescSynced
     private boolean needsVenting;
     @Persisted
+    @UIFieldLink("item-in")
     public final NotifiableItemStackHandler importItems;
     @Persisted
+    @UIFieldLink("item-out")
     public final NotifiableItemStackHandler exportItems;
     private final int inventorySize;
     private final int energyPerTick;
