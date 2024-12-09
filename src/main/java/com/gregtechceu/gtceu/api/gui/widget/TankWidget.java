@@ -382,7 +382,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                                 .append(" mB"));
             }
             if (ChemicalHelper.getMaterial(stack.getFluid()) != null) {
-                TooltipsHandler.appendFluidTooltips(stack.getFluid(), stack.getAmount(), tooltips::add, null);
+                TooltipsHandler.appendFluidTooltips(stack, tooltips::add, null);
             } else {
                 tooltips.add(Component.translatable("ldlib.fluid.temperature",
                         stack.getFluid().getFluidType().getTemperature(stack)));

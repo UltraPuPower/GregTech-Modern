@@ -77,7 +77,7 @@ public class AEFluidDisplayWidget extends Widget {
                 List<Component> tooltips = new ArrayList<>();
                 tooltips.add(fluidStack.getDisplayName());
                 tooltips.add(Component.literal(String.format("%,d mB", fluid.amount())));
-                TooltipsHandler.appendFluidTooltips(fluidStack.getFluid(), fluidStack.getAmount(), tooltips::add,
+                TooltipsHandler.appendFluidTooltips(fluidStack, tooltips::add,
                         TooltipFlag.NORMAL);
                 graphics.renderTooltip(Minecraft.getInstance().font, tooltips, Optional.empty(), mouseX, mouseY);
             }

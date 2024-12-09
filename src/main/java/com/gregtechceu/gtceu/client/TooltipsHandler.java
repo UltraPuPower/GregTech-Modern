@@ -22,6 +22,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class TooltipsHandler {
                         .withStyle(ChatFormatting.YELLOW));
         }
         if (stack.getItem() instanceof BucketItem bucket) {
-            appendFluidTooltips(bucket.getFluid(), FluidType.BUCKET_VOLUME, tooltips::add, flag);
+            appendFluidTooltips(new FluidStack(bucket.getFluid(), FluidType.BUCKET_VOLUME), tooltips::add, flag);
         }
 
         // Block/Item custom tooltips
@@ -72,12 +73,17 @@ public class TooltipsHandler {
         GTUtil.appendHazardTooltips(material, tooltips);
     }
 
-    public static void appendFluidTooltips(Fluid fluid, long amount, Consumer<Component> tooltips, TooltipFlag flag) {
+    public static void appendFluidTooltips(FluidStack fluidStack, Consumer<Component> tooltips, TooltipFlag flag) {
+        Fluid fluid = fluidStack.getFluid();
+        int amount = fluidStack.getAmount();
+
         FluidType fluidType = fluid.getFluidType();
         var material = ChemicalHelper.getMaterial(fluid);
+        boolean addedStateTooltip = false;
         if (material != null) {
-            if (material.getChemicalFormula() != null && !material.getChemicalFormula().isEmpty())
+            if (material.getChemicalFormula() != null && !material.getChemicalFormula().isEmpty()) {
                 tooltips.accept(Component.literal(material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+            }
 
             if (material.hasProperty(PropertyKey.INGOT)) {
                 if (GTUtil.isShiftDown() && amount >= GTValues.L) {
@@ -99,13 +105,18 @@ public class TooltipsHandler {
                     case GAS -> tooltips.accept(Component.translatable("gtceu.fluid.state_gas"));
                     case PLASMA -> tooltips.accept(Component.translatable("gtceu.fluid.state_plasma"));
                 }
+                addedStateTooltip = true;
 
                 attributedFluid.getAttributes().forEach(a -> a.appendFluidTooltips(tooltips));
             }
-            tooltips.accept(Component.translatable("gtceu.fluid.temperature", fluidType.getTemperature()));
-            if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
-                tooltips.accept(Component.translatable("gtceu.fluid.temperature.cryogenic"));
-            }
+        }
+        if (!addedStateTooltip) {
+            tooltips.accept(Component.translatable(fluid.getFluidType().isLighterThanAir() ?
+                    "gtceu.fluid.state_gas" : "gtceu.fluid.state_liquid"));
+        }
+        tooltips.accept(Component.translatable("gtceu.fluid.temperature", fluidType.getTemperature()));
+        if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
+            tooltips.accept(Component.translatable("gtceu.fluid.temperature.cryogenic"));
         }
     }
 }

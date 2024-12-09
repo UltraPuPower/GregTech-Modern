@@ -350,8 +350,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
                     if (!isXEI && ingredient.getStacks().length > 0) {
                         FluidStack stack = ingredient.getStacks()[0];
-                        TooltipsHandler.appendFluidTooltips(stack.getFluid(),
-                                stack.getAmount(),
+                        TooltipsHandler.appendFluidTooltips(stack,
                                 tooltips::add,
                                 TooltipFlag.NORMAL);
                     }

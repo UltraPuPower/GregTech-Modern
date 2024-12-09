@@ -17,7 +17,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,6 +38,7 @@ import java.util.Map;
 public class FluidComponent extends BaseUIComponent {
 
     protected final MultiBufferSource.BufferSource bufferBuilder;
+    @Getter
     protected FluidStack stack;
     protected boolean setTooltipFromStack = false;
     @Setter
@@ -80,8 +80,7 @@ public class FluidComponent extends BaseUIComponent {
         if (showAmount && stack != null) {
             pose.pushPose();
             pose.scale(0.5f, 0.5f, 1.0f);
-            FormattedCharSequence s = Component.literal(FormattingUtil.formatBuckets(stack.getAmount()))
-                    .getVisualOrderText();
+            String s = FormattingUtil.formatBuckets(stack.getAmount());
             var font = Minecraft.getInstance().font;
             graphics.drawString(font, s,
                     (int) ((x + (16 / 3f)) * 2 - font.width(s) + 21),
@@ -121,19 +120,6 @@ public class FluidComponent extends BaseUIComponent {
         return this;
     }
 
-    public FluidStack stack() {
-        return this.stack;
-    }
-
-    public FluidComponent showOverlay(boolean drawOverlay) {
-        this.showOverlay = drawOverlay;
-        return this;
-    }
-
-    public boolean showOverlay() {
-        return this.showOverlay;
-    }
-
     /**
      * Obtain the full item stack tooltip, including custom components
      * provided via {@link net.minecraft.world.item.Item#getTooltipImage(ItemStack)}
@@ -152,7 +138,9 @@ public class FluidComponent extends BaseUIComponent {
 
         var tooltip = new ArrayList<ClientTooltipComponent>();
         tooltip.add(ClientTooltipComponent.create(stack.getDisplayName().getVisualOrderText()));
-        TooltipsHandler.appendFluidTooltips(stack.getFluid(), stack.getAmount(),
+        tooltip.add(ClientTooltipComponent.create(
+                Component.literal(String.format("%,d mB", stack.getAmount())).getVisualOrderText()));
+        TooltipsHandler.appendFluidTooltips(stack,
                 c -> tooltip.add(ClientTooltipComponent.create(c.getVisualOrderText())),
                 context);
 
@@ -179,4 +167,5 @@ public class FluidComponent extends BaseUIComponent {
             }
         });
     }
+
 }
