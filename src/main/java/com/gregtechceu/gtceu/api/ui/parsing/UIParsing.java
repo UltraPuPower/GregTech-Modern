@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -312,10 +313,12 @@ public class UIParsing {
         // Textures
         registerFactory("sprite", SpriteComponent::parse);
         registerFactory("texture", TextureComponent::parse);
+        registerFactory("nine-patch-texture", NinePatchTextureComponent::parse);
 
         // Game Objects
         registerFactory("entity", EntityComponent::parse);
         registerFactory("item", element -> UIComponents.item(ItemStack.EMPTY));
+        registerFactory("fluid", element -> UIComponents.fluid(FluidStack.EMPTY));
         registerFactory("block", BlockComponent::parse);
 
         registerFactory("player-inventory", PlayerInventoryComponent::parse);
