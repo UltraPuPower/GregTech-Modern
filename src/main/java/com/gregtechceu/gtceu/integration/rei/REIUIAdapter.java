@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei;
 
+import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
@@ -22,15 +24,15 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class REIUIAdapter<T extends ParentUIComponent> extends Widget {
+public class REIUIAdapter extends Widget {
 
     public static final Point LAYOUT = new Point(-69, -69);
 
-    public final UIAdapter<T> adapter;
+    public final UIAdapter<RootContainer> adapter;
 
-    public REIUIAdapter(Rectangle bounds, BiFunction<Sizing, Sizing, T> rootComponentMaker) {
+    public REIUIAdapter(Rectangle bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.x, bounds.y, bounds.width, bounds.height,
-                rootComponentMaker);
+                UIContainers::root);
         this.adapter.inspectorZOffset = 900;
 
         if (Minecraft.getInstance().screen != null) {
@@ -42,7 +44,7 @@ public class REIUIAdapter<T extends ParentUIComponent> extends Widget {
         this.adapter.inflateAndMount();
     }
 
-    public T rootComponent() {
+    public RootContainer rootComponent() {
         return this.adapter.rootComponent;
     }
 

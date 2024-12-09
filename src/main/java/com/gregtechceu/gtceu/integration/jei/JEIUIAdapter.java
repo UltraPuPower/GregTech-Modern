@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jei;
 
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 import com.gregtechceu.gtceu.integration.xei.widgets.XEIWidgetComponent;
@@ -19,24 +19,23 @@ import lombok.Getter;
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds;
 import mezz.jei.api.gui.widgets.IRecipeWidget;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class JEIUIAdapter<T extends ParentUIComponent> implements IRecipeWidget, GuiEventListener {
+public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
 
     public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
 
-    public final UIAdapter<T> adapter;
+    public final UIAdapter<RootContainer> adapter;
 
     @Getter
     private final ScreenPosition position;
     @Getter
     private final ScreenRectangle area;
 
-    public JEIUIAdapter(Rect2i bounds, BiFunction<Sizing, Sizing, T> rootComponentMaker) {
+    public JEIUIAdapter(Rect2i bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.getX(), bounds.getY(), bounds.getWidth(),
-                bounds.getHeight(), rootComponentMaker);
+                bounds.getHeight(), UIContainers::root);
         this.adapter.inspectorZOffset = 900;
         this.position = new ScreenPosition(bounds.getX(), bounds.getY());
         this.area = new ScreenRectangle(position, bounds.getWidth(), bounds.getHeight());
@@ -50,7 +49,7 @@ public class JEIUIAdapter<T extends ParentUIComponent> implements IRecipeWidget,
         this.adapter.inflateAndMount();
     }
 
-    public T rootComponent() {
+    public RootContainer rootComponent() {
         return this.adapter.rootComponent;
     }
 

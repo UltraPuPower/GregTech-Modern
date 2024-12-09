@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.integration.emi;
 
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
@@ -26,11 +29,11 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class EMIUIAdapter<T extends ParentUIComponent> extends Widget implements ContainerEventHandler {
+public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
     public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
 
-    public final UIAdapter<T> adapter;
+    public final UIAdapter<RootContainer> adapter;
 
     @Getter
     private final Bounds bounds;
@@ -41,9 +44,9 @@ public class EMIUIAdapter<T extends ParentUIComponent> extends Widget implements
     @Setter
     private GuiEventListener focused;
 
-    public EMIUIAdapter(Bounds bounds, BiFunction<Sizing, Sizing, T> rootComponentMaker) {
+    public EMIUIAdapter(Bounds bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.x(), bounds.y(), bounds.width(), bounds.height(),
-                rootComponentMaker);
+                UIContainers::root);
         this.adapter.inspectorZOffset = 900;
         this.bounds = bounds;
 
@@ -56,7 +59,7 @@ public class EMIUIAdapter<T extends ParentUIComponent> extends Widget implements
         this.adapter.inflateAndMount();
     }
 
-    public T rootComponent() {
+    public RootContainer rootComponent() {
         return this.adapter.rootComponent;
     }
 
