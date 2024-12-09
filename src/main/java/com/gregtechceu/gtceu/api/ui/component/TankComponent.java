@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Color;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
@@ -24,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Element;
 
 import java.util.List;
-import java.util.Map;
 
 @Accessors(fluent = true, chain = true)
 public class TankComponent extends BaseUIComponent {
@@ -33,9 +31,6 @@ public class TankComponent extends BaseUIComponent {
     protected IFluidHandler handler;
     @Getter
     protected int tank;
-    @Getter
-    @Setter
-    protected String handlerName;
     protected Observable<FluidStack> lastFluidInTank = Observable.of(FluidStack.EMPTY);
     protected int lastTankCapacity;
     @Setter
@@ -107,12 +102,6 @@ public class TankComponent extends BaseUIComponent {
             graphics.drawSolidRect(x, y, width, height, Color.HOVER_GRAY.argb());
             RenderSystem.colorMask(true, true, true, true);
         }
-    }
-
-    @Override
-    public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
-        super.parseProperties(model, element, children);
-        this.handlerName(element.getAttribute("handler-name").strip());
     }
 
     public static TankComponent parse(Element element) {

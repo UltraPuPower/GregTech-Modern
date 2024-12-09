@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
@@ -27,7 +26,6 @@ import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Element;
 
 import javax.annotation.Nullable;
-import java.util.Map;
 
 @Accessors(fluent = true, chain = true)
 public class SlotComponent extends BaseUIComponent {
@@ -35,9 +33,6 @@ public class SlotComponent extends BaseUIComponent {
     @Getter
     @Setter
     private int index;
-    @Getter
-    @Setter
-    protected String handlerName;
     @Getter
     @Setter
     protected MutableSlotWrapper slot;
@@ -73,12 +68,6 @@ public class SlotComponent extends BaseUIComponent {
 
         ((UISlotExtension) this.slot).gtceu$setScissorArea(PositionedRectangle.of(
                 scissor[0], scissor[1], scissor[2], scissor[3]));
-    }
-
-    @Override
-    public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
-        super.parseProperties(model, element, children);
-        this.handlerName(element.getAttribute("handler-name").strip());
     }
 
     public static SlotComponent parse(Element element) {
