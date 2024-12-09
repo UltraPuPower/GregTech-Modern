@@ -1900,15 +1900,15 @@ public class GTItems {
                     rootComponent.child(layout = UIContainers.horizontalFlow(Sizing.content(), Sizing.content())
                             .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
                                     .visibleArea(PositionedRectangle.of(0, 0, 176, 166))
-                                    .sizing(Sizing.fixed(176), Sizing.fixed(166)))
-                            .child(UIComponents.box(Sizing.fixed(130), Sizing.fixed(100))
-                                    .positioning(Positioning.relative(50, 20)))
+                                    .sizing(Sizing.fixed(172), Sizing.fixed(166)))
+                            /*.child(UIComponents.box(Sizing.fixed(130), Sizing.fixed(100))
+                                    .positioning(Positioning.relative(50, 20)))*/
                             .child(UIComponents.item(new ItemStack(Items.ROTTEN_FLESH, 3))
-                                    .positioning(Positioning.absolute(40, 50))
+                                    .positioning(Positioning.absolute(80, 50))
                                     .tooltip(Component.translatable("gtceu.alloy_smelter")))
                             .child(UIComponents.playerInventory(player.getInventory())
-                                    .positioning(Positioning.absolute(4, 85)))
-                            .inflate(Size.of(176, 166)));
+                                    .positioning(Positioning.absolute(5, 85)))
+                            .inflate(Size.of(172, 166)));
 
                     layout.applySizing();
 

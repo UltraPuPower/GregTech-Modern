@@ -54,12 +54,12 @@ public class UIGuiGraphics extends GuiGraphics {
 
     private UIGuiGraphics(Minecraft mc, MultiBufferSource.BufferSource bufferSource) {
         super(mc, bufferSource);
+        utilityScreen();
     }
 
     public static UIGuiGraphics of(GuiGraphics g) {
         var graphics = new UIGuiGraphics(Minecraft.getInstance(), g.bufferSource());
-        ((GuiGraphicsAccessor) graphics)
-                .gtceu$setScissorStack(((GuiGraphicsAccessor) graphics).gtceu$getScissorStack());
+        ((GuiGraphicsAccessor) graphics).gtceu$setScissorStack(((GuiGraphicsAccessor) graphics).gtceu$getScissorStack());
         ((GuiGraphicsAccessor) graphics).gtceu$setPose(((GuiGraphicsAccessor) graphics).gtceu$getPose());
 
         return graphics;
@@ -452,8 +452,7 @@ public class UIGuiGraphics extends GuiGraphics {
                 INSTANCE = new UtilityScreen();
 
                 final var client = Minecraft.getInstance();
-                INSTANCE.init(
-                        client,
+                INSTANCE.init(client,
                         client.getWindow().getGuiScaledWidth(),
                         client.getWindow().getGuiScaledHeight());
             }
@@ -461,11 +460,8 @@ public class UIGuiGraphics extends GuiGraphics {
             return INSTANCE;
         }
 
-        static {
-            MinecraftForge.EVENT_BUS.addListener(UtilityScreen::onWindowResized);
-        }
 
-        private static void onWindowResized(WindowEvent.Resized event) {
+        public static void onWindowResized(WindowEvent.Resized event) {
             if (INSTANCE == null) return;
             Window window = event.getWindow();
             INSTANCE.init(event.getMinecraft(), window.getGuiScaledWidth(), window.getGuiScaledHeight());

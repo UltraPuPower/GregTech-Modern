@@ -124,8 +124,9 @@ public class SlotComponent extends BaseUIComponent {
         return this;
     }
 
+    @Setter
+    @Getter
     public static class MutableSlotWrapper extends Slot {
-        @Getter @Setter
         private Slot inner;
 
         public MutableSlotWrapper(Slot inner) {

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -13,13 +14,18 @@ public class PlayerInventoryComponent extends FlowLayout {
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
                 this.child(UIComponents.slot(inventory, x + y * 9 + 9)
-                        .positioning(Positioning.absolute(x * 18, y * 18)));
+                        .positioning(Positioning.absolute(x * 18 + 1, y * 18 + 1)))
+                        .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, x * 18, y * 18, 18, 18, 18, 18)
+                                .positioning(Positioning.absolute((18 * x), (18 * y))));
+                return;
             }
         }
 
         for (int x = 0; x < 9; x++) {
             this.child(UIComponents.slot(inventory, x)
-                    .positioning(Positioning.absolute(x * 18, 58)));
+                    .positioning(Positioning.absolute(x * 18 + 1, 59)))
+                    .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, x * 18, 18, 18, 18, 18, 18)
+                            .positioning(Positioning.absolute((18 * x), 58)));
         }
     }
 
