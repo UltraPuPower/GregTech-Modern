@@ -35,6 +35,7 @@ import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -225,12 +226,12 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
         @Override
         public String getSerializedName() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ROOT);
         }
 
         @Nullable
         public static IndicatorPlacement getByName(String name) {
-            return IndicatorPlacement.valueOf(name.toUpperCase());
+            return IndicatorPlacement.valueOf(name.toUpperCase(Locale.ROOT));
         }
     }
 }

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 public class BatteryBlock extends AppearanceBlock {
 
@@ -81,7 +82,7 @@ public class BatteryBlock extends AppearanceBlock {
         @NotNull
         @Override
         public String getBatteryName() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ROOT);
         }
 
         @NotNull
