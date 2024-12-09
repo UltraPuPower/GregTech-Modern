@@ -7,6 +7,9 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
@@ -32,14 +35,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Accessors(fluent = true, chain = true)
 public class ItemComponent extends BaseUIComponent {
 
     protected static final Matrix4f ITEM_SCALING = new Matrix4f().scaling(16, -16, 16);
 
     protected final MultiBufferSource.BufferSource entityBuffers;
     protected final ItemRenderer itemRenderer;
+    @Getter
     protected ItemStack stack;
+    @Getter @Setter
     protected boolean showOverlay = false;
+    @Getter
     protected boolean setTooltipFromStack = false;
 
     protected ItemComponent(ItemStack stack) {
@@ -116,28 +123,11 @@ public class ItemComponent extends BaseUIComponent {
         return this;
     }
 
-    public boolean setTooltipFromStack() {
-        return setTooltipFromStack;
-    }
-
     public ItemComponent stack(ItemStack stack) {
         this.stack = stack;
         this.updateTooltipForStack();
 
         return this;
-    }
-
-    public ItemStack stack() {
-        return this.stack;
-    }
-
-    public ItemComponent showOverlay(boolean drawOverlay) {
-        this.showOverlay = drawOverlay;
-        return this;
-    }
-
-    public boolean showOverlay() {
-        return this.showOverlay;
     }
 
     /**

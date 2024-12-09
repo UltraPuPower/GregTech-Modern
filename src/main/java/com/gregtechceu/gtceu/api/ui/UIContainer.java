@@ -101,7 +101,7 @@ public class UIContainer extends AbstractContainerMenu {
                 inventoryComponent.setInventory(this.playerInventory);
             }
             if (child instanceof SlotComponent slot) {
-                addSlotComponent(slot.getSlot(), slot);
+                addSlotComponent(slot.slot(), slot);
             }
         });
     }

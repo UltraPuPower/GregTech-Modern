@@ -195,17 +195,6 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * Set the tooltip of this component to the given
-     * text, without any wrapping applied
-     */
-    default UIComponent tooltip(@NotNull Component... tooltip) {
-        var components = new ArrayList<ClientTooltipComponent>();
-        for (var line : tooltip) components.add(ClientTooltipComponent.create(line.getVisualOrderText()));
-        this.tooltip(components);
-        return this;
-    }
-
-    /**
-     * Set the tooltip of this component to the given
      * text, wrapping at newline characters
      */
     default UIComponent tooltip(@NotNull Component tooltip) {

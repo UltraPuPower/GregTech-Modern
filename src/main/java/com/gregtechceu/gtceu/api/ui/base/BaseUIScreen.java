@@ -89,6 +89,7 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
             this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
             // Re-add it as a child to circumvent vanilla clearing them
             this.addRenderableWidget(this.uiAdapter);
+            super.init();
         } else {
             try {
                 this.uiAdapter = this.createAdapter();
@@ -97,6 +98,10 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
                     this.onClose();
                     return;
                 }
+                super.init();
+
+                this.addRenderableWidget(this.uiAdapter);
+                this.setFocused(this.uiAdapter);
 
                 this.build(this.uiAdapter.rootComponent);
                 this.uiAdapter.rootComponent.setAdapter(this.uiAdapter);
