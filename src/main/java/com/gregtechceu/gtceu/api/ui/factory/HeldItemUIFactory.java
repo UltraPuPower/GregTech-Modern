@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.factory;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -42,5 +43,4 @@ public class HeldItemUIFactory extends UIFactory<HeldItemUIHolder> {
     public Component getUITitle(HeldItemUIHolder holder, Player player) {
         return holder.getHeld().getHoverName();
     }
-
 }

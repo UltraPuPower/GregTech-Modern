@@ -91,7 +91,7 @@ public final class GTRegistries {
             TRUNK_PLACER_TYPE.register(name.getPath(), () -> (TrunkPlacerType<?>) value);
         } else if (registryKey == Registries.PLACEMENT_MODIFIER_TYPE) {
             PLACEMENT_MODIFIER.register(name.getPath(), () -> (PlacementModifierType<?>) value);
-        }  else if (registryKey == Registries.MENU) {
+        } else if (registryKey == Registries.MENU) {
             MENU_TYPES.register(name.getPath(), () -> (MenuType<?>) value);
         } else {
             return Registry.register(registry, name, value);

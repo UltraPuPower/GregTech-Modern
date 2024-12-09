@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainer;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -23,7 +25,6 @@ import java.util.Map;
 public abstract class UIFactory<T> {
 
     public static final Map<ResourceLocation, UIFactory<?>> FACTORIES = new HashMap<>();
-
 
     public final ResourceLocation uiFactoryId;
 
@@ -41,8 +42,8 @@ public abstract class UIFactory<T> {
         loadUITemplate(player, adapter.rootComponent, holder);
 
         NetworkHooks.openScreen(player, new SimpleMenuProvider((containerId, inv, player1) -> {
-                    return new UIContainer(containerId, inv, adapter);
-                }, getUITitle(holder, player)),
+            return new UIContainer(containerId, inv, adapter);
+        }, getUITitle(holder, player)),
                 buf -> {
                     buf.writeResourceLocation(this.uiFactoryId);
                     writeHolderToSyncData(buf, holder);

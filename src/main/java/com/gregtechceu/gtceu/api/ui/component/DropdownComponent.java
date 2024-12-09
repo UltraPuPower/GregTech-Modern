@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
-import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;

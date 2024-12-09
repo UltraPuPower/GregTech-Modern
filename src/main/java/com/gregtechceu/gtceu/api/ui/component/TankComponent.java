@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Element;
 
@@ -18,7 +20,8 @@ public class TankComponent extends BaseUIComponent {
 
     @Getter
     protected final IFluidHandler handler;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected String handlerName;
     protected final int tank;
 
@@ -82,5 +85,4 @@ public class TankComponent extends BaseUIComponent {
         ((SlotAccessor) this.handler).gtceu$setY(y);
         return this;
     }
-
 }

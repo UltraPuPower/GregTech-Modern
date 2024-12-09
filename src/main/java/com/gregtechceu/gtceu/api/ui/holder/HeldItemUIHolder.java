@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.api.ui.holder;
 
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
-import lombok.Getter;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
 
 public class HeldItemUIHolder implements IUIHolder {
 
@@ -38,9 +40,7 @@ public class HeldItemUIHolder implements IUIHolder {
     }
 
     @Override
-    public void markDirty() {
-
-    }
+    public void markDirty() {}
 
     public interface IHeldItemUIConstructor {
 

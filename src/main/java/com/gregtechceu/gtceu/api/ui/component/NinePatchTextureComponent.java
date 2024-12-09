@@ -8,11 +8,12 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
-import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.minecraft.resources.ResourceLocation;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.resources.ResourceLocation;
 import org.w3c.dom.Element;
 
 import java.util.Map;
@@ -24,7 +25,8 @@ public class NinePatchTextureComponent extends BaseUIComponent {
 
     @Getter
     protected final AnimatableProperty<PositionedRectangle> visibleArea;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected boolean blend = false;
 
     protected NinePatchTextureComponent(ResourceLocation texture) {

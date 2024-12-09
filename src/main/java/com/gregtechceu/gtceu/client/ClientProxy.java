@@ -35,10 +35,10 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static com.gregtechceu.gtceu.api.ui.UIContainer.MENU_TYPE;
 
@@ -114,5 +114,4 @@ public class ClientProxy extends CommonProxy {
             MenuScreens.register(MENU_TYPE, UIContainerScreen::new);
         });
     }
-
 }

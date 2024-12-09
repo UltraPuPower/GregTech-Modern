@@ -10,12 +10,7 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.commands.arguments.FluidParser;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,6 +21,13 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
 
@@ -41,7 +43,8 @@ public class FluidComponent extends BaseUIComponent {
     protected boolean setTooltipFromStack = false;
     @Setter
     protected boolean showAmount = false;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected boolean showOverlay = false;
 
     protected FluidComponent(FluidStack stack) {
@@ -63,26 +66,26 @@ public class FluidComponent extends BaseUIComponent {
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         var pose = graphics.pose();
 
-        if(stack != null) {
+        if (stack != null) {
             RenderSystem.disableBlend();
-            if(!stack.isEmpty()) {
+            if (!stack.isEmpty()) {
                 double progress = stack.getAmount() * 1.0 /
                         Math.max(Math.max(stack.getAmount(), 16000), 1);
 
                 graphics.drawFluid(stack, 16000, this.x, this.y, 16, 16);
             }
 
-
         }
 
-        if(showAmount && stack != null) {
+        if (showAmount && stack != null) {
             pose.pushPose();
             pose.scale(0.5f, 0.5f, 1.0f);
-            FormattedCharSequence s = Component.literal(FormattingUtil.formatBuckets(stack.getAmount())).getVisualOrderText();
+            FormattedCharSequence s = Component.literal(FormattingUtil.formatBuckets(stack.getAmount()))
+                    .getVisualOrderText();
             var font = Minecraft.getInstance().font;
             graphics.drawString(font, s,
-                    (int)((x + (16 / 3f)) * 2 - font.width(s) + 21),
-                    (int)((y + (16 / 3f) + 6) * 2), Color.WHITE.argb());
+                    (int) ((x + (16 / 3f)) * 2 - font.width(s) + 21),
+                    (int) ((y + (16 / 3f) + 6) * 2), Color.WHITE.argb());
             pose.popPose();
         }
 
@@ -164,7 +167,8 @@ public class FluidComponent extends BaseUIComponent {
 
         UIParsing.apply(children, "stack", e -> e.getTextContent().strip(), stackString -> {
             try {
-                var result = FluidParser.parseForFluid(BuiltInRegistries.FLUID.asLookup(), new StringReader(stackString));
+                var result = FluidParser.parseForFluid(BuiltInRegistries.FLUID.asLookup(),
+                        new StringReader(stackString));
 
                 var stack = new FluidStack(result.fluid().value(), 1);
                 stack.setTag(result.nbt());

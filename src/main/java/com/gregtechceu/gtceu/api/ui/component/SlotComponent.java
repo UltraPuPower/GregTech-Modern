@@ -3,15 +3,12 @@ package com.gregtechceu.gtceu.api.ui.component;
 import com.gregtechceu.gtceu.api.ui.UIContainer;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
-import com.mojang.datafixers.util.Pair;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +16,10 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
+
+import com.mojang.datafixers.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Element;
@@ -30,7 +31,8 @@ public class SlotComponent extends BaseUIComponent {
     @Getter
     @Setter
     private int index;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected String handlerName;
     @Getter
     @Setter
@@ -127,6 +129,7 @@ public class SlotComponent extends BaseUIComponent {
     @Setter
     @Getter
     public static class MutableSlotWrapper extends Slot {
+
         private Slot inner;
 
         public MutableSlotWrapper(Slot inner) {
@@ -193,7 +196,8 @@ public class SlotComponent extends BaseUIComponent {
         }
 
         /**
-         * Decrease the size of the stack in slot (first int arg) by the amount of the second int arg. Returns the new stack.
+         * Decrease the size of the stack in slot (first int arg) by the amount of the second int arg. Returns the new
+         * stack.
          */
         @Override
         @NotNull
@@ -231,7 +235,5 @@ public class SlotComponent extends BaseUIComponent {
             this.index = index;
             inner.index = index;
         }
-
     }
-
 }

@@ -28,7 +28,8 @@ public interface GuiGraphicsAccessor {
     void callFlushIfUnmanaged();
 
     @Invoker("renderTooltipInternal")
-    void gtceu$renderTooltipFromComponents(Font textRenderer, List<ClientTooltipComponent> components, int x, int y, ClientTooltipPositioner positioner);
+    void gtceu$renderTooltipFromComponents(Font textRenderer, List<ClientTooltipComponent> components, int x, int y,
+                                           ClientTooltipPositioner positioner);
 
     @Accessor("bufferSource")
     MultiBufferSource.BufferSource gtceu$bufferSource();

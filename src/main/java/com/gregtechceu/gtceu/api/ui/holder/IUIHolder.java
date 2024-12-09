@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.ui.holder;
 
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+
 import net.minecraft.world.entity.player.Player;
 
 public interface IUIHolder {
 
     IUIHolder EMPTY = new IUIHolder() {
+
         @Override
         public void loadUITemplate(Player entityPlayer, RootContainer rootComponent) {}
 
@@ -20,9 +22,7 @@ public interface IUIHolder {
         }
 
         @Override
-        public void markDirty() {
-
-        }
+        public void markDirty() {}
     };
 
     void loadUITemplate(Player entityPlayer, RootContainer rootComponent);
@@ -32,5 +32,4 @@ public interface IUIHolder {
     boolean isClientSide();
 
     void markDirty();
-
 }

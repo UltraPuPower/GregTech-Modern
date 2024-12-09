@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
 import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
 import com.gregtechceu.gtceu.api.ui.util.UIErrorToast;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
-
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -71,7 +71,6 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
 
     @Override
     protected void init() {
-
         if (this.invalid) return;
 
         // Check whether this screen was already initialized

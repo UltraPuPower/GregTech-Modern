@@ -7,11 +7,11 @@ import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +27,11 @@ public abstract class BaseUIComponent implements UIComponent {
     @Nullable
     protected UIAdapter<?> adapter = null;
     @Nullable
-    @Getter @Setter
+    @Getter
+    @Setter
     protected String id = null;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected int zIndex = 0;
 
     protected boolean mounted = false;
@@ -64,9 +66,11 @@ public abstract class BaseUIComponent implements UIComponent {
     protected CursorStyle cursorStyle = CursorStyle.NONE;
     protected List<ClientTooltipComponent> tooltip = List.of();
 
-    @Getter @Setter
+    @Getter
+    @Setter
     protected int x, y;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected int width, height;
 
     protected Size space = Size.zero();

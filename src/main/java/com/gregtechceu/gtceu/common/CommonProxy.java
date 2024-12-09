@@ -107,9 +107,9 @@ public class CommonProxy {
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
-        //UIFactory.register(MachineUIFactory.INSTANCE);
-        //UIFactory.register(CoverUIFactory.INSTANCE);
-        //UIFactory.register(GTUIEditorFactory.INSTANCE);
+        // UIFactory.register(MachineUIFactory.INSTANCE);
+        // UIFactory.register(CoverUIFactory.INSTANCE);
+        // UIFactory.register(GTUIEditorFactory.INSTANCE);
 
         UIFactory.register(HeldItemUIFactory.INSTANCE);
         UIFactory.register(MachineUIFactory.INSTANCE);

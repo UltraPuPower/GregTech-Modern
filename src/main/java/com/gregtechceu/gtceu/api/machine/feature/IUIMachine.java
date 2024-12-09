@@ -2,23 +2,14 @@ package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 
-import com.gregtechceu.gtceu.api.ui.UIContainer;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash

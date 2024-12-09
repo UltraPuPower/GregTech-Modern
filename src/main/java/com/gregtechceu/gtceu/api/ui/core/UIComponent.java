@@ -27,7 +27,7 @@ public interface UIComponent extends PositionedRectangle {
     /**
      * Draw the current state of this component onto the screen
      *
-     * @param graphics      The transformation stack
+     * @param graphics     The transformation stack
      * @param mouseX       The mouse pointer's x-coordinate
      * @param mouseY       The mouse pointer's y-coordinate
      * @param partialTicks The fraction of the current tick that has passed
@@ -203,7 +203,6 @@ public interface UIComponent extends PositionedRectangle {
         this.tooltip(components);
         return this;
     }
-
 
     /**
      * Set the tooltip of this component to the given

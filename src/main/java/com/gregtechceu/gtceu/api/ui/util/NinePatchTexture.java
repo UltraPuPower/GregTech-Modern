@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.ui.util;
 
-import com.google.gson.GsonBuilder;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
@@ -12,6 +11,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 

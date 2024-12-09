@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.util.CursorAdapter;
-
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.Platform;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -15,9 +12,12 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 

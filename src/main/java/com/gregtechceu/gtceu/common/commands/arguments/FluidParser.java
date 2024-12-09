@@ -1,12 +1,5 @@
 package com.gregtechceu.gtceu.common.commands.arguments;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import com.mojang.datafixers.util.Either;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -20,14 +13,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
-import javax.annotation.Nullable;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.datafixers.util.Either;
+
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
+
 public class FluidParser {
 
-    private static final SimpleCommandExceptionType ERROR_NO_TAGS_ALLOWED = new SimpleCommandExceptionType(Component.translatable("argument.Fluid.tag.disallowed"));
+    private static final SimpleCommandExceptionType ERROR_NO_TAGS_ALLOWED = new SimpleCommandExceptionType(
+            Component.translatable("argument.Fluid.tag.disallowed"));
     private static final DynamicCommandExceptionType ERROR_UNKNOWN_FLUID = new DynamicCommandExceptionType((value) -> {
         return Component.translatable("argument.fluid.id.invalid", value);
     });
@@ -54,7 +57,8 @@ public class FluidParser {
         this.allowTags = allowTags;
     }
 
-    public static FluidResult parseForFluid(HolderLookup<Fluid> lookup, StringReader reader) throws CommandSyntaxException {
+    public static FluidResult parseForFluid(HolderLookup<Fluid> lookup,
+                                            StringReader reader) throws CommandSyntaxException {
         int i = reader.getCursor();
 
         try {
@@ -70,7 +74,8 @@ public class FluidParser {
         }
     }
 
-    public static Either<FluidParser.FluidResult, FluidParser.TagResult> parseForTesting(HolderLookup<Fluid> lookup, StringReader reader) throws CommandSyntaxException {
+    public static Either<FluidParser.FluidResult, FluidParser.TagResult> parseForTesting(HolderLookup<Fluid> lookup,
+                                                                                         StringReader reader) throws CommandSyntaxException {
         int i = reader.getCursor();
 
         try {
@@ -84,15 +89,15 @@ public class FluidParser {
         }
     }
 
-    public static CompletableFuture<Suggestions> fillSuggestions(HolderLookup<Fluid> lookup, SuggestionsBuilder builder, boolean allowTags) {
+    public static CompletableFuture<Suggestions> fillSuggestions(HolderLookup<Fluid> lookup, SuggestionsBuilder builder,
+                                                                 boolean allowTags) {
         StringReader stringreader = new StringReader(builder.getInput());
         stringreader.setCursor(builder.getStart());
         FluidParser Fluidparser = new FluidParser(lookup, stringreader, allowTags);
 
         try {
             Fluidparser.parse();
-        } catch (CommandSyntaxException ignored) {
-        }
+        } catch (CommandSyntaxException ignored) {}
 
         return Fluidparser.suggestions.apply(builder.createOffset(stringreader.getCursor()));
     }
@@ -145,7 +150,6 @@ public class FluidParser {
             this.suggestions = SUGGEST_NOTHING;
             this.readNbt();
         }
-
     }
 
     private CompletableFuture<Suggestions> suggestOpenNbt(SuggestionsBuilder builder) {
@@ -162,7 +166,8 @@ public class FluidParser {
     }
 
     private CompletableFuture<Suggestions> suggestFluid(SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggestResource(this.fluids.listElementIds().map(ResourceKey::location), builder);
+        return SharedSuggestionProvider.suggestResource(this.fluids.listElementIds().map(ResourceKey::location),
+                builder);
     }
 
     private CompletableFuture<Suggestions> suggestFluidIdOrTag(SuggestionsBuilder builder) {
@@ -177,5 +182,4 @@ public class FluidParser {
     public record TagResult(HolderSet<Fluid> tag, @Nullable CompoundTag nbt) {
 
     }
-
 }

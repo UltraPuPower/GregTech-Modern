@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.api.ui.util.Observable;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -152,5 +152,4 @@ public class RootContainer extends BaseParentUIComponent {
 
         return UIContainers.root(Sizing.content(), Sizing.content());
     }
-
 }
