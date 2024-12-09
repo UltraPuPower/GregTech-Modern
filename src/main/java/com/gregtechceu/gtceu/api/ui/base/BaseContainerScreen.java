@@ -80,6 +80,26 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
             this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
             // Re-add it as a child to circumvent vanilla clearing them
             this.addRenderableWidget(this.uiAdapter);
+
+            for (UIComponent child : this.uiAdapter.rootComponent.children()) {
+                child.x(child.x() - leftPos);
+                child.y(child.y() - topPos);
+            }
+            this.menu.slots.forEach(slot -> {
+                ((SlotAccessor) slot).gtceu$setX(slot.x + leftPos);
+                ((SlotAccessor) slot).gtceu$setY(slot.y + topPos);
+            });
+            super.init();
+            this.uiAdapter.leftPos(leftPos);
+            this.uiAdapter.topPos(topPos);
+            for (UIComponent child : this.uiAdapter.rootComponent.children()) {
+                child.x(child.x() + leftPos);
+                child.y(child.y() + topPos);
+            }
+            this.menu.slots.forEach(slot -> {
+                ((SlotAccessor) slot).gtceu$setX(slot.x - leftPos);
+                ((SlotAccessor) slot).gtceu$setY(slot.y - topPos);
+            });
         } else {
             try {
                 this.uiAdapter = this.createAdapter();

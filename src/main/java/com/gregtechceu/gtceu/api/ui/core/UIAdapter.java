@@ -16,7 +16,6 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.Nullable;
@@ -180,12 +179,11 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             this.rootComponent.update(delta, mouseX, mouseY);
 
             RenderSystem.enableDepthTest();
-            GlStateManager._enableScissorTest();
+            RenderSystem.enableScissor(0, 0, window.getWidth(), window.getHeight());
 
-            GlStateManager._scissorBox(0, 0, window.getWidth(), window.getHeight());
             this.rootComponent.draw(guiContext, mouseX, mouseY, partialTicks, delta);
 
-            GlStateManager._disableScissorTest();
+            RenderSystem.disableScissor();
             RenderSystem.disableDepthTest();
 
             this.rootComponent.drawTooltip(guiContext, mouseX, mouseY, partialTicks, delta);
@@ -196,10 +194,13 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             }
 
             if (this.enableInspector) {
-                graphics.pose().translate(0, 0, this.inspectorZOffset);
+                guiContext.pose().pushPose();
+                guiContext.pose().translate(0, 0, this.inspectorZOffset);
                 guiContext.drawInspector(this.rootComponent, mouseX, mouseY, !this.globalInspector);
-                graphics.pose().translate(0, 0, -this.inspectorZOffset);
+                guiContext.pose().popPose();
             }
+
+            this.rootComponent.drawTooltip(guiContext, mouseX, mouseY, partialTicks, delta);
 
             // if (this.captureFrame) RenderDoc.endFrameCapture();
         } finally {
