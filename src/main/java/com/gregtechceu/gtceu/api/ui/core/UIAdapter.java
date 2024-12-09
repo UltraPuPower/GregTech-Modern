@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.util.CursorAdapter;
+import com.gregtechceu.gtceu.client.renderdoc.RenderDoc;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.Platform;
@@ -39,6 +40,7 @@ import java.util.function.BiFunction;
 @Accessors(fluent = true, chain = true)
 public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener, Renderable, NarratableEntry {
 
+    @Getter
     private static boolean isRendering = false;
 
     @Nullable
@@ -171,7 +173,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
         try {
             isRendering = true;
 
-            // if (this.captureFrame) RenderDoc.startFrameCapture();
+            if (this.captureFrame) RenderDoc.startFrameCapture();
 
             final var delta = Minecraft.getInstance().getDeltaFrameTime();
             final var window = Minecraft.getInstance().getWindow();
@@ -202,7 +204,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
             this.rootComponent.drawTooltip(guiContext, mouseX, mouseY, partialTicks, delta);
 
-            // if (this.captureFrame) RenderDoc.endFrameCapture();
+            if (this.captureFrame) RenderDoc.endFrameCapture();
         } finally {
             isRendering = false;
             this.captureFrame = false;
@@ -252,7 +254,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             }
         }
 
-        if (Platform.isDevEnv() && keyCode == GLFW.GLFW_KEY_R /* && RenderDoc.isAvailable() */) {
+        if (Platform.isDevEnv() && keyCode == GLFW.GLFW_KEY_R && RenderDoc.isAvailable()) {
             if ((modifiers & GLFW.GLFW_MOD_ALT) != 0 && (modifiers & GLFW.GLFW_MOD_CONTROL) != 0) {
                 this.captureFrame = true;
             }
@@ -268,13 +270,18 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
     @Override
     public NarrationPriority narrationPriority() {
+        if (this.rootComponent.focusHandler() != null &&
+                this.rootComponent.focusHandler().focused() instanceof NarratableEntry narratable) {
+            return narratable.narrationPriority();
+        }
         return NarrationPriority.NONE;
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {}
-
-    public static boolean isRendering() {
-        return isRendering;
+    public void updateNarration(NarrationElementOutput output) {
+        if (this.rootComponent.focusHandler() != null &&
+                this.rootComponent.focusHandler().focused() instanceof NarratableEntry narratable) {
+            narratable.updateNarration(output);
+        }
     }
 }
