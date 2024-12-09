@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
-import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -50,10 +49,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
             SteamWorkableMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
-    @UIFieldLink("item-in")
     public final NotifiableItemStackHandler importItems;
     @Persisted
-    @UIFieldLink("item-out")
     public final NotifiableItemStackHandler exportItems;
     @Setter
     @Persisted

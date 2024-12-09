@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.base;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.ui.UIContainer;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
@@ -16,6 +16,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 import lombok.Getter;
@@ -26,7 +27,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiFunction;
 
-public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends UIContainer<?>>
+public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends AbstractContainerMenu>
                                          extends AbstractContainerScreen<S> implements DisposableScreen {
 
     /**
@@ -105,6 +106,12 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
                     this.onClose();
                     return;
                 }
+                this.addRenderableWidget(this.uiAdapter);
+                this.setFocused(this.uiAdapter);
+
+                this.uiAdapter.container(this.menu);
+                this.build(this.uiAdapter.rootComponent);
+
                 MutableInt width = new MutableInt(0);
                 MutableInt height = new MutableInt(0);
                 this.uiAdapter.rootComponent.forEachDescendant(child -> {
@@ -119,11 +126,6 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
                 this.imageHeight = height.getValue();
                 super.init();
 
-                this.addRenderableWidget(this.uiAdapter);
-                this.setFocused(this.uiAdapter);
-                this.uiAdapter.container(this.menu);
-
-                this.build(this.uiAdapter.rootComponent);
                 this.uiAdapter.rootComponent.setAdapter(this.uiAdapter);
 
                 this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
@@ -202,7 +204,11 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      * @return The wrapped slot
      */
     protected SlotComponent slotAsComponent(int index) {
-        return getMenu().getSlotMap().get(getMenu().getSlot(index));
+        // TODO stop hardcoding this method
+        if (getMenu() instanceof UIContainerMenu<?> uiContainer) {
+            return uiContainer.getSlotMap().get(getMenu().getSlot(index));
+        }
+        return null;
     }
 
     /**

@@ -126,8 +126,10 @@ public class Sizing implements Animatable<Sizing> {
 
             return new Sizing(value.isEmpty() ? 0 : Integer.parseInt(value), method);
         } else {
-            if (!value.matches("-?\\d+")) {
-                throw new UIModelParsingException("Invalid value in sizing declaration");
+            if (!value.matches("-?\\d+") && method != Method.FILL) {
+                throw new UIModelParsingException("Invalid value in sizing declaration: " + value);
+            } else if (method == Method.FILL) {
+                return new Sizing(100, method);
             }
 
             return new Sizing(Integer.parseInt(value), method);

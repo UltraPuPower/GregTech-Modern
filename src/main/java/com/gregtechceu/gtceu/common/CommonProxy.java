@@ -22,7 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.ui.UIContainer;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.factory.HeldItemUIFactory;
 import com.gregtechceu.gtceu.api.ui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.ui.factory.UIFactory;
@@ -132,7 +132,7 @@ public class CommonProxy {
         GTBlocks.init();
         GTEntityTypes.init();
         GTBlockEntities.init();
-        UIContainer.initType();
+        UIContainerMenu.initType();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
         GTMachines.init();

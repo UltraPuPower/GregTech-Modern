@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
@@ -56,7 +55,6 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Getter
     private final boolean isCreative;
     @Persisted
-    @UIFieldLink("item-in")
     public final NotifiableItemStackHandler importItems;
 
     public DataAccessHatchMachine(IMachineBlockEntity holder, int tier, boolean isCreative) {

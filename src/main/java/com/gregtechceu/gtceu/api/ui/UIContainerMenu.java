@@ -5,9 +5,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.factory.UIFactory;
-import com.gregtechceu.gtceu.api.ui.holder.connector.UIFieldLinker;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
@@ -22,6 +20,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 
 import lombok.Getter;
@@ -35,44 +35,45 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class UIContainer<T> extends AbstractContainerMenu {
+public class UIContainerMenu<T> extends AbstractContainerMenu {
 
-    public final static MenuType<UIContainer<?>> MENU_TYPE = GTRegistries.register(BuiltInRegistries.MENU,
-            GTCEu.id("ui_container"), IForgeMenuType.create(UIContainer::new));
+    public final static MenuType<UIContainerMenu<?>> MENU_TYPE = GTRegistries.register(BuiltInRegistries.MENU,
+            GTCEu.id("ui_container"), IForgeMenuType.create(UIContainerMenu::new));
 
     @Getter
     private final HashMap<Slot, SlotComponent> slotMap = new LinkedHashMap<>();
 
+    @Getter
     private final Inventory playerInventory;
     @Getter
-    private final UIAdapter<RootContainer> adapter;
+    @Setter
+    private RootContainer rootComponent;
+    @Getter
+    private UIFactory<T> factory;
     @Getter
     @Setter
     private T holder;
 
-    // should work as long as someone doesn't do dumb things
-    // (e.g. use a different parent component for their factory and container)
-    public UIContainer(int containerId, Inventory playerInventory, @Nullable FriendlyByteBuf data) {
+    public UIContainerMenu(int containerId, Inventory playerInventory, @Nullable FriendlyByteBuf data) {
         super(MENU_TYPE, containerId);
         this.playerInventory = playerInventory;
 
         if (data != null) {
             ResourceLocation uiFactoryId = data.readResourceLocation();
-            @SuppressWarnings("unchecked")
-            UIFactory<T> factory = (UIFactory<T>) UIFactory.FACTORIES.get(uiFactoryId);
+            //noinspection unchecked
+            this.factory = (UIFactory<T>) UIFactory.FACTORIES.get(uiFactoryId);
 
-            this.adapter = factory.initClientUI(data, this);
+            factory.initClientUI(data, this);
             init();
         } else {
-            this.adapter = null;
             playerInventory.player.closeContainer();
         }
     }
 
-    public UIContainer(int containerId, Inventory playerInventory, UIAdapter<RootContainer> adapter, T holder) {
+    public UIContainerMenu(int containerId, Inventory playerInventory, RootContainer rootComponent, T holder) {
         super(MENU_TYPE, containerId);
         this.playerInventory = playerInventory;
-        this.adapter = adapter;
+        this.rootComponent = rootComponent;
         this.holder = holder;
         init();
     }
@@ -86,10 +87,9 @@ public class UIContainer<T> extends AbstractContainerMenu {
         clear();
 
         // don't init anything if we don't have a valid adapter.
-        if (adapter == null || holder == null) {
+        if (rootComponent == null || holder == null) {
             return;
         }
-        UIFieldLinker.findAndLinkFields(adapter, holder);
         addAllSlots();
     }
 
@@ -100,8 +100,7 @@ public class UIContainer<T> extends AbstractContainerMenu {
     }
 
     public void addAllSlots() {
-        var root = adapter.rootComponent;
-        root.forEachDescendant(child -> {
+        rootComponent.forEachDescendant(child -> {
             // hard-code this as I can't think of a feasible way to do it automatically
             if (child instanceof PlayerInventoryComponent inventoryComponent) {
                 inventoryComponent.setInventory(this.playerInventory);
@@ -273,6 +272,10 @@ public class UIContainer<T> extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return true;
+    }
+
+    public Player player() {
+        return playerInventory.player;
     }
 
     public static class EmptySlotPlaceholder extends Slot {

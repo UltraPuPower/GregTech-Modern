@@ -5,6 +5,13 @@
             <children>
                 <flow-layout direction="horizontal">
                     <children>
+                        <nine-patch-texture texture="gtceu:background">
+                            <sizing>
+                                <horizontal method="fill"/>
+                                <vertical method="fill"/>
+                            </sizing>
+                        </nine-patch-texture>
+
                         <grid-layout rows="9" columns="8">
                             <children>
                                 <flow-layout direction="horizontal" row="0" column="0">
@@ -38,7 +45,16 @@
                                     </sizing>
                                 </flow-layout>
                             </children>
+                            <sizing>
+                                <horizontal method="content"/>
+                                <vertical method="content"/>
+                            </sizing>
+                            <positioning type="absolute">7,17</positioning>
                         </grid-layout>
+
+                        <player-inventory>
+                            <positioning type="absolute">7,162</positioning>
+                        </player-inventory>
 
                         <slim-slider direction="horizontal" id="precise-slider">
                             <sizing>
@@ -75,17 +91,22 @@
                                     </surface>
                                 </flow-layout>
                             </children>
+                            <sizing>
+                                <horizontal method="fill"/>
+                                <vertical method="fill"/>
+                            </sizing>
                         </flow-layout>
                     </children>
+                    <sizing>
+                        <horizontal method="fixed">176</horizontal>
+                        <vertical method="fixed">328</vertical>
+                    </sizing>
                 </flow-layout>
             </children>
 
             <surface>
                 <vanilla-translucent/>
             </surface>
-
-            <vertical-alignment>center</vertical-alignment>
-            <horizontal-alignment>center</horizontal-alignment>
         </root>
     </components>
 </gtceu-ui>

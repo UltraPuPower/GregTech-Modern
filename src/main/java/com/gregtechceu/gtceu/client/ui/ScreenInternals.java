@@ -57,14 +57,12 @@ public class ScreenInternals {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
     public static class Client {
 
         public static void init() {
             MinecraftForge.EVENT_BUS.addListener(ScreenInternals.Client::afterScreenOpened);
         }
 
-        @SubscribeEvent
         public static void afterScreenOpened(ScreenEvent.Opening event) {
             if (event.getNewScreen() instanceof MenuAccess<?> handled) {
                 ((UIAbstractContainerMenuExtension) handled.getMenu())

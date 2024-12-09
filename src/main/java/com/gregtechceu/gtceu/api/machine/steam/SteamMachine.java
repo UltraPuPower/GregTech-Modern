@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -31,7 +30,6 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     @Getter
     public final boolean isHighPressure;
     @Persisted
-    @UIFieldLink("steam")
     public final NotifiableFluidTank steamTank;
 
     public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {

@@ -29,7 +29,7 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     public @Nullable UIAdapter<RootContainer> createAdapter(Player player, MetaMachine holder) {
         UIModel model = UIModelLoader.get(holder.getDefinition().getId());
         if (model != null) {
-            model.createAdapterWithoutScreen(0, 0, 176, 166, RootContainer.class);
+            return model.createAdapterWithoutScreen(0, 0, 176, 166, RootContainer.class);
         }
         return super.createAdapter(player, holder);
     }

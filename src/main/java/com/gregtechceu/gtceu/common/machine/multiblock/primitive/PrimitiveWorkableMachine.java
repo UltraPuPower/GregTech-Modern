@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 
-import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -33,16 +32,12 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
             PrimitiveWorkableMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
-    @UIFieldLink("item-in")
     public final NotifiableItemStackHandler importItems;
     @Persisted
-    @UIFieldLink("item-out")
     public final NotifiableItemStackHandler exportItems;
     @Persisted
-    @UIFieldLink("fluid-in")
     public final NotifiableFluidTank importFluids;
     @Persisted
-    @UIFieldLink("fluid-out")
     public final NotifiableFluidTank exportFluids;
 
     public PrimitiveWorkableMachine(IMachineBlockEntity holder, Object... args) {

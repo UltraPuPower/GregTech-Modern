@@ -305,7 +305,7 @@ public class UIParsing {
         registerFactory("stack-layout", element -> UIContainers.stack(Sizing.content(), Sizing.content()));
 
         // Container
-        registerFactory("root", RootContainer::parse);
+        registerFactory("root", element -> UIContainers.root(Sizing.content(), Sizing.content()));
         registerFactory("scroll", ScrollContainer::parse);
         registerFactory("collapsible", CollapsibleContainer::parse);
         registerFactory("draggable", element -> UIContainers.draggable(Sizing.content(), Sizing.content(), null));

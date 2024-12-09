@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
-import com.gregtechceu.gtceu.api.ui.UIContainer;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.util.CursorAdapter;
 import com.gregtechceu.gtceu.client.renderdoc.RenderDoc;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -19,6 +19,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -44,8 +45,9 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     private static boolean isRendering = false;
 
     @Nullable
+    @Getter
     @Setter
-    public UIContainer<?> container;
+    public AbstractContainerMenu container;
 
     public final R rootComponent;
     public final CursorAdapter cursorAdapter;

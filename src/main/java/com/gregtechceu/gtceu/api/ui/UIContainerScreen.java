@@ -9,18 +9,24 @@ import net.minecraft.world.entity.player.Inventory;
 
 import org.jetbrains.annotations.NotNull;
 
-public class UIContainerScreen extends BaseContainerScreen<RootContainer, UIContainer<?>> {
+public class UIContainerScreen extends BaseContainerScreen<RootContainer, UIContainerMenu<?>> {
 
-    public UIContainerScreen(UIContainer handler, Inventory inventory, Component title) {
+    public UIContainerScreen(UIContainerMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
     }
 
+    @SuppressWarnings({ "unchecked", "DataFlowIssue", "rawtypes" })
     @Override
     protected @NotNull UIAdapter<RootContainer> createAdapter() {
-        return menu.getAdapter();
+        return ((UIContainerMenu) menu).getFactory().createAdapter(menu.player(), menu.getHolder());
     }
 
-    // empty as the adapter is filled before this happens (in UIFactory)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    protected void build(RootContainer rootComponent) {}
+    protected void build(RootContainer rootComponent) {
+        ((UIContainerMenu) menu).getFactory().loadUITemplate(menu.player(), rootComponent, menu.getHolder());
+        // re-init the menu once we're done loading the UI on the client.
+        menu.setRootComponent(rootComponent);
+        menu.init();
+    }
 }

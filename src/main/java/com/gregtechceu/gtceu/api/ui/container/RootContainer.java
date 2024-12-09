@@ -37,6 +37,7 @@ public class RootContainer extends BaseParentUIComponent {
     @Override
     public void layout(Size space) {
         this.children.forEach(child -> {
+            child.inflate(space);
             child.mount(this, child.x(), child.y());
         });
     }
@@ -145,11 +146,5 @@ public class RootContainer extends BaseParentUIComponent {
         for (var child : components) {
             this.child(model.parseComponent(UIComponent.class, child));
         }
-    }
-
-    public static RootContainer parse(Element element) {
-        UIParsing.expectAttributes(element, "direction");
-
-        return UIContainers.root(Sizing.content(), Sizing.content());
     }
 }

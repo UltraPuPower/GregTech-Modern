@@ -13,10 +13,7 @@ import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -70,7 +67,6 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
     private boolean isTaped;
 
     @Persisted
-    @UIFieldLink("inventory")
     public final NotifiableItemStackHandler inventory;
 
     public CrateMachine(IMachineBlockEntity holder, Material material, int inventorySize) {
@@ -82,6 +78,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
 
     @Override
     public void loadUITemplate(Player entityPlayer, RootContainer rootComponent) {
+        rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
+
         int xOffset = inventorySize >= 90 ? 162 : 0;
         int yOverflow = xOffset > 0 ? 18 : 9;
         int yOffset = inventorySize > 3 * yOverflow ?
@@ -100,14 +98,18 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
         int x = 0;
         int y = 0;
         GridLayout grid;
-        parent.child(grid = UIContainers.grid(Sizing.content(), Sizing.content(), yOverflow, inventorySize / yOverflow));
+        parent.child(grid = UIContainers.grid(Sizing.fixed(yOverflow * 18),
+                Sizing.fixed(inventorySize / yOverflow * 18),
+                yOverflow,
+                inventorySize / yOverflow));
+        grid.positioning(Positioning.absolute(7, 17));
         for (int slot = 0; slot < inventorySize; slot++) {
             grid.child(UIContainers.horizontalFlow(Sizing.fixed(18), Sizing.fixed(18))
-                    .child(UIComponents.slot(inventory, slot)
-                            .id("inventory." + slot)
-                            .positioning(Positioning.absolute(x * 18 + 7, y * 18 + 17)))
-                    .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
-                            .positioning(Positioning.absolute(x * 18 + 6, y * 18 + 16))),
+                            .child(UIComponents.slot(inventory, slot)
+                                    .id("inventory." + slot)
+                                    .positioning(Positioning.absolute(1, 1)))
+                            .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
+                            .positioning(Positioning.absolute(x * 18, y * 18)),
                     x, y);
             x++;
             if (x == yOverflow) {

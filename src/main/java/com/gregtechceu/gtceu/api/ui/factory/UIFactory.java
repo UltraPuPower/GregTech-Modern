@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.ui.factory;
 
-import com.gregtechceu.gtceu.api.ui.UIContainer;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -36,12 +36,11 @@ public abstract class UIFactory<T> {
     }
 
     public final boolean openUI(final T holder, ServerPlayer player) {
-        var adapter = createAdapter(player, holder);
-        if (adapter == null) return false;
-        loadUITemplate(player, adapter.rootComponent, holder);
+        final RootContainer rootComponent = UIContainers.root(Sizing.fill(), Sizing.fill());
+        loadUITemplate(player, rootComponent, holder);
 
         NetworkHooks.openScreen(player, new SimpleMenuProvider((containerId, inv, player1) -> {
-            return new UIContainer<>(containerId, inv, adapter, holder);
+            return new UIContainerMenu<>(containerId, inv, rootComponent, holder);
         }, getUITitle(holder, player)),
                 buf -> {
                     buf.writeResourceLocation(this.uiFactoryId);
@@ -51,21 +50,12 @@ public abstract class UIFactory<T> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    @Nullable
-    public final UIAdapter<RootContainer> initClientUI(FriendlyByteBuf serializedHolder, UIContainer<T> container) {
+    public final void initClientUI(FriendlyByteBuf serializedHolder, UIContainerMenu<T> container) {
         T holder = readHolderFromSyncData(serializedHolder);
         if (holder == null) {
-            return null;
+            return;
         }
         container.setHolder(holder);
-        Minecraft minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
-
-        var adapter = createAdapter(player, holder);
-        if (adapter == null) return null;
-        loadUITemplate(player, adapter.rootComponent, holder);
-
-        return adapter;
     }
 
     @Nullable

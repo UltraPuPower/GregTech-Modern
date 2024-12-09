@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
@@ -56,22 +55,16 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Setter
     private ICleanroomProvider cleanroom;
     @Persisted
-    @UIFieldLink("item-in")
     public final NotifiableItemStackHandler importItems;
     @Persisted
-    @UIFieldLink("item-out")
     public final NotifiableItemStackHandler exportItems;
     @Persisted
-    @UIFieldLink("fluid-in")
     public final NotifiableFluidTank importFluids;
     @Persisted
-    @UIFieldLink("fluid-out")
     public final NotifiableFluidTank exportFluids;
     @Persisted
-    @UIFieldLink("cwu-in")
     public final NotifiableComputationContainer importComputation;
     @Persisted
-    @UIFieldLink("cwu-out")
     public final NotifiableComputationContainer exportComputation;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;

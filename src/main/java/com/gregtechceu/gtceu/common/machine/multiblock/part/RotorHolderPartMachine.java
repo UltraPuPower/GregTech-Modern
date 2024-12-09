@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UIFieldLink;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 
@@ -53,7 +52,6 @@ public class RotorHolderPartMachine extends TieredPartMachine
             RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
-    @UIFieldLink("inventory")
     public final NotifiableItemStackHandler inventory;
     @Getter
     public final int maxRotorHolderSpeed;

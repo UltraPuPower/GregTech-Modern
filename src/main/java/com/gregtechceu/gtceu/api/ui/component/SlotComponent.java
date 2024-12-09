@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.api.ui.UIContainer;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UILinkSetter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
@@ -41,7 +40,7 @@ public class SlotComponent extends BaseUIComponent {
 
     protected SlotComponent(int index) {
         this.index = index;
-        this.slot = new MutableSlotWrapper(new UIContainer.EmptySlotPlaceholder());
+        this.slot = new MutableSlotWrapper(new UIContainerMenu.EmptySlotPlaceholder());
         this.sizing(Sizing.fixed(18), Sizing.fixed(18));
     }
 
@@ -73,13 +72,11 @@ public class SlotComponent extends BaseUIComponent {
         return this;
     }
 
-    @UILinkSetter(IItemHandlerModifiable.class)
     public SlotComponent setSlot(IItemHandlerModifiable handler) {
         this.slot.setInner(new SlotItemHandler(handler, index, x, y));
         return this;
     }
 
-    @UILinkSetter(Container.class)
     public SlotComponent setSlot(Container handler) {
         this.slot.setInner(new Slot(handler, index, x, y));
         return this;

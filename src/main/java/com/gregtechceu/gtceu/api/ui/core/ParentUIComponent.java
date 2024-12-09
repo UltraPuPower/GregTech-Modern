@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
+import com.google.common.base.Strings;
 import com.gregtechceu.gtceu.api.ui.parsing.IncompatibleUIModelException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public interface ParentUIComponent extends UIComponent {
 
@@ -229,6 +231,32 @@ public interface ParentUIComponent extends UIComponent {
         }
 
         return null;
+    }
+
+    static <T extends UIComponent> void childByIdForEach(ParentUIComponent group, String regex, Class<T> clazz,
+                                                         Consumer<T> consumer) {
+        for (UIComponent widget : group.childrenByPattern(Pattern.compile(regex))) {
+            if (clazz.isInstance(widget)) {
+                consumer.accept(clazz.cast(widget));
+            }
+        }
+    }
+
+    default List<UIComponent> childrenByPattern(Pattern regex) {
+        List<UIComponent> list = new ArrayList<>();
+        childrenByPattern(list, regex);
+        return list;
+    }
+
+    private void childrenByPattern(List<UIComponent> list, Pattern regex) {
+        for (UIComponent component : this.children()) {
+            if (regex.matcher(Strings.nullToEmpty(component.id())).find()) {
+                list.add(component);
+            }
+            if (component instanceof ParentUIComponent widgetGroup) {
+                widgetGroup.childrenByPattern(list, regex);
+            }
+        }
     }
 
     /**

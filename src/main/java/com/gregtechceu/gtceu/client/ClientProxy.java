@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.client.ui.ScreenInternals;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -24,6 +25,7 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
@@ -40,7 +42,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import static com.gregtechceu.gtceu.api.ui.UIContainer.MENU_TYPE;
+import static com.gregtechceu.gtceu.api.ui.UIContainerMenu.MENU_TYPE;
 
 /**
  * @author KilaBash
@@ -65,6 +67,7 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
         }
 
+        ScreenInternals.Client.init();
         MinecraftForge.EVENT_BUS.addListener(UIGuiGraphics.UtilityScreen::onWindowResized);
     }
 
