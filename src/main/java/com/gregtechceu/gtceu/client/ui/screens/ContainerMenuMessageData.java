@@ -7,5 +7,5 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.function.Consumer;
 
 @ApiStatus.Internal
-public record ScreenhandlerMessageData<T>(int id, boolean clientbound, PacketBufSerializer<T> serializer,
+public record ContainerMenuMessageData<T>(int id, boolean clientbound, PacketBufSerializer<T> serializer,
                                           Consumer<T> handler) {}

@@ -14,7 +14,6 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;

@@ -13,6 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineUIFactory extends UIFactory<MetaMachine> {
@@ -35,10 +37,15 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     @Override
     public void loadUITemplate(Player player, RootContainer rootComponent, MetaMachine holder) {
         if (holder instanceof IUIMachine2 machine) {
+            UIModel model = UIModelLoader.get(holder.getDefinition().getId());
+            if (model != null) {
+                return;
+            }
             machine.loadUITemplate(player, rootComponent);
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     protected MetaMachine readHolderFromSyncData(FriendlyByteBuf syncData) {
         Level world = Minecraft.getInstance().level;

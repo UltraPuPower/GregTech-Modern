@@ -1,0 +1,91 @@
+<gtceu-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../../../../../gtceu-ui.xsd">
+    <components>
+        <root>
+            <children>
+                <flow-layout direction="horizontal">
+                    <children>
+                        <grid-layout rows="9" columns="8">
+                            <children>
+                                <flow-layout direction="horizontal" row="0" column="0">
+                                    <children>
+                                        <slot index="0" id="inventory.0"/>
+                                        <texture texture="gtceu:textures/gui/base/slot.png" texture-height="18" texture-width="18"/>
+                                    </children>
+                                    <sizing>
+                                        <horizontal method="fixed">18</horizontal>
+                                        <vertical method="fixed">18</vertical>
+                                    </sizing>
+                                </flow-layout>
+                                <flow-layout direction="horizontal" row="1" column="0">
+                                    <children>
+                                        <slot index="1" id="inventory.1"/>
+                                        <texture texture="gtceu:textures/gui/base/slot.png" texture-height="18" texture-width="18"/>
+                                    </children>
+                                    <sizing>
+                                        <horizontal method="fixed">18</horizontal>
+                                        <vertical method="fixed">18</vertical>
+                                    </sizing>
+                                </flow-layout>
+                                <flow-layout direction="horizontal" row="2" column="0">
+                                    <children>
+                                        <slot index="2" id="inventory.2"/>
+                                        <texture texture="gtceu:textures/gui/base/slot.png" texture-height="18" texture-width="18"/>
+                                    </children>
+                                    <sizing>
+                                        <horizontal method="fixed">18</horizontal>
+                                        <vertical method="fixed">18</vertical>
+                                    </sizing>
+                                </flow-layout>
+                            </children>
+                        </grid-layout>
+
+                        <slim-slider direction="horizontal" id="precise-slider">
+                            <sizing>
+                                <horizontal method="fixed">100</horizontal>
+                            </sizing>
+                        </slim-slider>
+
+                        <flow-layout direction="horizontal">
+                            <children>
+                                <slim-slider direction="vertical" id="big-steppy-man">
+                                    <sizing>
+                                        <vertical method="fixed">100</vertical>
+                                    </sizing>
+
+                                    <min>20</min>
+                                    <max>80</max>
+                                    <step-size>10</step-size>
+                                </slim-slider>
+
+                                <flow-layout direction="horizontal">
+                                    <children>
+                                        <label>
+                                            <text>This is a very epic inset moment, we can really *feel* the social interactions energy</text>
+                                            <max-width>80</max-width>
+                                        </label>
+                                    </children>
+
+                                    <padding>
+                                        <all>4</all>
+                                    </padding>
+
+                                    <surface>
+                                        <panel-inset/>
+                                    </surface>
+                                </flow-layout>
+                            </children>
+                        </flow-layout>
+                    </children>
+                </flow-layout>
+            </children>
+
+            <surface>
+                <vanilla-translucent/>
+            </surface>
+
+            <vertical-alignment>center</vertical-alignment>
+            <horizontal-alignment>center</horizontal-alignment>
+        </root>
+    </components>
+</gtceu-ui>

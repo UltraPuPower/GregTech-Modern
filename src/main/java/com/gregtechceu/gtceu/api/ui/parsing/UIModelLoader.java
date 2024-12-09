@@ -96,10 +96,8 @@ public class UIModelLoader implements ResourceManagerReloadListener {
         manager.listResources(PATH_PREFIX, identifier -> identifier.getPath().endsWith(PATH_SUFFIX))
                 .forEach((resourceId, resource) -> {
                     try {
-                        var modelId = new ResourceLocation(
-                                resourceId.getNamespace(),
-                                resourceId.getPath().substring(PATH_PREFIX.length(),
-                                        resourceId.getPath().length() - PATH_SUFFIX.length()));
+                        var modelId = resourceId.withPath(path -> path.substring(PATH_PREFIX.length(),
+                                path.length() - PATH_SUFFIX.length()));
 
                         LOADED_MODELS.put(modelId, UIModel.load(resource.open()));
                     } catch (ParserConfigurationException | IOException | SAXException e) {

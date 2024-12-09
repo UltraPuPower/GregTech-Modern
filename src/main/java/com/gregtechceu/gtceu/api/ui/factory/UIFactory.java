@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +59,7 @@ public abstract class UIFactory<T> {
         }
         container.setHolder(holder);
         Minecraft minecraft = Minecraft.getInstance();
-        LocalPlayer player = minecraft.player;
+        Player player = minecraft.player;
 
         var adapter = createAdapter(player, holder);
         if (adapter == null) return null;

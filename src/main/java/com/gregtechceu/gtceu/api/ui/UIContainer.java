@@ -115,6 +115,7 @@ public class UIContainer<T> extends AbstractContainerMenu {
     // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
     // OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
     @Nonnull
+    @Override
     public Slot addSlot(@Nonnull Slot slot) {
         var emptySlotIndex = this.slots.stream()
                 .filter(it -> it instanceof EmptySlotPlaceholder)

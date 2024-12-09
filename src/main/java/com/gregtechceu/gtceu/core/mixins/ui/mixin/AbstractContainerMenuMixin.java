@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.core.mixins.ui.mixin;
 import com.gregtechceu.gtceu.api.ui.serialization.NetworkException;
 import com.gregtechceu.gtceu.api.ui.serialization.PacketBufSerializer;
 import com.gregtechceu.gtceu.api.ui.util.pond.UIAbstractContainerMenuExtension;
-import com.gregtechceu.gtceu.client.ui.ScreenInternals;
-import com.gregtechceu.gtceu.client.ui.screens.ScreenhandlerMessageData;
+import com.gregtechceu.gtceu.client.ui.screens.ContainerMenuMessageData;
 import com.gregtechceu.gtceu.client.ui.screens.SyncedProperty;
 import com.gregtechceu.gtceu.client.ui.screens.UIAbstractContainerMenu;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
+import com.gregtechceu.gtceu.common.network.packets.LocalPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -41,11 +41,11 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     private final List<SyncedProperty<?>> gtceu$properties = new ArrayList<>();
 
     @Unique
-    private final Map<Class<?>, ScreenhandlerMessageData<?>> gtceu$messages = new LinkedHashMap<>();
+    private final Map<Class<?>, ContainerMenuMessageData<?>> gtceu$messages = new LinkedHashMap<>();
     @Unique
-    private final List<ScreenhandlerMessageData<?>> gtceu$clientboundMessages = new ArrayList<>();
+    private final List<ContainerMenuMessageData<?>> gtceu$clientboundMessages = new ArrayList<>();
     @Unique
-    private final List<ScreenhandlerMessageData<?>> gtceu$serverboundMessages = new ArrayList<>();
+    private final List<ContainerMenuMessageData<?>> gtceu$serverboundMessages = new ArrayList<>();
 
     @Unique
     private Player gtceu$player = null;
@@ -64,7 +64,7 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     public <R extends Record> void addServerboundMessage(Class<R> messageClass, Consumer<R> handler) {
         int id = this.gtceu$serverboundMessages.size();
 
-        var messageData = new ScreenhandlerMessageData<>(id, false, PacketBufSerializer.get(messageClass), handler);
+        var messageData = new ContainerMenuMessageData<>(id, false, PacketBufSerializer.get(messageClass), handler);
         this.gtceu$serverboundMessages.add(messageData);
 
         if (this.gtceu$messages.put(messageClass, messageData) != null) {
@@ -76,7 +76,7 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     public <R extends Record> void addClientboundMessage(Class<R> messageClass, Consumer<R> handler) {
         int id = this.gtceu$clientboundMessages.size();
 
-        var messageData = new ScreenhandlerMessageData<>(id, true, PacketBufSerializer.get(messageClass), handler);
+        var messageData = new ContainerMenuMessageData<>(id, true, PacketBufSerializer.get(messageClass), handler);
         this.gtceu$clientboundMessages.add(messageData);
 
         if (this.gtceu$messages.put(messageClass, messageData) != null) {
@@ -91,7 +91,7 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
             throw new NetworkException("Tried to send a message before player was attached");
         }
 
-        ScreenhandlerMessageData messageData = this.gtceu$messages.get(message.getClass());
+        ContainerMenuMessageData messageData = this.gtceu$messages.get(message.getClass());
 
         if (messageData == null) {
             throw new NetworkException("Tried to send message of unknown type " + message.getClass());
@@ -106,7 +106,7 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
                 throw new NetworkException("Tried to send clientbound message on the server");
             }
 
-            GTNetwork.NETWORK.sendToPlayer(new ScreenInternals.LocalPacket(buf), serverPlayer);
+            GTNetwork.NETWORK.sendToPlayer(new LocalPacket(buf), serverPlayer);
         } else {
             if (!this.gtceu$player.level().isClientSide) {
                 throw new NetworkException("Tried to send serverbound message on the client");
@@ -119,14 +119,14 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     @Unique
     @OnlyIn(Dist.CLIENT)
     private void gtceu$sendToServer(FriendlyByteBuf data) {
-        GTNetwork.NETWORK.sendToServer(new ScreenInternals.LocalPacket(data));
+        GTNetwork.NETWORK.sendToServer(new LocalPacket(data));
     }
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void gtceu$handlePacket(FriendlyByteBuf buf, boolean clientbound) {
         int id = buf.readVarInt();
-        ScreenhandlerMessageData messageData = (clientbound ? this.gtceu$clientboundMessages :
+        ContainerMenuMessageData messageData = (clientbound ? this.gtceu$clientboundMessages :
                 this.gtceu$serverboundMessages).get(id);
 
         messageData.handler().accept(messageData.serializer().deserializer().apply(buf));
@@ -183,6 +183,6 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
             prop.write(buf);
         }
 
-        GTNetwork.NETWORK.sendToPlayer(new ScreenInternals.LocalPacket(buf), player);
+        GTNetwork.NETWORK.sendToPlayer(new LocalPacket(buf), player);
     }
 }

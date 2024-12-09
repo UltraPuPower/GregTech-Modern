@@ -24,49 +24,6 @@ import org.jetbrains.annotations.ApiStatus;
 public class ScreenInternals {
 
     @AllArgsConstructor
-    public static class LocalPacket implements IPacket {
-
-        public FriendlyByteBuf payload;
-
-        @Override
-        public void encode(FriendlyByteBuf buf) {
-            buf.writeVarInt(payload.readableBytes());
-            buf.writeBytes(payload);
-        }
-
-        @Override
-        public void decode(FriendlyByteBuf buf) {
-            ByteBuf directSliceBuffer = buf.readBytes(buf.readVarInt());
-            ByteBuf copiedDataBuffer = Unpooled.copiedBuffer(directSliceBuffer);
-            directSliceBuffer.release();
-            payload = new FriendlyByteBuf(copiedDataBuffer);
-        }
-
-        @Override
-        public void execute(IHandlerContext handler) {
-            if (handler.isClient()) {
-                var screenHandler = Minecraft.getInstance().player.containerMenu;
-
-                if (screenHandler == null) {
-                    GTCEu.LOGGER.error("Received local packet for null AbstractContainerMenu");
-                    return;
-                }
-
-                ((UIAbstractContainerMenuExtension) screenHandler).gtceu$handlePacket(payload, true);
-            } else {
-                var screenHandler = handler.getPlayer().containerMenu;
-
-                if (screenHandler == null) {
-                    GTCEu.LOGGER.error("Received local packet for null AbstractContainerMenu");
-                    return;
-                }
-
-                ((UIAbstractContainerMenuExtension) screenHandler).gtceu$handlePacket(payload, false);
-            }
-        }
-    }
-
-    @AllArgsConstructor
     public static class SyncPropertiesPacket implements IPacket {
 
         public FriendlyByteBuf payload;

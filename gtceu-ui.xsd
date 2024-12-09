@@ -724,8 +724,8 @@
             <xs:extension base="componentType">
                 <xs:choice maxOccurs="unbounded">
                     <xs:group ref="componentProps"/>
-                    <xs:element type="xs:unsignedInt" name="index"/>
                 </xs:choice>
+                <xs:attribute name="index" type="xs:unsignedInt" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

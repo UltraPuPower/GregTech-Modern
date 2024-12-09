@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
@@ -98,12 +99,16 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
 
         int x = 0;
         int y = 0;
+        GridLayout grid;
+        parent.child(grid = UIContainers.grid(Sizing.content(), Sizing.content(), yOverflow, inventorySize / yOverflow));
         for (int slot = 0; slot < inventorySize; slot++) {
-            parent.child(UIComponents.slot(inventory, slot)
+            grid.child(UIContainers.horizontalFlow(Sizing.fixed(18), Sizing.fixed(18))
+                    .child(UIComponents.slot(inventory, slot)
                             .id("inventory." + slot)
                             .positioning(Positioning.absolute(x * 18 + 7, y * 18 + 17)))
                     .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
-                            .positioning(Positioning.absolute(x * 18 + 6, y * 18 + 16)));
+                            .positioning(Positioning.absolute(x * 18 + 6, y * 18 + 16))),
+                    x, y);
             x++;
             if (x == yOverflow) {
                 x = 0;

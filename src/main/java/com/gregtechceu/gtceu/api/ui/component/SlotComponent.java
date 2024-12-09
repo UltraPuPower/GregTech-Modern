@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.holder.connector.annotation.UILinkSetter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
@@ -43,21 +42,25 @@ public class SlotComponent extends BaseUIComponent {
     protected SlotComponent(int index) {
         this.index = index;
         this.slot = new MutableSlotWrapper(new UIContainer.EmptySlotPlaceholder());
+        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
     }
 
     protected SlotComponent(IItemHandlerModifiable itemHandler, int index) {
         this.index = index;
         this.slot = new MutableSlotWrapper(new SlotItemHandler(itemHandler, index, x, y));
+        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
     }
 
     protected SlotComponent(Slot slot) {
         this.index = slot.getSlotIndex();
         this.slot = new MutableSlotWrapper(slot);
+        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
     }
 
     protected SlotComponent(Container container, int index) {
         this.index = index;
         this.slot = new MutableSlotWrapper(new Slot(container, index, x, y));
+        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
     }
 
     public SlotComponent setSlot(IItemHandlerModifiable handler, int index) {
