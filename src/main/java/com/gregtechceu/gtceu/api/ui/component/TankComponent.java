@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Accessors(fluent = true, chain = true)
 public class TankComponent extends BaseUIComponent {
 
     @Getter
@@ -44,6 +46,7 @@ public class TankComponent extends BaseUIComponent {
     protected int tank;
     protected FluidStack lastFluidInTank;
     protected int lastTankCapacity;
+    @Setter
     protected boolean showAmount = true;
 
     protected TankComponent(IFluidHandler fluidHandler, int tank) {
@@ -166,7 +169,7 @@ public class TankComponent extends BaseUIComponent {
         String name = element.getAttribute("name");
 
         TankComponent component = new TankComponent(EmptyFluidHandler.INSTANCE, tank);
-        component.setHandlerName(name);
+        component.handlerName(name);
         return component;
     }
 
