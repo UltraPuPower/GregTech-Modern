@@ -19,11 +19,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
  * A UI adapter constitutes the main entrypoint to using gtceu-ui.
@@ -39,7 +42,7 @@ import java.util.function.BiFunction;
  * @see com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen
  */
 @Accessors(fluent = true, chain = true)
-public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener, Renderable, NarratableEntry {
+public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener, Renderable, NarratableEntry, UIComponentMenuAccess {
 
     @Getter
     private static boolean isRendering = false;
@@ -77,7 +80,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
         this.cursorAdapter = CursorAdapter.ofClientWindow();
         this.rootComponent = rootComponent;
-        this.rootComponent.setAdapter(this);
+        this.rootComponent.setContainerAccess(this);
     }
 
     /**
@@ -113,8 +116,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
      * @param <R>                The type of root component the created adapter will use
      * @return The new UI adapter, ready for layout inflation
      */
-    public static <
-            R extends ParentUIComponent> UIAdapter<R> createWithoutScreen(int x, int y, int width, int height,
+    public static <R extends ParentUIComponent> UIAdapter<R> createWithoutScreen(int x, int y, int width, int height,
                                                                           BiFunction<Sizing, Sizing, R> rootComponentMaker) {
         var rootComponent = rootComponentMaker.apply(Sizing.fill(100), Sizing.fill(100));
         return new UIAdapter<>(x, y, width, height, rootComponent);
@@ -165,6 +167,13 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
      */
     public boolean toggleGlobalInspector() {
         return this.globalInspector = !this.globalInspector;
+    }
+
+    @Override
+    public void sendMessage(UIComponent component, int id, Consumer<FriendlyByteBuf> writer) {
+        if (container() instanceof UIContainerMenu<?> menu) {
+            menu.sendMessage(id, writer);
+        }
     }
 
     @Override

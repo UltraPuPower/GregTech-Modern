@@ -9,11 +9,8 @@ import com.lowdragmc.lowdraglib.networking.IPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -45,14 +42,14 @@ public class ScreenInternals {
         @Override
         public void execute(IHandlerContext handler) {
             if (handler.isClient()) {
-                var screenHandler = Minecraft.getInstance().player.containerMenu;
+                var containerMenu = Minecraft.getInstance().player.containerMenu;
 
-                if (screenHandler == null) {
+                if (containerMenu == null) {
                     GTCEu.LOGGER.error("Received sync properties packet for null AbstractContainerMenu");
                     return;
                 }
 
-                ((UIAbstractContainerMenuExtension) screenHandler).gtceu$readPropertySync(payload);
+                ((UIAbstractContainerMenuExtension) containerMenu).gtceu$readPropertySync(payload);
             }
         }
     }

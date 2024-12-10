@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import com.gregtechceu.gtceu.common.item.IItemUIBehaviour;
 
@@ -39,6 +41,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -307,10 +311,21 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public void loadUITemplate(Player entityPlayer, RootContainer rootComponent, HeldItemUIHolder holder) {
+    public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
         for (IItemComponent component : components) {
             if (component instanceof IItemUIBehaviour uiBehaviour) {
-                uiBehaviour.loadUITemplate(entityPlayer, rootComponent, holder);
+                uiBehaviour.loadServerUI(player, menu, holder);
+                return;
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void loadClientUI(Player entityPlayer, UIAdapter<RootContainer> adapter, HeldItemUIHolder holder) {
+        for (IItemComponent component : components) {
+            if (component instanceof IItemUIBehaviour uiBehaviour) {
+                uiBehaviour.loadClientUI(entityPlayer, adapter, holder);
                 return;
             }
         }

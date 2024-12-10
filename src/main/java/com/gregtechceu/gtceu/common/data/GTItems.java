@@ -28,14 +28,16 @@ import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.api.ui.component.BoxComponent;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
@@ -1802,11 +1804,25 @@ public class GTItems {
             .onRegister(attach(new IItemUIBehaviour() {
 
                 @Override
-                public void loadUITemplate(Player player, RootContainer rootComponent, HeldItemUIHolder holder) {
+                public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+                    PlayerInventoryComponent.addServerInventory(menu, player.getInventory(), 5, 85);
+
+                    CustomFluidTank tank = new CustomFluidTank(new FluidStack(Fluids.LAVA, 8000));
+                    CustomItemStackHandler slot0 = new CustomItemStackHandler(new ItemStack(Items.ITEM_FRAME));
+                    menu.createProperty(FluidStack.class, "fluid.0", tank.getFluid());
+                    menu.createProperty(ItemStack.class, "item-in.0", slot0.getStackInSlot(0));
+                }
+
+                @Override
+                public void loadClientUI(Player player, UIAdapter<RootContainer> adapter, HeldItemUIHolder holder) {
+                    RootContainer rootComponent = adapter.rootComponent;
                     rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
                     FlowLayout layout;
-                    CustomFluidTank tank = new CustomFluidTank(new FluidStack(Fluids.LAVA, 8000));
+                    SyncedProperty<FluidStack> containedFluid = adapter.container().getProperty("fluid.0");
+
+                    CustomFluidTank tank = new CustomFluidTank(containedFluid.get());
+                    containedFluid.observe(tank::setFluid);
 
                     rootComponent.child(layout = UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166))
                             .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
@@ -1827,10 +1843,15 @@ public class GTItems {
                                         player.sendSystemMessage(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"));
                                     }).tooltip(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"))
                                     .positioning(Positioning.relative(75, 10)))
-                            .child(UIComponents.tank(tank).positioning(Positioning.relative(5, 5)))
+                            .child(UIComponents.tank(tank)
+                                    .id("fluid_tank")
+                                    .positioning(Positioning.relative(5, 5)))
                     );
 
-                    CustomItemStackHandler slot0 = new CustomItemStackHandler(new ItemStack(Items.ITEM_FRAME));
+                    SyncedProperty<ItemStack> item0 = adapter.container().getProperty("item.0");
+                    CustomItemStackHandler slot0 = new CustomItemStackHandler(item0.get());
+                    item0.observe(stack -> slot0.setStackInSlot(0, stack));
+
                     layout.child(
                             UIContainers.verticalFlow(Sizing.content(), Sizing.content())
                                     .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))

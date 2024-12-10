@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.ui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 
 import net.minecraft.client.Minecraft;
@@ -26,8 +28,14 @@ public class HeldItemUIFactory extends UIFactory<HeldItemUIHolder> {
     }
 
     @Override
-    public void loadUITemplate(Player player, RootContainer rootComponent, HeldItemUIHolder holder) {
-        holder.loadUITemplate(player, rootComponent);
+    public void loadServerUI(ServerPlayer player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+        menu.getHolder().loadServerUI(player, menu, holder);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void loadClientUI(Player player, UIAdapter<RootContainer> adapter, HeldItemUIHolder holder) {
+        holder.loadClientUI(player, adapter);
     }
 
     @OnlyIn(Dist.CLIENT)

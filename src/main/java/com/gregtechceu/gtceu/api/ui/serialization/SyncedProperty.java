@@ -1,16 +1,21 @@
-package com.gregtechceu.gtceu.client.ui.screens;
+package com.gregtechceu.gtceu.api.ui.serialization;
 
-import com.gregtechceu.gtceu.api.ui.serialization.PacketBufSerializer;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.minecraft.network.FriendlyByteBuf;
 
 import org.jetbrains.annotations.ApiStatus;
 
+@Accessors(fluent = true)
 public class SyncedProperty<T> extends Observable<T> {
 
+    @Getter
     private final int index;
     private final PacketBufSerializer<T> serializer;
+    @ApiStatus.Internal
+    @Getter
     private boolean needsSync;
 
     @ApiStatus.Internal
@@ -19,15 +24,6 @@ public class SyncedProperty<T> extends Observable<T> {
 
         this.index = index;
         this.serializer = PacketBufSerializer.get(klass);
-    }
-
-    public int index() {
-        return index;
-    }
-
-    @ApiStatus.Internal
-    public boolean needsSync() {
-        return needsSync;
     }
 
     @ApiStatus.Internal

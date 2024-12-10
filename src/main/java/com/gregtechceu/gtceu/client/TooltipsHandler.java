@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -16,7 +17,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
@@ -48,7 +48,8 @@ public class TooltipsHandler {
                 tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula())
                         .withStyle(ChatFormatting.YELLOW));
         }
-        if (stack.getItem() instanceof BucketItem bucket) {
+        // limit fluid tooltips to GT buckets
+        if (stack.getItem() instanceof GTBucketItem bucket) {
             appendFluidTooltips(new FluidStack(bucket.getFluid(), FluidType.BUCKET_VOLUME), tooltips::add, flag);
         }
 

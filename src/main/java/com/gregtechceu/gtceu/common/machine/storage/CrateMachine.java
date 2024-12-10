@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
@@ -34,6 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
+import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -77,7 +80,28 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
     }
 
     @Override
-    public void loadUITemplate(Player entityPlayer, RootContainer rootComponent) {
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        int xOffset = inventorySize >= 90 ? 162 : 0;
+        int yOverflow = xOffset > 0 ? 18 : 9;
+        int yOffset = inventorySize > 3 * yOverflow ?
+                (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
+        PlayerInventoryComponent.addServerInventory(menu, player.getInventory(),  + xOffset / 2, 82 + yOffset);
+
+        int x = 0;
+        int y = 0;
+        for (int slot = 0; slot < inventorySize; slot++) {
+            menu.addSlot(new SlotItemHandler(inventory, slot, x * 18 + 7, y * 18 + 17));
+            x++;
+            if (x == yOverflow) {
+                x = 0;
+                y++;
+            }
+        }
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<RootContainer> adapter) {
+        RootContainer rootComponent = adapter.rootComponent;
         rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
         int xOffset = inventorySize >= 90 ? 162 : 0;
@@ -92,7 +116,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
                         .sizing(Sizing.fill(), Sizing.fill()))
                 .child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(5, 5)))
-                .child(UIComponents.playerInventory(entityPlayer.getInventory())
+                .child(UIComponents.playerInventory(player.getInventory())
                         .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset))));
 
         int x = 0;

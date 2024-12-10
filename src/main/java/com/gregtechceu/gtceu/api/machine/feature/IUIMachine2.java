@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.ui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.ui.holder.IUIHolder;
 
@@ -11,7 +12,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
-public interface IUIMachine2 extends IUIHolder, IMachineFeature {
+public interface IUIMachine2 extends IUIHolder<MetaMachine>, IMachineFeature {
 
     default boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return true;

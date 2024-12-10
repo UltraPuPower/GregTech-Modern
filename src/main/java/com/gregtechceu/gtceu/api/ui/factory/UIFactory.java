@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.ui.factory;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,11 +35,10 @@ public abstract class UIFactory<T> {
     }
 
     public final boolean openUI(final T holder, ServerPlayer player) {
-        final RootContainer rootComponent = UIContainers.root(Sizing.fill(), Sizing.fill());
-        loadUITemplate(player, rootComponent, holder);
-
         NetworkHooks.openScreen(player, new SimpleMenuProvider((containerId, inv, player1) -> {
-            return new UIContainerMenu<>(containerId, inv, rootComponent, holder);
+            var menu = new UIContainerMenu<>(containerId, inv, this, holder);
+            loadServerUI(player, menu, holder);
+            return menu;
         }, getUITitle(holder, player)),
                 buf -> {
                     buf.writeResourceLocation(this.uiFactoryId);
@@ -50,12 +48,8 @@ public abstract class UIFactory<T> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public final void initClientUI(FriendlyByteBuf serializedHolder, UIContainerMenu<T> container) {
-        T holder = readHolderFromSyncData(serializedHolder);
-        if (holder == null) {
-            return;
-        }
-        container.setHolder(holder);
+    public final T readClientHolder(FriendlyByteBuf serializedHolder) {
+        return readHolderFromSyncData(serializedHolder);
     }
 
     @Nullable
@@ -63,7 +57,10 @@ public abstract class UIFactory<T> {
         return UIAdapter.createWithoutScreen(0, 0, 176, 166, UIContainers::root);
     }
 
-    public abstract void loadUITemplate(Player player, RootContainer rootComponent, T holder);
+    public abstract void loadServerUI(ServerPlayer player, UIContainerMenu<T> menu, T holder);
+
+    @OnlyIn(Dist.CLIENT)
+    public abstract void loadClientUI(Player player, UIAdapter<RootContainer> adapter, T holder);
 
     public Component getUITitle(T holder, Player player) {
         return Component.empty();

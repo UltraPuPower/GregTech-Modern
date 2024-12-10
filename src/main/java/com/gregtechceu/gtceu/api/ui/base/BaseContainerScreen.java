@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.base;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
 import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
@@ -27,8 +25,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiFunction;
 
-public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends AbstractContainerMenu>
-                                         extends AbstractContainerScreen<S> implements DisposableScreen {
+public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends AbstractContainerMenu>
+                                         extends AbstractContainerScreen<C> implements DisposableScreen {
 
     /**
      * The UI adapter of this screen. This handles
@@ -46,7 +44,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
      */
     protected boolean invalid = false;
 
-    protected BaseContainerScreen(S handler, Inventory inventory, Component title) {
+    protected BaseContainerScreen(C handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
     }
 
@@ -126,7 +124,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
                 this.imageHeight = height.getValue();
                 super.init();
 
-                this.uiAdapter.rootComponent.setAdapter(this.uiAdapter);
+                this.uiAdapter.rootComponent.setContainerAccess(this.uiAdapter);
 
                 this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
 
@@ -194,21 +192,6 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, S extends
 
     protected boolean isSlotEnabled(Slot slot) {
         return ((UISlotExtension) slot).gtceu$getDisabledOverride();
-    }
-
-    /**
-     * Wrap the slot at the given index in this screen's
-     * handler into a component, so it can be managed by the UI system
-     *
-     * @param index The index the slot occupies in the handler's slot list
-     * @return The wrapped slot
-     */
-    protected SlotComponent slotAsComponent(int index) {
-        // TODO stop hardcoding this method
-        if (getMenu() instanceof UIContainerMenu<?> uiContainer) {
-            return uiContainer.getSlotMap().get(getMenu().getSlot(index));
-        }
-        return null;
     }
 
     /**

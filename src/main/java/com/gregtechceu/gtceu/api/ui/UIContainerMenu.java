@@ -2,13 +2,11 @@ package com.gregtechceu.gtceu.api.ui;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
-import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.factory.UIFactory;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -20,62 +18,66 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
 public class UIContainerMenu<T> extends AbstractContainerMenu {
 
     public final static MenuType<UIContainerMenu<?>> MENU_TYPE = GTRegistries.register(BuiltInRegistries.MENU,
-            GTCEu.id("ui_container"), IForgeMenuType.create(UIContainerMenu::new));
+            GTCEu.id("ui_container"), IForgeMenuType.create(UIContainerMenu::initClient));
 
     @Getter
-    private final HashMap<Slot, SlotComponent> slotMap = new LinkedHashMap<>();
+    private final Set<Slot> slotSet = new LinkedHashSet<>();
+
+    // FIXME: server side can't make use of received updates rn? Figure out a way to solve
+    @Getter
+    private final Queue<ComponentUpdate> receivedComponentUpdates = new LinkedList<>();
 
     @Getter
     private final Inventory playerInventory;
     @Getter
-    @Setter
-    private RootContainer rootComponent;
-    @Getter
-    private UIFactory<T> factory;
+    private final UIFactory<T> factory;
     @Getter
     @Setter
     private T holder;
 
-    public UIContainerMenu(int containerId, Inventory playerInventory, @Nullable FriendlyByteBuf data) {
-        super(MENU_TYPE, containerId);
-        this.playerInventory = playerInventory;
-
+    public static <T> UIContainerMenu<T> initClient(int containerId, Inventory playerInventory, @Nullable FriendlyByteBuf data) {
         if (data != null) {
             ResourceLocation uiFactoryId = data.readResourceLocation();
             //noinspection unchecked
-            this.factory = (UIFactory<T>) UIFactory.FACTORIES.get(uiFactoryId);
+            var factory = (UIFactory<T>) UIFactory.FACTORIES.get(uiFactoryId);
 
-            factory.initClientUI(data, this);
-            init();
-        } else {
-            playerInventory.player.closeContainer();
+            T holder = factory.readClientHolder(data);
+            return new UIContainerMenu<>(containerId, playerInventory, factory, holder);
         }
+        // should actually never happen.
+        return null;
     }
 
-    public UIContainerMenu(int containerId, Inventory playerInventory, RootContainer rootComponent, T holder) {
+    public UIContainerMenu(int containerId, Inventory playerInventory, UIFactory<T> factory, T holder) {
         super(MENU_TYPE, containerId);
         this.playerInventory = playerInventory;
-        this.rootComponent = rootComponent;
+        this.factory = factory;
         this.holder = holder;
         init();
+
+        // register the message to go both ways
+        this.addServerboundMessage(ComponentUpdate.class, this.receivedComponentUpdates::offer);
+        this.addClientboundMessage(ComponentUpdate.class, this.receivedComponentUpdates::offer);
+    }
+
+    public void sendMessage(int id, Consumer<FriendlyByteBuf> payloadWriter) {
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        payloadWriter.accept(buf);
+        super.sendMessage(new UIContainerMenu.ComponentUpdate(id, buf));
     }
 
     /**
@@ -87,7 +89,7 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
         clear();
 
         // don't init anything if we don't have a valid adapter.
-        if (rootComponent == null || holder == null) {
+        if (holder == null) {
             return;
         }
         addAllSlots();
@@ -100,6 +102,7 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     }
 
     public void addAllSlots() {
+        /*
         rootComponent.forEachDescendant(child -> {
             // hard-code this as I can't think of a feasible way to do it automatically
             if (child instanceof PlayerInventoryComponent inventoryComponent) {
@@ -109,6 +112,7 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
                 addSlotComponent(slot.slot(), slot);
             }
         });
+        */
     }
 
     // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
@@ -133,7 +137,7 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
     // OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
     public void removeSlot(Slot slot) {
-        if (this.slotMap.remove(slot) == null) {
+        if (!this.slotSet.remove(slot)) {
             GTCEu.LOGGER.error("removed nonexistent slot {}", slot);
             return;
         }
@@ -144,16 +148,6 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
         this.slots.set(slot.getSlotIndex(), emptySlotPlaceholder);
         ((AbstractContainerMenuAccessor) this).gtceu$getLastSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
         ((AbstractContainerMenuAccessor) this).gtceu$getRemoteSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
-    }
-
-    // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
-    // OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
-    public void addSlotComponent(Slot slot, SlotComponent slotComponent) {
-        if (this.slotMap.containsKey(slot)) {
-            GTCEu.LOGGER.error("duplicated slot {}, {}", slot, slotComponent);
-        }
-        this.slotMap.put(slot, slotComponent);
-        this.addSlot(slot);
     }
 
     @Override
@@ -312,4 +306,6 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     }
 
     public static void initType() {}
+
+    public record ComponentUpdate(int updateId, FriendlyByteBuf updateData) {}
 }

@@ -5,8 +5,11 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -27,6 +30,7 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
     protected final AnimatableProperty<Insets> padding = AnimatableProperty.of(Insets.none());
 
+    protected @NotNull ParentComponentMenuAccess parentAccess = new ParentComponentMenuAccess();
     protected @Nullable FocusHandler focusHandler = null;
     protected @Nullable ArrayList<Runnable> taskQueue = null;
 
@@ -249,11 +253,10 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
             this.focusHandler.cycle((modifiers & GLFW.GLFW_MOD_SHIFT) == 0);
         } else if ((keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_DOWN ||
                 keyCode == GLFW.GLFW_KEY_UP) && (modifiers & GLFW.GLFW_MOD_ALT) != 0) {
-                    this.focusHandler.moveFocus(keyCode);
-                } else
-            if (this.focusHandler.focused() != null) {
-                return this.focusHandler.focused().onKeyPress(keyCode, scanCode, modifiers);
-            }
+            this.focusHandler.moveFocus(keyCode);
+        } else if (this.focusHandler.focused() != null) {
+            return this.focusHandler.focused().onKeyPress(keyCode, scanCode, modifiers);
+        }
 
         return super.onKeyPress(keyCode, scanCode, modifiers);
     }
@@ -267,6 +270,32 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
         }
 
         return super.onCharTyped(chr, modifiers);
+    }
+
+    @Override
+    public void receiveMessage(int id, FriendlyByteBuf buf) {
+        if (id == 1) {
+            int index = buf.readVarInt();
+            int updateId = buf.readVarInt();
+            children().get(index).receiveMessage(updateId, buf);
+        }
+    }
+
+    protected class ParentComponentMenuAccess implements UIComponentMenuAccess {
+
+        @Override
+        public void sendMessage(UIComponent component, int id, Consumer<FriendlyByteBuf> writer) {
+            BaseParentUIComponent.this.sendMessage(1, buf -> {
+                buf.writeVarInt(children().indexOf(component));
+                buf.writeVarInt(id);
+                writer.accept(buf);
+            });
+        }
+
+        @Override
+        public AbstractContainerMenu container() {
+            return BaseParentUIComponent.this.containerAccess().container();
+        }
     }
 
     @Override
@@ -293,8 +322,8 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
     /**
      * @return The offset from the origin of this component
-     *         at which children can start to be mounted. Accumulates
-     *         padding as well as padding from content sizing
+     * at which children can start to be mounted. Accumulates
+     * padding as well as padding from content sizing
      */
     protected Size childMountingOffset() {
         var padding = this.padding.get();

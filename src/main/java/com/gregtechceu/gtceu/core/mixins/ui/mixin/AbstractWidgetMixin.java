@@ -64,16 +64,15 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
         return this.gtceu$getWrapper().parent();
     }
 
-    @Nullable
     @Override
-    public UIAdapter<?> adapter() {
-        return this.gtceu$getWrapper().adapter();
+    public UIComponentMenuAccess containerAccess() {
+        return this.gtceu$getWrapper().containerAccess();
     }
 
     @ApiStatus.Internal
     @Override
-    public void setAdapter(UIAdapter<?> adapter) {
-        this.gtceu$getWrapper().setAdapter(adapter);
+    public void setContainerAccess(UIComponentMenuAccess adapter) {
+        this.gtceu$getWrapper().setContainerAccess(adapter);
     }
 
     @Override

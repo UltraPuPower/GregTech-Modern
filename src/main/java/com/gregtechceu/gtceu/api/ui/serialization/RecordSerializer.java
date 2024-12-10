@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.serialization;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import lombok.Getter;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.common.collect.ImmutableMap;
@@ -34,6 +35,7 @@ public final class RecordSerializer<R extends Record> {
     private static final Map<Class<?>, RecordSerializer<?>> SERIALIZERS = new HashMap<>();
 
     private final Map<Function<R, ?>, PacketBufSerializer> adapters;
+    @Getter
     private final Class<R> recordClass;
     private final Constructor<R> instanceCreator;
     private final int fieldCount;
@@ -119,10 +121,6 @@ public final class RecordSerializer<R extends Record> {
         adapters.forEach(
                 (rFunction, typeAdapter) -> typeAdapter.serializer().accept(buffer, rFunction.apply(instance)));
         return this;
-    }
-
-    public Class<R> getRecordClass() {
-        return recordClass;
     }
 
     private static <R extends Record> Object getRecordEntry(R instance, MethodHandle accessor) {

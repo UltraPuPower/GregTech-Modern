@@ -30,7 +30,7 @@ public class GTNetwork {
 
         NETWORK.registerBoth(SCPacketShareProspection.class);
 
-        NETWORK.registerBoth(LocalPacket.class);
+        NETWORK.registerBoth(UIDataPacket.class);
         NETWORK.registerBoth(ScreenInternals.SyncPropertiesPacket.class);
     }
 }

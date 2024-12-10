@@ -28,7 +28,7 @@ public abstract class BaseUIComponent implements UIComponent {
     @Getter
     protected ParentUIComponent parent = null;
     @Nullable
-    protected UIAdapter<?> adapter = null;
+    protected UIComponentMenuAccess adapter = null;
     @Nullable
     @Getter
     @Setter
@@ -304,14 +304,14 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
-    public UIAdapter<?> adapter() {
+    public UIComponentMenuAccess containerAccess() {
         return this.adapter != null ? this.adapter :
-                this.parent() != null ? this.parent().adapter() : null;
+                this.parent() != null ? this.parent().containerAccess() : null;
     }
 
     @ApiStatus.Internal
     @Override
-    public void setAdapter(@Nullable UIAdapter<?> adapter) {
+    public void setContainerAccess(UIComponentMenuAccess adapter) {
         this.adapter = adapter;
     }
 
@@ -322,18 +322,18 @@ public abstract class BaseUIComponent implements UIComponent {
 
     @Nullable
     public Player player() {
-        if(adapter() == null || adapter().container() == null) return null;
-        return adapter().container().player();
+        if(containerAccess() == null || containerAccess().container() == null) return null;
+        return containerAccess().container().player();
     }
 
     public ItemStack getCarried() {
-        if(adapter() == null || adapter().container() == null) return ItemStack.EMPTY;
-        return adapter().container().getCarried();
+        if(containerAccess() == null || containerAccess().container() == null) return ItemStack.EMPTY;
+        return containerAccess().container().getCarried();
     }
 
     public void setCarried(@NotNull ItemStack stack) {
-        if(adapter() == null || adapter().container() == null) return;
-        adapter().container().setCarried(stack);
+        if(containerAccess() == null || containerAccess().container() == null) return;
+        containerAccess().container().setCarried(stack);
     }
 
     @Override

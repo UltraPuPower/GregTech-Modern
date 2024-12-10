@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -24,9 +25,21 @@ public class UIContainerScreen extends BaseContainerScreen<RootContainer, UICont
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected void build(RootContainer rootComponent) {
-        ((UIContainerMenu) menu).getFactory().loadUITemplate(menu.player(), rootComponent, menu.getHolder());
-        // re-init the menu once we're done loading the UI on the client.
-        menu.setRootComponent(rootComponent);
-        menu.init();
+        ((UIContainerMenu) menu).getFactory().loadClientUI(menu.player(), this.uiAdapter, menu.getHolder());
+    }
+
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        if (!invalid) {
+            var updates = this.getMenu().getReceivedComponentUpdates();
+            while (!updates.isEmpty()) {
+                UIContainerMenu.ComponentUpdate update = updates.poll();
+                if (update == null) {
+                    continue;
+                }
+                this.uiAdapter.rootComponent.receiveMessage(update.updateId(), update.updateData());
+            }
+        }
+        super.render(guiGraphics, mouseX, mouseY, delta);
     }
 }

@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.core.mixins.ui.mixin;
 import com.gregtechceu.gtceu.api.ui.serialization.NetworkException;
 import com.gregtechceu.gtceu.api.ui.serialization.PacketBufSerializer;
 import com.gregtechceu.gtceu.api.ui.util.pond.UIAbstractContainerMenuExtension;
-import com.gregtechceu.gtceu.client.ui.screens.ContainerMenuMessageData;
-import com.gregtechceu.gtceu.client.ui.screens.SyncedProperty;
-import com.gregtechceu.gtceu.client.ui.screens.UIAbstractContainerMenu;
+import com.gregtechceu.gtceu.api.ui.serialization.ContainerMenuMessageData;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
+import com.gregtechceu.gtceu.api.ui.inject.UIAbstractContainerMenu;
+import com.gregtechceu.gtceu.client.ui.ScreenInternals;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
-import com.gregtechceu.gtceu.common.network.packets.LocalPacket;
+import com.gregtechceu.gtceu.common.network.packets.UIDataPacket;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -39,6 +41,8 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
 
     @Unique
     private final List<SyncedProperty<?>> gtceu$properties = new ArrayList<>();
+    @Unique
+    private final Map<String, SyncedProperty<?>> gtceu$propertiesByName = new Object2ObjectOpenHashMap<>();
 
     @Unique
     private final Map<Class<?>, ContainerMenuMessageData<?>> gtceu$messages = new LinkedHashMap<>();
@@ -106,7 +110,7 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
                 throw new NetworkException("Tried to send clientbound message on the server");
             }
 
-            GTNetwork.NETWORK.sendToPlayer(new LocalPacket(buf), serverPlayer);
+            GTNetwork.NETWORK.sendToPlayer(new UIDataPacket(buf), serverPlayer);
         } else {
             if (!this.gtceu$player.level().isClientSide) {
                 throw new NetworkException("Tried to send serverbound message on the client");
@@ -119,7 +123,7 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     @Unique
     @OnlyIn(Dist.CLIENT)
     private void gtceu$sendToServer(FriendlyByteBuf data) {
-        GTNetwork.NETWORK.sendToServer(new LocalPacket(data));
+        GTNetwork.NETWORK.sendToServer(new UIDataPacket(data));
     }
 
     @Override
@@ -133,10 +137,21 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     }
 
     @Override
-    public <T> SyncedProperty<T> createProperty(Class<T> clazz, T initial) {
+    public Map<String, SyncedProperty<?>> getProperties() {
+        return gtceu$propertiesByName;
+    }
+
+    @Override
+    public <T> SyncedProperty<T> createProperty(Class<T> clazz, String name, T initial) {
         var prop = new SyncedProperty<>(this.gtceu$properties.size(), clazz, initial);
         this.gtceu$properties.add(prop);
+        this.gtceu$propertiesByName.put(name, prop);
         return prop;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <R> SyncedProperty<R> getProperty(String name) {
+        return (SyncedProperty<R>) this.gtceu$propertiesByName.get(name);
     }
 
     @Override
@@ -150,18 +165,19 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     }
 
     @Inject(method = "sendAllDataToRemote", at = @At("RETURN"))
-    private void syncOnSyncState(CallbackInfo ci) {
-        this.syncProperties();
+    private void gtceu$syncOnSendAllData(CallbackInfo ci) {
+        this.gtceu$syncProperties();
     }
 
     @Inject(method = "broadcastChanges", at = @At("RETURN"))
-    private void syncOnSendContentUpdates(CallbackInfo ci) {
+    private void gtceu$syncOnBroadcastChanges(CallbackInfo ci) {
         if (suppressRemoteUpdates) return;
 
-        this.syncProperties();
+        this.gtceu$syncProperties();
     }
 
-    private void syncProperties() {
+    @Unique
+    private void gtceu$syncProperties() {
         if (this.gtceu$player == null) return;
         if (!(this.gtceu$player instanceof ServerPlayer player)) return;
 
@@ -183,6 +199,6 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
             prop.write(buf);
         }
 
-        GTNetwork.NETWORK.sendToPlayer(new LocalPacket(buf), player);
+        GTNetwork.NETWORK.sendToPlayer(new ScreenInternals.SyncPropertiesPacket(buf), player);
     }
 }

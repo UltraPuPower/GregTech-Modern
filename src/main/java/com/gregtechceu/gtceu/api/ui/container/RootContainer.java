@@ -58,6 +58,7 @@ public class RootContainer extends BaseParentUIComponent {
      */
     public RootContainer child(UIComponent child) {
         this.children.add(child);
+        child.setContainerAccess(this.parentAccess);
         this.updateLayout();
         return this;
     }

@@ -1,29 +1,50 @@
-package com.gregtechceu.gtceu.client.ui.screens;
+package com.gregtechceu.gtceu.api.ui.inject;
 
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 public interface UIAbstractContainerMenu {
 
     /**
-     * Create a new property on this screen handler. This property can be updated serverside
+     * Get all properties registered to this menu, in original order.
+     *
+     * @return All registered synced propeties.
+     */
+    default Map<String, SyncedProperty<?>> getProperties() {
+        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+    }
+
+    /**
+     * Create a new property on this container. This property can be updated serverside
      * and will automatically synchronize to the client - think {@link net.minecraft.world.inventory.ContainerData}
      * but without being restricted to integers
      *
      * @param klass   The class of the property's value
+     * @param name    The name the property can be found with
      * @param initial The value with which to initialize the property
      * @return The created property
      */
-    default <T> SyncedProperty<T> createProperty(Class<T> klass, T initial) {
+    default <T> SyncedProperty<T> createProperty(Class<T> klass, String name, T initial) {
+        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+    }
+    /**
+     * Get a synced property by name
+     *
+     * @param name The name the property can be found with
+     * @return The property with the given name
+     */
+    default  <R> SyncedProperty<R> getProperty(String name) {
         throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
      * Register a serverbound message, or local packet if you will, onto this
-     * screen handler. This needs to be called during initialization of the handler,
+     * container. This needs to be called during initialization of the handler,
      * after which you can send messages to the server by invoking {@link #sendMessage(Record)}
      * with the message you want to send
      *
@@ -38,7 +59,7 @@ public interface UIAbstractContainerMenu {
 
     /**
      * Register a clientbound message, or local packet if you will, onto this
-     * screen handler. This needs to be called during initialization of the handler,
+     * container. This needs to be called during initialization of the handler,
      * after which you can send messages to the client by invoking {@link #sendMessage(Record)}
      * with the message you want to send
      *
@@ -62,7 +83,7 @@ public interface UIAbstractContainerMenu {
     }
 
     /**
-     * @return The player this screen handler is attached to
+     * @return The player this container is attached to
      */
     default Player player() {
         throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");

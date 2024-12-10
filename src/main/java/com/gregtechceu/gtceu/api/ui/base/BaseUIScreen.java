@@ -104,7 +104,7 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
                 this.setFocused(this.uiAdapter);
 
                 this.build(this.uiAdapter.rootComponent);
-                this.uiAdapter.rootComponent.setAdapter(this.uiAdapter);
+                this.uiAdapter.rootComponent.setContainerAccess(this.uiAdapter);
 
                 this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
             } catch (Exception error) {

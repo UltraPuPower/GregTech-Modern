@@ -9,6 +9,6 @@
         "com/gregtechceu/gtceu/api/ui/util/pond/UIEntityRenderDispatcherExtension"
     ],
     "net/minecraft/world/inventory/AbstractContainerMenu": [
-        "com/gregtechceu/gtceu/client/ui/screens/UIAbstractContainerMenu"
+        "com/gregtechceu/gtceu/api/ui/inject/UIAbstractContainerMenu"
     ]
 }

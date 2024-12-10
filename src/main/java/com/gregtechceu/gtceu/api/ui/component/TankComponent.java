@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -60,6 +61,12 @@ public class TankComponent extends BaseUIComponent {
         this.handler = handler;
         this.tank = tank;
         return this;
+    }
+
+    public void receiveMessage(int id, FriendlyByteBuf buf) {
+        if (id == 1) {
+            lastFluidInTank(FluidStack.readFromPacket(buf));
+        }
     }
 
     @Override
@@ -192,6 +199,11 @@ public class TankComponent extends BaseUIComponent {
         return lastFluidInTank.get();
     }
 
+    public TankComponent lastFluidInTank(FluidStack fluidStack) {
+        this.lastFluidInTank.set(fluidStack);
+        return this;
+    }
+
     protected void updateListener() {
         if (!this.lastFluidInTank().isEmpty()) {
             this.tooltip(FluidComponent.tooltipFromFluid(this.lastFluidInTank(), Minecraft.getInstance().player, null));
@@ -199,5 +211,4 @@ public class TankComponent extends BaseUIComponent {
             this.tooltip((List<ClientTooltipComponent>) null);
         }
     }
-
 }

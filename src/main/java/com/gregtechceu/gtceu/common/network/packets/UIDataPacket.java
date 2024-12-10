@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 
 @AllArgsConstructor
-public class LocalPacket implements IPacket {
+public class UIDataPacket implements IPacket {
 
     public FriendlyByteBuf payload;
 
@@ -32,23 +32,23 @@ public class LocalPacket implements IPacket {
     @Override
     public void execute(IHandlerContext handler) {
         if (handler.isClient()) {
-            var screenHandler = Minecraft.getInstance().player.containerMenu;
+            var containerMenu = Minecraft.getInstance().player.containerMenu;
 
-            if (screenHandler == null) {
+            if (containerMenu == null) {
                 GTCEu.LOGGER.error("Received local packet for null AbstractContainerMenu");
                 return;
             }
 
-            ((UIAbstractContainerMenuExtension) screenHandler).gtceu$handlePacket(payload, true);
+            ((UIAbstractContainerMenuExtension) containerMenu).gtceu$handlePacket(payload, true);
         } else {
-            var screenHandler = handler.getPlayer().containerMenu;
+            var containerMenu = handler.getPlayer().containerMenu;
 
-            if (screenHandler == null) {
+            if (containerMenu == null) {
                 GTCEu.LOGGER.error("Received local packet for null AbstractContainerMenu");
                 return;
             }
 
-            ((UIAbstractContainerMenuExtension) screenHandler).gtceu$handlePacket(payload, false);
+            ((UIAbstractContainerMenuExtension) containerMenu).gtceu$handlePacket(payload, false);
         }
     }
 }

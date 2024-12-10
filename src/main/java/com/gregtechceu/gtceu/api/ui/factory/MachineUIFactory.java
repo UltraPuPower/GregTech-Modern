@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine2;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,13 +37,25 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     }
 
     @Override
-    public void loadUITemplate(Player player, RootContainer rootComponent, MetaMachine holder) {
+    public void loadServerUI(ServerPlayer player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        if (menu.getHolder() instanceof IUIMachine2 machine) {
+            UIModel model = UIModelLoader.get(holder.getDefinition().getId());
+            if (model != null) {
+                return;
+            }
+            machine.loadServerUI(player, menu, holder);
+        }
+
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<RootContainer> adapter, MetaMachine holder) {
         if (holder instanceof IUIMachine2 machine) {
             UIModel model = UIModelLoader.get(holder.getDefinition().getId());
             if (model != null) {
                 return;
             }
-            machine.loadUITemplate(player, rootComponent);
+            machine.loadClientUI(player, adapter);
         }
     }
 

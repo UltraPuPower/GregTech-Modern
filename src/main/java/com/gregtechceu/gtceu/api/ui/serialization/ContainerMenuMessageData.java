@@ -1,6 +1,4 @@
-package com.gregtechceu.gtceu.client.ui.screens;
-
-import com.gregtechceu.gtceu.api.ui.serialization.PacketBufSerializer;
+package com.gregtechceu.gtceu.api.ui.serialization;
 
 import org.jetbrains.annotations.ApiStatus;
 

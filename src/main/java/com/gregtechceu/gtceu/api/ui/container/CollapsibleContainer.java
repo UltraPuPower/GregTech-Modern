@@ -130,6 +130,7 @@ public class CollapsibleContainer extends FlowLayout {
     @Override
     public FlowLayout child(UIComponent child) {
         this.collapsibleChildren.add(child);
+        child.setContainerAccess(this.parentAccess);
         if (this.expanded) this.contentLayout.child(child);
         return this;
     }

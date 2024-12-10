@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -75,11 +75,22 @@ public interface UIComponent extends PositionedRectangle {
      * @return The UIAdapter that holds this component
      */
     @Contract(pure = true)
-    @Nullable
-    UIAdapter<?> adapter();
+    UIComponentMenuAccess containerAccess();
 
     @ApiStatus.Internal
-    void setAdapter(UIAdapter<?> adapter);
+    void setContainerAccess(UIComponentMenuAccess adapter);
+
+    default void sendMessage(int id, Consumer<FriendlyByteBuf> writer) {
+        this.containerAccess().sendMessage(this, id, writer);
+    }
+
+    /**
+     * Receive network messages
+     *
+     * @param id  the message id (for you to define)
+     * @param buf the message data
+     */
+    default void receiveMessage(int id, FriendlyByteBuf buf) {}
 
     /**
      * @return The focus handler of this component hierarchy

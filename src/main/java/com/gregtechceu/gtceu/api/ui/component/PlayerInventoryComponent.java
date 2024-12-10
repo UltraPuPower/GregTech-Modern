@@ -4,8 +4,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.*;
 
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import net.minecraft.world.entity.player.Inventory;
 
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import org.w3c.dom.Element;
 
 public class PlayerInventoryComponent extends FlowLayout {
@@ -36,6 +39,18 @@ public class PlayerInventoryComponent extends FlowLayout {
                             .positioning(Positioning.absolute(18 * x, 58)));
         }
         return this;
+    }
+
+    public static void addServerInventory(AbstractContainerMenu menu, Inventory inventory, int startX, int startY) {
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < 9; x++) {
+                ((AbstractContainerMenuAccessor) menu).gtceu$addSlot(new Slot(inventory, x + y * 9 + 9, 18 * x + startX, 18 * y + startY));
+            }
+        }
+
+        for (int x = 0; x < 9; x++) {
+            ((AbstractContainerMenuAccessor) menu).gtceu$addSlot(new Slot(inventory, x, 18 * x + startX, startY + 59));
+        }
     }
 
     public static PlayerInventoryComponent parse(Element element) {
