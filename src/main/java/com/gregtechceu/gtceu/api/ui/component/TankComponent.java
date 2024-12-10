@@ -13,7 +13,15 @@ import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 
@@ -102,6 +110,59 @@ public class TankComponent extends BaseUIComponent {
             graphics.drawSolidRect(x, y, width, height, Color.HOVER_GRAY.argb());
             RenderSystem.colorMask(true, true, true, true);
         }
+    }
+
+    @Override
+    public boolean onMouseDown(double mouseX, double mouseY, int button) {
+        Player player = player();
+        if(player == null) return false;
+        boolean isShift = player.isShiftKeyDown();
+        ItemStack currentStack = getCarried();
+        var handler = FluidUtil.getFluidHandler(currentStack).resolve().orElse(null);
+        if(handler == null) return false;
+        int maxAttempts = isShift ? currentStack.getCount() : 1;
+        FluidStack initialFluid = this.handler.getFluidInTank(tank).copy();
+        if(initialFluid.getAmount() > 0) {
+            boolean performedFill = false;
+            ItemStack filledResult = ItemStack.EMPTY;
+            for(int i = 0; i < maxAttempts; i++) {
+                FluidActionResult res = FluidUtil.tryFillContainer(currentStack, this.handler, Integer.MAX_VALUE, null, false);
+                if(!res.isSuccess()) break;
+                ItemStack remaining = FluidUtil.tryFillContainer(currentStack, this.handler, Integer.MAX_VALUE, null, true).getResult();
+                performedFill = true;
+
+                currentStack.shrink(1);
+
+                if(filledResult.isEmpty()) {
+                    filledResult = remaining.copy();
+                } else if(ItemStack.isSameItemSameTags(filledResult, remaining)) {
+                    if(filledResult.getCount() < filledResult.getMaxStackSize())
+                        filledResult.grow(1);
+                    else
+                        player.getInventory().placeItemBackInInventory(remaining);
+                }
+                else {
+                    player.getInventory().placeItemBackInInventory(filledResult);
+                    filledResult = remaining.copy();
+                }
+            }
+            if(performedFill) {
+                SoundEvent sound = initialFluid.getFluid().getFluidType().getSound(initialFluid, SoundActions.BUCKET_FILL);
+                if(sound == null)
+                    sound = SoundEvents.BUCKET_FILL;
+                player.level().playSound(null, player.position().x, player.getEyeY(), player.position().z,
+                        sound, SoundSource.BLOCKS, 1.0f, 1.0f);
+
+                if(currentStack.isEmpty()) { // todo properly sync this to the server(or client?)
+                    setCarried(filledResult);
+                } else {
+                    setCarried(currentStack);
+                    player.getInventory().placeItemBackInInventory(filledResult);
+                }
+                return true;
+            }
+        }
+        return super.onMouseDown(mouseX, mouseY, button);
     }
 
     public static TankComponent parse(Element element) {

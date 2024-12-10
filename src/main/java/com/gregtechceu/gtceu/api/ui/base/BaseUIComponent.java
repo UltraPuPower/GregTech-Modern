@@ -12,7 +12,10 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -315,6 +318,22 @@ public abstract class BaseUIComponent implements UIComponent {
     @Override
     public @Nullable FocusHandler focusHandler() {
         return this.hasParent() ? this.parent.focusHandler() : null;
+    }
+
+    @Nullable
+    public Player player() {
+        if(adapter() == null || adapter().container() == null) return null;
+        return adapter().container().player();
+    }
+
+    public ItemStack getCarried() {
+        if(adapter() == null || adapter().container() == null) return ItemStack.EMPTY;
+        return adapter().container().getCarried();
+    }
+
+    public void setCarried(@NotNull ItemStack stack) {
+        if(adapter() == null || adapter().container() == null) return;
+        adapter().container().setCarried(stack);
     }
 
     @Override
