@@ -9,5 +9,5 @@ public interface UIComponentMenuAccess {
 
     void sendMessage(UIComponent component, int id, Consumer<FriendlyByteBuf> writer);
 
-    AbstractContainerMenu container();
+    AbstractContainerMenu menu();
 }

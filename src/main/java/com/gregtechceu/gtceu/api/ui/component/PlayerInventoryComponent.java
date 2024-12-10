@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
@@ -11,33 +14,76 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import org.w3c.dom.Element;
 
+import java.util.List;
+
 public class PlayerInventoryComponent extends FlowLayout {
 
     protected PlayerInventoryComponent(Inventory inventory) {
         super(Sizing.fixed(162), Sizing.fixed(76), Algorithm.VERTICAL);
-        setInventory(inventory);
+        setByInventory(inventory);
+        this.allowOverflow(true);
+    }
+
+    protected PlayerInventoryComponent(AbstractContainerMenu menu, int startSlotIndex) {
+        super(Sizing.fixed(162), Sizing.fixed(76), Algorithm.VERTICAL);
+        setByMenu(menu, startSlotIndex);
+        this.allowOverflow(true);
     }
 
     protected PlayerInventoryComponent() {
         super(Sizing.fixed(162), Sizing.fixed(76), Algorithm.VERTICAL);
     }
 
-    public PlayerInventoryComponent setInventory(Inventory inventory) {
+    public PlayerInventoryComponent setByInventory(Inventory inventory) {
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 3, 9);
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
-                this.child(UIComponents.slot(inventory, x + y * 9 + 9)
-                        .positioning(Positioning.absolute(x * 18 + 1, y * 18 + 1)))
-                        .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
-                                .positioning(Positioning.absolute(18 * x, 18 * y)));
+                StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+                layout.children(List.of(UIComponents.slot(inventory, x + x * 9 + 9),
+                        UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)))
+                        .positioning(Positioning.absolute(x * 18, y * 18));
+                grid.child(layout, x, y);
             }
         }
+        this.child(grid);
 
+        var grid2 = UIContainers.grid(Sizing.content(), Sizing.content(), 1, 9);
         for (int x = 0; x < 9; x++) {
-            this.child(UIComponents.slot(inventory, x)
-                    .positioning(Positioning.absolute(x * 18 + 1, 59)))
-                    .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
-                            .positioning(Positioning.absolute(18 * x, 58)));
+            StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+            layout.children(List.of(
+                            UIComponents.slot(inventory, x)
+                                    .positioning(Positioning.absolute(x * 18, 58)),
+                    UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
+                            .positioning(Positioning.absolute(x * 18, 58))));
+            grid2.child(layout, x, 0);
         }
+        this.child(grid2);
+        return this;
+    }
+
+    public PlayerInventoryComponent setByMenu(AbstractContainerMenu menu, int startSlotIndex) {
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 3, 9);
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 9; y++) {
+                StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+                layout.children(List.of(UIComponents.slot(menu.getSlot(y + x * 9 + startSlotIndex)),
+                        UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)));
+                grid.child(layout, x, y);
+            }
+        }
+        grid.positioning(Positioning.absolute(0, 0));
+        this.child(grid);
+
+        var grid2 = UIContainers.grid(Sizing.content(), Sizing.content(), 1, 9);
+        for (int y = 0; y < 9; y++) {
+            StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+            layout.children(List.of(
+                    UIComponents.slot(menu.getSlot(y + 27 + startSlotIndex)),
+                    UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)));
+            grid2.child(layout, 0, y);
+        }
+        grid2.positioning(Positioning.absolute(0, 58));
+        this.child(grid2);
         return this;
     }
 

@@ -21,7 +21,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -50,7 +49,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     @Nullable
     @Getter
     @Setter
-    public AbstractContainerMenu container;
+    public AbstractContainerMenu menu;
 
     public final R rootComponent;
     public final CursorAdapter cursorAdapter;
@@ -171,7 +170,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
     @Override
     public void sendMessage(UIComponent component, int id, Consumer<FriendlyByteBuf> writer) {
-        if (container() instanceof UIContainerMenu<?> menu) {
+        if (menu() instanceof UIContainerMenu<?> menu) {
             menu.sendMessage(id, writer);
         }
     }

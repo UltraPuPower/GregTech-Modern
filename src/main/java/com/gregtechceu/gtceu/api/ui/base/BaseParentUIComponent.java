@@ -25,8 +25,8 @@ import java.util.function.Consumer;
  */
 public abstract class BaseParentUIComponent extends BaseUIComponent implements ParentUIComponent {
 
-    protected final Observable<VerticalAlignment> verticalAlignment = Observable.of(VerticalAlignment.TOP);
-    protected final Observable<HorizontalAlignment> horizontalAlignment = Observable.of(HorizontalAlignment.LEFT);
+    protected final Observable<VerticalAlignment> verticalAlignment = Observable.of(VerticalAlignment.CENTER);
+    protected final Observable<HorizontalAlignment> horizontalAlignment = Observable.of(HorizontalAlignment.CENTER);
 
     protected final AnimatableProperty<Insets> padding = AnimatableProperty.of(Insets.none());
 
@@ -293,8 +293,8 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
         }
 
         @Override
-        public AbstractContainerMenu container() {
-            return BaseParentUIComponent.this.containerAccess().container();
+        public AbstractContainerMenu menu() {
+            return BaseParentUIComponent.this.containerAccess().menu();
         }
     }
 

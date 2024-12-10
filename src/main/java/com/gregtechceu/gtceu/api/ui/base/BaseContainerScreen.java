@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.ui.base;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
 import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
 import com.gregtechceu.gtceu.api.ui.util.UIErrorToast;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -77,25 +78,15 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
             // Re-add it as a child to circumvent vanilla clearing them
             this.addRenderableWidget(this.uiAdapter);
 
-            for (UIComponent child : this.uiAdapter.rootComponent.children()) {
-                child.x(child.x() - leftPos);
-                child.y(child.y() - topPos);
-            }
-            this.menu.slots.forEach(slot -> {
-                ((SlotAccessor) slot).gtceu$setX(slot.x + leftPos);
-                ((SlotAccessor) slot).gtceu$setY(slot.y + topPos);
-            });
             super.init();
             this.uiAdapter.leftPos(leftPos);
             this.uiAdapter.topPos(topPos);
-            for (UIComponent child : this.uiAdapter.rootComponent.children()) {
-                child.x(child.x() + leftPos);
-                child.y(child.y() + topPos);
-            }
-            this.menu.slots.forEach(slot -> {
-                ((SlotAccessor) slot).gtceu$setX(slot.x - leftPos);
-                ((SlotAccessor) slot).gtceu$setY(slot.y - topPos);
-            });
+            //this.uiAdapter.rootComponent.forEachDescendant(child -> {
+            //    if (child instanceof SlotComponent slot) {
+            //        ((SlotAccessor) slot.slot()).gtceu$setX(slot.x()); // + leftPos
+            //        ((SlotAccessor) slot.slot()).gtceu$setY(slot.y()); // + topPos
+            //    }
+            //});
         } else {
             try {
                 this.uiAdapter = this.createAdapter();
@@ -107,8 +98,9 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
                 this.addRenderableWidget(this.uiAdapter);
                 this.setFocused(this.uiAdapter);
 
-                this.uiAdapter.container(this.menu);
+                this.uiAdapter.menu(this.menu);
                 this.build(this.uiAdapter.rootComponent);
+                this.uiAdapter.rootComponent.setContainerAccess(this.uiAdapter);
 
                 MutableInt width = new MutableInt(0);
                 MutableInt height = new MutableInt(0);
@@ -123,20 +115,15 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
                 this.imageWidth = width.getValue();
                 this.imageHeight = height.getValue();
                 super.init();
-
-                this.uiAdapter.rootComponent.setContainerAccess(this.uiAdapter);
+                this.uiAdapter.leftPos(leftPos);
+                this.uiAdapter.topPos(topPos);
 
                 this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
 
-                this.uiAdapter.leftPos(leftPos);
-                this.uiAdapter.topPos(topPos);
-                for (UIComponent child : this.uiAdapter.rootComponent.children()) {
-                    child.x(child.x() + leftPos);
-                    child.y(child.y() + topPos);
-                }
-                this.menu.slots.forEach(slot -> {
-                    ((SlotAccessor) slot).gtceu$setX(slot.x - leftPos);
-                    ((SlotAccessor) slot).gtceu$setY(slot.y - topPos);
+                this.uiAdapter.rootComponent.forEachDescendant(child -> {
+                    if (child instanceof SlotComponent slot) {
+                        slot.refreshSlotPosition(this);
+                    }
                 });
             } catch (Exception error) {
                 GTCEu.LOGGER.warn("Could not initialize gtceu screen", error);

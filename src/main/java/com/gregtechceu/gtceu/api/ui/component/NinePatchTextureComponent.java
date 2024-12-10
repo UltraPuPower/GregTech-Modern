@@ -76,6 +76,10 @@ public class NinePatchTextureComponent extends BaseUIComponent {
     }
 
     public NinePatchTextureComponent visibleArea(PositionedRectangle visibleArea) {
+        super.x(visibleArea.x());
+        super.y(visibleArea.y());
+        this.width(visibleArea.width());
+        this.height(visibleArea.height());
         this.visibleArea.set(visibleArea);
         return this;
     }

@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IUIHolder<T> {
 
@@ -32,6 +34,7 @@ public interface IUIHolder<T> {
 
     void loadServerUI(Player player, UIContainerMenu<T> menu, T holder);
 
+    @OnlyIn(Dist.CLIENT)
     void loadClientUI(Player player, UIAdapter<RootContainer> adapter);
 
     boolean isInvalid();

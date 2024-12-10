@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,17 +36,14 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     }
 
     @Override
-    public void loadServerUI(ServerPlayer player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
         if (menu.getHolder() instanceof IUIMachine2 machine) {
-            UIModel model = UIModelLoader.get(holder.getDefinition().getId());
-            if (model != null) {
-                return;
-            }
             machine.loadServerUI(player, menu, holder);
         }
 
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void loadClientUI(Player player, UIAdapter<RootContainer> adapter, MetaMachine holder) {
         if (holder instanceof IUIMachine2 machine) {

@@ -16,6 +16,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
@@ -82,6 +83,10 @@ public class UIComponents {
 
     public static PlayerInventoryComponent playerInventory(Inventory inventory) {
         return new PlayerInventoryComponent(inventory);
+    }
+
+    public static PlayerInventoryComponent playerInventory(AbstractContainerMenu menu, int startSlotIndex) {
+        return new PlayerInventoryComponent(menu, startSlotIndex);
     }
 
     public static <E extends Entity> EntityComponent<E> entity(Sizing sizing, EntityType<E> type,

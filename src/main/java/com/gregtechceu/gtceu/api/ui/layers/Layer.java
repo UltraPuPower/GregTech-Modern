@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.ui.layers;
 
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.util.pond.UIScreenExtension;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerScreenAccessor;
 
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -150,8 +149,8 @@ public class Layer<S extends Screen, R extends ParentUIComponent> {
 
             this.layoutUpdaters.add(() -> {
                 component.positioning(Positioning.absolute(
-                        ((AbstractContainerScreenAccessor) handledScreen).gtceu$getLeftPos() + x,
-                        ((AbstractContainerScreenAccessor) handledScreen).gtceu$getTopPos() + y));
+                        handledScreen.getGuiLeft() + x,
+                        handledScreen.getGuiTop() + y));
             });
         }
 

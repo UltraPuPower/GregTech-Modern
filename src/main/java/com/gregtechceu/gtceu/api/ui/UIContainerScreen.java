@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class UIContainerScreen extends BaseContainerScreen<RootContainer, UIContainerMenu<?>> {
 
-    public UIContainerScreen(UIContainerMenu handler, Inventory inventory, Component title) {
-        super(handler, inventory, title);
+    public UIContainerScreen(UIContainerMenu menu, Inventory inventory, Component title) {
+        super(menu, inventory, title);
     }
 
     @SuppressWarnings({ "unchecked", "DataFlowIssue", "rawtypes" })
@@ -33,7 +33,7 @@ public class UIContainerScreen extends BaseContainerScreen<RootContainer, UICont
         if (!invalid) {
             var updates = this.getMenu().getReceivedComponentUpdates();
             while (!updates.isEmpty()) {
-                UIContainerMenu.ComponentUpdate update = updates.poll();
+                UIContainerMenu.IComponentUpdate update = updates.poll();
                 if (update == null) {
                     continue;
                 }

@@ -36,10 +36,8 @@ public abstract class UIFactory<T> {
 
     public final boolean openUI(final T holder, ServerPlayer player) {
         NetworkHooks.openScreen(player, new SimpleMenuProvider((containerId, inv, player1) -> {
-            var menu = new UIContainerMenu<>(containerId, inv, this, holder);
-            loadServerUI(player, menu, holder);
-            return menu;
-        }, getUITitle(holder, player)),
+                    return new UIContainerMenu<>(containerId, inv, this, holder, false);
+                }, getUITitle(holder, player)),
                 buf -> {
                     buf.writeResourceLocation(this.uiFactoryId);
                     writeHolderToSyncData(buf, holder);
@@ -57,7 +55,7 @@ public abstract class UIFactory<T> {
         return UIAdapter.createWithoutScreen(0, 0, 176, 166, UIContainers::root);
     }
 
-    public abstract void loadServerUI(ServerPlayer player, UIContainerMenu<T> menu, T holder);
+    public abstract void loadServerUI(Player player, UIContainerMenu<T> menu, T holder);
 
     @OnlyIn(Dist.CLIENT)
     public abstract void loadClientUI(Player player, UIAdapter<RootContainer> adapter, T holder);
@@ -70,4 +68,5 @@ public abstract class UIFactory<T> {
     protected abstract T readHolderFromSyncData(FriendlyByteBuf syncData);
 
     protected abstract void writeHolderToSyncData(FriendlyByteBuf syncData, T holder);
+
 }

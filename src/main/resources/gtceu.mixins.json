@@ -15,7 +15,6 @@
         "MultiPlayerGameModeMixin",
         "journeymap.FullscreenMixin",
         "rei.FluidEntryRendererMixin",
-        "ui.accessor.AbstractContainerScreenAccessor",
         "ui.accessor.AbstractWidgetAccessor",
         "ui.accessor.ButtonAccessor",
         "ui.accessor.CheckboxAccessor",

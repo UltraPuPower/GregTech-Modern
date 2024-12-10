@@ -36,6 +36,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,20 +87,22 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
         int yOverflow = xOffset > 0 ? 18 : 9;
         int yOffset = inventorySize > 3 * yOverflow ?
                 (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
-        PlayerInventoryComponent.addServerInventory(menu, player.getInventory(),  + xOffset / 2, 82 + yOffset);
 
         int x = 0;
         int y = 0;
         for (int slot = 0; slot < inventorySize; slot++) {
-            menu.addSlot(new SlotItemHandler(inventory, slot, x * 18 + 7, y * 18 + 17));
+            menu.addSlot(new SlotItemHandler(inventory, slot, x * 18 + 8, y * 18 + 18));
             x++;
             if (x == yOverflow) {
                 x = 0;
                 y++;
             }
         }
+
+        PlayerInventoryComponent.addServerInventory(menu, player.getInventory(), 8 + xOffset / 2, 83 + yOffset);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void loadClientUI(Player player, UIAdapter<RootContainer> adapter) {
         RootContainer rootComponent = adapter.rootComponent;
@@ -110,37 +114,38 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
                 (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
 
         FlowLayout parent;
-        rootComponent.child(parent = UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset), Sizing.fixed(166 + yOffset))
+        rootComponent.child(parent = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset), Sizing.fixed(166 + yOffset))
                 .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
                         .visibleArea(PositionedRectangle.of(0, 0, 176 + xOffset, 166 + yOffset))
                         .sizing(Sizing.fill(), Sizing.fill()))
                 .child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(5, 5)))
-                .child(UIComponents.playerInventory(player.getInventory())
-                        .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset))));
+                .child(UIComponents.playerInventory(adapter.menu(), inventorySize)
+                        .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset)))
+                .positioning(Positioning.relative(50, 50)));
 
         int x = 0;
         int y = 0;
         GridLayout grid;
-        parent.child(grid = UIContainers.grid(Sizing.fixed(yOverflow * 18),
-                Sizing.fixed(inventorySize / yOverflow * 18),
-                yOverflow,
-                inventorySize / yOverflow));
+        parent.child(grid = UIContainers.grid(Sizing.content(),
+                Sizing.content(),
+                inventorySize / yOverflow,
+                yOverflow));
         grid.positioning(Positioning.absolute(7, 17));
         for (int slot = 0; slot < inventorySize; slot++) {
-            grid.child(UIContainers.horizontalFlow(Sizing.fixed(18), Sizing.fixed(18))
-                            .child(UIComponents.slot(inventory, slot)
-                                    .id("inventory." + slot)
-                                    .positioning(Positioning.absolute(1, 1)))
+            grid.child(UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18))
+                            .child(UIComponents.slot(adapter.menu().getSlot(slot)).id("inventory." + slot))
                             .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
-                            .positioning(Positioning.absolute(x * 18, y * 18)),
-                    x, y);
+                            /*.positioning(Positioning.absolute(x * 18, y * 18))*/,
+                    y, x);
             x++;
             if (x == yOverflow) {
                 x = 0;
                 y++;
             }
         }
+
+        parent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
     }
 
     @Override

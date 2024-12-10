@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
+// TODO figure out a way to send server->client updates (Observable<>? update listeners?)
 public class UIContainerMenu<T> extends AbstractContainerMenu {
 
     public final static MenuType<UIContainerMenu<?>> MENU_TYPE = GTRegistries.register(BuiltInRegistries.MENU,
@@ -39,7 +40,7 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
 
     // FIXME: server side can't make use of received updates rn? Figure out a way to solve
     @Getter
-    private final Queue<ComponentUpdate> receivedComponentUpdates = new LinkedList<>();
+    private final Queue<IComponentUpdate> receivedComponentUpdates = new LinkedList<>();
 
     @Getter
     private final Inventory playerInventory;
@@ -48,6 +49,7 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     @Getter
     @Setter
     private T holder;
+    private final boolean isClient;
 
     public static <T> UIContainerMenu<T> initClient(int containerId, Inventory playerInventory, @Nullable FriendlyByteBuf data) {
         if (data != null) {
@@ -56,28 +58,33 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
             var factory = (UIFactory<T>) UIFactory.FACTORIES.get(uiFactoryId);
 
             T holder = factory.readClientHolder(data);
-            return new UIContainerMenu<>(containerId, playerInventory, factory, holder);
+            return new UIContainerMenu<>(containerId, playerInventory, factory, holder, true);
         }
         // should actually never happen.
         return null;
     }
 
-    public UIContainerMenu(int containerId, Inventory playerInventory, UIFactory<T> factory, T holder) {
+    public UIContainerMenu(int containerId, Inventory playerInventory, UIFactory<T> factory, T holder, boolean isClient) {
         super(MENU_TYPE, containerId);
         this.playerInventory = playerInventory;
         this.factory = factory;
         this.holder = holder;
+        this.isClient = isClient;
+
+        // clear all old data before adding anything new
+        clear();
+        factory.loadServerUI(playerInventory.player, this, holder);
         init();
 
         // register the message to go both ways
-        this.addServerboundMessage(ComponentUpdate.class, this.receivedComponentUpdates::offer);
-        this.addClientboundMessage(ComponentUpdate.class, this.receivedComponentUpdates::offer);
+        this.addServerboundMessage(ServerboundComponentUpdate.class, this.receivedComponentUpdates::offer);
+        this.addClientboundMessage(ClientboundComponentUpdate.class, this.receivedComponentUpdates::offer);
     }
 
     public void sendMessage(int id, Consumer<FriendlyByteBuf> payloadWriter) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         payloadWriter.accept(buf);
-        super.sendMessage(new UIContainerMenu.ComponentUpdate(id, buf));
+        super.sendMessage(isClient ? new ServerboundComponentUpdate(id, buf) : new ClientboundComponentUpdate(id, buf));
     }
 
     /**
@@ -85,9 +92,6 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
      * Separate method from the constructors to avoid duplicate code.
      */
     public void init() {
-        // clear all old data before adding any new ones
-        clear();
-
         // don't init anything if we don't have a valid adapter.
         if (holder == null) {
             return;
@@ -122,13 +126,13 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     public Slot addSlot(@Nonnull Slot slot) {
         var emptySlotIndex = this.slots.stream()
                 .filter(it -> it instanceof EmptySlotPlaceholder)
-                .mapToInt(Slot::getSlotIndex)
+                .mapToInt(s -> s.index)
                 .findFirst();
         if (emptySlotIndex.isPresent()) {
             ((SlotAccessor) slot).gtceu$setSlotIndex(emptySlotIndex.getAsInt());
-            this.slots.set(slot.getSlotIndex(), slot);
-            ((AbstractContainerMenuAccessor) this).gtceu$getLastSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
-            ((AbstractContainerMenuAccessor) this).gtceu$getRemoteSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
+            this.slots.set(slot.index, slot);
+            ((AbstractContainerMenuAccessor) this).gtceu$getLastSlots().set(slot.index, ItemStack.EMPTY);
+            ((AbstractContainerMenuAccessor) this).gtceu$getRemoteSlots().set(slot.index, ItemStack.EMPTY);
             return slot;
         }
         return super.addSlot(slot);
@@ -137,17 +141,12 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,
     // OTHERWISE ID MISMATCH CAN HAPPEN BETWEEN ASSIGNED SLOTS!
     public void removeSlot(Slot slot) {
-        if (!this.slotSet.remove(slot)) {
-            GTCEu.LOGGER.error("removed nonexistent slot {}", slot);
-            return;
-        }
-
         // replace removed slot with empty placeholder to avoid list index shift
         EmptySlotPlaceholder emptySlotPlaceholder = new EmptySlotPlaceholder();
         emptySlotPlaceholder.index = slot.index;
-        this.slots.set(slot.getSlotIndex(), emptySlotPlaceholder);
-        ((AbstractContainerMenuAccessor) this).gtceu$getLastSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
-        ((AbstractContainerMenuAccessor) this).gtceu$getRemoteSlots().set(slot.getSlotIndex(), ItemStack.EMPTY);
+        this.slots.set(slot.index, emptySlotPlaceholder);
+        ((AbstractContainerMenuAccessor) this).gtceu$getLastSlots().set(slot.index, ItemStack.EMPTY);
+        ((AbstractContainerMenuAccessor) this).gtceu$getRemoteSlots().set(slot.index, ItemStack.EMPTY);
     }
 
     @Override
@@ -307,5 +306,11 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
 
     public static void initType() {}
 
-    public record ComponentUpdate(int updateId, FriendlyByteBuf updateData) {}
+    public interface IComponentUpdate {
+        public int updateId();
+        public FriendlyByteBuf updateData();
+    }
+
+    public record ClientboundComponentUpdate(int updateId, FriendlyByteBuf updateData) implements IComponentUpdate {}
+    public record ServerboundComponentUpdate(int updateId, FriendlyByteBuf updateData) implements IComponentUpdate {}
 }

@@ -20,7 +20,7 @@ public class GridLayout extends BaseParentUIComponent {
 
     protected final int rows, columns;
 
-    protected final UIComponent[] children;
+    protected final UIComponent[][] children;
     protected final List<UIComponent> nonNullChildren = new ArrayList<>();
     protected final List<UIComponent> nonNullChildrenView = Collections.unmodifiableList(this.nonNullChildren);
 
@@ -32,7 +32,7 @@ public class GridLayout extends BaseParentUIComponent {
         this.rows = rows;
         this.columns = columns;
 
-        this.children = new UIComponent[rows * columns];
+        this.children = new UIComponent[rows][columns];
     }
 
     @Override
@@ -51,9 +51,11 @@ public class GridLayout extends BaseParentUIComponent {
         int[] rowSizes = new int[this.rows];
 
         var childSpace = this.calculateChildSpace(space);
-        for (var child : this.children) {
-            if (child != null) {
-                child.inflate(childSpace);
+        for (var childGroup : this.children) {
+            for (var child : childGroup) {
+                if (child != null) {
+                    child.inflate(childSpace);
+                }
             }
         }
 
@@ -96,7 +98,7 @@ public class GridLayout extends BaseParentUIComponent {
     }
 
     protected @Nullable UIComponent getChild(int row, int column) {
-        return this.children[row * this.columns + column];
+        return this.children[row][column];
     }
 
     protected void determineSizes(int[] sizes, boolean rows) {
@@ -121,7 +123,7 @@ public class GridLayout extends BaseParentUIComponent {
 
     public GridLayout child(UIComponent child, int row, int column) {
         var previousChild = this.getChild(row, column);
-        this.children[row * this.columns + column] = child;
+        this.children[row][column] = child;
 
         if (previousChild != child) {
             if (previousChild != null) {

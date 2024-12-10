@@ -28,7 +28,7 @@ public class HeldItemUIFactory extends UIFactory<HeldItemUIHolder> {
     }
 
     @Override
-    public void loadServerUI(ServerPlayer player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+    public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
         menu.getHolder().loadServerUI(player, menu, holder);
     }
 

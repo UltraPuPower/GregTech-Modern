@@ -322,18 +322,18 @@ public abstract class BaseUIComponent implements UIComponent {
 
     @Nullable
     public Player player() {
-        if(containerAccess() == null || containerAccess().container() == null) return null;
-        return containerAccess().container().player();
+        if(containerAccess() == null || containerAccess().menu() == null) return null;
+        return containerAccess().menu().player();
     }
 
     public ItemStack getCarried() {
-        if(containerAccess() == null || containerAccess().container() == null) return ItemStack.EMPTY;
-        return containerAccess().container().getCarried();
+        if(containerAccess() == null || containerAccess().menu() == null) return ItemStack.EMPTY;
+        return containerAccess().menu().getCarried();
     }
 
     public void setCarried(@NotNull ItemStack stack) {
-        if(containerAccess() == null || containerAccess().container() == null) return;
-        containerAccess().container().setCarried(stack);
+        if(containerAccess() == null || containerAccess().menu() == null) return;
+        containerAccess().menu().setCarried(stack);
     }
 
     @Override

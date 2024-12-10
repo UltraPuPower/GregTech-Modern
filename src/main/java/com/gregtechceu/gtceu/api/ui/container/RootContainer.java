@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.container;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Size;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIComponent;
-import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
@@ -22,6 +19,8 @@ public class RootContainer extends BaseParentUIComponent {
 
     protected RootContainer(Sizing horizontalSizing, Sizing verticalSizing) {
         super(horizontalSizing, verticalSizing);
+        horizontalAlignment.set(HorizontalAlignment.RIGHT);
+        verticalAlignment.set(VerticalAlignment.TOP);
     }
 
     @Override
@@ -37,17 +36,23 @@ public class RootContainer extends BaseParentUIComponent {
     @Override
     public void layout(Size space) {
         this.children.forEach(child -> {
-            child.inflate(space);
-            child.mount(this, child.x(), child.y());
+            child.inflate(calculateChildSpace(space));
+            this.mountChild(child, ch -> {
+                ch.mount(
+                        this,
+                        ch.x() + child.margins().get().left() +
+                                this.horizontalAlignment().align(child.fullSize().width(),
+                                        this.width - padding().get().horizontal()),
+                        ch.y() + child.margins().get().top() +
+                                this.verticalAlignment().align(child.fullSize().height(),
+                                        this.height - padding.get().vertical()));
+            });
         });
     }
 
     @Override
     protected void updateLayout() {
         super.updateLayout();
-        this.children.forEach(child -> {
-            child.mount(this, child.x(), child.y());
-        });
     }
 
     /**
@@ -148,4 +153,5 @@ public class RootContainer extends BaseParentUIComponent {
             this.child(model.parseComponent(UIComponent.class, child));
         }
     }
+
 }

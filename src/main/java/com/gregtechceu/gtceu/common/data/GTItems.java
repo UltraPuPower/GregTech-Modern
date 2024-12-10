@@ -38,6 +38,7 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
@@ -90,6 +91,7 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import net.minecraftforge.items.SlotItemHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -1805,26 +1807,31 @@ public class GTItems {
 
                 @Override
                 public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
-                    PlayerInventoryComponent.addServerInventory(menu, player.getInventory(), 5, 85);
-
                     CustomFluidTank tank = new CustomFluidTank(new FluidStack(Fluids.LAVA, 8000));
-                    CustomItemStackHandler slot0 = new CustomItemStackHandler(new ItemStack(Items.ITEM_FRAME));
                     menu.createProperty(FluidStack.class, "fluid.0", tank.getFluid());
-                    menu.createProperty(ItemStack.class, "item-in.0", slot0.getStackInSlot(0));
+
+                    CustomItemStackHandler slot0 = new CustomItemStackHandler(new ItemStack(Items.ITEM_FRAME));
+                    menu.createProperty(ItemStack.class, "item.0", slot0.getStackInSlot(0));
+
+                    SlotGenerator.begin(menu::addSlot, 0, 0)
+                            .slot(slot0, 0, -32, -32)
+                            .moveTo(9, 79)
+                            .playerInventory(player.getInventory());
                 }
 
+                @OnlyIn(Dist.CLIENT)
                 @Override
                 public void loadClientUI(Player player, UIAdapter<RootContainer> adapter, HeldItemUIHolder holder) {
                     RootContainer rootComponent = adapter.rootComponent;
                     rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
                     FlowLayout layout;
-                    SyncedProperty<FluidStack> containedFluid = adapter.container().getProperty("fluid.0");
+                    SyncedProperty<FluidStack> containedFluid = adapter.menu().getProperty("fluid.0");
 
                     CustomFluidTank tank = new CustomFluidTank(containedFluid.get());
                     containedFluid.observe(tank::setFluid);
 
-                    rootComponent.child(layout = UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166))
+                    rootComponent.child(layout = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166))
                             .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
                                     .visibleArea(PositionedRectangle.of(0, 0, 176, 166))
                                     .sizing(Sizing.fill(), Sizing.fill()))
@@ -1837,8 +1844,6 @@ public class GTItems {
                             .child(UIComponents.item(new ItemStack(Items.ROTTEN_FLESH, 3))
                                     .positioning(Positioning.absolute(80, 50))
                                     .tooltip(Component.translatable("gtceu.alloy_smelter")))
-                            .child(UIComponents.playerInventory(player.getInventory())
-                                    .positioning(Positioning.absolute(5, 85)))
                             .child(UIComponents.button(Component.literal("✔"), (ButtonComponent button) -> {
                                         player.sendSystemMessage(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"));
                                     }).tooltip(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"))
@@ -1846,19 +1851,22 @@ public class GTItems {
                             .child(UIComponents.tank(tank)
                                     .id("fluid_tank")
                                     .positioning(Positioning.relative(5, 5)))
-                    );
+                            .positioning(Positioning.relative(50, 50)
+                            ));
 
-                    SyncedProperty<ItemStack> item0 = adapter.container().getProperty("item.0");
+                    /*
+                    SyncedProperty<ItemStack> item0 = adapter.menu().getProperty("item.0");
                     CustomItemStackHandler slot0 = new CustomItemStackHandler(item0.get());
                     item0.observe(stack -> slot0.setStackInSlot(0, stack));
+                    */
 
                     layout.child(
-                            UIContainers.verticalFlow(Sizing.content(), Sizing.content())
+                            UIContainers.stack(Sizing.content(), Sizing.content())
                                     .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
-                                    .child(UIComponents.slot(slot0, 0)
-                                            .id("item-in.0"))
+                                    .child(UIComponents.slot(adapter.menu().getSlot(0)).id("item-in.0"))
                                     .positioning(Positioning.relative(25, 25)));
-
+                    layout.child(UIComponents.playerInventory(adapter.menu(), 1)
+                            .positioning(Positioning.absolute(7, 84)));
 
                 }
             }))

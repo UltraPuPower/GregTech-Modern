@@ -7,9 +7,11 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
+import com.mojang.datafixers.util.Pair;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -18,14 +20,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
 
-import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Element;
-
-import javax.annotation.Nullable;
 
 @Accessors(fluent = true, chain = true)
 public class SlotComponent extends BaseUIComponent {
@@ -50,36 +50,49 @@ public class SlotComponent extends BaseUIComponent {
         this.sizing(Sizing.fixed(18), Sizing.fixed(18));
     }
 
-    protected SlotComponent(Slot slot) {
-        this.index = slot.getSlotIndex();
-        this.slot = new MutableSlotWrapper(slot);
-        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
-    }
-
     protected SlotComponent(Container container, int index) {
         this.index = index;
         this.slot = new MutableSlotWrapper(new Slot(container, index, x, y));
         this.sizing(Sizing.fixed(18), Sizing.fixed(18));
     }
 
+    protected SlotComponent(Slot slot) {
+        this.index = slot.getSlotIndex();
+        this.slot = new MutableSlotWrapper(slot);
+        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
+    }
+
     public SlotComponent setSlot(IItemHandlerModifiable handler, int index) {
-        this.slot.setInner(new SlotItemHandler(handler, index, x, y));
+        int freeIndex = removeSlot(this.slot);
+        setSlot(new SlotItemHandler(handler, index, x, y), freeIndex);
         return this;
     }
 
     public SlotComponent setSlot(Container handler, int index) {
-        this.slot.setInner(new Slot(handler, index, x, y));
+        int freeIndex = removeSlot(this.slot);
+        setSlot(new Slot(handler, index, x, y), freeIndex);
         return this;
     }
 
     public SlotComponent setSlot(IItemHandlerModifiable handler) {
-        this.slot.setInner(new SlotItemHandler(handler, index, x, y));
+        int freeIndex = removeSlot(this.slot);
+        setSlot(new SlotItemHandler(handler, index, x, y), freeIndex);
         return this;
     }
 
     public SlotComponent setSlot(Container handler) {
-        this.slot.setInner(new Slot(handler, index, x, y));
+        int freeIndex = removeSlot(this.slot);
+        setSlot(new Slot(handler, index, x, y), freeIndex);
         return this;
+    }
+
+    private void setSlot(Slot slot, int index) {
+        this.slot.setInner(slot);
+        this.slot.gtceu$setSlotIndex(index);
+        //var menu = this.containerAccess().menu();
+        //menu.slots.set(index, slot);
+        //((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(index, ItemStack.EMPTY);
+        //((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(index, ItemStack.EMPTY);
     }
 
     @Override
@@ -97,10 +110,6 @@ public class SlotComponent extends BaseUIComponent {
         UIParsing.expectAttributes(element, "index");
         int index = UIParsing.parseUnsignedInt(element.getAttributeNode("index"));
         return new SlotComponent(index);
-    }
-
-    protected void updateSlot(Slot slot) {
-        this.slot.setInner(slot);
     }
 
     @Override
@@ -127,18 +136,38 @@ public class SlotComponent extends BaseUIComponent {
         return 16;
     }
 
-    @Override
-    public SlotComponent x(int x) {
-        super.x(x);
-        ((SlotAccessor) this.slot).gtceu$setX(x);
+    public void refreshSlotPosition(AbstractContainerScreen<?> screen) {
+        //int freeIndex = removeSlot(slot);
+        ((SlotAccessor) slot).gtceu$setX(this.x() - screen.getGuiLeft());
+        ((SlotAccessor) slot).gtceu$setY(this.y() - screen.getGuiTop());
+        //setSlot(slot, freeIndex);
+    }
+
+    public SlotComponent setSlot(Slot slot) {
+        //int freeIndex = removeSlot(this.slot);
+        setSlot(slot, slot.index);
         return this;
     }
 
+    private int removeSlot(Slot slot) {
+        //var menu = this.containerAccess().menu();
+        //int freedIndex = menu.slots.indexOf(this.slot);
+        //menu.slots.set(freedIndex, new UIContainerMenu.EmptySlotPlaceholder());
+        //((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(freedIndex, ItemStack.EMPTY);
+        //((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(freedIndex, ItemStack.EMPTY);
+        return slot.index;
+    }
+
     @Override
-    public SlotComponent y(int y) {
-        super.y(y);
-        ((SlotAccessor) this.slot).gtceu$setY(y);
-        return this;
+    public BaseUIComponent x(int x) {
+        ((SlotAccessor) slot).gtceu$setX(x);
+        return super.x(x);
+    }
+
+    @Override
+    public BaseUIComponent y(int y) {
+        ((SlotAccessor) slot).gtceu$setY(y);
+        return super.y(y);
     }
 
     @Accessors(fluent = false, chain = false)
@@ -153,6 +182,9 @@ public class SlotComponent extends BaseUIComponent {
         }
 
         public void setInner(Slot slot) {
+            if (slot == this) {
+                return;
+            }
             this.inner = slot;
             ((SlotAccessor) inner).gtceu$setX(x);
             ((SlotAccessor) inner).gtceu$setY(y);
