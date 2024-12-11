@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -13,9 +14,9 @@ public interface UIAbstractContainerMenu {
     /**
      * Get all properties registered to this menu, in original order.
      *
-     * @return All registered synced propeties.
+     * @return All registered synced properties.
      */
-    default Map<String, SyncedProperty<?>> getProperties() {
+    default List<SyncedProperty<?>> getProperties() {
         throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
     }
 

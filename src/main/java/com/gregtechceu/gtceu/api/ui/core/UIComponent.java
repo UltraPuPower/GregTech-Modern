@@ -72,7 +72,7 @@ public interface UIComponent extends PositionedRectangle {
     ParentUIComponent parent();
 
     /**
-     * @return The UIAdapter that holds this component
+     * @return A way to access the menu that holds this component
      */
     @Contract(pure = true)
     UIComponentMenuAccess containerAccess();
@@ -82,6 +82,10 @@ public interface UIComponent extends PositionedRectangle {
 
     default void sendMessage(int id, Consumer<FriendlyByteBuf> writer) {
         this.containerAccess().sendMessage(this, id, writer);
+    }
+
+    default <R extends Record> void sendMenuUpdate(R message) {
+        this.containerAccess().menu().sendMessage(message);
     }
 
     /**

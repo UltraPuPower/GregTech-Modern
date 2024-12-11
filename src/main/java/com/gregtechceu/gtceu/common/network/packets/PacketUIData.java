@@ -10,10 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.ApiStatus;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class UIDataPacket implements IPacket {
+@ApiStatus.Internal
+public class PacketUIData implements IPacket {
 
     public FriendlyByteBuf payload;
 
@@ -35,21 +37,17 @@ public class UIDataPacket implements IPacket {
     public void execute(IHandlerContext handler) {
         if (handler.isClient()) {
             var containerMenu = Minecraft.getInstance().player.containerMenu;
-
             if (containerMenu == null) {
                 GTCEu.LOGGER.error("Received local packet for null AbstractContainerMenu");
                 return;
             }
-
             ((UIAbstractContainerMenuExtension) containerMenu).gtceu$handlePacket(payload, true);
         } else {
             var containerMenu = handler.getPlayer().containerMenu;
-
             if (containerMenu == null) {
                 GTCEu.LOGGER.error("Received local packet for null AbstractContainerMenu");
                 return;
             }
-
             ((UIAbstractContainerMenuExtension) containerMenu).gtceu$handlePacket(payload, false);
         }
     }

@@ -176,6 +176,11 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     }
 
     @Override
+    public UIAdapter<?> adapter() {
+        return this;
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (!(graphics instanceof UIGuiGraphics)) graphics = UIGuiGraphics.of(graphics);
         var guiContext = (UIGuiGraphics) graphics;

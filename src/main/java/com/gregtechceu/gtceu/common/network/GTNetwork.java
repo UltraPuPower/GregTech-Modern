@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.network;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.ui.ScreenInternals;
 import com.gregtechceu.gtceu.common.network.packets.*;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
@@ -30,7 +29,7 @@ public class GTNetwork {
 
         NETWORK.registerBoth(SCPacketShareProspection.class);
 
-        NETWORK.registerBoth(UIDataPacket.class);
-        NETWORK.registerBoth(ScreenInternals.SyncPropertiesPacket.class);
+        NETWORK.registerBoth(PacketUIData.class);
+        NETWORK.registerBoth(PacketSyncUIProperties.class);
     }
 }

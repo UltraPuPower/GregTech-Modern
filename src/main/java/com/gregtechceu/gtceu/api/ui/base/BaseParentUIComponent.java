@@ -25,12 +25,14 @@ import java.util.function.Consumer;
  */
 public abstract class BaseParentUIComponent extends BaseUIComponent implements ParentUIComponent {
 
+    protected static final int UPDATE_CHILD = 1;
+
     protected final Observable<VerticalAlignment> verticalAlignment = Observable.of(VerticalAlignment.CENTER);
     protected final Observable<HorizontalAlignment> horizontalAlignment = Observable.of(HorizontalAlignment.CENTER);
 
     protected final AnimatableProperty<Insets> padding = AnimatableProperty.of(Insets.none());
 
-    protected @NotNull ParentComponentMenuAccess parentAccess = new ParentComponentMenuAccess();
+    protected @NotNull UIComponentMenuAccess parentAccess = new ParentComponentMenuAccess();
     protected @Nullable FocusHandler focusHandler = null;
     protected @Nullable ArrayList<Runnable> taskQueue = null;
 
@@ -274,7 +276,7 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
     @Override
     public void receiveMessage(int id, FriendlyByteBuf buf) {
-        if (id == 1) {
+        if (id == UPDATE_CHILD) {
             int index = buf.readVarInt();
             int updateId = buf.readVarInt();
             children().get(index).receiveMessage(updateId, buf);
@@ -285,7 +287,7 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
         @Override
         public void sendMessage(UIComponent component, int id, Consumer<FriendlyByteBuf> writer) {
-            BaseParentUIComponent.this.sendMessage(1, buf -> {
+            BaseParentUIComponent.this.sendMessage(UPDATE_CHILD, buf -> {
                 buf.writeVarInt(children().indexOf(component));
                 buf.writeVarInt(id);
                 writer.accept(buf);
@@ -295,6 +297,11 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
         @Override
         public AbstractContainerMenu menu() {
             return BaseParentUIComponent.this.containerAccess().menu();
+        }
+
+        @Override
+        public UIAdapter<?> adapter() {
+            return BaseParentUIComponent.this.containerAccess().adapter();
         }
     }
 

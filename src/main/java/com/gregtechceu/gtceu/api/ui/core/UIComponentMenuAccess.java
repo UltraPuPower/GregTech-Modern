@@ -10,4 +10,6 @@ public interface UIComponentMenuAccess {
     void sendMessage(UIComponent component, int id, Consumer<FriendlyByteBuf> writer);
 
     AbstractContainerMenu menu();
+
+    UIAdapter<?> adapter();
 }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Color;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -32,12 +33,11 @@ import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Element;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 @Accessors(fluent = true, chain = true)
 public class TankComponent extends BaseUIComponent {
 
-    public final int STACK_CARRIED_COUNT = 4;
+    protected static final int SET_FLUID = 1;
 
     @Getter
     protected IFluidHandler handler;
@@ -51,7 +51,7 @@ public class TankComponent extends BaseUIComponent {
     protected TankComponent(IFluidHandler fluidHandler, int tank) {
         this.handler = fluidHandler;
         this.tank = tank;
-        Observable.observeAll(this::updateListener,  this.lastFluidInTank);
+        Observable.observeAll(this::updateListener, this.lastFluidInTank);
     }
 
     public TankComponent setFluidTank(IFluidHandler handler) {
@@ -67,13 +67,8 @@ public class TankComponent extends BaseUIComponent {
     }
 
     public void receiveMessage(int id, FriendlyByteBuf buf) {
-        if (id == 1) {
+        if (id == SET_FLUID) {
             lastFluidInTank(FluidStack.readFromPacket(buf));
-        } else if(id == STACK_CARRIED_COUNT) {
-            ItemStack currentStack = getCarried();
-            int newSize = buf.readVarInt();
-            currentStack.setCount(newSize);
-            setCarried(currentStack);
         }
     }
 
@@ -130,51 +125,52 @@ public class TankComponent extends BaseUIComponent {
     @Override
     public boolean onMouseDown(double mouseX, double mouseY, int button) {
         Player player = player();
-        if(player == null) return false;
+        if (player == null) return false;
         boolean isShift = player.isShiftKeyDown();
         ItemStack currentStack = getCarried();
         var handler = FluidUtil.getFluidHandler(currentStack).resolve().orElse(null);
-        if(handler == null) return false;
+        if (handler == null) return false;
         int maxAttempts = isShift ? currentStack.getCount() : 1;
         FluidStack initialFluid = this.handler.getFluidInTank(tank).copy();
-        if(initialFluid.getAmount() > 0) {
+        if (initialFluid.getAmount() > 0) {
             boolean performedFill = false;
             ItemStack filledResult = ItemStack.EMPTY;
-            for(int i = 0; i < maxAttempts; i++) {
+            for (int i = 0; i < maxAttempts; i++) {
                 FluidActionResult res = FluidUtil.tryFillContainer(currentStack, this.handler, Integer.MAX_VALUE, null, false);
-                if(!res.isSuccess()) break;
+                if (!res.isSuccess()) break;
                 ItemStack remaining = FluidUtil.tryFillContainer(currentStack, this.handler, Integer.MAX_VALUE, null, true).getResult();
                 performedFill = true;
 
                 currentStack.shrink(1);
 
-                if(filledResult.isEmpty()) {
+                if (filledResult.isEmpty()) {
                     filledResult = remaining.copy();
-                } else if(ItemStack.isSameItemSameTags(filledResult, remaining)) {
-                    if(filledResult.getCount() < filledResult.getMaxStackSize())
+                } else if (ItemStack.isSameItemSameTags(filledResult, remaining)) {
+                    if (filledResult.getCount() < filledResult.getMaxStackSize())
                         filledResult.grow(1);
                     else
                         player.getInventory().placeItemBackInInventory(remaining);
-                }
-                else {
+                } else {
                     player.getInventory().placeItemBackInInventory(filledResult);
                     filledResult = remaining.copy();
                 }
             }
-            if(performedFill) {
+            if (performedFill) {
                 SoundEvent sound = initialFluid.getFluid().getFluidType().getSound(initialFluid, SoundActions.BUCKET_FILL);
-                if(sound == null)
+                if (sound == null)
                     sound = SoundEvents.BUCKET_FILL;
                 player.level().playSound(null, player.position().x, player.getEyeY(), player.position().z,
                         sound, SoundSource.BLOCKS, 1.0f, 1.0f);
 
-                if(currentStack.isEmpty()) { // todo properly sync this to the server(or client?)
+                if (currentStack.isEmpty()) {
                     setCarried(filledResult);
                 } else {
                     setCarried(currentStack);
                     player.getInventory().placeItemBackInInventory(filledResult);
                 }
-                sendMessage(STACK_CARRIED_COUNT, buf->buf.writeVarInt(getCarried().getCount()));
+
+                // TODO do some checking on server to not just accept any stack
+                sendMenuUpdate(new UIContainerMenu.ServerboundSetCarriedUpdate(getCarried()));
                 return true;
             }
         }

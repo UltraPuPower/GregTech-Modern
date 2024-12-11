@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.ui.util.pond.UIAbstractContainerMenuExtension;
 import com.gregtechceu.gtceu.api.ui.serialization.ContainerMenuMessageData;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.api.ui.inject.UIAbstractContainerMenu;
-import com.gregtechceu.gtceu.client.ui.ScreenInternals;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
-import com.gregtechceu.gtceu.common.network.packets.UIDataPacket;
+import com.gregtechceu.gtceu.common.network.packets.PacketSyncUIProperties;
+import com.gregtechceu.gtceu.common.network.packets.PacketUIData;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -110,7 +110,7 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
                 throw new NetworkException("Tried to send clientbound message on the server");
             }
 
-            GTNetwork.NETWORK.sendToPlayer(new UIDataPacket(buf), serverPlayer);
+            GTNetwork.NETWORK.sendToPlayer(new PacketUIData(buf), serverPlayer);
         } else {
             if (!this.gtceu$player.level().isClientSide) {
                 throw new NetworkException("Tried to send serverbound message on the client");
@@ -123,7 +123,7 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     @Unique
     @OnlyIn(Dist.CLIENT)
     private void gtceu$sendToServer(FriendlyByteBuf data) {
-        GTNetwork.NETWORK.sendToServer(new UIDataPacket(data));
+        GTNetwork.NETWORK.sendToServer(new PacketUIData(data));
     }
 
     @Override
@@ -137,8 +137,8 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     }
 
     @Override
-    public Map<String, SyncedProperty<?>> getProperties() {
-        return gtceu$propertiesByName;
+    public List<SyncedProperty<?>> getProperties() {
+        return gtceu$properties;
     }
 
     @Override
@@ -178,7 +178,6 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
 
     @Unique
     private void gtceu$syncProperties() {
-        if (this.gtceu$player == null) return;
         if (!(this.gtceu$player instanceof ServerPlayer player)) return;
 
         int count = 0;
@@ -199,6 +198,6 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
             prop.write(buf);
         }
 
-        GTNetwork.NETWORK.sendToPlayer(new ScreenInternals.SyncPropertiesPacket(buf), player);
+        GTNetwork.NETWORK.sendToPlayer(new PacketSyncUIProperties(buf), player);
     }
 }

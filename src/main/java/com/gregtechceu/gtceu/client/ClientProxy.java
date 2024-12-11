@@ -67,8 +67,7 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
         }
 
-        ScreenInternals.Client.init();
-        MinecraftForge.EVENT_BUS.addListener(UIGuiGraphics.UtilityScreen::onWindowResized);
+        ScreenInternals.init();
     }
 
     @SubscribeEvent
@@ -82,11 +81,13 @@ public class ClientProxy extends CommonProxy {
 
         event.registerEntityRenderer(GTEntityTypes.BOAT.get(), c -> new GTBoatRenderer(c, false));
         event.registerEntityRenderer(GTEntityTypes.CHEST_BOAT.get(), c -> new GTBoatRenderer(c, true));
+    }
 
+    @SubscribeEvent
+    public void onRegisterEntityLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         for (var type : GTBoat.BoatType.values()) {
-            ForgeHooksClient.registerLayerDefinition(GTBoatRenderer.getBoatModelName(type), BoatModel::createBodyModel);
-            ForgeHooksClient.registerLayerDefinition(GTBoatRenderer.getChestBoatModelName(type),
-                    ChestBoatModel::createBodyModel);
+            event.registerLayerDefinition(GTBoatRenderer.getBoatModelName(type), BoatModel::createBodyModel);
+            event.registerLayerDefinition(GTBoatRenderer.getChestBoatModelName(type), ChestBoatModel::createBodyModel);
         }
     }
 

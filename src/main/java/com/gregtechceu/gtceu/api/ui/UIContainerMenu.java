@@ -76,9 +76,11 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
         factory.loadServerUI(playerInventory.player, this, holder);
         init();
 
-        // register the message to go both ways
+        // register the generic sync message to go both ways
         this.addServerboundMessage(ServerboundComponentUpdate.class, this.receivedComponentUpdates::offer);
         this.addClientboundMessage(ClientboundComponentUpdate.class, this.receivedComponentUpdates::offer);
+
+        this.addServerboundMessage(ServerboundSetCarriedUpdate.class,msg -> this.setCarried(msg.newCarried()));
     }
 
     public void sendMessage(int id, Consumer<FriendlyByteBuf> payloadWriter) {
@@ -307,10 +309,12 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     public static void initType() {}
 
     public interface IComponentUpdate {
-        public int updateId();
-        public FriendlyByteBuf updateData();
+        int updateId();
+        FriendlyByteBuf updateData();
     }
 
     public record ClientboundComponentUpdate(int updateId, FriendlyByteBuf updateData) implements IComponentUpdate {}
     public record ServerboundComponentUpdate(int updateId, FriendlyByteBuf updateData) implements IComponentUpdate {}
+
+    public record ServerboundSetCarriedUpdate(ItemStack newCarried) {}
 }

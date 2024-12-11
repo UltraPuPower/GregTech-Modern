@@ -89,6 +89,10 @@ public class UIComponents {
         return new PlayerInventoryComponent(menu, startSlotIndex);
     }
 
+    public static PlayerInventoryComponent playerInventory() {
+        return new PlayerInventoryComponent();
+    }
+
     public static <E extends Entity> EntityComponent<E> entity(Sizing sizing, EntityType<E> type,
                                                                @Nullable CompoundTag nbt) {
         return new EntityComponent<>(sizing, type, nbt);

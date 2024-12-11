@@ -28,7 +28,7 @@ public abstract class BaseUIComponent implements UIComponent {
     @Getter
     protected ParentUIComponent parent = null;
     @Nullable
-    protected UIComponentMenuAccess adapter = null;
+    protected UIComponentMenuAccess access = null;
     @Nullable
     @Getter
     @Setter
@@ -305,14 +305,14 @@ public abstract class BaseUIComponent implements UIComponent {
 
     @Override
     public UIComponentMenuAccess containerAccess() {
-        return this.adapter != null ? this.adapter :
+        return this.access != null ? this.access :
                 this.parent() != null ? this.parent().containerAccess() : null;
     }
 
     @ApiStatus.Internal
     @Override
-    public void setContainerAccess(UIComponentMenuAccess adapter) {
-        this.adapter = adapter;
+    public void setContainerAccess(UIComponentMenuAccess access) {
+        this.access = access;
     }
 
     @Override
