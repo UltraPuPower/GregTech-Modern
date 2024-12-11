@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
@@ -122,7 +123,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         if (machine instanceof LargeCombustionEngineMachine engineMachine) {
             var EUt = RecipeHelper.getOutputEUt(recipe);
             // has lubricant
-            if (EUt > 0 && engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess() &&
+            if (EUt > 0 && RecipeHandler.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess() &&
                     !engineMachine.isIntakesObstructed()) {
                 var maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
                 var parallelResult = GTRecipeModifiers.accurateParallel(engineMachine, recipe, maxParallel, false);
@@ -154,7 +155,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         if (runningTimer % 72 == 0) {
             // insufficient lubricant
-            if (!getLubricantRecipe().handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches())) {
+            if (RecipeHandler.handleRecipeIO(IO.IN, this, getLubricantRecipe(), this.recipeLogic.getChanceCaches())
+                    .isSuccess()) {
                 recipeLogic.interruptRecipe();
                 return false;
             }
@@ -162,8 +164,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         // check boost fluid
         if (isBoostAllowed()) {
             var boosterRecipe = getBoostRecipe();
-            this.isOxygenBoosted = boosterRecipe.matchRecipe(this).isSuccess() &&
-                    boosterRecipe.handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches());
+            this.isOxygenBoosted = RecipeHandler.matchRecipe(this, boosterRecipe).isSuccess() &&
+                    RecipeHandler.handleRecipeIO(IO.IN, this, boosterRecipe, this.recipeLogic.getChanceCaches())
+                            .isSuccess();
         }
 
         runningTimer++;
