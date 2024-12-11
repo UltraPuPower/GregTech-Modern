@@ -46,9 +46,8 @@ public class UIGuiGraphics extends GuiGraphics {
     public static final ResourceLocation PANEL_INSET_TEXTURE = new ResourceLocation("owo",
             "textures/gui/panel_inset.png");
 
-    public static final ResourceLocation PANEL_NINE_PATCH_TEXTURE = GTCEu.id("gui/base/background_steel");
-    public static final ResourceLocation DARK_PANEL_NINE_PATCH_TEXTURE = GTCEu.id("gui/base/background_bronze");
-    public static final ResourceLocation PANEL_INSET_NINE_PATCH_TEXTURE = new ResourceLocation("owo", "panel/inset");
+    public static final ResourceLocation PANEL_NINE_PATCH_TEXTURE = GTCEu.id("background_steel");
+    public static final ResourceLocation DARK_PANEL_NINE_PATCH_TEXTURE = GTCEu.id("background_bronze");
 
     private UIGuiGraphics(Minecraft mc, MultiBufferSource.BufferSource bufferSource) {
         super(mc, bufferSource);
@@ -230,7 +229,15 @@ public class UIGuiGraphics extends GuiGraphics {
         drawText(text, x, y, scale, color, TextAnchor.TOP_LEFT);
     }
 
+    public void drawText(Component text, float x, float y, float scale, int color, boolean dropShadow) {
+        drawText(text, x, y, scale, color, TextAnchor.TOP_LEFT, dropShadow);
+    }
+
     public void drawText(Component text, float x, float y, float scale, int color, TextAnchor anchorPoint) {
+        drawText(text, x, y, scale, color, anchorPoint, false);
+    }
+
+    public void drawText(Component text, float x, float y, float scale, int color, TextAnchor anchorPoint, boolean dropShadow) {
         final var textRenderer = Minecraft.getInstance().font;
 
         this.pose().pushPose();
@@ -245,7 +252,7 @@ public class UIGuiGraphics extends GuiGraphics {
             }
         }
 
-        this.drawString(textRenderer, text, (int) (x * (1 / scale)), (int) (y * (1 / scale)), color, false);
+        this.drawString(textRenderer, text, (int) (x * (1 / scale)), (int) (y * (1 / scale)), color, dropShadow);
         this.pose().popPose();
     }
 

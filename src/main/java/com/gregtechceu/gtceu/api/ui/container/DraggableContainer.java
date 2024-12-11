@@ -4,16 +4,24 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
+@Accessors(fluent = true, chain = true)
 public class DraggableContainer<C extends UIComponent> extends WrappingParentUIComponent<C> {
 
+    @Getter
     protected int foreheadSize = 10;
+    @Getter
+    @Setter
     protected boolean alwaysOnTop = false;
 
+    @Getter
     protected int baseX = 0, baseY = 0;
     protected double xOffset = 0, yOffset = 0;
 
@@ -76,16 +84,6 @@ public class DraggableContainer<C extends UIComponent> extends WrappingParentUIC
     }
 
     @Override
-    public int baseX() {
-        return this.baseX;
-    }
-
-    @Override
-    public int baseY() {
-        return this.baseY;
-    }
-
-    @Override
     public ParentUIComponent padding(Insets padding) {
         return super.padding(
                 Insets.of(padding.top() + this.foreheadSize, padding.bottom(), padding.left(), padding.right()));
@@ -98,19 +96,6 @@ public class DraggableContainer<C extends UIComponent> extends WrappingParentUIC
         var padding = this.padding.get();
         this.padding(Insets.of(padding.top() - prevForeheadSize, padding.bottom(), padding.left(), padding.right()));
         return this;
-    }
-
-    public int foreheadSize() {
-        return this.foreheadSize;
-    }
-
-    public DraggableContainer<C> alwaysOnTop(boolean alwaysOnTop) {
-        this.alwaysOnTop = alwaysOnTop;
-        return this;
-    }
-
-    public boolean alwaysOnTop() {
-        return this.alwaysOnTop;
     }
 
     @Override

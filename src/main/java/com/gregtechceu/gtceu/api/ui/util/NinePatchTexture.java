@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class NinePatchTexture {
+public class NinePatchTexture implements UITexture {
 
     private final ResourceLocation texture;
     private final int u, v;
@@ -187,6 +188,11 @@ public class NinePatchTexture {
     private static void ifPresent(ResourceLocation texture, Consumer<NinePatchTexture> action) {
         if (!MetadataLoader.LOADED_TEXTURES.containsKey(texture)) return;
         action.accept(MetadataLoader.LOADED_TEXTURES.get(texture));
+    }
+
+    @Override
+    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height) {
+        this.draw(graphics, x, y, width, height);
     }
 
     public static class MetadataLoader extends SimpleJsonResourceReloadListener {

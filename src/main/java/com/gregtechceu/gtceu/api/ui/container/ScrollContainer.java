@@ -7,6 +7,9 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.Delta;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -20,6 +23,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+@Accessors(fluent = true, chain = true)
 public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComponent<C> {
 
     public static final ResourceLocation VERTICAL_VANILLA_SCROLLBAR_TEXTURE = new ResourceLocation("owo",
@@ -38,13 +42,37 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
     protected double scrollOffset = 0;
     protected double currentScrollPosition = 0;
     protected int lastScrollPosition = -1;
+    /**
+     * The increment, or step size, this container should scroll
+     * by. If this is anything other than {@code 0}, all scrolling in
+     * this container will snap to the closest multiple of this value
+     */
+    @Getter
+    @Setter
     protected int scrollStep = 0;
 
+    /**
+     * The current fixed length of this container's scrollbar, or {@code 0} if it adjusts based on the content
+     */
+    @Getter
+    @Setter
     protected int fixedScrollbarLength = 0;
     protected double lastScrollbarLength = 0;
 
+    /**
+     * The scrollbar this container should display. To create one,
+     * look at the static methods on {@link Scrollbar} or use a lambda
+     */
+    @Getter
+    @Setter
     protected Scrollbar scrollbar = Scrollbar.flat(Color.ofArgb(0xA0000000));
-    protected int scrollbarThiccness = 3;
+    /**
+     * Set the thickness of this container's scrollbar,
+     * in logical pixels
+     */
+    @Getter
+    @Setter
+    protected int scrollbarThickness = 3;
 
     protected long lastScrollbarInteractTime = 0;
     protected int scrollbarOffset = 0;
@@ -150,8 +178,8 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
         // Determine the offset of the scrollbar on the
         // *opposite* axis to the one we scroll on
         this.scrollbarOffset = this.direction == ScrollDirection.VERTICAL ?
-                this.x + this.width - padding.right() - scrollbarThiccness :
-                this.y + this.height - padding.bottom() - scrollbarThiccness;
+                this.x + this.width - padding.right() - scrollbarThickness :
+                this.y + this.height - padding.bottom() - scrollbarThickness;
 
         this.lastScrollbarLength = this.fixedScrollbarLength == 0 ?
                 Math.min(Math.floor(((float) selfSize / this.childSize) * contentSize), contentSize) :
@@ -163,10 +191,10 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
             this.scrollbar.draw(graphics,
                     this.scrollbarOffset,
                     (int) (this.y + scrollbarPosition + padding.top()),
-                    this.scrollbarThiccness,
+                    this.scrollbarThickness,
                     (int) (this.lastScrollbarLength),
                     this.scrollbarOffset, this.y + padding.top(),
-                    this.scrollbarThiccness, this.height - padding.vertical(),
+                    this.scrollbarThickness, this.height - padding.vertical(),
                     lastScrollbarInteractTime, this.direction,
                     this.maxScroll > 0);
         } else {
@@ -174,9 +202,9 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
                     (int) (this.x + scrollbarPosition + padding.left()),
                     this.scrollbarOffset,
                     (int) (this.lastScrollbarLength),
-                    this.scrollbarThiccness,
+                    this.scrollbarThickness,
                     this.x + padding.left(), this.scrollbarOffset,
-                    this.width - padding.horizontal(), this.scrollbarThiccness,
+                    this.width - padding.horizontal(), this.scrollbarThickness,
                     lastScrollbarInteractTime, this.direction,
                     this.maxScroll > 0);
         }
@@ -292,78 +320,11 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
         return this;
     }
 
-    /**
-     * Set the thickness of this container's scrollbar,
-     * in logical pixels
-     */
-    public ScrollContainer<C> scrollbarThiccness(int scrollbarThiccness) {
-        this.scrollbarThiccness = scrollbarThiccness;
-        return this;
-    }
-
-    /**
-     * @return The thickness of this container's scrollbar,
-     *         in logical pixels
-     */
-    public int scrollbarThiccness() {
-        return this.scrollbarThiccness;
-    }
-
-    /**
-     * Set the scrollbar this container should display. To create one,
-     * look at the static methods on {@link Scrollbar} or use a lambda
-     */
-    public ScrollContainer<C> scrollbar(Scrollbar scrollbar) {
-        this.scrollbar = scrollbar;
-        return this;
-    }
-
-    /**
-     * @return The scrollbar this container is currently displaying
-     */
-    public Scrollbar scrollbar() {
-        return this.scrollbar;
-    }
-
-    /**
-     * Set the increment, or step size, this container should scroll
-     * by. If this is anything other than {@code 0}, all scrolling in
-     * this container will snap to the closest multiple of this value
-     */
-    public ScrollContainer<C> scrollStep(int scrollStep) {
-        this.scrollStep = scrollStep;
-        return this;
-    }
-
-    /**
-     * @return The current scroll step size of this container
-     */
-    public int scrollStep() {
-        return this.scrollStep;
-    }
-
-    /**
-     * Set a fixed length for the scrollbar of this
-     * container, {@code 0} for dynamic sizing
-     */
-    public ScrollContainer<C> fixedScrollbarLength(int fixedScrollbarLength) {
-        this.fixedScrollbarLength = fixedScrollbarLength;
-        return this;
-    }
-
-    /**
-     * @return The current fixed length of this container's scrollbar,
-     *         or {@code 0} if it adjusts based on the content
-     */
-    public int fixedScrollbarLength() {
-        return this.fixedScrollbarLength;
-    }
-
     @Override
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
         UIParsing.apply(children, "fixed-scrollbar-length", UIParsing::parseUnsignedInt, this::fixedScrollbarLength);
-        UIParsing.apply(children, "scrollbar-thiccness", UIParsing::parseUnsignedInt, this::scrollbarThiccness);
+        UIParsing.apply(children, "scrollbar-thickness", UIParsing::parseUnsignedInt, this::scrollbarThickness);
         UIParsing.apply(children, "scrollbar", Scrollbar::parse, this::scrollbar);
 
         UIParsing.apply(children, "scroll-step", UIParsing::parseUnsignedInt, this::scrollStep);

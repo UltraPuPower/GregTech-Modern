@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -309,7 +310,8 @@ public class UIModel {
         return this.expandTemplate(expectedClass, name, parameters::get, s -> null);
     }
 
-    protected <T extends ParentUIComponent> T parseComponentTree(Class<T> expectedRootComponentClass) {
+    @ApiStatus.Internal
+    public <T extends ParentUIComponent> T parseComponentTree(Class<T> expectedRootComponentClass) {
         if (this.componentsElement == null) {
             throw new IncompatibleUIModelException(
                     "This UI model does not declare a component tree and can thus only provide templates");

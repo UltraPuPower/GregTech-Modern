@@ -2,9 +2,6 @@
     "net/minecraft/client/gui/components/AbstractWidget": [
         "com/gregtechceu/gtceu/api/ui/inject/UIComponentStub"
     ],
-    "net/minecraft/world/inventory/Slot": [
-        "com/gregtechceu/gtceu/api/ui/util/pond/UISlotExtension"
-    ],
     "net/minecraft/client/renderer/entity/EntityRenderDispatcher": [
         "com/gregtechceu/gtceu/api/ui/util/pond/UIEntityRenderDispatcherExtension"
     ],

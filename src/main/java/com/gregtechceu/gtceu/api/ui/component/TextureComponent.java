@@ -8,24 +8,32 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
-import net.minecraft.resources.ResourceLocation;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
+@Accessors(fluent = true, chain = true)
 public class TextureComponent extends BaseUIComponent {
 
-    protected final ResourceLocation texture;
+    protected final UITexture texture;
     protected final int u, v;
     protected final int regionWidth, regionHeight;
     protected final int textureWidth, textureHeight;
 
+    @Getter
     protected final AnimatableProperty<PositionedRectangle> visibleArea;
+    @Getter
+    @Setter
     protected boolean blend = false;
 
-    protected TextureComponent(ResourceLocation texture, int u, int v, int regionWidth, int regionHeight,
+    protected TextureComponent(UITexture texture, int u, int v, int regionWidth, int regionHeight,
                                int textureWidth, int textureHeight) {
         this.texture = texture;
         this.u = u;
@@ -56,6 +64,10 @@ public class TextureComponent extends BaseUIComponent {
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
+        if (texture == null) {
+            return;
+        }
+
         RenderSystem.enableDepthTest();
 
         if (this.blend) {
@@ -70,9 +82,16 @@ public class TextureComponent extends BaseUIComponent {
 
         var visibleArea = this.visibleArea.get();
 
-        int bottomEdge = Math.min(visibleArea.y() + visibleArea.height(), regionHeight);
-        int rightEdge = Math.min(visibleArea.x() + visibleArea.width(), regionWidth);
+        int width = Math.min(visibleArea.width(), regionWidth);
+        int height = Math.min(visibleArea.height(), regionHeight);
+        this.texture.drawSubArea(graphics, visibleArea.x(), visibleArea.y(),
+                width, height,
+                (float) (this.u + visibleArea.x()) / visibleArea.y(),
+                (float) (this.v + visibleArea.y()) / visibleArea.y(),
+                (float) width / visibleArea.x(),
+                (float) height / visibleArea.y());
 
+        /*
         graphics.blit(this.texture,
                 visibleArea.x(),
                 visibleArea.y(),
@@ -83,6 +102,7 @@ public class TextureComponent extends BaseUIComponent {
                 rightEdge - visibleArea.x(),
                 bottomEdge - visibleArea.y(),
                 this.textureWidth, this.textureHeight);
+        */
 
         if (this.blend) {
             RenderSystem.disableBlend();
@@ -99,19 +119,6 @@ public class TextureComponent extends BaseUIComponent {
     public TextureComponent resetVisibleArea() {
         this.visibleArea(PositionedRectangle.of(0, 0, this.regionWidth, this.regionHeight));
         return this;
-    }
-
-    public AnimatableProperty<PositionedRectangle> visibleArea() {
-        return this.visibleArea;
-    }
-
-    public TextureComponent blend(boolean blend) {
-        this.blend = blend;
-        return this;
-    }
-
-    public boolean blend() {
-        return this.blend;
     }
 
     @Override
@@ -173,6 +180,7 @@ public class TextureComponent extends BaseUIComponent {
             textureHeight = UIParsing.parseSignedInt(element.getAttributeNode("texture-height"));
         }
 
-        return new TextureComponent(textureId, u, v, regionWidth, regionHeight, textureWidth, textureHeight);
+        // TODO UITexture parser
+        return new TextureComponent(new ResourceTexture(textureId), u, v, regionWidth, regionHeight, textureWidth, textureHeight);
     }
 }

@@ -2,10 +2,18 @@ package com.gregtechceu.gtceu.api.ui.container;
 
 import com.gregtechceu.gtceu.api.ui.core.*;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.glfw.GLFW;
 
 public class OverlayContainer<C extends UIComponent> extends WrappingParentUIComponent<C> {
 
+    /**
+     * Whether this overlay should close when a mouse
+     * click occurs outside the bounds of its contents
+     */
+    @Getter
+    @Setter
     protected boolean closeOnClick = true;
 
     protected OverlayContainer(C child) {
@@ -68,22 +76,5 @@ public class OverlayContainer<C extends UIComponent> extends WrappingParentUICom
     @Override
     protected int childMountY() {
         return this.padding.get().top() + (this.height() - this.child.fullSize().height()) / 2;
-    }
-
-    /**
-     * Set whether this overlay should close when a mouse
-     * click occurs outside the bounds of its contents
-     */
-    public OverlayContainer<C> closeOnClick(boolean closeOnClick) {
-        this.closeOnClick = closeOnClick;
-        return this;
-    }
-
-    /**
-     * Whether this overlay should close when a mouse
-     * click occurs outside the bounds of its contents
-     */
-    public boolean closeOnClick() {
-        return closeOnClick;
     }
 }

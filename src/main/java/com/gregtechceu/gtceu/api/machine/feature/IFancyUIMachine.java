@@ -8,7 +8,13 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFa
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
@@ -36,18 +42,19 @@ import java.util.List;
  * @date 2023/6/28
  * @implNote IFancyUIMachine
  */
-public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
+public interface IFancyUIMachine extends IUIMachine2, IFancyUIProvider {
 
-    @Override
-    default ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer).widget(new FancyMachineUIWidget(this, 176, 166));
+    @OnlyIn(Dist.CLIENT)
+    default void loadClientUI(Player player, UIAdapter<RootContainer> adapter) {
+        adapter.rootComponent
+                .child(new FancyMachineUIComponent(this, Sizing.fixed(176), Sizing.fixed(166)));
     }
 
     /**
      * We should not override this method in general, and use {@link IFancyUIMachine#createUIWidget()} instead,
      */
     @Override
-    default Widget createMainPage(FancyMachineUIWidget widget) {
+    default ParentUIComponent createMainPage(FancyMachineUIWidget widget) {
         var editableUI = self().getDefinition().getEditableUI();
         if (editableUI != null) {
             var template = editableUI.createCustomUI();
@@ -63,9 +70,9 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     /**
      * Create the core widget of this machine.
      */
-    default Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 100, 100);
-        if (isRemote()) {
+    default ParentUIComponent createUIWidget() {
+        var group = UIContainers.root(Sizing.content(), Sizing.content());
+        if (isClientSide()) {
             group.addWidget(new ImageWidget((100 - 48) / 2, 60, 48, 16, GuiTextures.SCENE));
             TrackedDummyWorld world = new TrackedDummyWorld();
             world.addBlock(BlockPos.ZERO, BlockInfo.fromBlockState(self().getBlockState()));

@@ -64,6 +64,7 @@ public class WrappingParentUIComponent<C extends UIComponent> extends BaseParent
         }
 
         this.child = newChild;
+        this.child.setContainerAccess(this.parentAccess);
         this.childView = Collections.singletonList(this.child);
 
         this.updateLayout();

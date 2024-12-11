@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.gui;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import lombok.val;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * @author KilaBash
@@ -68,6 +70,11 @@ public class GuiTextures {
             "gtceu:textures/gui/base/clipboard_paper_background.png");
     public static final ResourceBorderTexture TITLE_BAR_BACKGROUND = new ResourceBorderTexture(
             "gtceu:textures/gui/base/title_bar_background.png", 16, 16, 4, 4);
+
+    public static final ResourceLocation UI_BACKGROUND_TEXTURE = GTCEu.id("background");
+    public static final ResourceLocation UI_BACKGROUND_INVERSE_TEXTURE = GTCEu.id("background_inverse");
+    public static final ResourceLocation TITLE_BAR_BACKGROUND_TEXTURE = GTCEu.id("title_bar_background");
+
 
     public static final ResourceTexture DISPLAY = new ResourceTexture("gtceu:textures/gui/base/display.png");
     public static final SteamTexture DISPLAY_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/display_%s.png");

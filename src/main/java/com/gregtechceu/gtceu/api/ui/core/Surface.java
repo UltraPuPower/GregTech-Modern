@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
@@ -18,16 +19,24 @@ import org.w3c.dom.Node;
 
 public interface Surface {
 
-    Surface PANEL = (graphics, component) -> {
+    Surface UI_BACKGROUND = (graphics, component) -> {
+        NinePatchTexture.draw(GuiTextures.UI_BACKGROUND_TEXTURE, graphics, component);
+    };
+
+    Surface UI_BACKGROUND_BRONZE = (graphics, component) -> {
         graphics.drawPanel(component.x(), component.y(), component.width(), component.height(), false);
     };
 
-    Surface DARK_PANEL = (graphics, component) -> {
+    Surface UI_BACKGROUND_STEEL = (graphics, component) -> {
         graphics.drawPanel(component.x(), component.y(), component.width(), component.height(), true);
     };
 
-    Surface PANEL_INSET = (graphics, component) -> {
-        NinePatchTexture.draw(UIGuiGraphics.PANEL_INSET_NINE_PATCH_TEXTURE, graphics, component);
+    Surface UI_BACKGROUND_INVERSE = (graphics, component) -> {
+        NinePatchTexture.draw(GuiTextures.UI_BACKGROUND_INVERSE_TEXTURE, graphics, component);
+    };
+
+    Surface TITLE_BAR_BACKGROUND = (graphics, component) -> {
+        NinePatchTexture.draw(GuiTextures.TITLE_BAR_BACKGROUND_TEXTURE, graphics, component);
     };
 
     Surface VANILLA_TRANSLUCENT = (graphics, component) -> {
@@ -95,9 +104,9 @@ public interface Surface {
     }
 
     static Surface panelWithInset(int insetWidth) {
-        return Surface.PANEL.and((graphics, component) -> {
+        return Surface.UI_BACKGROUND_INVERSE.and((graphics, component) -> {
             NinePatchTexture.draw(
-                    UIGuiGraphics.PANEL_INSET_NINE_PATCH_TEXTURE,
+                    GuiTextures.UI_BACKGROUND_INVERSE_TEXTURE,
                     graphics,
                     component.x() + insetWidth,
                     component.y() + insetWidth,
@@ -121,7 +130,7 @@ public interface Surface {
 
         for (var child : children) {
             surface = switch (child.getNodeName()) {
-                case "panel" -> surface.and(child.getAttribute("dark").equalsIgnoreCase("true") ? DARK_PANEL : PANEL);
+                case "panel" -> surface.and(child.getAttribute("dark").equalsIgnoreCase("true") ? UI_BACKGROUND_STEEL : UI_BACKGROUND_BRONZE);
                 case "tiled" -> {
                     UIParsing.expectAttributes(child, "texture-width", "texture-height");
                     yield surface.and(tiled(
@@ -138,7 +147,7 @@ public interface Surface {
                 case "panel-with-inset" -> surface.and(panelWithInset(UIParsing.parseUnsignedInt(child)));
                 case "options-background" -> surface.and(OPTIONS_BACKGROUND);
                 case "vanilla-translucent" -> surface.and(VANILLA_TRANSLUCENT);
-                case "panel-inset" -> surface.and(PANEL_INSET);
+                case "panel-inset" -> surface.and(UI_BACKGROUND_INVERSE);
                 case "tooltip" -> surface.and(TOOLTIP);
                 case "outline" -> surface.and(outline(Color.parseAndPack(child)));
                 case "flat" -> surface.and(flat(Color.parseAndPack(child)));
