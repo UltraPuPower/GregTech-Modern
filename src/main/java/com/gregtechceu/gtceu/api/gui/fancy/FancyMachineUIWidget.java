@@ -28,11 +28,7 @@ import java.util.stream.Stream;
 @Getter
 public class FancyMachineUIWidget extends WidgetGroup {
 
-    protected final TitleBarWidget titleBar;
-    protected final VerticalTabsWidget sideTabsWidget;
     protected final WidgetGroup pageContainer;
-    protected final PageSwitcher pageSwitcher;
-    protected final ConfiguratorPanel configuratorPanel;
     protected final TooltipsPanel tooltipsPanel;
 
     @Nullable
@@ -69,11 +65,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
             playerInventory = null;
         }
 
-        addWidget(this.titleBar = new TitleBarWidget(width, this::navigateBack, this::openPageSwitcher));
-        addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::navigate, -20, 0, 24, height));
         addWidget(this.tooltipsPanel = new TooltipsPanel());
-        addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), height));
-        this.pageSwitcher = new PageSwitcher(this::switchPage);
 
         setBackground(GuiTextures.BACKGROUND.copy()
                 .setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));

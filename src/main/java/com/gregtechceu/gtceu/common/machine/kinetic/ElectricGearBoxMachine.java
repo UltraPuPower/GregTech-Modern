@@ -142,7 +142,7 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     }
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         var group = new WidgetGroup(0, 0, 164, 48);
         group.addWidget(new ImageWidget(36, 4, 92, 20,
                 new TextTexture("").setWidth(92).setType(TextTexture.TextType.ROLL)

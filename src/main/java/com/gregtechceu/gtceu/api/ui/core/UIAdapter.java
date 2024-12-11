@@ -19,8 +19,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.client.event.ContainerScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -46,10 +48,9 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     @Getter
     private static boolean isRendering = false;
 
-    @Nullable
     @Getter
     @Setter
-    public AbstractContainerMenu menu;
+    public AbstractContainerScreen<?> screen;
 
     public final R rootComponent;
     public final CursorAdapter cursorAdapter;
@@ -170,7 +171,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
     @Override
     public void sendMessage(UIComponent component, int id, Consumer<FriendlyByteBuf> writer) {
-        if (menu() instanceof UIContainerMenu<?> menu) {
+        if (screen().getMenu() instanceof UIContainerMenu<?> menu) {
             menu.sendMessage(id, writer);
         }
     }
@@ -199,6 +200,10 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             RenderSystem.enableScissor(0, 0, window.getWidth(), window.getHeight());
 
             this.rootComponent.draw(guiContext, mouseX, mouseY, partialTicks, delta);
+
+            RenderSystem.depthMask(true);
+            MinecraftForge.EVENT_BUS.post(new ContainerScreenEvent.Render.Background(this.screen, graphics, mouseX, mouseY));
+            RenderSystem.depthMask(false);
 
             RenderSystem.disableScissor();
             RenderSystem.disableDepthTest();
@@ -237,6 +242,11 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     @Override
     public boolean isFocused() {
         return true;
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        GuiEventListener.super.mouseMoved(mouseX, mouseY);
     }
 
     @Override

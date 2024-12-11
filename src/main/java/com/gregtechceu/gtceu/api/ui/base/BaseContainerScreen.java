@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
 import com.gregtechceu.gtceu.api.ui.util.UIErrorToast;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
 
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -27,7 +26,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.function.BiFunction;
 
 public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends AbstractContainerMenu>
-                                         extends AbstractContainerScreen<C> implements DisposableScreen {
+        extends AbstractContainerScreen<C> implements DisposableScreen {
 
     /**
      * The UI adapter of this screen. This handles
@@ -98,9 +97,10 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
                 this.addRenderableWidget(this.uiAdapter);
                 this.setFocused(this.uiAdapter);
 
-                this.uiAdapter.menu(this.menu);
+                this.uiAdapter.screen(this);
                 this.build(this.uiAdapter.rootComponent);
                 this.uiAdapter.rootComponent.setContainerAccess(this.uiAdapter);
+                this.uiAdapter.rootComponent.init();
 
                 MutableInt width = new MutableInt(0);
                 MutableInt height = new MutableInt(0);
@@ -131,6 +131,12 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
                 this.invalid = true;
             }
         }
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        this.uiAdapter.rootComponent.tick();
     }
 
     /**
@@ -191,37 +197,37 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        if (this.invalid) {
+            this.onClose();
+            return;
+        }
         var context = UIGuiGraphics.of(guiGraphics);
-        if (!this.invalid) {
-            super.render(context, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
 
-            if (this.uiAdapter.enableInspector) {
-                context.pose().translate(0, 0, 500);
+        if (this.uiAdapter.enableInspector) {
+            context.pose().translate(0, 0, 500);
 
-                for (int i = 0; i < this.menu.slots.size(); i++) {
-                    var slot = this.menu.slots.get(i);
-                    if (!slot.hasItem()) continue;
+            for (int i = 0; i < this.menu.slots.size(); i++) {
+                var slot = this.menu.slots.get(i);
+                if (!slot.hasItem()) continue;
 
-                    context.drawText(Component.literal("H:" + i),
-                            this.leftPos + slot.x + 15, this.topPos + slot.y + 9, .5f, 0x0096FF,
-                            UIGuiGraphics.TextAnchor.BOTTOM_RIGHT);
-                    context.drawText(Component.literal("I:" + slot.getContainerSlot()),
-                            this.leftPos + slot.x + 15, this.topPos + slot.y + 15, .5f, 0x5800FF,
-                            UIGuiGraphics.TextAnchor.BOTTOM_RIGHT);
-                }
-
-                context.pose().translate(0, 0, -500);
+                context.drawText(Component.literal("H:" + i),
+                        this.leftPos + slot.x + 15, this.topPos + slot.y + 9, .5f, 0x0096FF,
+                        UIGuiGraphics.TextAnchor.BOTTOM_RIGHT);
+                context.drawText(Component.literal("I:" + slot.getContainerSlot()),
+                        this.leftPos + slot.x + 15, this.topPos + slot.y + 15, .5f, 0x5800FF,
+                        UIGuiGraphics.TextAnchor.BOTTOM_RIGHT);
             }
 
-            this.renderTooltip(context, mouseX, mouseY);
-        } else {
-            this.onClose();
+            context.pose().translate(0, 0, -500);
         }
+        this.renderTooltip(context, mouseX, mouseY);
     }
 
     // stop the MC labels from rendering entirely.
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {}
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -232,8 +238,8 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
 
         return (modifiers & GLFW.GLFW_MOD_CONTROL) == 0 &&
                 this.uiAdapter.rootComponent.focusHandler().focused() instanceof GreedyInputUIComponent inputComponent ?
-                        inputComponent.onKeyPress(keyCode, scanCode, modifiers) :
-                        super.keyPressed(keyCode, scanCode, modifiers);
+                inputComponent.onKeyPress(keyCode, scanCode, modifiers) :
+                super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -262,5 +268,8 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {}
+    protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
+
+    }
+
 }

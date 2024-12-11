@@ -175,19 +175,19 @@ public class DropdownComponent extends FlowLayout {
 
             switch (entry.getNodeName()) {
                 case "divider" -> this.divider();
-                case "text" -> this.text(UIParsing.parseText(entry));
+                case "text" -> this.text(UIParsing.parseComponent(entry));
                 case "button" -> {
                     var children = UIParsing.childElements(entry);
                     UIParsing.expectChildren(entry, children, "text");
 
-                    var text = UIParsing.parseText(children.get("text"));
+                    var text = UIParsing.parseComponent(children.get("text"));
                     this.button(text, dropdownComponent -> {});
                 }
                 case "checkbox" -> {
                     var children = UIParsing.childElements(entry);
                     UIParsing.expectChildren(entry, children, "text", "checked");
 
-                    var text = UIParsing.parseText(children.get("text"));
+                    var text = UIParsing.parseComponent(children.get("text"));
                     var checked = UIParsing.parseBool(children.get("checked"));
 
                     this.checkbox(text, checked, aBoolean -> {});

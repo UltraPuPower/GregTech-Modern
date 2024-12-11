@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.widget.directional.CombinedDirectionalConfigurator;
-import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
-import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.AutoOutputFluidConfigHandler;
-import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.AutoOutputItemConfigHandler;
-import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.CoverableConfigHandler;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.common.ui.widget.directional.CombinedDirectionalConfigurator;
+import com.gregtechceu.gtceu.common.ui.widget.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.common.ui.widget.directional.handlers.AutoOutputFluidConfigHandler;
+import com.gregtechceu.gtceu.common.ui.widget.directional.handlers.AutoOutputItemConfigHandler;
+import com.gregtechceu.gtceu.common.ui.widget.directional.handlers.CoverableConfigHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
@@ -45,6 +47,10 @@ public class CombinedDirectionalFancyConfigurator implements IFancyUIProvider {
 
     @Override
     public Widget createMainPage(FancyMachineUIWidget widget) {
+    }
+
+    @Override
+    public ParentUIComponent createMainPage(FancyMachineUIComponent widget) {
         Size parentSize = widget.getSize();
         return new CombinedDirectionalConfigurator(
                 widget, configs.stream().map(Supplier::get).toArray(IDirectionalConfigHandler[]::new), machine,

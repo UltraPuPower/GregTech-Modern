@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -167,13 +168,8 @@ public class UIComponents {
         return new NinePatchTextureComponent(texture);
     }
 
-    public static TextureComponent texture(ResourceLocation texture, int u, int v, int regionWidth, int regionHeight,
-                                           int textureWidth, int textureHeight) {
-        return new TextureComponent(texture, u, v, regionWidth, regionHeight, textureWidth, textureHeight);
-    }
-
-    public static TextureComponent texture(ResourceLocation texture, int u, int v, int regionWidth, int regionHeight) {
-        return new TextureComponent(texture, u, v, regionWidth, regionHeight, 256, 256);
+    public static TextureComponent texture(UITexture texture, int regionWidth, int regionHeight) {
+        return new TextureComponent(texture, regionWidth, regionHeight);
     }
 
     public static BoxComponent box(Sizing horizontalSizing, Sizing verticalSizing) {

@@ -330,7 +330,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     // ******** GUI *********//
     //////////////////////////////////////
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         WidgetGroup group;
         if (isConfigurable) {
             group = new WidgetGroup(0, 0, 150, 70);

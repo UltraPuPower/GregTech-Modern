@@ -1,11 +1,11 @@
-package com.gregtechceu.gtceu.api.gui.widget.directional;
+package com.gregtechceu.gtceu.common.ui.widget.directional;
 
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.core.BlockPos;
@@ -18,7 +18,7 @@ public interface IDirectionalConfigHandler {
     /**
      * Returns the buttons to display inside the side selector
      */
-    Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIWidget machineUI);
+    UIComponent getSideSelectorWidget(SceneWidget scene, FancyMachineUIComponent machineUI);
 
     /**
      * Called whenever a side is selected in the side selector GUI
@@ -44,7 +44,7 @@ public interface IDirectionalConfigHandler {
         // Do nothing by default
     }
 
-    default void addAdditionalUIElements(WidgetGroup parent) {
+    default void addAdditionalUIElements(FlowLayout parent) {
         // Do nothing by default
     }
 }

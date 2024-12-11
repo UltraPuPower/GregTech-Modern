@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 
@@ -210,7 +211,38 @@ public class UIModel {
             return this.expandTemplate(expectedClass, templateName, templateParams::get, childParams::get);
         }
 
-        var component = UIParsing.getFactory(componentElement).apply(componentElement);
+        var component = UIParsing.getComponentFactory(componentElement).apply(componentElement);
+        component.parseProperties(this, componentElement, UIParsing.childElements(componentElement));
+
+        if (!expectedClass.isAssignableFrom(component.getClass())) {
+            var idString = componentElement.hasAttribute("id") ?
+                    " with id '" + componentElement.getAttribute("id") + "'" : "";
+
+            throw new IncompatibleUIModelException(
+                    "Expected component '" + componentElement.getNodeName() + "'" + idString + " to be a " +
+                            expectedClass.getSimpleName() + ", but it is a " + component.getClass().getSimpleName());
+        }
+
+        return (T) component;
+    }
+
+    /**
+     * Attempt to parse the given XMl element into a component,
+     * expanding any templates encountered. If the XML does
+     * not describe a valid component, a {@link UIModelParsingException}
+     * may be thrown
+     *
+     * @param expectedClass    The class the parsed component is expected to
+     *                         have. Should this be violated, an exception is
+     *                         thrown. If there are no specific expectations about
+     *                         the type of component to parse, pass {@link UIComponent}
+     * @param componentElement The XML element represented the
+     *                         component to parse.
+     * @return The parsed component
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends UITexture> T parseTexture(Class<T> expectedClass, Element componentElement) {
+        var component = UIParsing.getTextureFactory(componentElement).apply(componentElement);
         component.parseProperties(this, componentElement, UIParsing.childElements(componentElement));
 
         if (!expectedClass.isAssignableFrom(component.getClass())) {

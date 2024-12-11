@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -22,10 +23,9 @@ import java.util.Map;
 @Accessors(fluent = true, chain = true)
 public class TextureComponent extends BaseUIComponent {
 
-    protected final UITexture texture;
-    protected final int u, v;
+    @Setter
+    protected UITexture texture;
     protected final int regionWidth, regionHeight;
-    protected final int textureWidth, textureHeight;
 
     @Getter
     protected final AnimatableProperty<PositionedRectangle> visibleArea;
@@ -33,15 +33,10 @@ public class TextureComponent extends BaseUIComponent {
     @Setter
     protected boolean blend = false;
 
-    protected TextureComponent(UITexture texture, int u, int v, int regionWidth, int regionHeight,
-                               int textureWidth, int textureHeight) {
+    protected TextureComponent(UITexture texture, int regionWidth, int regionHeight) {
         this.texture = texture;
-        this.u = u;
-        this.v = v;
         this.regionWidth = regionWidth;
         this.regionHeight = regionHeight;
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
 
         this.visibleArea = AnimatableProperty.of(PositionedRectangle.of(0, 0, this.regionWidth, this.regionHeight));
     }
@@ -60,6 +55,12 @@ public class TextureComponent extends BaseUIComponent {
     public void update(float delta, int mouseX, int mouseY) {
         super.update(delta, mouseX, mouseY);
         this.visibleArea.update(delta);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        texture.updateTick();
     }
 
     @Override
@@ -84,25 +85,8 @@ public class TextureComponent extends BaseUIComponent {
 
         int width = Math.min(visibleArea.width(), regionWidth);
         int height = Math.min(visibleArea.height(), regionHeight);
-        this.texture.drawSubArea(graphics, visibleArea.x(), visibleArea.y(),
-                width, height,
-                (float) (this.u + visibleArea.x()) / visibleArea.y(),
-                (float) (this.v + visibleArea.y()) / visibleArea.y(),
-                (float) width / visibleArea.x(),
-                (float) height / visibleArea.y());
 
-        /*
-        graphics.blit(this.texture,
-                visibleArea.x(),
-                visibleArea.y(),
-                rightEdge - visibleArea.x(),
-                bottomEdge - visibleArea.y(),
-                this.u + visibleArea.x(),
-                this.v + visibleArea.y(),
-                rightEdge - visibleArea.x(),
-                bottomEdge - visibleArea.y(),
-                this.textureWidth, this.textureHeight);
-        */
+        this.texture.draw(graphics, mouseX, mouseY, visibleArea.x() + this.x(), visibleArea.y() + this.y(), width, height);
 
         if (this.blend) {
             RenderSystem.disableBlend();
@@ -124,6 +108,9 @@ public class TextureComponent extends BaseUIComponent {
     @Override
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
+
+        var textureElement = children.get("texture");
+        this.texture.parseProperties(model, textureElement, UIParsing.childElements(textureElement));
 
         UIParsing.apply(children, "blend", UIParsing::parseBool, this::blend);
 
@@ -152,18 +139,13 @@ public class TextureComponent extends BaseUIComponent {
     }
 
     public static TextureComponent parse(Element element) {
-        UIParsing.expectAttributes(element, "texture");
-        var textureId = UIParsing.parseResourceLocation(element.getAttributeNode("texture"));
+        var children = UIParsing.childElements(element);
+        UIParsing.expectChildren(element, children, "texture");
 
-        int u = 0, v = 0, regionWidth = 0, regionHeight = 0, textureWidth = 256, textureHeight = 256;
-        if (element.hasAttribute("u")) {
-            u = UIParsing.parseSignedInt(element.getAttributeNode("u"));
-        }
+        var child = children.get("texture");
+        var texture = UIParsing.getTextureFactory(child).apply(child);
 
-        if (element.hasAttribute("v")) {
-            v = UIParsing.parseSignedInt(element.getAttributeNode("v"));
-        }
-
+        int regionWidth = 0, regionHeight = 0;
         if (element.hasAttribute("region-width")) {
             regionWidth = UIParsing.parseSignedInt(element.getAttributeNode("region-width"));
         }
@@ -172,15 +154,6 @@ public class TextureComponent extends BaseUIComponent {
             regionHeight = UIParsing.parseSignedInt(element.getAttributeNode("region-height"));
         }
 
-        if (element.hasAttribute("texture-width")) {
-            textureWidth = UIParsing.parseSignedInt(element.getAttributeNode("texture-width"));
-        }
-
-        if (element.hasAttribute("texture-height")) {
-            textureHeight = UIParsing.parseSignedInt(element.getAttributeNode("texture-height"));
-        }
-
-        // TODO UITexture parser
-        return new TextureComponent(new ResourceTexture(textureId), u, v, regionWidth, regionHeight, textureWidth, textureHeight);
+        return new TextureComponent(texture, regionWidth, regionHeight);
     }
 }

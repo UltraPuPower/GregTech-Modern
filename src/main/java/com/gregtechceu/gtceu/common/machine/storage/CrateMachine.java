@@ -120,7 +120,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
                         .sizing(Sizing.fill(), Sizing.fill()))
                 .child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(5, 5)))
-                .child(UIComponents.playerInventory(adapter.menu(), inventorySize)
+                .child(UIComponents.playerInventory(adapter.screen(), inventorySize)
                         .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset)))
                 .positioning(Positioning.relative(50, 50)));
 
@@ -134,7 +134,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
         grid.positioning(Positioning.absolute(7, 17));
         for (int slot = 0; slot < inventorySize; slot++) {
             grid.child(UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18))
-                            .child(UIComponents.slot(adapter.menu().getSlot(slot)).id("inventory." + slot))
+                            .child(UIComponents.slot(adapter.screen().getSlot(slot)).id("inventory." + slot))
                             .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
                             /*.positioning(Positioning.absolute(x * 18, y * 18))*/,
                     y, x);

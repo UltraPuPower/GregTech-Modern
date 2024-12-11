@@ -129,7 +129,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     ///////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         int slots = getInventorySize();
         int tanks = (int) Math.sqrt(slots);
         var group = new WidgetGroup(0, 0, 18 * (tanks + 1) + 16, 18 * tanks + 16);

@@ -1,0 +1,14 @@
+{
+    "texture": "gtceu:textures/gui/widget/clipboard_text_box.png",
+    "texture_width": 9,
+    "texture_height": 18,
+    "repeat": false,
+    "corner_patch_size": {
+        "width": 1,
+        "height": 1
+    },
+    "center_patch_size": {
+        "width": 7,
+        "height": 16
+    }
+}

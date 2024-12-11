@@ -212,7 +212,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
     // ********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         var group = new WidgetGroup(0, 0, 18 + 16, 18 + 16);
         var container = new WidgetGroup(4, 4, 18 + 8, 18 + 8);
         container.addWidget(new BlockableSlotWidget(inventory.storage, 0, 4, 4)

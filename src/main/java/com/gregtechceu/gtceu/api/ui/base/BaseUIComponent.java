@@ -55,6 +55,7 @@ public abstract class BaseUIComponent implements UIComponent {
     protected final EventStream<MouseUp> mouseUpEvents = MouseUp.newStream();
     protected final EventStream<MouseScroll> mouseScrollEvents = MouseScroll.newStream();
     protected final EventStream<MouseDrag> mouseDragEvents = MouseDrag.newStream();
+    protected final EventStream<MouseMoved> mouseMovedEvents = MouseMoved.newStream();
     protected final EventStream<KeyPress> keyPressEvents = KeyPress.newStream();
     protected final EventStream<CharTyped> charTypedEvents = CharTyped.newStream();
     protected final EventStream<FocusGained> focusGainedEvents = FocusGained.newStream();
@@ -219,6 +220,16 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
+    public boolean onMouseMoved(double mouseX, double mouseY) {
+        return this.mouseMovedEvents.sink().onMouseMoved(mouseX, mouseY);
+    }
+
+    @Override
+    public EventSource<MouseMoved> mouseMoved() {
+        return this.mouseMovedEvents.source();
+    }
+
+    @Override
     public boolean onKeyPress(int keyCode, int scanCode, int modifiers) {
         return this.keyPressEvents.sink().onKeyPress(keyCode, scanCode, modifiers);
     }
@@ -322,18 +333,18 @@ public abstract class BaseUIComponent implements UIComponent {
 
     @Nullable
     public Player player() {
-        if(containerAccess() == null || containerAccess().menu() == null) return null;
-        return containerAccess().menu().player();
+        if(containerAccess() == null || containerAccess().screen() == null) return null;
+        return containerAccess().screen().getMenu().player();
     }
 
     public ItemStack getCarried() {
-        if(containerAccess() == null || containerAccess().menu() == null) return ItemStack.EMPTY;
-        return containerAccess().menu().getCarried();
+        if(containerAccess() == null || containerAccess().screen() == null) return ItemStack.EMPTY;
+        return containerAccess().screen().getMenu().getCarried();
     }
 
     public void setCarried(@NotNull ItemStack stack) {
-        if(containerAccess() == null || containerAccess().menu() == null) return;
-        containerAccess().menu().setCarried(stack);
+        if(containerAccess() == null || containerAccess().screen() == null) return;
+        containerAccess().screen().getMenu().setCarried(stack);
     }
 
     @Override

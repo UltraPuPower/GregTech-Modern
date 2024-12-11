@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
+import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
@@ -41,7 +42,7 @@ public interface IFancyUIProvider {
     /**
      * Attach configurators to the left panel.
      */
-    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {}
+    default void attachConfigurators(ConfiguratorPanelComponent configuratorPanel) {}
 
     /**
      * Attach tooltips to the right panel

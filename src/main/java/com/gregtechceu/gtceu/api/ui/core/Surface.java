@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.ui.core;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
@@ -19,9 +19,7 @@ import org.w3c.dom.Node;
 
 public interface Surface {
 
-    Surface UI_BACKGROUND = (graphics, component) -> {
-        NinePatchTexture.draw(GuiTextures.UI_BACKGROUND_TEXTURE, graphics, component);
-    };
+    Surface UI_BACKGROUND = GuiTextures.BACKGROUND::draw;
 
     Surface UI_BACKGROUND_BRONZE = (graphics, component) -> {
         graphics.drawPanel(component.x(), component.y(), component.width(), component.height(), false);
@@ -31,13 +29,9 @@ public interface Surface {
         graphics.drawPanel(component.x(), component.y(), component.width(), component.height(), true);
     };
 
-    Surface UI_BACKGROUND_INVERSE = (graphics, component) -> {
-        NinePatchTexture.draw(GuiTextures.UI_BACKGROUND_INVERSE_TEXTURE, graphics, component);
-    };
+    Surface UI_BACKGROUND_INVERSE = GuiTextures.BACKGROUND_INVERSE::draw;
 
-    Surface TITLE_BAR_BACKGROUND = (graphics, component) -> {
-        NinePatchTexture.draw(GuiTextures.TITLE_BAR_BACKGROUND_TEXTURE, graphics, component);
-    };
+    Surface TITLE_BAR_BACKGROUND = GuiTextures.TITLE_BAR_BACKGROUND::draw;
 
     Surface VANILLA_TRANSLUCENT = (graphics, component) -> {
         graphics.drawGradientRect(
@@ -105,9 +99,7 @@ public interface Surface {
 
     static Surface panelWithInset(int insetWidth) {
         return Surface.UI_BACKGROUND_INVERSE.and((graphics, component) -> {
-            NinePatchTexture.draw(
-                    GuiTextures.UI_BACKGROUND_INVERSE_TEXTURE,
-                    graphics,
+            GuiTextures.BACKGROUND_INVERSE.draw(graphics,
                     component.x() + insetWidth,
                     component.y() + insetWidth,
                     component.width() - insetWidth * 2,

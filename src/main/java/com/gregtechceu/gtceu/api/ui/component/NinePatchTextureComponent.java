@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 
 import net.minecraft.resources.ResourceLocation;
 

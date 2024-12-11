@@ -342,7 +342,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     // *********** GUI ***********//
     //////////////////////////////////////
 
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         var group = new WidgetGroup(0, 0, 109, 63);
         var importItems = createImportItems();
         group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))

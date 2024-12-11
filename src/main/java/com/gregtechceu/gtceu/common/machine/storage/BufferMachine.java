@@ -214,7 +214,7 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     ////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         int invTier = getTankSize(tier);
         var group = new WidgetGroup(0, 0, 18 * (invTier + 1) + 16, 18 * invTier + 16);
         var container = new WidgetGroup(4, 4, 18 * (invTier + 1) + 8, 18 * invTier + 8);

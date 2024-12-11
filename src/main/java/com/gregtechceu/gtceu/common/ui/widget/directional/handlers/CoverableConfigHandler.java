@@ -1,18 +1,21 @@
-package com.gregtechceu.gtceu.api.gui.widget.directional.handlers;
+package com.gregtechceu.gtceu.common.ui.widget.directional.handlers;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
+import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.gui.widget.CoverConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.common.ui.widget.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -37,14 +40,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CoverableConfigHandler implements IDirectionalConfigHandler {
 
-    private static final IGuiTexture CONFIG_BTN_TEXTURE = new GuiTextureGroup(GuiTextures.IO_CONFIG_COVER_SETTINGS);
+    private static final UITexture CONFIG_BUTTON_TEXTURE = UITextures.group(GuiTextures.IO_CONFIG_COVER_SETTINGS);
 
     private final ICoverable machine;
     private CustomItemStackHandler handler;
     private Direction side;
 
-    private ConfiguratorPanel panel;
-    private ConfiguratorPanel.FloatingTab coverConfigurator;
+    private ConfiguratorPanelComponent panel;
+    private ConfiguratorPanelComponent.FloatingTab coverConfigurator;
 
     private SlotWidget slotWidget;
     private CoverBehavior coverBehavior;
@@ -74,14 +77,14 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
     }
 
     @Override
-    public Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIWidget machineUI) {
+    public Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIComponent machineUI) {
         WidgetGroup group = new WidgetGroup(0, 0, (18 * 2) + 1, 18);
-        this.panel = machineUI.getConfiguratorPanel();
+        this.panel = machineUI.configuratorPanel();
 
         group.addWidget(slotWidget = new SlotWidget(handler, 0, 19, 0)
                 .setChangeListener(this::coverItemChanged)
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IO_CONFIG_COVER_SLOT_OVERLAY)));
-        group.addWidget(new PredicatedButtonWidget(0, 0, 18, 18, CONFIG_BTN_TEXTURE, this::toggleConfigTab,
+        group.addWidget(new PredicatedButtonWidget(0, 0, 18, 18, CONFIG_BUTTON_TEXTURE, this::toggleConfigTab,
                 () -> side != null && coverBehavior != null && machine.getCoverAtSide(side) instanceof IUICover));
 
         checkCoverBehaviour();

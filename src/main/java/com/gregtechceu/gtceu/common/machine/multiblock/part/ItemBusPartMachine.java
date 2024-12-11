@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -193,7 +193,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+    public void attachConfigurators(ConfiguratorPanelComponent configuratorPanel) {
         if (this.io == IO.OUT) {
             IDistinctPart.super.superAttachConfigurators(configuratorPanel);
         } else if (this.io == IO.IN) {
@@ -203,7 +203,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         int rowSize = (int) Math.sqrt(getInventorySize());
         int colSize = rowSize;
         if (getInventorySize() == 8) {

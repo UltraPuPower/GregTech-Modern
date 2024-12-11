@@ -105,6 +105,7 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
 
                 this.build(this.uiAdapter.rootComponent);
                 this.uiAdapter.rootComponent.setContainerAccess(this.uiAdapter);
+                this.uiAdapter.rootComponent.init();
 
                 this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
             } catch (Exception error) {
@@ -113,6 +114,12 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
                 this.invalid = true;
             }
         }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        this.uiAdapter.rootComponent.tick();
     }
 
     /**

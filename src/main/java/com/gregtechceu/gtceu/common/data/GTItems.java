@@ -30,7 +30,6 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
-import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
@@ -91,7 +90,6 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import net.minecraftforge.items.SlotItemHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -1826,7 +1824,7 @@ public class GTItems {
                     rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
                     FlowLayout layout;
-                    SyncedProperty<FluidStack> containedFluid = adapter.menu().getProperty("fluid.0");
+                    SyncedProperty<FluidStack> containedFluid = adapter.screen().getProperty("fluid.0");
 
                     CustomFluidTank tank = new CustomFluidTank(containedFluid.get());
                     containedFluid.observe(tank::setFluid);
@@ -1863,9 +1861,9 @@ public class GTItems {
                     layout.child(
                             UIContainers.stack(Sizing.content(), Sizing.content())
                                     .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
-                                    .child(UIComponents.slot(adapter.menu().getSlot(0)).id("item-in.0"))
+                                    .child(UIComponents.slot(adapter.screen().getSlot(0)).id("item-in.0"))
                                     .positioning(Positioning.relative(25, 25)));
-                    layout.child(UIComponents.playerInventory(adapter.menu(), 1)
+                    layout.child(UIComponents.playerInventory(adapter.screen(), 1)
                             .positioning(Positioning.absolute(10, 84)));
 
                 }

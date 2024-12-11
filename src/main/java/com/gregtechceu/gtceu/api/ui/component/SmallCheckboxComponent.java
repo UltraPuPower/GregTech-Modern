@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Color;
-import com.gregtechceu.gtceu.api.ui.core.CursorStyle;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
@@ -98,7 +95,7 @@ public class SmallCheckboxComponent extends BaseUIComponent {
 
     public void toggle() {
         this.checked(!this.checked);
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        UIComponent.playButtonClickSound();
     }
 
     public EventSource<OnChanged> onChanged() {
@@ -138,7 +135,7 @@ public class SmallCheckboxComponent extends BaseUIComponent {
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
 
-        UIParsing.apply(children, "label", UIParsing::parseText, this::label);
+        UIParsing.apply(children, "label", UIParsing::parseComponent, this::label);
         UIParsing.apply(children, "label-shadow", UIParsing::parseBool, this::labelShadow);
         UIParsing.apply(children, "checked", UIParsing::parseBool, this::checked);
     }

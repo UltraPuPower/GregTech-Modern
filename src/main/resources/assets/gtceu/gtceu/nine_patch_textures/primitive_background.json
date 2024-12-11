@@ -1,0 +1,14 @@
+{
+    "texture": "gtceu:textures/gui/primitive/primitive_background.png",
+    "texture_width": 176,
+    "texture_height": 166,
+    "repeat": false,
+    "corner_patch_size": {
+        "width": 3,
+        "height": 3
+    },
+    "center_patch_size": {
+        "width": 170,
+        "height": 160
+    }
+}

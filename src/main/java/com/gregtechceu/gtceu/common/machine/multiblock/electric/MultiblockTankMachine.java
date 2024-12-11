@@ -72,7 +72,7 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
     /////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         var group = new WidgetGroup(0, 0, 90, 63);
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
 

@@ -1,10 +1,11 @@
-package com.gregtechceu.gtceu.api.ui.util;
+package com.gregtechceu.gtceu.api.ui.texture;
 
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 
-import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -15,13 +16,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.ApiStatus;
+import org.w3c.dom.Element;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class NinePatchTexture implements UITexture {
+public class NinePatchTexture extends ResourceTexture {
 
+    @Getter
     private final ResourceLocation texture;
     private final int u, v;
     private final Size cornerPatchSize;
@@ -31,6 +35,7 @@ public class NinePatchTexture implements UITexture {
 
     public NinePatchTexture(ResourceLocation texture, int u, int v, Size cornerPatchSize, Size centerPatchSize,
                             Size textureSize, boolean repeat) {
+        super(texture, u, v, textureSize.width(), textureSize.height());
         this.texture = texture;
         this.u = u;
         this.v = v;
@@ -52,7 +57,7 @@ public class NinePatchTexture implements UITexture {
         this.draw(context, rectangle.x(), rectangle.y(), rectangle.width(), rectangle.height());
     }
 
-    public void draw(UIGuiGraphics context, int x, int y, int width, int height) {
+    public void draw(UIGuiGraphics context, float x, float y, float width, float height) {
         int rightEdge = this.cornerPatchSize.width() + this.centerPatchSize.width();
         int bottomEdge = this.cornerPatchSize.height() + this.centerPatchSize.height();
 
@@ -75,7 +80,7 @@ public class NinePatchTexture implements UITexture {
         }
     }
 
-    protected void drawStretched(UIGuiGraphics context, int x, int y, int width, int height) {
+    protected void drawStretched(UIGuiGraphics context, float x, float y, float width, float height) {
         int doubleCornerHeight = this.cornerPatchSize.height() * 2;
         int doubleCornerWidth = this.cornerPatchSize.width() * 2;
 
@@ -112,7 +117,7 @@ public class NinePatchTexture implements UITexture {
         }
     }
 
-    protected void drawRepeated(UIGuiGraphics context, int x, int y, int width, int height) {
+    protected void drawRepeated(UIGuiGraphics context, float x, float y, float width, float height) {
         int doubleCornerHeight = this.cornerPatchSize.height() * 2;
         int doubleCornerWidth = this.cornerPatchSize.width() * 2;
 
@@ -120,13 +125,13 @@ public class NinePatchTexture implements UITexture {
         int bottomEdge = this.cornerPatchSize.height() + this.centerPatchSize.height();
 
         if (width > doubleCornerWidth && height > doubleCornerHeight) {
-            int leftoverHeight = height - doubleCornerHeight;
+            float leftoverHeight = height - doubleCornerHeight;
             while (leftoverHeight > 0) {
-                int drawHeight = Math.min(this.centerPatchSize.height(), leftoverHeight);
+                float drawHeight = Math.min(this.centerPatchSize.height(), leftoverHeight);
 
-                int leftoverWidth = width - doubleCornerWidth;
+                float leftoverWidth = width - doubleCornerWidth;
                 while (leftoverWidth > 0) {
-                    int drawWidth = Math.min(this.centerPatchSize.width(), leftoverWidth);
+                    float drawWidth = Math.min(this.centerPatchSize.width(), leftoverWidth);
                     context.blit(this.texture, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth,
                             y + this.cornerPatchSize.height() + leftoverHeight - drawHeight, drawWidth, drawHeight,
                             this.u + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth,
@@ -140,9 +145,9 @@ public class NinePatchTexture implements UITexture {
         }
 
         if (width > doubleCornerWidth) {
-            int leftoverWidth = width - doubleCornerWidth;
+            float leftoverWidth = width - doubleCornerWidth;
             while (leftoverWidth > 0) {
-                int drawWidth = Math.min(this.centerPatchSize.width(), leftoverWidth);
+                float drawWidth = Math.min(this.centerPatchSize.width(), leftoverWidth);
 
                 context.blit(this.texture, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth, y, drawWidth,
                         this.cornerPatchSize.height(),
@@ -159,9 +164,9 @@ public class NinePatchTexture implements UITexture {
         }
 
         if (height > doubleCornerHeight) {
-            int leftoverHeight = height - doubleCornerHeight;
+            float leftoverHeight = height - doubleCornerHeight;
             while (leftoverHeight > 0) {
-                int drawHeight = Math.min(this.centerPatchSize.height(), leftoverHeight);
+                float drawHeight = Math.min(this.centerPatchSize.height(), leftoverHeight);
                 context.blit(this.texture, x, y + this.cornerPatchSize.height() + leftoverHeight - drawHeight,
                         this.cornerPatchSize.width(), drawHeight, this.u,
                         this.v + this.cornerPatchSize.height() + this.centerPatchSize.height() - drawHeight,
@@ -191,8 +196,19 @@ public class NinePatchTexture implements UITexture {
     }
 
     @Override
-    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height) {
+    public void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
         this.draw(graphics, x, y, width, height);
+    }
+
+    @ApiStatus.Internal
+    public static NinePatchTexture get(ResourceLocation id) {
+        return MetadataLoader.LOADED_TEXTURES.remove(id);
+    }
+
+    public static NinePatchTexture parse(Element element) {
+        UIParsing.expectAttributes(element, "texture");
+        ResourceLocation id = UIParsing.parseResourceLocation(element.getAttributeNode("texture"));
+        return NinePatchTexture.get(id);
     }
 
     public static class MetadataLoader extends SimpleJsonResourceReloadListener {

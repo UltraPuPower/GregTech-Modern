@@ -122,7 +122,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public WidgetGroup createUIWidget() {
+    public WidgetGroup createBaseUIComponent() {
         var group = new WidgetGroup(0, 0, 176, 131);
         group.addWidget(new PhantomFluidWidget(cache, 0, 36, 6, 18, 18, this::getStored, this::updateStored)
                 .setShowAmount(false)

@@ -1,19 +1,23 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
-import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import net.minecraft.client.gui.GuiGraphics;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+@ApiStatus.Internal
 public class VerticalTabsComponent extends TabsComponent {
 
-    public VerticalTabsComponent(Consumer<IFancyUIProvider> onTabClick, int x, int y, int width, int height) {
-        super(onTabClick, x, y, width, height);
-        ResourceTexture tabsLeft = new ResourceTexture("gtceu:textures/gui/tab/tabs_left.png");
+    public VerticalTabsComponent(Consumer<IFancyUIProvider> onTabClick) {
+        super(onTabClick);
+        ResourceTexture tabsLeft = UITextures.resource(GTCEu.id("textures/gui/tab/tabs_left.png"));
         setTabTexture(tabsLeft.getSubTexture(0, 1 / 3f, 0.5f, 1 / 3f));
         setTabHoverTexture(tabsLeft.getSubTexture(0.5f, 1 / 3f, 0.5f, 1 / 3f));
         setTabPressedTexture(tabsLeft.getSubTexture(0.5f, 1 / 3f, 0.5f, 1 / 3f));
@@ -25,17 +29,16 @@ public class VerticalTabsComponent extends TabsComponent {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        drawBackgroundTexture(graphics, mouseX, mouseY);
-        var position = getPosition();
-        var size = getSize();
+    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         var hoveredTab = getHoveredTab(mouseX, mouseY);
+        if (hoveredTab == null) {
+            return;
+        }
+        updateTooltip(hoveredTab);
         // main tab
-        drawTab(mainTab, graphics, mouseX, mouseY, position.x, position.y + 8, 24, 24, hoveredTab);
+        drawTab(mainTab, graphics, mouseX, mouseY, x, y + 8, 24, 24, hoveredTab);
         for (int i = 0; i < subTabs.size(); ++i) {
-            drawTab(subTabs.get(i), graphics, mouseX, mouseY, position.x, position.y + 8 + 24 * (i + 1), 24, 24,
-                    hoveredTab);
+            drawTab(subTabs.get(i), graphics, mouseX, mouseY, x, y + 8 + 24 * (i + 1), 24, 24, hoveredTab);
         }
     }
 
@@ -43,14 +46,12 @@ public class VerticalTabsComponent extends TabsComponent {
     @Nullable
     public IFancyUIProvider getHoveredTab(double mouseX, double mouseY) {
         if (isMouseOverElement(mouseX, mouseY)) {
-            var position = getPosition();
-            var size = getSize();
             // main tab
-            if (isMouseOver(position.x, position.y + 8, 24, 24, mouseX, mouseY)) {
+            if (UIComponent.isMouseOver(x, y + 8, 24, 24, mouseX, mouseY)) {
                 return mainTab;
             }
             // others
-            int i = ((int) mouseY - position.y - 24 - 8) / 24;
+            int i = ((int) mouseY - y - 24 - 8) / 24;
             if (i >= 0 && i < subTabs.size()) {
                 return subTabs.get(i);
             }

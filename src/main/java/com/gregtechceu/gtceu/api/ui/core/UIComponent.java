@@ -8,9 +8,11 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +26,16 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public interface UIComponent extends PositionedRectangle {
+
+    /**
+     * Called every tick this screen is open.
+     */
+    default void tick() {}
+
+    /**
+     * Called once when the GUI is initialized.
+     */
+    default void init() {}
 
     /**
      * Draw the current state of this component onto the screen
@@ -85,7 +97,7 @@ public interface UIComponent extends PositionedRectangle {
     }
 
     default <R extends Record> void sendMenuUpdate(R message) {
-        this.containerAccess().menu().sendMessage(message);
+        this.containerAccess().screen().getMenu().sendMessage(message);
     }
 
     /**
@@ -358,8 +370,21 @@ public interface UIComponent extends PositionedRectangle {
     }
 
     /**
-     * Called when the mouse has been clicked inside
-     * the bounding box of this component
+     * Called when the mouse has been moved inside the bounding box of this component
+     *
+     * @param mouseX The x coordinate at which the mouse was clicked, relative
+     *               to this component's bounding box root
+     * @param mouseY The y coordinate at which the mouse was moved to, relative
+     *               to this component's bounding box root
+     * @return {@code true} if this component handled the click and no more
+     *         components should be notified
+     */
+    boolean onMouseMoved(double mouseX, double mouseY);
+
+    EventSource<MouseMoved> mouseMoved();
+
+    /**
+     * Called when the mouse has been clicked inside the bounding box of this component
      *
      * @param mouseX The x coordinate at which the mouse was clicked, relative
      *               to this component's bounding box root
@@ -375,8 +400,7 @@ public interface UIComponent extends PositionedRectangle {
     EventSource<MouseDown> mouseDown();
 
     /**
-     * Called when a mouse button has been released
-     * while this component is focused
+     * Called when a mouse button has been released while this component is focused
      *
      * @param button The mouse button which was released, refer to the constants
      *               in {@link org.lwjgl.glfw.GLFW}
@@ -388,8 +412,7 @@ public interface UIComponent extends PositionedRectangle {
     EventSource<MouseUp> mouseUp();
 
     /**
-     * Called when the mouse has been scrolled inside
-     * the bounding box of this component
+     * Called when the mouse has been scrolled inside the bounding box of this component
      *
      * @param mouseX The x coordinate at which the mouse pointer is, relative
      *               to this component's bounding box root
@@ -404,8 +427,7 @@ public interface UIComponent extends PositionedRectangle {
     EventSource<MouseScroll> mouseScroll();
 
     /**
-     * Called when the mouse has been dragged
-     * while this component is focused
+     * Called when the mouse has been dragged while this component is focused
      *
      * @param mouseX The x coordinate at which the mouse was dragged, relative
      *               to this component's bounding box root
@@ -423,8 +445,7 @@ public interface UIComponent extends PositionedRectangle {
     EventSource<MouseDrag> mouseDrag();
 
     /**
-     * Called when a key on the keyboard has been pressed
-     * while this component is focused
+     * Called when a key on the keyboard has been pressed while this component is focused
      *
      * @param keyCode   The key token of the pressed key, refer to the constants in {@link org.lwjgl.glfw.GLFW}
      * @param scanCode  A platform-specific scancode uniquely identifying the exact key that was pressed
@@ -439,8 +460,7 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * Called when a keyboard input event occurred - namely when
-     * a key has been pressed and the OS determined it should result
-     * in a character being typed
+     * a key has been pressed and the OS determined it should result in a character being typed
      *
      * @param chr       The character that was typed
      * @param modifiers A bitfield describing which modifier keys were pressed,
@@ -460,8 +480,7 @@ public interface UIComponent extends PositionedRectangle {
     }
 
     /**
-     * Called when this component gains focus, due
-     * to being clicked or selected via tab-cycling
+     * Called when this component gains focus, due to being clicked or selected via tab-cycling
      */
     void onFocusGained(FocusSource source);
 
@@ -485,14 +504,12 @@ public interface UIComponent extends PositionedRectangle {
     CursorStyle cursorStyle();
 
     /**
-     * Set the style of cursor to use while the
-     * mouse is hovering this component
+     * Set the style of cursor to use while the mouse is hovering this component
      */
     UIComponent cursorStyle(CursorStyle style);
 
     /**
-     * Update the state of this component
-     * before drawing the next frame
+     * Update the state of this component before drawing the next frame
      *
      * @param delta  The duration of the last frame, in partial ticks
      * @param mouseX The mouse pointer's x-coordinate
@@ -506,8 +523,7 @@ public interface UIComponent extends PositionedRectangle {
     }
 
     /**
-     * Test whether the given coordinates
-     * are inside this component's bounding box
+     * Test whether the given coordinates are inside this component's bounding box
      *
      * @param x The x-coordinate to test
      * @param y The y-coordinate to test
@@ -546,7 +562,7 @@ public interface UIComponent extends PositionedRectangle {
         UIParsing.apply(children, "positioning", Positioning::parse, this::positioning);
         UIParsing.apply(children, "z-index", UIParsing::parseSignedInt, this::zIndex);
         UIParsing.apply(children, "cursor-style", UIParsing.parseEnum(CursorStyle.class), this::cursorStyle);
-        UIParsing.apply(children, "tooltip-text", UIParsing::parseText, this::tooltip);
+        UIParsing.apply(children, "tooltip-text", UIParsing::parseComponent, this::tooltip);
 
         if (children.containsKey("sizing")) {
             var sizingValues = UIParsing.childElements(children.get("sizing"));
@@ -681,6 +697,25 @@ public interface UIComponent extends PositionedRectangle {
         this.x(x);
         this.y(y);
         return this;
+    }
+
+    default UIComponent getHoveredComponent(int mouseX, int mouseY) {
+        if (isMouseOverElement(mouseX, mouseY)) {
+            return this;
+        }
+        return null;
+    }
+
+    default boolean isMouseOverElement(double mouseX, double mouseY) {
+        return isMouseOver(x(), y(), width(), height(), mouseX, mouseY);
+    }
+
+    static void playButtonClickSound() {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+    }
+
+    static boolean isMouseOver(int x, int y, int width, int height, double mouseX, double mouseY) {
+        return mouseX >= x && mouseY >= y && x + width > mouseX && y + height > mouseY;
     }
 
     enum FocusSource {

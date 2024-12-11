@@ -1,9 +1,12 @@
-package com.gregtechceu.gtceu.api.gui.widget.directional.handlers;
+package com.gregtechceu.gtceu.common.ui.widget.directional.handlers;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.core.Color;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.common.ui.widget.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 
@@ -16,6 +19,7 @@ import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,7 +50,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
     }
 
     @Override
-    public Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIWidget machineUI) {
+    public Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIComponent machineUI) {
         WidgetGroup group = new WidgetGroup(0, 0, (18 * 2) + 1, 18);
 
         group.addWidget(ioModeButton = new ButtonWidget(0, 0, 18, 18, this::onIOModePressed) {
@@ -132,16 +136,16 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
     }
 
     @Override
-    public void addAdditionalUIElements(WidgetGroup parent) {
-        LabelWidget text = new LabelWidget(4, 4, "gtceu.gui.auto_output.name") {
+    public void addAdditionalUIElements(FlowLayout parent) {
+        LabelComponent text = new LabelComponent(Component.translatable("gtceu.gui.auto_output.name") {
 
-            @Override
-            public boolean isVisible() {
-                return machine.isAutoOutputItems() && machine.getOutputFacingItems() != null;
-            }
+            //@Override
+            //public boolean isVisible() {
+            //    return machine.isAutoOutputItems() && machine.getOutputFacingItems() != null;
+            //}
         };
 
-        text.setTextColor(0xffff6e0f).setDropShadow(false);
-        parent.addWidget(text);
+        text.color(Color.ofArgb(0xff00b4ff));
+        parent.child(text);
     }
 }

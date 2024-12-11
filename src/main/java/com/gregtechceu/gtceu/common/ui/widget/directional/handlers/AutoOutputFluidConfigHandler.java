@@ -1,22 +1,30 @@
-package com.gregtechceu.gtceu.api.gui.widget.directional.handlers;
+package com.gregtechceu.gtceu.common.ui.widget.directional.handlers;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Color;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.common.ui.widget.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -28,46 +36,46 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
 
-    private static final IGuiTexture TEXTURE_OFF = new GuiTextureGroup(
+    private static final UITexture TEXTURE_OFF = UITextures.group(
             GuiTextures.VANILLA_BUTTON,
             GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON.getSubTexture(0, 0, 1, 1 / 3f));
-    private static final IGuiTexture TEXTURE_OUTPUT = new GuiTextureGroup(
+    private static final UITexture TEXTURE_OUTPUT = UITextures.group(
             GuiTextures.VANILLA_BUTTON,
             GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON.getSubTexture(0, 1 / 3f, 1, 1 / 3f));
-    private static final IGuiTexture TEXTURE_AUTO = new GuiTextureGroup(
+    private static final UITexture TEXTURE_AUTO = UITextures.group(
             GuiTextures.VANILLA_BUTTON,
             GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON.getSubTexture(0, 2 / 3f, 1, 1 / 3f));
 
     private final IAutoOutputFluid machine;
     private Direction side;
-    private ButtonWidget ioModeButton;
+    private ButtonComponent ioModeButton;
 
     public AutoOutputFluidConfigHandler(IAutoOutputFluid machine) {
         this.machine = machine;
     }
 
     @Override
-    public Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIWidget machineUI) {
-        WidgetGroup group = new WidgetGroup(0, 0, (18 * 2) + 1, 18);
+    public UIComponent getSideSelectorWidget(SceneWidget scene, FancyMachineUIComponent machineUI) {
+        FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed((18 * 2) + 1), Sizing.fixed(18));
 
-        group.addWidget(ioModeButton = new ButtonWidget(0, 0, 18, 18, this::onIOModePressed) {
+        group.child(ioModeButton = new ButtonComponent(0, 0, 18, 18, this::onIOModePressed) {
 
             @Override
-            public void updateScreen() {
-                super.updateScreen();
+            public void update(float delta, int mouseX, int mouseY) {
+                super.update(delta, mouseX, mouseY);
                 if (machine.getOutputFacingFluids() == side) {
                     if (machine.isAutoOutputFluids()) {
-                        setButtonTexture(TEXTURE_AUTO);
+                        renderer(Renderer.texture(TEXTURE_AUTO));
                     } else {
-                        setButtonTexture(TEXTURE_OUTPUT);
+                        renderer(Renderer.texture(TEXTURE_OUTPUT));
                     }
                 } else {
-                    setButtonTexture(TEXTURE_OFF);
+                    renderer(Renderer.texture(TEXTURE_OFF));
                 }
             }
         });
 
-        group.addWidget(new ToggleButtonWidget(
+        group.child(new ToggleButtonWidget(
                 19, 0, 18, 18, GuiTextures.BUTTON_FLUID_OUTPUT,
                 machine::isAllowInputFromOutputSideFluids, machine::setAllowInputFromOutputSideFluids)
                 .setShouldUseBaseBackground().setTooltipText("gtceu.gui.fluid_auto_output.allow_input"));
@@ -75,7 +83,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
         return group;
     }
 
-    private void onIOModePressed(ClickData cd) {
+    private void onIOModePressed(ButtonComponent button) {
         if (this.side == null)
             return;
 
@@ -132,18 +140,17 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
     }
 
     @Override
-    public void addAdditionalUIElements(WidgetGroup parent) {
-        LabelWidget text = new LabelWidget(4, 4, "gtceu.gui.auto_output.name") {
+    public void addAdditionalUIElements(FlowLayout parent) {
+        LabelComponent text = new LabelComponent(Component.translatable("gtceu.gui.auto_output.name")) {
 
-            @Override
-            public boolean isVisible() {
-                return machine.isAutoOutputFluids() && machine.getOutputFacingFluids() != null;
-            }
+            //@Override
+            //public boolean isVisible() {
+            //    return machine.isAutoOutputFluids() && machine.getOutputFacingFluids() != null;
+            //}
         };
+        text.positioning(Positioning.absolute(parent.width() - 4 - text.width(), 4));
 
-        text.setSelfPosition(new Position(parent.getSize().width - 4 - text.getSize().width, 4));
-
-        text.setTextColor(0xff00b4ff).setDropShadow(false);
-        parent.addWidget(text);
+        text.color(Color.ofArgb(0xff00b4ff));
+        parent.child(text);
     }
 }

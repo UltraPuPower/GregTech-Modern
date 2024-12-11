@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.Delta;
-import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -373,6 +373,17 @@ public class ScrollContainer<C extends UIComponent> extends WrappingParentUIComp
                         active ? HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE : DISABLED_HORIZONTAL_VANILLA_SCROLLBAR_TEXTURE;
 
                 NinePatchTexture.draw(texture, graphics, x + 1, y + 1, width - 2, height - 2);
+            };
+        }
+
+        /**
+         * The vanilla scrollbar used by the creative inventory screen
+         */
+        static Scrollbar custom(ResourceLocation track, ResourceLocation background) {
+            return (graphics, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction,
+                    active) -> {
+                NinePatchTexture.draw(track, graphics, trackX, trackY, trackWidth, trackHeight);
+                NinePatchTexture.draw(background, graphics, x + 1, y + 1, width - 2, height - 2);
             };
         }
 

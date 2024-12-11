@@ -1,8 +1,8 @@
-package com.gregtechceu.gtceu.api.gui.fancy;
+package com.gregtechceu.gtceu.api.ui.fancy;
 
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,7 @@ import java.util.function.Function;
  */
 public interface IFancyConfiguratorButton extends IFancyConfigurator {
 
-    void onClick(ClickData clickData);
+    void onClick(ButtonComponent clickData);
 
     @Override
     default Component getTitle() {
@@ -33,7 +33,7 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
     }
 
     @Override
-    default Widget createConfigurator() {
+    default UIComponent createConfigurator() {
         throw new NotImplementedException();
     }
 
@@ -42,14 +42,14 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
 
         IGuiTexture base;
         IGuiTexture pressed;
-        BiConsumer<ClickData, Boolean> onClick;
+        BiConsumer<ButtonComponent, Boolean> onClick;
         BooleanSupplier booleanSupplier;
         boolean isPressed;
         @Setter
         Function<Boolean, List<Component>> tooltipsSupplier = isPressed -> Collections.emptyList();
 
         public Toggle(IGuiTexture base, IGuiTexture pressed, BooleanSupplier booleanSupplier,
-                      BiConsumer<ClickData, Boolean> onClick) {
+                      BiConsumer<ButtonComponent, Boolean> onClick) {
             this.base = base;
             this.pressed = pressed;
             this.booleanSupplier = booleanSupplier;
@@ -94,7 +94,7 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
         }
 
         @Override
-        public void onClick(ClickData clickData) {
+        public void onClick(ButtonComponent clickData) {
             onClick.accept(clickData, !isPressed);
         }
     }

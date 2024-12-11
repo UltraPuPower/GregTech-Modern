@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyCustomMiddleClickAction;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyCustomMouseWheelAction;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyCustomMiddleClickAction;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyCustomMouseWheelAction;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -83,7 +83,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
     }
 
     @Override
-    public void handleClientAction(int id, FriendlyByteBuf buffer) {
+    public void receiveMessage(int id, FriendlyByteBuf buffer) {
         switch (id) {
             case SET_TO_ZERO -> {
                 if (ConfigHolder.INSTANCE.machines.ghostCircuit || !circuitSlot.getStackInSlot(0).isEmpty())

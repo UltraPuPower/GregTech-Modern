@@ -164,7 +164,7 @@ public class CollapsibleContainer extends FlowLayout {
 
     public static CollapsibleContainer parse(Element element) {
         var textElement = UIParsing.childElements(element).get("text");
-        var title = textElement == null ? Component.empty() : UIParsing.parseText(textElement);
+        var title = textElement == null ? Component.empty() : UIParsing.parseComponent(textElement);
 
         return element.getAttribute("expanded").equals("true") ?
                 UIContainers.collapsible(Sizing.content(), Sizing.content(), title, true) :

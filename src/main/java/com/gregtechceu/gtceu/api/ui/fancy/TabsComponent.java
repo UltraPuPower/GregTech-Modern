@@ -1,19 +1,17 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
-import com.gregtechceu.gtceu.api.ui.texture.UITextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -33,21 +31,21 @@ public class TabsComponent extends BaseUIComponent {
     @Nullable
     protected IFancyUIProvider selectedTab;
     @Setter
-    protected UITexture leftButtonTexture = new UITextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().scale(0.7f)),
-            leftButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON,
-                    Icons.LEFT.copy().setColor(0xffaaaaaa).scale(0.7f));
+    protected UITexture leftButtonTexture = UITextures.group(GuiTextures.BUTTON, GuiTextures.BUTTON_LEFT),
+            leftButtonHoverTexture = UITextures.group(GuiTextures.BUTTON,
+                    GuiTextures.BUTTON_LEFT.copy().setColor(0xffaaaaaa));
     @Setter
-    protected IGuiTexture rightButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().scale(0.7f)),
-            rightButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON,
-                    Icons.RIGHT.copy().setColor(0xffaaaaaa).scale(0.7f));
+    protected UITexture rightButtonTexture = UITextures.group(GuiTextures.BUTTON, GuiTextures.BUTTON_RIGHT),
+            rightButtonHoverTexture = UITextures.group(GuiTextures.BUTTON,
+                    GuiTextures.BUTTON_RIGHT.copy().setColor(0xffaaaaaa));
     @Setter
-    protected IGuiTexture tabTexture = new ResourceTexture("gtceu:textures/gui/tab/tabs_top.png").getSubTexture(1 / 3f,
-            0, 1 / 3f, 0.5f);
+    protected UITexture tabTexture = UITextures.resource(GTCEu.id("textures/gui/tab/tabs_top.png"))
+            .getSubTexture(1 / 3f, 0, 1 / 3f, 0.5f);
     @Setter
-    protected IGuiTexture tabHoverTexture = new ResourceTexture("gtceu:textures/gui/tab/tabs_top.png")
+    protected UITexture tabHoverTexture = UITextures.resource(GTCEu.id("textures/gui/tab/tabs_top.png"))
             .getSubTexture(1 / 3f, 0.5f, 1 / 3f, 0.5f);
     @Setter
-    protected IGuiTexture tabPressedTexture = tabHoverTexture;
+    protected UITexture tabPressedTexture = tabHoverTexture;
     @Getter
     protected int offset;
     /**
@@ -58,11 +56,6 @@ public class TabsComponent extends BaseUIComponent {
     protected BiConsumer<IFancyUIProvider, IFancyUIProvider> onTabSwitch;
 
     public TabsComponent(Consumer<IFancyUIProvider> onTabClick) {
-        this(onTabClick, 0, -20, 200, 24);
-    }
-
-    public TabsComponent(Consumer<IFancyUIProvider> onTabClick, int x, int y, int width, int height) {
-        super(x, y, width, height);
         this.subTabs = new ArrayList<>();
         this.onTabClick = onTabClick;
     }
@@ -83,14 +76,14 @@ public class TabsComponent extends BaseUIComponent {
     }
 
     public boolean hasButton() {
-        return (subTabs.size() + 1) * 24 + 16 > getSize().width;
+        return (subTabs.size() + 1) * 24 + 16 > width;
     }
 
     @Override
-    public void handleClientAction(int id, FriendlyByteBuf buffer) {
-        super.handleClientAction(id, buffer);
+    public void receiveMessage(int id, FriendlyByteBuf buf) {
+        super.receiveMessage(id, buf);
         if (id == 0) {
-            var index = buffer.readVarInt();
+            var index = buf.readVarInt();
             var old = selectedTab;
             if (index < 0) {
                 selectedTab = mainTab;
@@ -107,12 +100,11 @@ public class TabsComponent extends BaseUIComponent {
     }
 
     public int getSubTabsWidth() {
-        return getSize().width - 8 - 24 - 4 - 16 - 8 - 16;
+        return width - 8 - 24 - 4 - 16 - 8 - 16;
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean onMouseDown(double mouseX, double mouseY, int button) {
         if (isMouseOverElement(mouseX, mouseY)) {
             var hoveredTab = getHoveredTab(mouseX, mouseY);
             // click tab
@@ -121,40 +113,42 @@ public class TabsComponent extends BaseUIComponent {
                     onTabSwitch.accept(selectedTab, hoveredTab);
                 }
                 selectedTab = hoveredTab;
-                writeClientAction(0,
-                        buf -> buf.writeVarInt(selectedTab == mainTab ? -1 : subTabs.indexOf(selectedTab)));
+                sendMessage(0, buf -> buf.writeVarInt(selectedTab == mainTab ? -1 : subTabs.indexOf(selectedTab)));
                 onTabClick.accept(selectedTab);
-                playButtonClickSound();
+                UIComponent.playButtonClickSound();
             }
             // click button
             if (hasButton()) {
                 if (isHoverLeftButton(mouseX, mouseY)) {
                     offset = Mth.clamp(offset - 24, 0, subTabs.size() * 24 - getSubTabsWidth());
-                    playButtonClickSound();
+                    UIComponent.playButtonClickSound();
                 } else if (isHoverRightButton(mouseX, mouseY)) {
                     offset = Mth.clamp(offset + 24, 0, subTabs.size() * 24 - getSubTabsWidth());
-                    playButtonClickSound();
+                    UIComponent.playButtonClickSound();
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.onMouseDown(mouseX, mouseY, button);
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
-        var sx = getPosition().x + 8 + 24 + 4 + 16;
-        if (isMouseOver(sx, getPosition().y, getSubTabsWidth(), 24, mouseX, mouseY)) {
-            offset = Mth.clamp(offset + 5 * (wheelDelta > 0 ? -1 : 1), 0, subTabs.size() * 24 - getSubTabsWidth());
+    public boolean onMouseScroll(double mouseX, double mouseY, double amount) {
+        var sx = x + 8 + 24 + 4 + 16;
+        if (UIComponent.isMouseOver(sx, y, getSubTabsWidth(), 24, mouseX, mouseY)) {
+            offset = Mth.clamp(offset + 5 * (amount > 0 ? -1 : 1), 0, subTabs.size() * 24 - getSubTabsWidth());
         }
-        return super.mouseWheelMove(mouseX, mouseY, wheelDelta);
+        return super.onMouseScroll(mouseX, mouseY, amount);
     }
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         var hoveredTab = getHoveredTab(mouseX, mouseY);
+        if (hoveredTab == null) {
+            return;
+        }
+        updateTooltip(hoveredTab);
         // main tab
-        drawTab(mainTab, graphics, mouseX, mouseY, x + 8, y, 24, 24, partialTicks, delta, hoveredTab);
+        drawTab(mainTab, graphics, mouseX, mouseY, x + 8, y, 24, 24, hoveredTab);
         // render sub tabs
         if (hasButton()) { // need a scrollable bar
             // render buttons
@@ -173,52 +167,50 @@ public class TabsComponent extends BaseUIComponent {
             var sx = x + 8 + 24 + 4 + 16;
             graphics.enableScissor(sx, y - 1, sx + getSubTabsWidth(), y - 1 + 24 + 2);
             for (int i = 0; i < subTabs.size(); i++) {
-                drawTab(subTabs.get(i), graphics, mouseX, mouseY, sx + i * 24 - offset, y, 24, 24, partialTicks, delta, hoveredTab);
+                drawTab(subTabs.get(i), graphics, mouseX, mouseY, sx + i * 24 - offset, y, 24, 24, hoveredTab);
             }
             graphics.disableScissor();
         } else {
             for (int i = subTabs.size() - 1; i >= 0; i--) {
                 drawTab(subTabs.get(i), graphics, mouseX, mouseY,
-                        x + width - 8 - 24 * (subTabs.size() - i), y, 24, 24, partialTicks, delta, hoveredTab);
+                        x + width - 8 - 24 * (subTabs.size() - i), y, 24, 24, hoveredTab);
             }
         }
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        var hoveredTab = getHoveredTab(mouseX, mouseY);
-        if (hoveredTab != null && gui != null && gui.getModularUIGui() != null) {
-            gui.getModularUIGui().setHoverTooltip(hoveredTab.getTabTooltips(), ItemStack.EMPTY, null,
-                    hoveredTab.getTabTooltipComponent());
+    protected void updateTooltip(IFancyUIProvider tab) {
+        List<ClientTooltipComponent> tooltip = new ArrayList<>();
+        tab.getTabTooltips().stream()
+                .map(c -> ClientTooltipComponent.create(c.getVisualOrderText()))
+                .forEach(tooltip::add);
+        if (tab.getTabTooltipComponent() != null) {
+            tooltip.add(ClientTooltipComponent.create(tab.getTabTooltipComponent()));
         }
-        super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
+        this.tooltip(tooltip);
     }
 
     @OnlyIn(Dist.CLIENT)
     public boolean isHoverLeftButton(double mouseX, double mouseY) {
-        return isMouseOver(getPosition().x + 8 + 24 + 4, getPosition().y, 16, 24, mouseX, mouseY);
+        return UIComponent.isMouseOver(x + 8 + 24 + 4, y, 16, 24, mouseX, mouseY);
     }
 
     @OnlyIn(Dist.CLIENT)
     public boolean isHoverRightButton(double mouseX, double mouseY) {
-        return isMouseOver(getPosition().x + getSize().width - 8 - 16, getPosition().y, 16, 24, mouseX, mouseY);
+        return UIComponent.isMouseOver(x + width - 8 - 16, y, 16, 24, mouseX, mouseY);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Nullable
     public IFancyUIProvider getHoveredTab(double mouseX, double mouseY) {
         if (isMouseOverElement(mouseX, mouseY)) {
-            var position = getPosition();
-            var size = getSize();
             // main tab
-            if (isMouseOver(x + 8, y, 24, 24, mouseX, mouseY)) {
+            if (UIComponent.isMouseOver(x + 8, y, 24, 24, mouseX, mouseY)) {
                 return mainTab;
             }
             // others
             if (hasButton()) { // need a scrollable bar
                 var sx = x + 8 + 24 + 4 + 16;
-                if (isMouseOver(sx, y, getSubTabsWidth(), 24, mouseX, mouseY)) {
+                if (UIComponent.isMouseOver(sx, y, getSubTabsWidth(), 24, mouseX, mouseY)) {
                     var i = ((int) mouseX - sx + getOffset()) / 24;
                     if (i < subTabs.size()) {
                         return subTabs.get(i);
@@ -237,7 +229,6 @@ public class TabsComponent extends BaseUIComponent {
     @OnlyIn(Dist.CLIENT)
     public void drawTab(IFancyUIProvider tab, @NotNull UIGuiGraphics graphics, int mouseX, int mouseY,
                         int x, int y, int width, int height,
-                        float partialTicks, float delta,
                         IFancyUIProvider hoveredTab) {
         // render background
         if (tab == selectedTab) {
@@ -248,7 +239,7 @@ public class TabsComponent extends BaseUIComponent {
             tabTexture.draw(graphics, mouseX, mouseY, x, y, width, height);
         }
         // render icon
-        tab.getTabIcon().draw(graphics, mouseX, mouseY, partialTicks, delta);
+        tab.getTabIcon().draw(graphics, mouseX, mouseY, x, y, width, height);
     }
 
     public void selectTab(IFancyUIProvider selectedTab) {

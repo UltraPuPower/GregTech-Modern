@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.gui.fancy;
+package com.gregtechceu.gtceu.api.ui.fancy;
 
 import net.minecraft.network.FriendlyByteBuf;
 

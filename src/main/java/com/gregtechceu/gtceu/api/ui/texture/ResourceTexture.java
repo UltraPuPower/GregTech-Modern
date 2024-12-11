@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.ui.texture;
 
+import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.GameRenderer;
+import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
+import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import net.minecraft.resources.ResourceLocation;
+import org.w3c.dom.Element;
+
+import java.util.Map;
 
 public class ResourceTexture extends TransformTexture {
     
@@ -18,7 +18,7 @@ public class ResourceTexture extends TransformTexture {
     public int imageHeight = 1;
     protected int color = -1;
 
-    public ResourceTexture(ResourceLocation imageLocation, int offsetX, int offsetY, int width, int height) {
+    protected ResourceTexture(ResourceLocation imageLocation, int offsetX, int offsetY, int width, int height) {
         this.imageLocation = imageLocation;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
@@ -26,7 +26,7 @@ public class ResourceTexture extends TransformTexture {
         this.imageHeight = height;
     }
 
-    public ResourceTexture(ResourceLocation imageLocation) {
+    protected ResourceTexture(ResourceLocation imageLocation) {
         this(imageLocation, 0, 0, 1, 1);
     }
 
@@ -57,12 +57,12 @@ public class ResourceTexture extends TransformTexture {
     }
 
     @Override
-    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height) {
+    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
         drawSubArea(graphics, x, y, width, height, 0, 0, 1, 1);
     }
 
     @Override
-    protected void drawSubAreaInternal(UIGuiGraphics graphics, int x, int y, int width, int height, float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
+    protected void drawSubAreaInternal(UIGuiGraphics graphics, float x, float y, float width, float height, float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
         if (imageLocation == null || imageWidth <= 0 || imageHeight <= 0) {
             return;
         }
@@ -73,17 +73,35 @@ public class ResourceTexture extends TransformTexture {
         int imageHeight = (int) (this.imageHeight * drawnHeight);
 
         graphics.blit(imageLocation, x, y, imageU, imageV, imageWidth, imageHeight, this.imageWidth, this.imageHeight);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        RenderSystem.setShaderTexture(0, imageLocation);
-        var matrix4f = graphics.pose().last().pose();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(matrix4f, x, y + height, 0).uv(imageU, imageV + imageHeight).color(color).endVertex();
-        bufferbuilder.vertex(matrix4f, x + width, y + height, 0).uv(imageU + imageWidth, imageV + imageHeight).color(color).endVertex();
-        bufferbuilder.vertex(matrix4f, x + width, y, 0).uv(imageU + imageWidth, imageV).color(color).endVertex();
-        bufferbuilder.vertex(matrix4f, x, y, 0).uv(imageU, imageV).color(color).endVertex();
-        tesselator.end();
     }
+
+    @Override
+    public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
+        super.parseProperties(model, element, children);
+    }
+
+    public static ResourceTexture parse(Element element) {
+        UIParsing.expectAttributes(element, "texture");
+        var textureId = UIParsing.parseResourceLocation(element.getAttributeNode("texture"));
+
+        int u = 0, v = 0, textureWidth = 256, textureHeight = 256;
+        if (element.hasAttribute("u")) {
+            u = UIParsing.parseSignedInt(element.getAttributeNode("u"));
+        }
+
+        if (element.hasAttribute("v")) {
+            v = UIParsing.parseSignedInt(element.getAttributeNode("v"));
+        }
+
+        if (element.hasAttribute("texture-width")) {
+            textureWidth = UIParsing.parseSignedInt(element.getAttributeNode("texture-width"));
+        }
+
+        if (element.hasAttribute("texture-height")) {
+            textureHeight = UIParsing.parseSignedInt(element.getAttributeNode("texture-height"));
+        }
+
+        return new ResourceTexture(textureId, u, v, textureWidth, textureHeight);
+    }
+
 }

@@ -1,0 +1,14 @@
+{
+    "texture": "gtceu:textures/gui/base/blank.png",
+    "texture_width": 1,
+    "texture_height": 1,
+    "repeat": false,
+    "corner_patch_size": {
+        "width": 0,
+        "height": 0
+    },
+    "center_patch_size": {
+        "width": 1,
+        "height": 1
+    }
+}

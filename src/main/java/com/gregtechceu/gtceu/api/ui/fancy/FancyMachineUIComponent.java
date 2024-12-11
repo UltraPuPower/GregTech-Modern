@@ -1,27 +1,28 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.*;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerScreenAccessor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+import java.util.stream.Stream;
 
+// TODO remove fixed offsets in favor of dynamic ones
 @ApiStatus.Internal
 @Accessors(fluent = true, chain = true)
 @Getter
@@ -30,12 +31,15 @@ public class FancyMachineUIComponent extends FlowLayout {
     protected final TitleBarComponent titleBar;
     protected final VerticalTabsComponent sideTabsComponent;
     protected final FlowLayout pageContainer;
-    protected final PageSwitcher pageSwitcher;
-    protected final ConfiguratorPanel configuratorPanel;
-    protected final TooltipsPanel tooltipsPanel;
+    protected final PageSwitcherComponent pageSwitcher;
+    @Getter
+    protected final ConfiguratorPanelComponent configuratorPanel;
+    protected final TooltipsPanelComponent tooltipsPanel;
 
     @Nullable
     protected final PlayerInventoryComponent playerInventory;
+    @Setter
+    protected int border = 4;
 
     protected final IFancyUIProvider mainPage;
 
@@ -67,13 +71,32 @@ public class FancyMachineUIComponent extends FlowLayout {
         }
 
         child(this.titleBar = new TitleBarComponent(width, this::navigateBack, this::openPageSwitcher));
-        child(this.sideTabsComponent = new VerticalTabsComponent(this::navigate, -20, 0, 24, height));
-        child(this.tooltipsPanel = new TooltipsPanel());
-        child(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), height));
-        this.pageSwitcher = new PageSwitcher(this::switchPage);
+        child(this.sideTabsComponent = (VerticalTabsComponent) new VerticalTabsComponent(this::navigate)
+                .positioning(Positioning.absolute(-20, 0))
+                .sizing(Sizing.fixed(24), Sizing.fill()));
+        child(this.tooltipsPanel = new TooltipsPanelComponent());
+        child(this.configuratorPanel = new ConfiguratorPanelComponent());
+        this.configuratorPanel.positioning(Positioning.absolute(-(24 + 2), height));
+        this.pageSwitcher = new PageSwitcherComponent(this::switchPage);
 
-        surface(GuiTextures.BACKGROUND.copy()
-                .setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
+        surface(Surface.UI_BACKGROUND);
+        //surface(GuiTextures.BACKGROUND.copy()
+        //        .setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
+    }
+
+
+
+    @Override
+    public void init() {
+        super.init();
+
+        if (this.playerInventory != null) {
+            this.playerInventory.setByInventory(player().getInventory());
+        }
+
+        this.allPages = Stream.concat(Stream.of(this.mainPage), this.mainPage.getSubTabs().stream()).toList();
+
+        performNavigation(this.mainPage, this.mainPage);
     }
 
     ////////////////////////////////////////
@@ -90,7 +113,7 @@ public class FancyMachineUIComponent extends FlowLayout {
                 // In case the user manually navigates back one step, just remove it from the navigation stack
                 this.previousPages.pop();
             } else if (this.currentPage != null) {
-                this.previousPages.push(new FancyMachineUIWidget.NavigationEntry(this.currentPage, this.currentHomePage, () -> {}));
+                this.previousPages.push(new NavigationEntry(this.currentPage, this.currentHomePage, () -> {}));
             }
         } else {
             this.previousPages.clear();
@@ -100,7 +123,7 @@ public class FancyMachineUIComponent extends FlowLayout {
     }
 
     protected void navigateBack(ButtonComponent clickData) {
-        FancyMachineUIWidget.NavigationEntry navigationEntry = previousPages.pop();
+        NavigationEntry navigationEntry = previousPages.pop();
 
         performNavigation(navigationEntry.page, navigationEntry.homePage);
         navigationEntry.onNavigation.run();
@@ -133,12 +156,10 @@ public class FancyMachineUIComponent extends FlowLayout {
             previousPages.pop();
         }
 
-        this.sideTabsComponent.setVisible(false);
-        this.sideTabsComponent.setActive(false);
+        this.removeChild(sideTabsComponent);
 
-        this.previousPages.push(new FancyMachineUIWidget.NavigationEntry(currentHomePage, currentHomePage, () -> {
-            sideTabsComponent.setVisible(true);
-            sideTabsComponent.setActive(true);
+        this.previousPages.push(new NavigationEntry(currentHomePage, currentHomePage, () -> {
+            this.child(sideTabsComponent);
         }));
 
         this.currentPage = this.pageSwitcher;
@@ -153,8 +174,7 @@ public class FancyMachineUIComponent extends FlowLayout {
         this.currentPage = mainPage;
         this.previousPages.clear();
 
-        sideTabsComponent.setVisible(true);
-        sideTabsComponent.setActive(true);
+        this.child(sideTabsComponent);
 
         setupSideTabs(this.currentHomePage);
         navigate(nextHomePage, nextHomePage);
@@ -180,41 +200,57 @@ public class FancyMachineUIComponent extends FlowLayout {
         var page = fancyUI.createMainPage(this);
 
         // layout
-        var size = new Size(Math.max(172, page.getSize().width + border * 2),
-                Math.max(86, page.getSize().height + border * 2));
-        setSize(new Size(size.width,
-                size.height + (!showInventory || playerInventory == null ? 0 : playerInventory.getSize().height)));
-        if (LDLib.isRemote() && getGui() != null) {
-            getGui().setSize(getSize().width, getSize().height);
+        int width = Math.max(172, page.width() + border() * 2);
+        int height = Math.max(86, page.height() + border * 2);
+        Size size = Size.of(width, height);
+        this.sizing(Sizing.fixed(width),
+                Sizing.fixed(height + (!showInventory || playerInventory == null ? 0 : playerInventory.height())));
+
+        AbstractContainerScreen<?> screen = containerAccess().screen();
+        if (screen != null) {
+            ((AbstractContainerScreenAccessor) screen).gtceu$setImageWidth(width);
+            ((AbstractContainerScreenAccessor) screen).gtceu$setImageHeight(height);
+
+            int leftPos = (screen.width - width) / 2;
+            int topPos = (screen.height - height) / 2;
+            ((AbstractContainerScreenAccessor) screen).gtceu$setLeftPos(leftPos);
+            ((AbstractContainerScreenAccessor) screen).gtceu$setTopPos(topPos);
+            containerAccess().adapter().leftPos(leftPos);
+            containerAccess().adapter().topPos(topPos);
+
+            containerAccess().adapter().moveAndResize(0, 0, screen.width, screen.height);
         }
-        this.sideTabsComponent.setSize(new Size(24, size.height));
-        this.pageContainer.sizing(size);
-        this.tooltipsPanel.setSelfPosition(new Position(size.width + 2, 2));
+
+        this.sideTabsComponent.sizing(Sizing.fixed(24), Sizing.fixed(height));
+        this.pageContainer.sizing(Sizing.fixed(width), Sizing.fixed(height));
+        this.tooltipsPanel.positioning(Positioning.absolute(width + 2, 2));
 
         setupInventoryPosition(showInventory, size);
 
         // setup
-        this.pageContainer.addWidget(page);
-        page.setSelfPosition(new Position(
-                (pageContainer.getSize().width - page.getSize().width) / 2,
-                (pageContainer.getSize().height - page.getSize().height) / 2));
+        this.pageContainer.child(page);
+        page.positioning(Positioning.absolute(
+                (pageContainer.width() - page.width()) / 2,
+                (pageContainer.height() - page.height()) / 2));
         fancyUI.attachConfigurators(configuratorPanel);
         configuratorPanel
-                .setSelfPosition(new Position(-24 - 2, getGui().getHeight() - configuratorPanel.getSize().height - 4));
+                .positioning(Positioning.absolute(-24 - 2, screen.height - configuratorPanel.height() - 4));
         fancyUI.attachTooltips(tooltipsPanel);
 
         titleBar.sizing(Sizing.fill(), Sizing.fixed(titleBar.height()));
-        titleBar.layout();
     }
 
     private void setupInventoryPosition(boolean showInventory, Size parentSize) {
         if (this.playerInventory == null)
             return;
 
-        this.playerInventory.moveTo((parentSize.width - playerInventory.width()) / 2, parentSize.height);
+        this.playerInventory.moveTo((parentSize.width() - playerInventory.width()) / 2, parentSize.height());
 
-        this.playerInventory.setActive(showInventory);
-        this.playerInventory.setVisible(showInventory);
+        if (showInventory && !this.children.contains(this.playerInventory)) {
+            child(this.playerInventory);
+        } else {
+            removeChild(this.playerInventory);
+        }
     }
 
     protected void clearUI() {

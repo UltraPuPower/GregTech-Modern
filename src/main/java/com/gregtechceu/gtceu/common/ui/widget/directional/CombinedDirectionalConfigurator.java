@@ -1,21 +1,23 @@
-package com.gregtechceu.gtceu.api.gui.widget.directional;
+package com.gregtechceu.gtceu.common.ui.widget.directional;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Size;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
@@ -35,25 +37,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CombinedDirectionalConfigurator extends WidgetGroup {
+public class CombinedDirectionalConfigurator extends FlowLayout {
 
     protected final static int MOUSE_CLICK_CLIENT_ACTION_ID = 0x0001_0001;
     protected final static int UPDATE_UI_ID = 0x0001_0002;
 
     protected final IDirectionalConfigHandler[] configHandlers;
     protected final int width, height;
-    private final FancyMachineUIWidget machineUI;
+    private final FancyMachineUIComponent machineUI;
     private final MetaMachine machine;
 
     protected SceneWidget sceneWidget;
-    protected ImageWidget imageWidget;
+    protected TextureComponent textureComponent;
 
     protected @Nullable BlockPos selectedPos;
     protected @Nullable Direction selectedSide;
 
-    public CombinedDirectionalConfigurator(FancyMachineUIWidget machineUI, IDirectionalConfigHandler[] configHandlers,
+    public CombinedDirectionalConfigurator(FancyMachineUIComponent machineUI, IDirectionalConfigHandler[] configHandlers,
                                            MetaMachine machine, int width, int height) {
-        super(0, 0, width, height);
+        super(Sizing.fixed(width), Sizing.fixed(height), Algorithm.HORIZONTAL);
         this.width = width;
         this.height = height;
 
@@ -63,11 +65,12 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
     }
 
     @Override
-    public void initWidget() {
-        super.initWidget();
+    public void init() {
+        super.init();
 
-        addWidget(imageWidget = new ImageWidget(0, 0, width, height, GuiTextures.BACKGROUND_INVERSE));
-        addWidget(sceneWidget = createSceneWidget());
+        child(textureComponent = UIComponents.texture(GuiTextures.BACKGROUND_INVERSE, width, height));
+        textureComponent.sizing(Sizing.fill(), Sizing.fill());
+        child(sceneWidget = createSceneWidget());
 
         for (IDirectionalConfigHandler configHandler : configHandlers) {
             configHandler.addAdditionalUIElements(this);
@@ -84,24 +87,24 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
                 .setRenderSelect(false)
                 .setOnSelected(this::onSideSelected);
 
-        if (isRemote()) {
-            sceneWidget.getRenderer().addRenderedBlocks(
-                    List.of(pos.above(), pos.below(), pos.north(), pos.south(), pos.east(), pos.west()),
-                    new ISceneBlockRenderHook() {
 
-                        @Override
-                        @OnlyIn(Dist.CLIENT)
-                        public void apply(boolean isTESR, RenderType layer) {
-                            RenderSystem.enableBlend();
-                            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-                        }
-                    });
+        sceneWidget.getRenderer().addRenderedBlocks(
+                List.of(pos.above(), pos.below(), pos.north(), pos.south(), pos.east(), pos.west()),
+                new ISceneBlockRenderHook() {
 
-            sceneWidget.getRenderer().setAfterWorldRender(this::renderOverlays);
+                    @Override
+                    @OnlyIn(Dist.CLIENT)
+                    public void apply(boolean isTESR, RenderType layer) {
+                        RenderSystem.enableBlend();
+                        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+                    }
+                });
 
-            var playerRotation = gui.entityPlayer.getRotationVector();
-            sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y - 90);
-        }
+        sceneWidget.getRenderer().setAfterWorldRender(this::renderOverlays);
+
+        var playerRotation = player().getRotationVector();
+        sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y - 90);
+
         sceneWidget.setBackground(ColorPattern.BLACK.rectTexture());
         return sceneWidget;
     }
@@ -120,25 +123,24 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
         int yOffsetLeft = 0, yOffsetRight = 0;
 
         for (IDirectionalConfigHandler configHandler : configHandlers) {
-            Widget widget = configHandler.getSideSelectorWidget(sceneWidget, machineUI);
+            UIComponent widget = configHandler.getSideSelectorWidget(sceneWidget, machineUI);
 
             if (widget == null)
                 continue;
 
-            final Size widgetSize = widget.getSize();
+            final Size widgetSize = widget.fullSize();
             switch (configHandler.getScreenSide()) {
                 case LEFT -> {
-                    widget.setSelfPosition(new Position(6, height - 6 - widgetSize.height - yOffsetLeft));
-                    yOffsetLeft += widgetSize.height + 3;
+                    widget.positioning(Positioning.absolute(6, height - 6 - widgetSize.height() - yOffsetLeft));
+                    yOffsetLeft += widgetSize.height() + 3;
                 }
                 case RIGHT -> {
-                    widget.setSelfPosition(
-                            new Position(width - widgetSize.width - 6, height - 6 - widgetSize.height - yOffsetRight));
-                    yOffsetRight += widgetSize.height + 3;
+                    widget.positioning(Positioning.absolute(width - widgetSize.width() - 6, height - 6 - widgetSize.height() - yOffsetRight));
+                    yOffsetRight += widgetSize.height() + 3;
                 }
             }
 
-            this.addWidget(widget);
+            this.child(widget);
         }
     }
 
@@ -157,31 +159,29 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean onMouseDown(double mouseX, double mouseY, int button) {
         var lastSide = this.selectedSide;
 
-        var result = super.mouseClicked(mouseX, mouseY, button);
+        var result = super.onMouseDown(mouseX, mouseY, button);
 
         if (isMouseOverElement(mouseX, mouseY) && this.selectedSide == lastSide && this.selectedSide != null) {
             var hover = sceneWidget.getHoverPosFace();
 
             if (hover != null && hover.pos.equals(machine.getPos()) && hover.facing == this.selectedSide) {
                 var cd = new ClickData();
-                writeClientAction(MOUSE_CLICK_CLIENT_ACTION_ID, buf -> {
+                sendMessage(MOUSE_CLICK_CLIENT_ACTION_ID, buf -> {
                     cd.writeToBuf(buf);
                     buf.writeByte(this.selectedSide.ordinal());
                 });
             }
         }
-
         return result;
     }
 
     @Override
-    public void handleClientAction(int id, FriendlyByteBuf buf) {
+    public void receiveMessage(int id, FriendlyByteBuf buf) {
         if (id != MOUSE_CLICK_CLIENT_ACTION_ID) {
-            super.handleClientAction(id, buf);
+            super.receiveMessage(id, buf);
             return;
         }
 

@@ -46,7 +46,7 @@ public class CheckboxComponent extends Checkbox {
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
         UIParsing.apply(children, "checked", UIParsing::parseBool, this::checked);
-        UIParsing.apply(children, "text", UIParsing::parseText, this::setMessage);
+        UIParsing.apply(children, "text", UIParsing::parseComponent, this::setMessage);
     }
 
     public CursorStyle gtceu$preferredCursorStyle() {

@@ -149,6 +149,21 @@ public interface ParentUIComponent extends UIComponent {
     }
 
     @Override
+    default boolean onMouseMoved(double mouseX, double mouseY) {
+        var iter = this.children().listIterator(this.children().size());
+
+        while (iter.hasPrevious()) {
+            var child = iter.previous();
+            if (!child.isInBoundingBox(this.x() + mouseX, this.y() + mouseY)) continue;
+            if (child.onMouseMoved(this.x() + mouseX - child.x(), this.y() + mouseY - child.y())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     default boolean onMouseDown(double mouseX, double mouseY, int button) {
         var iter = this.children().listIterator(this.children().size());
 
@@ -188,6 +203,22 @@ public interface ParentUIComponent extends UIComponent {
 
         for (int i = 0; i < this.children().size(); i++) {
             this.children().get(i).update(delta, mouseX, mouseY);
+        }
+    }
+
+    @Override
+    default void tick() {
+        UIComponent.super.tick();
+        for (UIComponent child : children()) {
+            child.tick();
+        }
+    }
+
+    @Override
+    default void init() {
+        UIComponent.super.init();
+        for (UIComponent child : children()) {
+            child.init();
         }
     }
 

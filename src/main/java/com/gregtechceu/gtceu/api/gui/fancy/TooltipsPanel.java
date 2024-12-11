@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyTooltip;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Size;
 
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * @author KilaBash
  * @date 2023/6/27
- * @implNote TooltipsPanel
+ * @implNote TooltipsPanelComponent
  */
 public class TooltipsPanel extends Widget {
 

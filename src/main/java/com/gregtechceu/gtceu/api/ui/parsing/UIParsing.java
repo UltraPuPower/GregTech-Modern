@@ -5,6 +5,10 @@ import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,17 +27,19 @@ import java.util.function.Function;
  * A utility class containing the component factory registry
  * as well as some utility functions to ease model parsing
  */
+@SuppressWarnings({ "DeprecatedIsStillUsed", "unused" })
 public class UIParsing {
 
     private static final Map<String, Function<Element, UIComponent>> COMPONENT_FACTORIES = new HashMap<>();
+    private static final Map<String, Function<Element, UITexture>> TEXTURE_FACTORIES = new HashMap<>();
 
     /**
      * @deprecated In order to more properly separate factories added by different
-     *             mods, use {@link #registerFactory(ResourceLocation, Function)}, which takes a ResourceLocation
+     *             mods, use {@link #registerComponentFactory(ResourceLocation, Function)}, which takes a ResourceLocation
      *             instead
      */
     @ApiStatus.Internal
-    public static void registerFactory(String componentTagName, Function<Element, UIComponent> factory) {
+    public static void registerComponentFactory(String componentTagName, Function<Element, UIComponent> factory) {
         if (COMPONENT_FACTORIES.containsKey(componentTagName)) {
             throw new IllegalStateException(
                     "A component factory with name " + componentTagName + " is already registered");
@@ -52,8 +58,37 @@ public class UIParsing {
      *                    as the tag name for which this factory gets invoked
      * @param factory     The factory to register
      */
-    public static void registerFactory(ResourceLocation componentId, Function<Element, UIComponent> factory) {
-        registerFactory(componentId.getNamespace() + "." + componentId.getPath(), factory);
+    public static void registerComponentFactory(ResourceLocation componentId, Function<Element, UIComponent> factory) {
+        registerComponentFactory(componentId.getNamespace() + "." + componentId.getPath(), factory);
+    }
+
+    /**
+     * @deprecated In order to more properly separate factories added by different
+     *             mods, use {@link #registerTextureFactory(ResourceLocation, Function)}, which takes a ResourceLocation
+     *             instead
+     */
+    @ApiStatus.Internal
+    public static void registerTextureFactory(String componentTagName, Function<Element, UITexture> factory) {
+        if (TEXTURE_FACTORIES.containsKey(componentTagName)) {
+            throw new IllegalStateException(
+                    "A component factory with name " + componentTagName + " is already registered");
+        }
+
+        TEXTURE_FACTORIES.put(componentTagName, factory);
+    }
+
+    /**
+     * Register a factory used to create UIComponents from XML elements.
+     * Most factories will only consider the tag name of the element,
+     * but more context can be extracted from the passed element
+     *
+     * @param componentId The identifier under which to register the component,
+     *                    which (separated by a period instead of a colon) is used
+     *                    as the tag name for which this factory gets invoked
+     * @param factory     The factory to register
+     */
+    public static void registerTextureFactory(ResourceLocation componentId, Function<Element, UITexture> factory) {
+        registerTextureFactory(componentId.getNamespace() + "." + componentId.getPath(), factory);
     }
 
     /**
@@ -65,8 +100,26 @@ public class UIParsing {
      * @throws UIModelParsingException If there is no registered factory
      *                                 capable of parsing the given element
      */
-    public static Function<Element, UIComponent> getFactory(Element element) {
+    public static Function<Element, UIComponent> getComponentFactory(Element element) {
         var factory = COMPONENT_FACTORIES.get(element.getNodeName());
+        if (factory == null) {
+            throw new UIModelParsingException("Unknown component type: " + element.getNodeName());
+        }
+
+        return factory;
+    }
+
+    /**
+     * Get the appropriate texture factory for the given
+     * XML element. An exception is thrown if none is registered
+     *
+     * @param element The element representing the component to be parsed
+     * @return The matching factory
+     * @throws UIModelParsingException If there is no registered factory
+     *                                 capable of parsing the given element
+     */
+    public static Function<Element, UITexture> getTextureFactory(Element element) {
+        var factory = TEXTURE_FACTORIES.get(element.getNodeName());
         if (factory == null) {
             throw new UIModelParsingException("Unknown component type: " + element.getNodeName());
         }
@@ -206,10 +259,10 @@ public class UIParsing {
      * interpreted as a translation key - otherwise it is
      * returned literally
      */
-    public static net.minecraft.network.chat.Component parseText(Element element) {
+    public static Component parseComponent(Element element) {
         return element.getAttribute("translate").equalsIgnoreCase("true") ?
-                net.minecraft.network.chat.Component.translatable(element.getTextContent()) :
-                net.minecraft.network.chat.Component.literal(element.getTextContent());
+                Component.translatable(element.getTextContent()) :
+                Component.literal(element.getTextContent());
     }
 
     public static <E extends Enum<E>> Function<Element, E> parseEnum(Class<E> enumClass) {
@@ -300,43 +353,52 @@ public class UIParsing {
 
     static {
         // Layout
-        registerFactory("flow-layout", FlowLayout::parse);
-        registerFactory("grid-layout", GridLayout::parse);
-        registerFactory("stack-layout", element -> UIContainers.stack(Sizing.content(), Sizing.content()));
+        registerComponentFactory("flow-layout", FlowLayout::parse);
+        registerComponentFactory("grid-layout", GridLayout::parse);
+        registerComponentFactory("stack-layout", element -> UIContainers.stack(Sizing.content(), Sizing.content()));
 
         // Container
-        registerFactory("root", element -> UIContainers.root(Sizing.content(), Sizing.content()));
-        registerFactory("scroll", ScrollContainer::parse);
-        registerFactory("collapsible", CollapsibleContainer::parse);
-        registerFactory("draggable", element -> UIContainers.draggable(Sizing.content(), Sizing.content(), null));
+        registerComponentFactory("root", element -> UIContainers.root(Sizing.content(), Sizing.content()));
+        registerComponentFactory("scroll", ScrollContainer::parse);
+        registerComponentFactory("collapsible", CollapsibleContainer::parse);
+        registerComponentFactory("draggable", element -> UIContainers.draggable(Sizing.content(), Sizing.content(), null));
 
         // Textures
-        registerFactory("sprite", SpriteComponent::parse);
-        registerFactory("texture", TextureComponent::parse);
-        registerFactory("nine-patch-texture", NinePatchTextureComponent::parse);
+        registerComponentFactory("sprite", SpriteComponent::parse);
+        registerComponentFactory("texture", TextureComponent::parse);
+        registerComponentFactory("nine-patch-texture", NinePatchTextureComponent::parse);
 
         // Game Objects
-        registerFactory("entity", EntityComponent::parse);
-        registerFactory("item", element -> UIComponents.item(ItemStack.EMPTY));
-        registerFactory("fluid", element -> UIComponents.fluid(FluidStack.EMPTY));
-        registerFactory("block", BlockComponent::parse);
+        registerComponentFactory("entity", EntityComponent::parse);
+        registerComponentFactory("item", element -> UIComponents.item(ItemStack.EMPTY));
+        registerComponentFactory("fluid", element -> UIComponents.fluid(FluidStack.EMPTY));
+        registerComponentFactory("block", BlockComponent::parse);
 
-        registerFactory("player-inventory", PlayerInventoryComponent::parse);
-        registerFactory("slot", SlotComponent::parse);
-        registerFactory("tank", TankComponent::parse);
+        registerComponentFactory("player-inventory", PlayerInventoryComponent::parse);
+        registerComponentFactory("slot", SlotComponent::parse);
+        registerComponentFactory("tank", TankComponent::parse);
 
         // Widgets
-        registerFactory("label", element -> UIComponents.label(Component.empty()));
-        registerFactory("box", element -> UIComponents.box(Sizing.content(), Sizing.content()));
-        registerFactory("button", element -> UIComponents.button(Component.empty(), (ButtonComponent button) -> {}));
-        registerFactory("checkbox", element -> UIComponents.checkbox(Component.empty()));
-        registerFactory("text-box", element -> UIComponents.textBox(Sizing.content()));
-        registerFactory("text-area", element -> UIComponents.textArea(Sizing.content(), Sizing.content()));
-        registerFactory("slider", element -> UIComponents.slider(Sizing.content()));
-        registerFactory("discrete-slider", DiscreteSliderComponent::parse);
-        registerFactory("dropdown", element -> UIComponents.dropdown(Sizing.content()));
-        registerFactory("color-picker", element -> new ColorPickerComponent());
-        registerFactory("slim-slider", SlimSliderComponent::parse);
-        registerFactory("small-checkbox", element -> new SmallCheckboxComponent());
+        registerComponentFactory("label", element -> UIComponents.label(Component.empty()));
+        registerComponentFactory("box", element -> UIComponents.box(Sizing.content(), Sizing.content()));
+        registerComponentFactory("button", element -> UIComponents.button(Component.empty(), (ButtonComponent button) -> {}));
+        registerComponentFactory("checkbox", element -> UIComponents.checkbox(Component.empty()));
+        registerComponentFactory("text-box", element -> UIComponents.textBox(Sizing.content()));
+        registerComponentFactory("text-area", element -> UIComponents.textArea(Sizing.content(), Sizing.content()));
+        registerComponentFactory("slider", element -> UIComponents.slider(Sizing.content()));
+        registerComponentFactory("discrete-slider", DiscreteSliderComponent::parse);
+        registerComponentFactory("dropdown", element -> UIComponents.dropdown(Sizing.content()));
+        registerComponentFactory("color-picker", element -> new ColorPickerComponent());
+        registerComponentFactory("slim-slider", SlimSliderComponent::parse);
+        registerComponentFactory("small-checkbox", element -> new SmallCheckboxComponent());
+
+
+        // Textures
+        registerTextureFactory("resource", ResourceTexture::parse);
+        registerTextureFactory("item", element -> UITextures.item(ItemStack.EMPTY));
+        registerTextureFactory("progress", element -> UITextures.progress(null, null));
+        registerTextureFactory("nine-patch", NinePatchTexture::parse);
+        registerTextureFactory("group", element -> UITextures.group());
+        registerTextureFactory("text", element -> UITextures.text(Component.empty()));
     }
 }

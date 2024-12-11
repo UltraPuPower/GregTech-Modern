@@ -8,31 +8,23 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFa
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
 
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.RootContainer;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
-import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.*;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +43,10 @@ public interface IFancyUIMachine extends IUIMachine2, IFancyUIProvider {
     }
 
     /**
-     * We should not override this method in general, and use {@link IFancyUIMachine#createUIWidget()} instead,
+     * We should not override this method in general, and use {@link IFancyUIMachine#createBaseUIComponent()} instead,
      */
     @Override
-    default ParentUIComponent createMainPage(FancyMachineUIWidget widget) {
+    default ParentUIComponent createMainPage(FancyMachineUIComponent widget) {
         var editableUI = self().getDefinition().getEditableUI();
         if (editableUI != null) {
             var template = editableUI.createCustomUI();
@@ -64,53 +56,57 @@ public interface IFancyUIMachine extends IUIMachine2, IFancyUIProvider {
             editableUI.setupUI(template, self());
             return template;
         }
-        return createUIWidget();
+        return createBaseUIComponent();
     }
 
     /**
      * Create the core widget of this machine.
      */
-    default ParentUIComponent createUIWidget() {
+    default ParentUIComponent createBaseUIComponent() {
         var group = UIContainers.root(Sizing.content(), Sizing.content());
-        if (isClientSide()) {
-            group.addWidget(new ImageWidget((100 - 48) / 2, 60, 48, 16, GuiTextures.SCENE));
-            TrackedDummyWorld world = new TrackedDummyWorld();
-            world.addBlock(BlockPos.ZERO, BlockInfo.fromBlockState(self().getBlockState()));
-            SceneWidget sceneWidget = new SceneWidget(0, 0, 100, 100, world) {
 
-                @Override
-                @OnlyIn(Dist.CLIENT)
-                public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY,
-                                             float partialTicks) {
-                    // AUTO ROTATION
-                    if (renderer != null) {
-                        this.rotationPitch = (partialTicks + getGui().getTickCount()) * 2;
-                        renderer.setCameraLookAt(this.center, 0.1f, Math.toRadians(this.rotationPitch),
-                                Math.toRadians(this.rotationYaw));
-                    }
-                    super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
+        group.child(UIComponents.texture(GuiTextures.SCENE, 0, 0)
+                .sizing(Sizing.fixed(48), Sizing.fixed(16))
+                .positioning(Positioning.absolute((100 - 48) / 2, 60)));
+        // TODO scene component
+        /*
+        TrackedDummyWorld world = new TrackedDummyWorld();
+        world.addBlock(BlockPos.ZERO, BlockInfo.fromBlockState(self().getBlockState()));
+        SceneWidget sceneWidget = new SceneWidget(0, 0, 100, 100, world) {
+
+            @Override
+            @OnlyIn(Dist.CLIENT)
+            public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY,
+                                         float partialTicks) {
+                // AUTO ROTATION
+                if (renderer != null) {
+                    this.rotationPitch = (partialTicks + getGui().getTickCount()) * 2;
+                    renderer.setCameraLookAt(this.center, 0.1f, Math.toRadians(this.rotationPitch),
+                            Math.toRadians(this.rotationYaw));
                 }
-            };
-            sceneWidget.useOrtho(true)
-                    .setOrthoRange(0.5f)
-                    .setScalable(false)
-                    .setDraggable(false)
-                    .setRenderFacing(false)
-                    .setRenderSelect(false);
-            sceneWidget.getRenderer().setFov(30);
-            group.addWidget(sceneWidget);
-            sceneWidget.setRenderedCore(List.of(BlockPos.ZERO), null);
-        }
+                super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
+            }
+        };
+        sceneWidget.useOrtho(true)
+                .setOrthoRange(0.5f)
+                .setScalable(false)
+                .setDraggable(false)
+                .setRenderFacing(false)
+                .setRenderSelect(false);
+        sceneWidget.getRenderer().setFov(30);
+        group.child(sceneWidget);
+        sceneWidget.setRenderedCore(List.of(BlockPos.ZERO), null);
+        */
         return group;
     }
 
     @Override
-    default IGuiTexture getTabIcon() {
-        return new ItemStackTexture(self().getDefinition().getItem());
+    default UITexture getTabIcon() {
+        return UITextures.item(self().getDefinition().getItem().getDefaultInstance());
     }
 
     @Override
-    default void attachSideTabs(TabsWidget sideTabs) {
+    default void attachSideTabs(TabsComponent sideTabs) {
         sideTabs.setMainTab(this);
 
         if (this instanceof IRecipeLogicMachine rLMachine && rLMachine.getRecipeTypes().length > 1) {
@@ -122,12 +118,12 @@ public interface IFancyUIMachine extends IUIMachine2, IFancyUIProvider {
     }
 
     @Override
-    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+    default void attachConfigurators(ConfiguratorPanelComponent configuratorPanel) {
         if (this instanceof IControllable controllable) {
             configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                     GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5),
                     GuiTextures.BUTTON_POWER.getSubTexture(0, 0.5, 1, 0.5),
-                    controllable::isWorkingEnabled, (clickData, pressed) -> controllable.setWorkingEnabled(pressed))
+                    controllable::isWorkingEnabled, (button, pressed) -> controllable.setWorkingEnabled(pressed))
                     .setTooltipsSupplier(pressed -> List.of(
                             Component.translatable(
                                     pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))));

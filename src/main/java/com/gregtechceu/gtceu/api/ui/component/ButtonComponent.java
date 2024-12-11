@@ -4,10 +4,14 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractWidgetAccessor;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.ButtonAccessor;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -23,13 +27,18 @@ import org.w3c.dom.Node;
 import java.util.Map;
 import java.util.function.Consumer;
 
+@Accessors(fluent = true, chain = true)
 public class ButtonComponent extends Button {
 
     public static final ResourceLocation ACTIVE_TEXTURE = new ResourceLocation("owo", "button/active");
     public static final ResourceLocation HOVERED_TEXTURE = new ResourceLocation("owo", "button/hovered");
     public static final ResourceLocation DISABLED_TEXTURE = new ResourceLocation("owo", "button/disabled");
 
+    @Getter
+    @Setter
     protected Renderer renderer = Renderer.VANILLA;
+    @Getter
+    @Setter
     protected boolean textShadow = true;
 
     protected ButtonComponent(Component message, Consumer<ButtonComponent> onPress) {
@@ -64,24 +73,6 @@ public class ButtonComponent extends Button {
         return this;
     }
 
-    public ButtonComponent renderer(Renderer renderer) {
-        this.renderer = renderer;
-        return this;
-    }
-
-    public Renderer renderer() {
-        return this.renderer;
-    }
-
-    public ButtonComponent textShadow(boolean textShadow) {
-        this.textShadow = textShadow;
-        return this;
-    }
-
-    public boolean textShadow() {
-        return this.textShadow;
-    }
-
     public ButtonComponent active(boolean active) {
         this.active = active;
         return this;
@@ -94,7 +85,7 @@ public class ButtonComponent extends Button {
     @Override
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
-        UIParsing.apply(children, "text", UIParsing::parseText, this::setMessage);
+        UIParsing.apply(children, "text", UIParsing::parseComponent, this::setMessage);
         UIParsing.apply(children, "text-shadow", UIParsing::parseBool, this::textShadow);
         UIParsing.apply(children, "renderer", Renderer::parse, this::renderer);
     }
@@ -141,9 +132,14 @@ public class ButtonComponent extends Button {
                     renderV += button.height;
                 }
 
-                RenderSystem.enableDepthTest();
                 context.blit(texture, button.getX(), button.getY(), u, renderV, button.width, button.height,
                         textureWidth, textureHeight);
+            };
+        }
+
+        static Renderer texture(UITexture texture) {
+            return (graphics, button, delta) -> {
+                texture.draw(graphics, 0, 0, button.getX(), button.getY(), button.width, button.height);
             };
         }
 

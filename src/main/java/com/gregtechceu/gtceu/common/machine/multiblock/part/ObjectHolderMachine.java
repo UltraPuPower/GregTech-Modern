@@ -93,7 +93,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
     }
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         return new WidgetGroup(new Position(0, 0))
                 .addWidget(new ImageWidget(46, 15, 84, 60, GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE))
                 .addWidget(new BlockableSlotWidget(heldItems, 0, 79, 36)

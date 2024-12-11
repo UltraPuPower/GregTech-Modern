@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
@@ -18,7 +18,7 @@ public interface IFancyUIProvider {
     /**
      * Create the main page ui.
      */
-    ParentUIComponent createMainPage(FancyMachineUIWidget widget);
+    ParentUIComponent createMainPage(FancyMachineUIComponent widget);
 
     /**
      * Get the tab icon of this page.
@@ -33,17 +33,17 @@ public interface IFancyUIProvider {
     /**
      * Attach configurators to the left subtab list.
      */
-    default void attachSideTabs(TabsWidget configuratorPanel) {}
+    default void attachSideTabs(TabsComponent configuratorPanel) {}
 
     /**
      * Attach configurators to the left panel.
      */
-    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {}
+    default void attachConfigurators(ConfiguratorPanelComponent configuratorPanel) {}
 
     /**
      * Attach tooltips to the right panel
      */
-    default void attachTooltips(TooltipsPanel tooltipsPanel) {}
+    default void attachTooltips(TooltipsPanelComponent tooltipsPanel) {}
 
     default boolean hasPlayerInventory() {
         return true;

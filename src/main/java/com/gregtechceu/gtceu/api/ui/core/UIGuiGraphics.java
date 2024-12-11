@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.event.WindowEvent;
-import com.gregtechceu.gtceu.api.ui.util.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.GuiGraphicsAccessor;
 
 import net.minecraft.client.Minecraft;
@@ -29,6 +29,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
@@ -209,6 +210,115 @@ public class UIGuiGraphics extends GuiGraphics {
     public void drawPanel(int x, int y, int width, int height, boolean dark) {
         NinePatchTexture.draw(dark ? DARK_PANEL_NINE_PATCH_TEXTURE : PANEL_NINE_PATCH_TEXTURE, this, x, y, width,
                 height);
+    }
+
+    /**
+     * Blits a portion of the texture specified by the atlas location onto the screen at the given coordinates with a blit offset and texture coordinates.
+     *
+     * @param atlasLocation the location of the texture atlas.
+     * @param x             the x-coordinate of the blit position.
+     * @param y             the y-coordinate of the blit position.
+     * @param blitOffset    the z-level offset for rendering order.
+     * @param uOffset       the horizontal texture coordinate offset.
+     * @param vOffset       the vertical texture coordinate offset.
+     * @param uWidth        the width of the blitted portion in texture coordinates.
+     * @param vHeight       the height of the blitted portion in texture coordinates.
+     * @param textureWidth  the width of the texture.
+     * @param textureHeight the height of the texture.
+     */
+    public void blit(ResourceLocation atlasLocation, float x, float y, float blitOffset, float uOffset, float vOffset, int uWidth, int vHeight, int textureWidth, int textureHeight) {
+        this.blit(atlasLocation, x, x + uWidth, y, y + vHeight, blitOffset, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
+    }
+
+    /**
+     * Blits a portion of the texture specified by the atlas location onto the screen at the given position and dimensions with texture coordinates.
+     *
+     * @param atlasLocation the location of the texture atlas.
+     * @param x             the x-coordinate of the top-left corner of the blit
+     *                      position.
+     * @param y             the y-coordinate of the top-left corner of the blit
+     *                      position.
+     * @param uOffset       the horizontal texture coordinate offset.
+     * @param vOffset       the vertical texture coordinate offset.
+     * @param width         the width of the blitted portion.
+     * @param height        the height of the blitted portion.
+     * @param textureWidth  the width of the texture.
+     * @param textureHeight the height of the texture.
+     */
+    public void blit(ResourceLocation atlasLocation, float x, float y, float uOffset, float vOffset, float width, float height, int textureWidth, int textureHeight) {
+        this.blit(atlasLocation, x, y, width, height, uOffset, vOffset, width, height, textureWidth, textureHeight);
+    }
+
+    /**
+     * Blits a portion of the texture specified by the atlas location onto the screen at the given position and dimensions with texture coordinates.
+     *
+     * @param atlasLocation the location of the texture atlas.
+     * @param x             the x-coordinate of the top-left corner of the blit
+     *                      position.
+     * @param y             the y-coordinate of the top-left corner of the blit
+     *                      position.
+     * @param width         the width of the blitted portion.
+     * @param height        the height of the blitted portion.
+     * @param uOffset       the horizontal texture coordinate offset.
+     * @param vOffset       the vertical texture coordinate offset.
+     * @param uWidth        the width of the blitted portion in texture coordinates.
+     * @param vHeight       the height of the blitted portion in texture coordinates.
+     * @param textureWidth  the width of the texture.
+     * @param textureHeight the height of the texture.
+     */
+    public void blit(ResourceLocation atlasLocation, float x, float y, float width, float height, float uOffset, float vOffset, float uWidth, float vHeight, int textureWidth, int textureHeight) {
+        this.blit(atlasLocation, x, x + width, y, y + height, 0, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
+    }
+
+    /**
+     * Performs the inner blit operation for rendering a texture with the specified coordinates and texture coordinates.
+     *
+     * @param atlasLocation the location of the texture atlas.
+     * @param x1            the x-coordinate of the first corner of the blit position.
+     * @param x2            the x-coordinate of the second corner of the blit position
+     *                      .
+     * @param y1            the y-coordinate of the first corner of the blit position.
+     * @param y2            the y-coordinate of the second corner of the blit position
+     *                      .
+     * @param blitOffset    the z-level offset for rendering order.
+     * @param uWidth        the width of the blitted portion in texture coordinates.
+     * @param vHeight       the height of the blitted portion in texture coordinates.
+     * @param uOffset       the horizontal texture coordinate offset.
+     * @param vOffset       the vertical texture coordinate offset.
+     * @param textureWidth  the width of the texture.
+     * @param textureHeight the height of the texture.
+     */
+    void blit(ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float uWidth, float vHeight, float uOffset, float vOffset, int textureWidth, int textureHeight) {
+        this.innerBlit(atlasLocation, x1, x2, y1, y2, blitOffset, (uOffset + 0.0F) / (float)textureWidth, (uOffset + uWidth) / (float)textureWidth, (vOffset + 0.0F) / (float)textureHeight, (vOffset + (float)vHeight) / (float)textureHeight);
+    }
+
+    /**
+     * Performs the inner blit operation for rendering a texture with the specified coordinates and texture coordinates without color tinting.
+     *
+     * @param atlasLocation the location of the texture atlas.
+     * @param x1            the x-coordinate of the first corner of the blit position.
+     * @param x2            the x-coordinate of the second corner of the blit position
+     *                      .
+     * @param y1            the y-coordinate of the first corner of the blit position.
+     * @param y2            the y-coordinate of the second corner of the blit position
+     *                      .
+     * @param blitOffset    the z-level offset for rendering order.
+     * @param minU          the minimum horizontal texture coordinate.
+     * @param maxU          the maximum horizontal texture coordinate.
+     * @param minV          the minimum vertical texture coordinate.
+     * @param maxV          the maximum vertical texture coordinate.
+     */
+    void innerBlit(ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float minU, float maxU, float minV, float maxV) {
+        RenderSystem.setShaderTexture(0, atlasLocation);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        Matrix4f matrix4f = this.pose().last().pose();
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.vertex(matrix4f, x1, y1, blitOffset).uv(minU, minV).endVertex();
+        bufferbuilder.vertex(matrix4f, x1, y2, blitOffset).uv(minU, maxV).endVertex();
+        bufferbuilder.vertex(matrix4f, x2, y2, blitOffset).uv(maxU, maxV).endVertex();
+        bufferbuilder.vertex(matrix4f, x2, y1, blitOffset).uv(maxU, minV).endVertex();
+        BufferUploader.drawWithShader(bufferbuilder.end());
     }
 
     public void drawSpectrum(int x, int y, int width, int height, boolean vertical) {

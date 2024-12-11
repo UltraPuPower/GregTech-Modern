@@ -1,0 +1,14 @@
+{
+    "texture": "gtceu:textures/gui/progress_bar/progress_bar_boiler_empty_steel.png",
+    "texture_width": 10,
+    "texture_height": 54,
+    "repeat": false,
+    "corner_patch_size": {
+        "width": 1,
+        "height": 1
+    },
+    "center_patch_size": {
+        "width": 8,
+        "height": 52
+    }
+}

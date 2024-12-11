@@ -47,7 +47,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
     }
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         WidgetGroup parallelAmountGroup = new WidgetGroup(0, 0, 100, 20);
         parallelAmountGroup.addWidget(new IntInputWidget(this::getCurrentParallel, this::setCurrentParallel)
                 .setMin(MIN_PARALLEL)

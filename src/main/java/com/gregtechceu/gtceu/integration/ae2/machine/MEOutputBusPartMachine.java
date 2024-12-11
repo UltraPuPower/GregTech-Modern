@@ -96,7 +96,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     ///////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createBaseUIComponent() {
         WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
         // ME Network status
         group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?

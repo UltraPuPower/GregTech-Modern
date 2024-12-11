@@ -274,7 +274,7 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
         UIParsing.apply(children, "positioning", Positioning::parse, this::positioning);
         UIParsing.apply(children, "z-index", UIParsing::parseSignedInt, this::zIndex);
         UIParsing.apply(children, "cursor-style", UIParsing.parseEnum(CursorStyle.class), this::cursorStyle);
-        UIParsing.apply(children, "tooltip-text", UIParsing::parseText, this::tooltip);
+        UIParsing.apply(children, "tooltip-text", UIParsing::parseComponent, this::tooltip);
 
         if (children.containsKey("sizing")) {
             var sizingValues = UIParsing.childElements(children.get("sizing"));

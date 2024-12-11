@@ -229,7 +229,7 @@ public class LabelComponent extends BaseUIComponent {
     @Override
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
-        UIParsing.apply(children, "text", UIParsing::parseText, this::text);
+        UIParsing.apply(children, "text", UIParsing::parseComponent, this::text);
         UIParsing.apply(children, "max-width", UIParsing::parseUnsignedInt, this::maxWidth);
         UIParsing.apply(children, "color", Color::parse, this::color);
         UIParsing.apply(children, "shadow", UIParsing::parseBool, this::shadow);

@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.gui;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * @author KilaBash
@@ -20,10 +22,10 @@ public class SteamTexture {
         this.steelTexture = steelTexture;
     }
 
-    public static SteamTexture fullImage(String path) {
+    public static SteamTexture fullImage(ResourceLocation path) {
         return new SteamTexture(
-                new ResourceTexture(String.format(path, BRONZE)),
-                new ResourceTexture(String.format(path, STEEL)));
+                UITextures.resource(new ResourceLocation(path.getNamespace(), String.format(path.getPath(), BRONZE))),
+                UITextures.resource(new ResourceLocation(path.getNamespace(), String.format(path.getPath(), STEEL))));
     }
 
     public ResourceTexture get(boolean isHighPressure) {

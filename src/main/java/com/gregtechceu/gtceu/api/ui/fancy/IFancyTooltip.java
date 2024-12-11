@@ -1,6 +1,6 @@
-package com.gregtechceu.gtceu.api.gui.fancy;
+package com.gregtechceu.gtceu.api.ui.fancy;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  */
 public interface IFancyTooltip {
 
-    IGuiTexture getFancyTooltipIcon();
+    UITexture getFancyTooltipIcon();
 
     List<Component> getFancyTooltip();
 
@@ -30,12 +30,12 @@ public interface IFancyTooltip {
         return null;
     }
 
-    record Basic(Supplier<IGuiTexture> icon, Supplier<List<Component>> content, Supplier<Boolean> predicate,
+    record Basic(Supplier<UITexture> icon, Supplier<List<Component>> content, Supplier<Boolean> predicate,
                  Supplier<TooltipComponent> componentSupplier)
             implements IFancyTooltip {
 
         @Override
-        public IGuiTexture getFancyTooltipIcon() {
+        public UITexture getFancyTooltipIcon() {
             return icon.get();
         }
 

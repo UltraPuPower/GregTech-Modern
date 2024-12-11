@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -237,6 +238,12 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
     }
 
     @Override
+    public boolean onMouseMoved(double mouseX, double mouseY) {
+        return ParentUIComponent.super.onMouseMoved(mouseX, mouseY) ||
+                super.onMouseMoved(mouseX, mouseY);
+    }
+
+    @Override
     public boolean onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY, int button) {
         if (this.focusHandler != null && this.focusHandler.focused() != null) {
             final var focused = this.focusHandler.focused();
@@ -295,14 +302,25 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
         }
 
         @Override
-        public AbstractContainerMenu menu() {
-            return BaseParentUIComponent.this.containerAccess().menu();
+        public AbstractContainerScreen<?> screen() {
+            return BaseParentUIComponent.this.containerAccess().screen();
         }
 
         @Override
         public UIAdapter<?> adapter() {
             return BaseParentUIComponent.this.containerAccess().adapter();
         }
+    }
+
+    @Override
+    public boolean isMouseOverElement(double mouseX, double mouseY) {
+        for (int i = children().size() - 1; i >= 0; i--) {
+            UIComponent widget = children().get(i);
+            if(widget.isMouseOverElement(mouseX, mouseY)) {
+                return true;
+            }
+        }
+        return super.isMouseOverElement(mouseX, mouseY);
     }
 
     @Override

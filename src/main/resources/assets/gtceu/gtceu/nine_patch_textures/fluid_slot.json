@@ -1,0 +1,14 @@
+{
+    "texture": "gtceu:textures/gui/base/fluid_slot.png",
+    "texture_width": 18,
+    "texture_height": 18,
+    "repeat": false,
+    "corner_patch_size": {
+        "width": 1,
+        "height": 1
+    },
+    "center_patch_size": {
+        "width": 16,
+        "height": 16
+    }
+}
