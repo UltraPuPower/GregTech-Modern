@@ -32,9 +32,12 @@ import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Element;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Accessors(fluent = true, chain = true)
 public class TankComponent extends BaseUIComponent {
+
+    public final int STACK_CARRIED_COUNT = 4;
 
     @Getter
     protected IFluidHandler handler;
@@ -66,6 +69,11 @@ public class TankComponent extends BaseUIComponent {
     public void receiveMessage(int id, FriendlyByteBuf buf) {
         if (id == 1) {
             lastFluidInTank(FluidStack.readFromPacket(buf));
+        } else if(id == STACK_CARRIED_COUNT) {
+            ItemStack currentStack = getCarried();
+            int newSize = buf.readVarInt();
+            currentStack.setCount(newSize);
+            setCarried(currentStack);
         }
     }
 
@@ -166,6 +174,7 @@ public class TankComponent extends BaseUIComponent {
                     setCarried(currentStack);
                     player.getInventory().placeItemBackInInventory(filledResult);
                 }
+                sendMessage(STACK_CARRIED_COUNT, buf->buf.writeVarInt(getCarried().getCount()));
                 return true;
             }
         }

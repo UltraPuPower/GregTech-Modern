@@ -1866,7 +1866,7 @@ public class GTItems {
                                     .child(UIComponents.slot(adapter.menu().getSlot(0)).id("item-in.0"))
                                     .positioning(Positioning.relative(25, 25)));
                     layout.child(UIComponents.playerInventory(adapter.menu(), 1)
-                            .positioning(Positioning.absolute(7, 84)));
+                            .positioning(Positioning.absolute(10, 84)));
 
                 }
             }))

@@ -7,10 +7,12 @@ import com.lowdragmc.lowdraglib.networking.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class UIDataPacket implements IPacket {
 
     public FriendlyByteBuf payload;
