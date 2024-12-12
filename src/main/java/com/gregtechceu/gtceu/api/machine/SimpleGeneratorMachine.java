@@ -12,6 +12,10 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -27,6 +31,8 @@ import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,6 +136,27 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
+
+    @Override
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        var recipeTypeProperty = menu.createProperty(int.class, "current_recipe_type", this.getActiveRecipeType());
+        this.setRecipeTypeChangeListener(recipeTypeProperty::set);
+
+        for (int i = 0; i < this.importFluids.getTanks(); i++) {
+            SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-in." + i,
+                    this.importFluids.getFluidInTank(i));
+            CustomFluidTank tank = this.importFluids.getStorages()[i];
+            tank.setOnContentsChanged(() -> prop.set(tank.getFluid()));
+        }
+        for (int i = 0; i < this.exportFluids.getTanks(); i++) {
+            SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-out." + i,
+                    this.exportFluids.getFluidInTank(i));
+            CustomFluidTank tank = this.exportFluids.getStorages()[i];
+            tank.setOnContentsChanged(() -> prop.set(tank.getFluid()));
+        }
+        SlotGenerator.begin(menu::addSlot, 0, 0)
+                .playerInventory(menu.getPlayerInventory());
+    }
 
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util

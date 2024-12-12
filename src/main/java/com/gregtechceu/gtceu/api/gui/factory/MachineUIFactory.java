@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.gui.factory;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;

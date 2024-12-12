@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
+import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
+import com.gregtechceu.gtceu.api.ui.editable.EditableMachineUI;
+import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -272,15 +272,15 @@ public class MinerMachine extends WorkableTieredMachine
             group.addWidget(slots);
             return group;
         }, (group, machine) -> {
-            WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
+            UIComponentUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
+                var index = UIComponentUtils.widgetIdIndex(slot);
                 if (index >= 0 && index < machine.exportItems.getSlots()) {
                     slot.setHandlerSlot(machine.exportItems, index);
                     slot.setCanTakeItems(true);
                     slot.setCanPutItems(false);
                 }
             });
-            WidgetUtils.widgetByIdForEach(group, "^component_panel$", ComponentPanelWidget.class, panel -> {
+            UIComponentUtils.widgetByIdForEach(group, "^component_panel$", ComponentPanelWidget.class, panel -> {
                 panel.textSupplier(machine::addDisplayText);
             });
         });

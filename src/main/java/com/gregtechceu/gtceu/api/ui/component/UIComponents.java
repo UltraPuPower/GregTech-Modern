@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
+import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -27,12 +29,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class UIComponents {
 
@@ -69,6 +70,10 @@ public class UIComponents {
     // ------------------
     // Default Components
     // ------------------
+
+    public static SlotComponent slot(int slotIndex) {
+        return new SlotComponent(slotIndex);
+    }
 
     public static SlotComponent slot(IItemHandlerModifiable handler, int index) {
         return new SlotComponent(handler, index);
@@ -144,8 +149,26 @@ public class UIComponents {
         return new LabelComponent(text);
     }
 
+    public static LabelComponent label(Supplier<Component> textSupplier) {
+        return new LabelComponent(textSupplier);
+    }
+
     public static CheckboxComponent checkbox(Component message) {
         return new CheckboxComponent(message);
+    }
+
+    public static SwitchComponent switchComponent(BiConsumer<SwitchComponent, Boolean> onPressed) {
+        return new SwitchComponent(onPressed);
+    }
+
+    public static ToggleButtonComponent toggleButton(BooleanSupplier isPressedCondition,
+                                                     BooleanConsumer setPressedExecutor) {
+        return new ToggleButtonComponent(isPressedCondition, setPressedExecutor);
+    }
+
+    public static ToggleButtonComponent toggleButton(UITexture texture, BooleanSupplier isPressedCondition,
+                                                     BooleanConsumer setPressedExecutor) {
+        return new ToggleButtonComponent(texture, isPressedCondition, setPressedExecutor);
     }
 
     public static SliderComponent slider(Sizing horizontalSizing) {
@@ -162,10 +185,6 @@ public class UIComponents {
 
     public static SpriteComponent sprite(TextureAtlasSprite sprite) {
         return new SpriteComponent(sprite);
-    }
-
-    public static NinePatchTextureComponent ninePatchTexture(ResourceLocation texture) {
-        return new NinePatchTextureComponent(texture);
     }
 
     public static TextureComponent texture(UITexture texture, int regionWidth, int regionHeight) {
@@ -186,6 +205,18 @@ public class UIComponents {
 
     public static SmallCheckboxComponent smallCheckbox(Component label) {
         return new SmallCheckboxComponent(label);
+    }
+
+    public static ComponentPanelComponent componentPanel(@NotNull Consumer<List<Component>> textSupplier) {
+        return new ComponentPanelComponent(textSupplier);
+    }
+
+    public static ComponentPanelComponent componentPanel(List<Component> text) {
+        return new ComponentPanelComponent(text);
+    }
+
+    public static ProgressComponent progress(DoubleSupplier progressSupplier) {
+        return new ProgressComponent(progressSupplier);
     }
 
     // -------

@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -232,7 +231,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         }
     }
 
-    public void handleDisplayClick(String componentData, ClickData clickData) {
+    public void handleDisplayClick(String componentData) {
         if (!clickData.isRemote) {
             int result = componentData.equals("add") ? 5 : -5;
             this.throttle = Mth.clamp(throttle + result, 25, 100);

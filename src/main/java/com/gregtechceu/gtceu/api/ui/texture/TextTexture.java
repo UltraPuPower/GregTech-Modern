@@ -57,7 +57,7 @@ public class TextTexture extends TransformTexture {
         this(text, -1);
     }
 
-    public TextTexture setWidth(int width) {
+    public TextTexture maxWidth(int width) {
         this.width = width;
         if (LDLib.isClient()) {
             if (this.width > 0) {

@@ -1,18 +1,22 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.ui.texture.TextTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
-import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
-import com.lowdragmc.lowdraglib.gui.texture.*;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -37,24 +41,30 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
     }
 
     @Override
-    public IGuiTexture getTabIcon() {
-        return new ItemStackTexture(GTItems.ROBOT_ARM_LV.get());
+    public UITexture getTabIcon() {
+        return UITextures.item(GTItems.ROBOT_ARM_LV.asStack());
     }
 
     @Override
-    public Widget createMainPage(FancyMachineUIWidget widget) {
-        var group = new MachineModeConfigurator(0, 0, 140, 20 * machine.getRecipeTypes().length + 4);
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+    public ParentUIComponent createMainPage(FancyMachineUIComponent widget) {
+        var group = new MachineModeConfigurator(Sizing.fixed(140),
+                Sizing.fixed(20 * machine.getRecipeTypes().length + 4));
+        group.surface(Surface.UI_BACKGROUND_INVERSE);
         for (int i = 0; i < machine.getRecipeTypes().length; i++) {
             int finalI = i;
-            group.addWidget(new ButtonWidget(2, 2 + i * 20, 136, 20, IGuiTexture.EMPTY,
-                    cd -> machine.setActiveRecipeType(finalI)));
-            group.addWidget(new ImageWidget(2, 2 + i * 20, 136, 20,
-                    () -> new GuiTextureGroup(
-                            ResourceBorderTexture.BUTTON_COMMON.copy()
-                                    .setColor(machine.getActiveRecipeType() == finalI ? ColorPattern.CYAN.color : -1),
-                            new TextTexture(machine.getRecipeTypes()[finalI].registryName.toLanguageKey()).setWidth(136)
-                                    .setType(TextTexture.TextType.ROLL))));
+            group.child(UIComponents.button(Component.empty(),
+                    cd -> machine.setActiveRecipeType(finalI))
+                    .positioning(Positioning.absolute(2, 2 + i * 20))
+                    .sizing(Sizing.fixed(136), Sizing.fixed(20)));
+            group.child(UIComponents.texture(UITextures.dynamic(() -> UITextures.group(
+                            GuiTextures.VANILLA_BUTTON.copy()
+                                    .color(machine.getActiveRecipeType() == finalI ? ColorPattern.CYAN.color : -1),
+                            UITextures.text(Component.translatable(machine.getRecipeTypes()[finalI].registryName.toLanguageKey()))
+                                    .maxWidth(136)
+                                    .textType(TextTexture.TextType.ROLL))),
+                            0, 0)
+                    .positioning(Positioning.absolute(2, 2 + i * 20))
+                    .sizing(Sizing.fixed(136), Sizing.fixed(20)));
 
         }
         return group;
@@ -67,10 +77,16 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
         return tooltip;
     }
 
-    public class MachineModeConfigurator extends WidgetGroup {
+    public class MachineModeConfigurator extends FlowLayout {
 
-        public MachineModeConfigurator(int x, int y, int width, int height) {
-            super(x, y, width, height);
+        public MachineModeConfigurator(Sizing horizontalSizing, Sizing verticalSizing) {
+            super(horizontalSizing, verticalSizing, Algorithm.HORIZONTAL);
+        }
+
+        @Override
+        public void init() {
+            super.init();
+
         }
 
         @Override

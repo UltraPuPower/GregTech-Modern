@@ -1,21 +1,14 @@
-package com.gregtechceu.gtceu.api.gui.editor;
+package com.gregtechceu.gtceu.api.ui.editable;
 
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
+import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import lombok.Getter;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/7/4
- * @implNote EditableUI
- */
-public class EditableUI<W extends Widget, T> implements IEditableUI<W, T> {
+public class EditableUI<W extends UIComponent, T> implements IEditableUI<W, T> {
 
     @Getter
     final String id;
@@ -34,11 +27,11 @@ public class EditableUI<W extends Widget, T> implements IEditableUI<W, T> {
 
     public W createDefault() {
         var widget = widgetSupplier.get();
-        widget.setId(id);
+        widget.id(id);
         return widget;
     }
 
-    public void setupUI(WidgetGroup template, T instance) {
-        WidgetUtils.widgetByIdForEach(template, "^" + id + "$", clazz, w -> binder.accept(w, instance));
+    public void setupUI(ParentUIComponent template, T instance) {
+        UIComponentUtils.widgetByIdForEach(template, "^" + id + "$", clazz, w -> binder.accept(w, instance));
     }
 }

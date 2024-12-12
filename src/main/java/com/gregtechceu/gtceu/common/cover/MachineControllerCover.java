@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -211,7 +211,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         group.addWidget(modeButton);
 
         // Inverted Mode Toggle:
-        group.addWidget(new ToggleButtonWidget(
+        group.addWidget(new ToggleButtonComponent(
                 146, 20, 20, 20,
                 GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
 

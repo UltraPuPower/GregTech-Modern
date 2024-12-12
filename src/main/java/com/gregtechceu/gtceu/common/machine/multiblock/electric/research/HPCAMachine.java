@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -29,7 +30,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -236,7 +236,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public Widget createBaseUIComponent() {
+    public ParentUIComponent createBaseUIComponent() {
         WidgetGroup builder = (WidgetGroup) super.createBaseUIComponent();
         // Create the hover grid
         builder.addWidget(new ExtendedProgressWidget(

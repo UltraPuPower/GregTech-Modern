@@ -1,15 +1,19 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -29,23 +33,38 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
         }
     }
 
-    default void handleDisplayClick(String componentData, ClickData clickData) {}
+    default void handleDisplayClick(String componentData) {}
 
-    default IGuiTexture getScreenTexture() {
+    default UITexture getScreenTexture() {
         return GuiTextures.DISPLAY;
     }
 
     @Override
-    default ModularUI createUI(Player entityPlayer) {
-        var screen = new DraggableScrollableWidgetGroup(7, 4, 162, 121).setBackground(getScreenTexture());
-        screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
-        screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                .textSupplier(this.self().getLevel().isClientSide ? null : this::addDisplayText)
-                .setMaxWidthLimit(150)
-                .clickHandler(this::handleDisplayClick));
-        return new ModularUI(176, 216, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(screen)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 134, true));
+    default void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        SlotGenerator.begin(menu::addSlot, 0, 0)
+                .moveTo(7, 134)
+                .playerInventory(menu.getPlayerInventory());
+    }
+
+    @Override
+    default void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter) {
+        ComponentGroup rootComponent = adapter.rootComponent;
+
+        var screen = UIContainers.verticalFlow(Sizing.fixed(162), Sizing.fixed(121));
+        screen.positioning(Positioning.absolute(7, 4));
+        screen.padding(Insets.both(4, 5));
+
+        screen.child(UIContainers.draggable(Sizing.fill(), Sizing.fill(), UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+                        .child(UIComponents.label(self().getBlockState().getBlock().getName()))
+                        .child(UIComponents.componentPanel(this::addDisplayText)
+                                .maxWidthLimit(150)
+                                .clickHandler(this::handleDisplayClick))
+                        .positioning(Positioning.absolute(4, 17))
+                        .padding(Insets.of(4))))
+                .surface((graphics, component) ->
+                        getScreenTexture().draw(graphics, 0, 0, component.x(), component.y(), component.width(), component.height()));
+        rootComponent.child(screen)
+                .child(UIComponents.playerInventory(adapter.screen().getMenu(), 0)
+                        .positioning(Positioning.absolute(3, 129)));
     }
 }

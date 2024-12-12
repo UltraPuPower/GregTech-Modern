@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.texture;
 
+import com.gregtechceu.gtceu.api.ui.core.Color;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -49,5 +50,9 @@ public class UITextures {
 
     public static TextTexture text(Component text) {
         return new TextTexture(text);
+    }
+
+    public static ColorBorderTexture colorBorder(Color color, int border) {
+        return new ColorBorderTexture(color, border);
     }
 }

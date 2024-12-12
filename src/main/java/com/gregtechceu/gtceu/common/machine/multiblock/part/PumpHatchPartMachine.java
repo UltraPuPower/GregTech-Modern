@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -44,7 +44,7 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
                 .widget(new TankWidget(tank.getStorages()[0], 90, 35, true, io.support(IO.IN))
                         .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(new ToggleButtonWidget(7, 53, 18, 18,
+                .widget(new ToggleButtonComponent(7, 53, 18, 18,
                         GuiTextures.BUTTON_FLUID_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_input.tooltip"))

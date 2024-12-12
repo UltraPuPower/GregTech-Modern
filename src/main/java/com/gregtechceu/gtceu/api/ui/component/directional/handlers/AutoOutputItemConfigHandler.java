@@ -1,12 +1,12 @@
-package com.gregtechceu.gtceu.common.ui.widget.directional.handlers;
+package com.gregtechceu.gtceu.api.ui.component.directional.handlers;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.Color;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.gregtechceu.gtceu.common.ui.widget.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 
@@ -71,7 +71,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
             }
         });
 
-        group.addWidget(new ToggleButtonWidget(
+        group.addWidget(new ToggleButtonComponent(
                 19, 0, 18, 18, GuiTextures.BUTTON_ITEM_OUTPUT,
                 machine::isAllowInputFromOutputSideItems, machine::setAllowInputFromOutputSideItems)
                 .setShouldUseBaseBackground().setTooltipText("gtceu.gui.item_auto_output.allow_input"));

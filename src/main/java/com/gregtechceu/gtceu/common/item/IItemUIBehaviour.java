@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.factory.HeldItemUIFactory;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
@@ -30,5 +30,5 @@ public interface IItemUIBehaviour extends IInteractionItem {
     void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder);
 
     @OnlyIn(Dist.CLIENT)
-    void loadClientUI(Player entityPlayer, UIAdapter<RootContainer> adapter, HeldItemUIHolder holder);
+    void loadClientUI(Player entityPlayer, UIAdapter<ComponentGroup> adapter, HeldItemUIHolder holder);
 }

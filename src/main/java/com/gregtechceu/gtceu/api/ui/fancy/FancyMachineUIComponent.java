@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -26,7 +27,7 @@ import java.util.stream.Stream;
 @ApiStatus.Internal
 @Accessors(fluent = true, chain = true)
 @Getter
-public class FancyMachineUIComponent extends FlowLayout {
+public class FancyMachineUIComponent extends ComponentGroup {
 
     protected final TitleBarComponent titleBar;
     protected final VerticalTabsComponent sideTabsComponent;
@@ -58,7 +59,7 @@ public class FancyMachineUIComponent extends FlowLayout {
 
     public FancyMachineUIComponent(IFancyUIProvider mainPage,
                                       Sizing horizontalSizing, Sizing verticalSizing) {
-        super(horizontalSizing, verticalSizing, Algorithm.HORIZONTAL);
+        super(horizontalSizing, verticalSizing);
         this.mainPage = mainPage;
 
         child(this.pageContainer = UIContainers.horizontalFlow(horizontalSizing, verticalSizing));

@@ -5,10 +5,7 @@ import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
-import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
-import com.gregtechceu.gtceu.api.ui.texture.UITexture;
-import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.*;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -358,7 +355,7 @@ public class UIParsing {
         registerComponentFactory("stack-layout", element -> UIContainers.stack(Sizing.content(), Sizing.content()));
 
         // Container
-        registerComponentFactory("root", element -> UIContainers.root(Sizing.content(), Sizing.content()));
+        registerComponentFactory("group", element -> UIContainers.group(Sizing.content(), Sizing.content()));
         registerComponentFactory("scroll", ScrollContainer::parse);
         registerComponentFactory("collapsible", CollapsibleContainer::parse);
         registerComponentFactory("draggable", element -> UIContainers.draggable(Sizing.content(), Sizing.content(), null));
@@ -366,7 +363,6 @@ public class UIParsing {
         // Textures
         registerComponentFactory("sprite", SpriteComponent::parse);
         registerComponentFactory("texture", TextureComponent::parse);
-        registerComponentFactory("nine-patch-texture", NinePatchTextureComponent::parse);
 
         // Game Objects
         registerComponentFactory("entity", EntityComponent::parse);
@@ -391,6 +387,7 @@ public class UIParsing {
         registerComponentFactory("color-picker", element -> new ColorPickerComponent());
         registerComponentFactory("slim-slider", SlimSliderComponent::parse);
         registerComponentFactory("small-checkbox", element -> new SmallCheckboxComponent());
+        registerComponentFactory("progress", ProgressComponent::parse);
 
 
         // Textures
@@ -400,5 +397,6 @@ public class UIParsing {
         registerTextureFactory("nine-patch", NinePatchTexture::parse);
         registerTextureFactory("group", element -> UITextures.group());
         registerTextureFactory("text", element -> UITextures.text(Component.empty()));
+        registerTextureFactory("color-border", ColorBorderTexture::parse);
     }
 }

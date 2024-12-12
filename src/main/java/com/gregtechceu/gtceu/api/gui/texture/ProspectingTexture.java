@@ -168,7 +168,7 @@ public class ProspectingTexture extends AbstractTexture {
             }
         }
 
-        GuiTextures.UP.copy().setColor(ColorPattern.RED.color).rotate(direction / 2).draw(graphics, 0, 0,
+        GuiTextures.UP.copy().color(ColorPattern.RED.color).rotate(direction / 2).draw(graphics, 0, 0,
                 x + playerXGui - 20, y + playerYGui - 20, 40, 40);
 
         // draw red vertical line

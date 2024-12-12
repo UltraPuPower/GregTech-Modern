@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.api.ui.texture;
 
-import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.resources.ResourceLocation;
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
+@Accessors(fluent = true, chain = true)
 public class ResourceTexture extends TransformTexture {
     
     public ResourceLocation imageLocation;
@@ -16,6 +18,7 @@ public class ResourceTexture extends TransformTexture {
     public int offsetY = 0;
     public int imageWidth = 1;
     public int imageHeight = 1;
+    @Setter
     protected int color = -1;
 
     protected ResourceTexture(ResourceLocation imageLocation, int offsetX, int offsetY, int width, int height) {
@@ -48,12 +51,6 @@ public class ResourceTexture extends TransformTexture {
 
     public ResourceTexture copy() {
         return getSubTexture(0, 0, 1, 1);
-    }
-
-    @Override
-    public ResourceTexture setColor(int color) {
-        this.color = color;
-        return this;
     }
 
     @Override

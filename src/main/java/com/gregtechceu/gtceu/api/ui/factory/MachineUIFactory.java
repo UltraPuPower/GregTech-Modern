@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.api.ui.factory;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine2;
+import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
@@ -27,17 +27,17 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     }
 
     @Override
-    public @Nullable UIAdapter<RootContainer> createAdapter(Player player, MetaMachine holder) {
+    public @Nullable UIAdapter<ComponentGroup> createAdapter(Player player, MetaMachine holder) {
         UIModel model = UIModelLoader.get(holder.getDefinition().getId());
         if (model != null) {
-            return model.createAdapterWithoutScreen(0, 0, 176, 166, RootContainer.class);
+            return model.createAdapterWithoutScreen(0, 0, 176, 166, ComponentGroup.class);
         }
         return super.createAdapter(player, holder);
     }
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-        if (menu.getHolder() instanceof IUIMachine2 machine) {
+        if (menu.getHolder() instanceof IUIMachine machine) {
             machine.loadServerUI(player, menu, holder);
         }
 
@@ -45,8 +45,8 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void loadClientUI(Player player, UIAdapter<RootContainer> adapter, MetaMachine holder) {
-        if (holder instanceof IUIMachine2 machine) {
+    public void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter, MetaMachine holder) {
+        if (holder instanceof IUIMachine machine) {
             UIModel model = UIModelLoader.get(holder.getDefinition().getId());
             if (model != null) {
                 return;

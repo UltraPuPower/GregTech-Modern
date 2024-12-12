@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.base;
 
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.event.*;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;

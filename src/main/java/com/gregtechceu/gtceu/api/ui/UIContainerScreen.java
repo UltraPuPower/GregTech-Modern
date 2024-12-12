@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import org.jetbrains.annotations.NotNull;
 
-public class UIContainerScreen extends BaseContainerScreen<RootContainer, UIContainerMenu<?>> {
+public class UIContainerScreen extends BaseContainerScreen<ComponentGroup, UIContainerMenu<?>> {
 
     public UIContainerScreen(UIContainerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -18,13 +18,13 @@ public class UIContainerScreen extends BaseContainerScreen<RootContainer, UICont
 
     @SuppressWarnings({ "unchecked", "DataFlowIssue", "rawtypes" })
     @Override
-    protected @NotNull UIAdapter<RootContainer> createAdapter() {
+    protected @NotNull UIAdapter<ComponentGroup> createAdapter() {
         return ((UIContainerMenu) menu).getFactory().createAdapter(menu.player(), menu.getHolder());
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    protected void build(RootContainer rootComponent) {
+    protected void build(ComponentGroup rootComponent) {
         ((UIContainerMenu) menu).getFactory().loadClientUI(menu.player(), this.uiAdapter, menu.getHolder());
     }
 

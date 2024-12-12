@@ -4,6 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -19,20 +25,17 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonComponent;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotComponent;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -233,8 +236,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         return proxies1;
     }
 
-    private void refundAll(ClickData clickData) {
-        if (!clickData.isRemote) {
+    private void refundAll(ButtonComponent clickData) {
+        // TODO sync button clicks to server
+        if (false /*!clickData.isRemote*/) {
             for (InternalSlot internalSlot : internalInventory) {
                 internalSlot.refund();
             }
@@ -263,7 +267,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Override
     public void attachConfigurators(ConfiguratorPanelComponent configuratorPanel) {
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
-                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
+                UITextures.group(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventorySimulated.storage));
         configuratorPanel.attachConfigurators(new FancyInvConfigurator(
@@ -282,14 +286,18 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public Widget createBaseUIComponent() {
         int rowSize = 9;
         int colSize = 3;
-        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
+        var mainGroup = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
+        mainGroup.padding(Insets.both(8, 2));
+        var group = UIContainers.grid(Sizing.fixed(18 * rowSize + 16), Sizing.fixed(18 * colSize + 16), rowSize, colSize);
         int index = 0;
         for (int y = 0; y < colSize; ++y) {
             for (int x = 0; x < rowSize; ++x) {
                 int finalI = index;
-                var slot = new AEPatternViewSlotWidget(patternInventory, index++, 8 + x * 18, 14 + y * 18)
-                        .setOccupiedTexture(GuiTextures.SLOT)
-                        .setItemHook(stack -> {
+                var slotGroup = UIContainers.stack(Sizing.content(), Sizing.content());
+                var slot = new AEPatternViewSlotComponent(patternInventory, index++)
+                        .occupiedTexture(GuiTextures.SLOT)
+                        .backgroundTexture(GuiTextures.SLOT, GuiTextures.PATTERN_OVERLAY)
+                        .itemHook(stack -> {
                             if (!stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem iep) {
                                 final ItemStack out = iep.getOutput(stack);
                                 if (!out.isEmpty()) {
@@ -298,23 +306,25 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                             }
                             return stack;
                         })
-                        .setChangeListener(() -> onPatternChange(finalI))
-                        .setBackground(GuiTextures.SLOT, GuiTextures.PATTERN_OVERLAY);
-                group.addWidget(slot);
+                        .changeListener(() -> onPatternChange(finalI))
+                        .positioning(Positioning.absolute(8 + x * 18, 14 + y * 18));
+                slotGroup.child(slot);
+                group.child(slotGroup, x, y);
             }
         }
+        mainGroup.child(group);
         // ME Network status
-        group.addWidget(new LabelWidget(
-                8,
-                2,
-                () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"));
+        mainGroup.child(0, UIComponents.label(() -> this.isOnline ?
+                        Component.translatable("gtceu.gui.me_network.online") :
+                        Component.translatable("gtceu.gui.me_network.offline")));
 
-        group.addWidget(new AETextInputButtonWidget(18 * rowSize + 8 - 70, 2, 70, 10)
+        mainGroup.child(new AETextInputButtonComponent(Sizing.fixed(70), Sizing.fixed(10))
                 .setText(customName)
                 .setOnConfirm(this::setCustomName)
-                .setButtonTooltips(Component.translatable("gui.gtceu.rename.desc")));
+                .setButtonTooltips(Component.translatable("gui.gtceu.rename.desc"))
+                .positioning(Positioning.absolute(18 * rowSize - 70, 0)));
 
-        return group;
+        return mainGroup;
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.IntConsumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -45,9 +46,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Getter
     public final GTRecipeType[] recipeTypes;
     @Getter
-    @Setter
     @Persisted
     public int activeRecipeType;
+    public IntConsumer recipeTypeChangeListener = $ -> {};
     @Getter
     public final Int2IntFunction tankScalingFunction;
     @Nullable
@@ -247,5 +248,15 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @NotNull
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
+    }
+
+    @Override
+    public void setActiveRecipeType(int activeRecipeType) {
+        this.activeRecipeType = activeRecipeType;
+        this.recipeTypeChangeListener.accept(this.activeRecipeType);
+    }
+
+    public void setRecipeTypeChangeListener(IntConsumer recipeTypeChangeListener) {
+        this.recipeTypeChangeListener = this.recipeTypeChangeListener.andThen(recipeTypeChangeListener);
     }
 }

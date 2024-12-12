@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
@@ -27,6 +28,9 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Element;
 
+import java.util.Objects;
+import java.util.function.Function;
+
 @Accessors(fluent = true, chain = true)
 public class SlotComponent extends BaseUIComponent {
 
@@ -36,6 +40,20 @@ public class SlotComponent extends BaseUIComponent {
     @Getter
     @Setter
     protected MutableSlotWrapper slot;
+    @Nullable
+    @Getter
+    protected Boolean canInsertOverride;
+    @Nullable
+    @Getter
+    protected Boolean canExtractOverride;
+    @Setter
+    protected Function<ItemStack, ItemStack> itemHook;
+    @Setter
+    protected Runnable changeListener;
+    @Getter
+    @Setter
+    protected IO ingredientIO;
+
     protected boolean didDraw = false;
 
     protected SlotComponent(int index) {
@@ -89,14 +107,20 @@ public class SlotComponent extends BaseUIComponent {
     private void setSlot(Slot slot, int index) {
         this.slot.setInner(slot);
         this.slot.gtceu$setSlotIndex(index);
-        //var menu = this.containerAccess().menu();
-        //menu.slots.set(index, slot);
-        //((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(index, ItemStack.EMPTY);
-        //((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(index, ItemStack.EMPTY);
+    }
+
+    public SlotComponent canInsertOverride(@Nullable Boolean canInsertOverride) {
+        this.canInsertOverride = canInsertOverride;
+        return this;
+    }
+
+    public SlotComponent canExtractOverride(@Nullable Boolean canExtractOverride) {
+        this.canExtractOverride = canExtractOverride;
+        return this;
     }
 
     @Override
-    public void draw(UIGuiGraphics context, int mouseX, int mouseY, float partialTicks, float delta) {
+    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         this.didDraw = true;
 
         int[] scissor = new int[4];
@@ -170,11 +194,24 @@ public class SlotComponent extends BaseUIComponent {
         return super.y(y);
     }
 
+    public ItemStack getRealStack(ItemStack itemStack) {
+        if (itemHook != null) return itemHook.apply(itemStack);
+        return itemStack;
+    }
+
     @Accessors(fluent = false, chain = false)
     public static class MutableSlotWrapper extends Slot {
 
         @Getter
         private Slot inner;
+        @Nullable
+        @Getter
+        @Setter
+        protected Boolean canInsertOverride;
+        @Nullable
+        @Getter
+        @Setter
+        protected Boolean canExtractOverride;
 
         public MutableSlotWrapper(Slot inner) {
             super(inner.container, inner.getSlotIndex(), inner.x, inner.y);
@@ -200,7 +237,7 @@ public class SlotComponent extends BaseUIComponent {
          */
         @Override
         public boolean mayPlace(@NotNull ItemStack stack) {
-            return inner.isActive();
+            return Objects.requireNonNullElseGet(canInsertOverride, () -> inner.isActive());
         }
 
         @Override
@@ -263,7 +300,7 @@ public class SlotComponent extends BaseUIComponent {
          */
         @Override
         public boolean mayPickup(@NotNull Player player) {
-            return inner.mayPickup(player);
+            return Objects.requireNonNullElseGet(canExtractOverride, () -> inner.mayPickup(player));
         }
 
         @Override

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
@@ -13,7 +14,6 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -125,10 +125,10 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
     ///////////////////////////////
     // ********** GUI ***********//
-    ///////////////////////////////
+    /// ////////////////////////////
 
     @Override
-    public Widget createBaseUIComponent() {
+    public ParentUIComponent createBaseUIComponent() {
         WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
         group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?

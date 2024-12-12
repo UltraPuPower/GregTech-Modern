@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,7 +20,7 @@ public interface IFancyConfigurator {
 
     Component getTitle();
 
-    IGuiTexture getIcon();
+    UITexture getIcon();
 
     UIComponent createConfigurator();
 

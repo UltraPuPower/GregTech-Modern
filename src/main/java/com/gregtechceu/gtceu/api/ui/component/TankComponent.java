@@ -47,6 +47,10 @@ public class TankComponent extends BaseUIComponent {
     protected int lastTankCapacity;
     @Setter
     protected boolean showAmount = true;
+    @Setter
+    protected boolean canInsert = true;
+    @Setter
+    protected boolean canExtract = true;
 
     protected TankComponent(IFluidHandler fluidHandler, int tank) {
         this.handler = fluidHandler;
@@ -132,7 +136,7 @@ public class TankComponent extends BaseUIComponent {
         if (handler == null) return false;
         int maxAttempts = isShift ? currentStack.getCount() : 1;
         FluidStack initialFluid = this.handler.getFluidInTank(tank).copy();
-        if (initialFluid.getAmount() > 0) {
+        if (canExtract && initialFluid.getAmount() > 0) {
             boolean performedFill = false;
             ItemStack filledResult = ItemStack.EMPTY;
             for (int i = 0; i < maxAttempts; i++) {
@@ -169,6 +173,52 @@ public class TankComponent extends BaseUIComponent {
                     player.getInventory().placeItemBackInInventory(filledResult);
                 }
 
+                // TODO do some checking on server to not just accept any stack
+                sendMenuUpdate(new UIContainerMenu.ServerboundSetCarriedUpdate(getCarried()));
+                return true;
+            }
+        }
+
+        if (canInsert) {
+            boolean performedEmptying = false;
+            ItemStack drainedResult = ItemStack.EMPTY;
+            for (int i = 0; i < maxAttempts; i++) {
+                FluidActionResult result = FluidUtil.tryEmptyContainer(currentStack, this.handler, Integer.MAX_VALUE, null,
+                        false);
+                if (!result.isSuccess()) break;
+                ItemStack remainingStack = FluidUtil
+                        .tryEmptyContainer(currentStack, this.handler, Integer.MAX_VALUE, null, true).getResult();
+                performedEmptying = true;
+
+                currentStack.shrink(1);
+
+                if (drainedResult.isEmpty()) {
+                    drainedResult = remainingStack.copy();
+                } else if (ItemStack.isSameItemSameTags(drainedResult, remainingStack)) {
+                    if (drainedResult.getCount() < drainedResult.getMaxStackSize())
+                        drainedResult.grow(1);
+                    else
+                        player.getInventory().placeItemBackInInventory(remainingStack);
+                } else {
+                    player.getInventory().placeItemBackInInventory(drainedResult);
+                    drainedResult = remainingStack.copy();
+                }
+            }
+            var filledFluid = this.handler.getFluidInTank(tank);
+            if (performedEmptying) {
+                SoundEvent soundevent = filledFluid.getFluid().getFluidType().getSound(filledFluid,
+                        SoundActions.BUCKET_EMPTY);
+                if (soundevent == null)
+                    soundevent = SoundEvents.BUCKET_EMPTY;
+                player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
+                        soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+                if (currentStack.isEmpty()) {
+                    setCarried(drainedResult);
+                } else {
+                    setCarried(currentStack);
+                    player.getInventory().placeItemBackInInventory(drainedResult);
+                }
                 // TODO do some checking on server to not just accept any stack
                 sendMenuUpdate(new UIContainerMenu.ServerboundSetCarriedUpdate(getCarried()));
                 return true;

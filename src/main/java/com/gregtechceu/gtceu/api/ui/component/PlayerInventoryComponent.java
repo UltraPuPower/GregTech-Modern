@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.StackLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.*;
 
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
@@ -16,22 +13,22 @@ import org.w3c.dom.Element;
 
 import java.util.List;
 
-public class PlayerInventoryComponent extends FlowLayout {
+public class PlayerInventoryComponent extends ComponentGroup {
 
     protected PlayerInventoryComponent(Inventory inventory) {
-        super(Sizing.fixed(162), Sizing.fixed(76), Algorithm.VERTICAL);
+        super(Sizing.fixed(162), Sizing.fixed(76));
         setByInventory(inventory);
         this.allowOverflow(true);
     }
 
     protected PlayerInventoryComponent(AbstractContainerMenu menu, int startSlotIndex) {
-        super(Sizing.fixed(162), Sizing.fixed(76), Algorithm.VERTICAL);
+        super(Sizing.fixed(162), Sizing.fixed(76));
         setByMenu(menu, startSlotIndex);
         this.allowOverflow(true);
     }
 
     protected PlayerInventoryComponent() {
-        super(Sizing.fixed(162), Sizing.fixed(76), Algorithm.VERTICAL);
+        super(Sizing.fixed(162), Sizing.fixed(76));
     }
 
     public PlayerInventoryComponent setByInventory(Inventory inventory) {
@@ -40,7 +37,7 @@ public class PlayerInventoryComponent extends FlowLayout {
             for (int x = 0; x < 9; x++) {
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
                 layout.children(List.of(UIComponents.slot(inventory, x + x * 9 + 9),
-                        UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)))
+                        UIComponents.texture(GuiTextures.SLOT, 18, 18)))
                         .positioning(Positioning.absolute(x * 18, y * 18));
                 grid.child(layout, x, y);
             }
@@ -53,8 +50,9 @@ public class PlayerInventoryComponent extends FlowLayout {
             layout.children(List.of(
                             UIComponents.slot(inventory, x)
                                     .positioning(Positioning.absolute(x * 18, 58)),
-                    UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)
-                            .positioning(Positioning.absolute(x * 18, 58))));
+                    UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                            .positioning(Positioning.absolute(x * 18, 58))
+                            .sizing(Sizing.fixed(18))));
             grid2.child(layout, x, 0);
         }
         this.child(grid2);
@@ -67,7 +65,8 @@ public class PlayerInventoryComponent extends FlowLayout {
             for (int y = 0; y < 9; y++) {
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
                 layout.children(List.of(UIComponents.slot(menu.getSlot(y + x * 9 + startSlotIndex)),
-                        UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)));
+                        UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                                .sizing(Sizing.fixed(18))));
                 grid.child(layout, x, y);
             }
         }
@@ -79,7 +78,8 @@ public class PlayerInventoryComponent extends FlowLayout {
             StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
             layout.children(List.of(
                     UIComponents.slot(menu.getSlot(y + 27 + startSlotIndex)),
-                    UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18)));
+                    UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                            .sizing(Sizing.fixed(18))));
             grid2.child(layout, 0, y);
         }
         grid2.positioning(Positioning.absolute(0, 58));

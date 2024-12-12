@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -243,7 +242,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void handleDisplayClick(String componentData, ClickData clickData) {
+    public void handleDisplayClick(String componentData) {
         if (!clickData.isRemote) {
             if (componentData.equals("chunk_mode")) {
                 getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());

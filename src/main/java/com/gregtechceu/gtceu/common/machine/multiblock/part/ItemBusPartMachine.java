@@ -2,6 +2,12 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -29,11 +35,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -71,7 +79,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -146,7 +155,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     //////////////////////////////////////
     // ******** Auto IO *********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
@@ -191,7 +201,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     //////////////////////////////////////
     // ********** GUI ***********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanelComponent configuratorPanel) {
         if (this.io == IO.OUT) {
@@ -203,27 +214,39 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     @Override
-    public Widget createBaseUIComponent() {
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+
+    }
+
+    @Override
+    public ParentUIComponent createBaseUIComponent() {
         int rowSize = (int) Math.sqrt(getInventorySize());
         int colSize = rowSize;
         if (getInventorySize() == 8) {
             rowSize = 4;
             colSize = 2;
         }
-        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
-        var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
+        var group = UIContainers.group(Sizing.content(), Sizing.content());
+        group.margins(Insets.of(8));
+        var container = UIContainers.grid(Sizing.fill(), Sizing.fill(), rowSize, colSize);
+        container.margins(Insets.of(4));
         int index = 0;
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
-                container.addWidget(
-                        new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-                                .setBackgroundTexture(GuiTextures.SLOT)
-                                .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
+                StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+                layout.children(List.of(
+                        UIComponents.slot(getInventory().storage, index++)
+                                .canExtractOverride(true)
+                                .canInsertOverride(io.support(IO.IN))
+                                .ingredientIO(this.io),
+                        UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                                .sizing(Sizing.fixed(18))));
+                container.child(layout, x, y);
             }
         }
 
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
+        container.surface(Surface.UI_BACKGROUND_INVERSE);
+        group.child(container);
 
         return group;
     }

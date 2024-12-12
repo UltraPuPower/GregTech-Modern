@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.common.ui.widget.directional.handlers;
+package com.gregtechceu.gtceu.api.ui.component.directional.handlers;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-import com.gregtechceu.gtceu.common.ui.widget.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 
@@ -75,7 +75,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
             }
         });
 
-        group.child(new ToggleButtonWidget(
+        group.child(new ToggleButtonComponent(
                 19, 0, 18, 18, GuiTextures.BUTTON_FLUID_OUTPUT,
                 machine::isAllowInputFromOutputSideFluids, machine::setAllowInputFromOutputSideFluids)
                 .setShouldUseBaseBackground().setTooltipText("gtceu.gui.fluid_auto_output.allow_input"));

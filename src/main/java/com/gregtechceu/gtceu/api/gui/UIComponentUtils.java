@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.gui;
 
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -14,10 +16,10 @@ import java.util.regex.Pattern;
  * @date 2023/3/29
  * @implNote WidgetUtils
  */
-public class WidgetUtils {
+public class UIComponentUtils {
 
-    public static List<Widget> getWidgetsById(WidgetGroup group, String regex) {
-        return group.getWidgetsById(Pattern.compile(regex));
+    public static List<UIComponent> getWidgetsById(ParentUIComponent group, String regex) {
+        return group.childrenByPattern(Pattern.compile(regex));
     }
 
     @Nullable
@@ -25,13 +27,13 @@ public class WidgetUtils {
         return group.getFirstWidgetById(Pattern.compile(regex));
     }
 
-    public static void widgetByIdForEach(WidgetGroup group, String regex, Consumer<Widget> consumer) {
+    public static void widgetByIdForEach(ParentUIComponent group, String regex, Consumer<UIComponent> consumer) {
         getWidgetsById(group, regex).forEach(consumer);
     }
 
-    public static <T extends Widget> void widgetByIdForEach(WidgetGroup group, String regex, Class<T> clazz,
-                                                            Consumer<T> consumer) {
-        for (Widget widget : getWidgetsById(group, regex)) {
+    public static <T extends UIComponent> void widgetByIdForEach(ParentUIComponent group, String regex, Class<T> clazz,
+                                                                 Consumer<T> consumer) {
+        for (UIComponent widget : getWidgetsById(group, regex)) {
             if (clazz.isInstance(widget)) {
                 consumer.accept(clazz.cast(widget));
             }
@@ -41,7 +43,7 @@ public class WidgetUtils {
     public static int widgetIdIndex(Widget widget) {
         var id = widget.getId();
         if (id == null) return -1;
-        var split = id.split("_");
+        var split = id.split("\\.");
         if (split.length == 0) return -1;
         var end = split[split.length - 1];
         try {

@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
-// TODO figure out a way to send server->client updates (Observable<>? update listeners?)
 public class UIContainerMenu<T> extends AbstractContainerMenu {
 
     public final static MenuType<UIContainerMenu<?>> MENU_TYPE = GTRegistries.register(BuiltInRegistries.MENU,
@@ -38,9 +37,10 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     @Getter
     private final Set<Slot> slotSet = new LinkedHashSet<>();
 
-    // FIXME: server side can't make use of received updates rn? Figure out a way to solve
     @Getter
     private final Queue<IComponentUpdate> receivedComponentUpdates = new LinkedList<>();
+    @Getter
+    private final
 
     @Getter
     private final Inventory playerInventory;

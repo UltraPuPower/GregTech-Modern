@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
+import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -382,9 +382,9 @@ public class GTRecipeWidget extends WidgetGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
+                UIComponentUtils.widgetByIdForEach(group, "^%s.[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
                         widget -> {
-                            var index = WidgetUtils.widgetIdIndex(widget);
+                            var index = UIComponentUtils.widgetIdIndex(widget);
                             if (index >= 0 && index < contents.size()) {
                                 var content = contents.get(index);
                                 cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,

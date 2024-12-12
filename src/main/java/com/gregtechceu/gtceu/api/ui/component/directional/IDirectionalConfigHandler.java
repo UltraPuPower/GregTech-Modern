@@ -1,11 +1,10 @@
-package com.gregtechceu.gtceu.common.ui.widget.directional;
+package com.gregtechceu.gtceu.api.ui.component.directional;
 
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.core.BlockPos;

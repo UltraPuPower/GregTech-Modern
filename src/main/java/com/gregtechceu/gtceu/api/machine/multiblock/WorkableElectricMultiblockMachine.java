@@ -7,9 +7,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
@@ -106,21 +112,20 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public Widget createBaseUIComponent() {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
+    public ParentUIComponent createBaseUIComponent() {
+        var group = UIContainers.verticalFlow(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
+        group.padding(Insets.of(4));
+
+        group.child()
+
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
                         .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
                         .setMaxWidthLimit(200)
-                        .clickHandler(this::handleDisplayClick)));
+                        .clickHandler((componentData, clickData) -> handleDisplayClick(componentData))));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
-    }
-
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
     }
 
     @Override
@@ -129,7 +134,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+    public void attachTooltips(TooltipsPanelComponent tooltipsPanel) {
         for (IMultiPart part : getParts()) {
             part.attachFancyTooltipsToController(this, tooltipsPanel);
         }

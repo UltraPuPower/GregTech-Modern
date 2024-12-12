@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -97,12 +98,12 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     //////////////////////////////////////
 
     @Override
-    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
+    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanelComponent tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
 
     @Override
-    default void attachTooltips(TooltipsPanel tooltipsPanel) {
+    default void attachTooltips(TooltipsPanelComponent tooltipsPanel) {
         tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
                 () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
                 () -> List.of(Component.translatable("gtceu.multiblock.universal.muffler_obstructed")

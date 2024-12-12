@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -13,7 +12,7 @@ import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -50,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLife,
+public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
         IDropSaveMachine, IInteractedMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
@@ -104,8 +103,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void loadClientUI(Player player, UIAdapter<RootContainer> adapter) {
-        RootContainer rootComponent = adapter.rootComponent;
+    public void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter) {
+        ComponentGroup rootComponent = adapter.rootComponent;
         rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
         int xOffset = inventorySize >= 90 ? 162 : 0;
@@ -115,14 +114,12 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
 
         FlowLayout parent;
         rootComponent.child(parent = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset), Sizing.fixed(166 + yOffset))
-                .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
-                        .visibleArea(PositionedRectangle.of(0, 0, 176 + xOffset, 166 + yOffset))
-                        .sizing(Sizing.fill(), Sizing.fill()))
                 .child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(5, 5)))
-                .child(UIComponents.playerInventory(adapter.screen(), inventorySize)
+                .child(UIComponents.playerInventory(adapter.screen().getMenu(), inventorySize)
                         .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset)))
-                .positioning(Positioning.relative(50, 50)));
+                .positioning(Positioning.relative(50, 50))
+                .surface(Surface.UI_BACKGROUND));
 
         int x = 0;
         int y = 0;
@@ -134,8 +131,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine2, IMachineLi
         grid.positioning(Positioning.absolute(7, 17));
         for (int slot = 0; slot < inventorySize; slot++) {
             grid.child(UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18))
-                            .child(UIComponents.slot(adapter.screen().getSlot(slot)).id("inventory." + slot))
-                            .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
+                            .child(UIComponents.slot(adapter.screen().getMenu().getSlot(slot)).id("inventory." + slot))
+                            .child(UIComponents.texture(GuiTextures.SLOT, 18, 18))
                             /*.positioning(Positioning.absolute(x * 18, y * 18))*/,
                     y, x);
             x++;

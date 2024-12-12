@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.ui.texture;
 
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
-import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 public interface UITexture {
 
-    default UITexture setColor(int color) {
+    default UITexture color(int color) {
         return this;
     }
 

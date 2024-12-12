@@ -33,11 +33,11 @@ public class TabsComponent extends BaseUIComponent {
     @Setter
     protected UITexture leftButtonTexture = UITextures.group(GuiTextures.BUTTON, GuiTextures.BUTTON_LEFT),
             leftButtonHoverTexture = UITextures.group(GuiTextures.BUTTON,
-                    GuiTextures.BUTTON_LEFT.copy().setColor(0xffaaaaaa));
+                    GuiTextures.BUTTON_LEFT.copy().color(0xffaaaaaa));
     @Setter
     protected UITexture rightButtonTexture = UITextures.group(GuiTextures.BUTTON, GuiTextures.BUTTON_RIGHT),
             rightButtonHoverTexture = UITextures.group(GuiTextures.BUTTON,
-                    GuiTextures.BUTTON_RIGHT.copy().setColor(0xffaaaaaa));
+                    GuiTextures.BUTTON_RIGHT.copy().color(0xffaaaaaa));
     @Setter
     protected UITexture tabTexture = UITextures.resource(GTCEu.id("textures/gui/tab/tabs_top.png"))
             .getSubTexture(1 / 3f, 0, 1 / 3f, 0.5f);

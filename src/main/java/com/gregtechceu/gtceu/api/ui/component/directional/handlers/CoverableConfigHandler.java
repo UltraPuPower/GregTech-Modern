@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.ui.widget.directional.handlers;
+package com.gregtechceu.gtceu.api.ui.component.directional.handlers;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
@@ -8,9 +8,8 @@ import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.gui.widget.CoverConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.gregtechceu.gtceu.common.ui.widget.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;

@@ -8,8 +8,9 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFa
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
 
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -34,10 +35,10 @@ import java.util.List;
  * @date 2023/6/28
  * @implNote IFancyUIMachine
  */
-public interface IFancyUIMachine extends IUIMachine2, IFancyUIProvider {
+public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
 
     @OnlyIn(Dist.CLIENT)
-    default void loadClientUI(Player player, UIAdapter<RootContainer> adapter) {
+    default void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter) {
         adapter.rootComponent
                 .child(new FancyMachineUIComponent(this, Sizing.fixed(176), Sizing.fixed(166)));
     }
@@ -63,7 +64,7 @@ public interface IFancyUIMachine extends IUIMachine2, IFancyUIProvider {
      * Create the core widget of this machine.
      */
     default ParentUIComponent createBaseUIComponent() {
-        var group = UIContainers.root(Sizing.content(), Sizing.content());
+        var group = UIContainers.group(Sizing.content(), Sizing.content());
 
         group.child(UIComponents.texture(GuiTextures.SCENE, 0, 0)
                 .sizing(Sizing.fixed(48), Sizing.fixed(16))
@@ -143,7 +144,7 @@ public interface IFancyUIMachine extends IUIMachine2, IFancyUIProvider {
     }
 
     @Override
-    default void attachTooltips(TooltipsPanel tooltipsPanel) {
+    default void attachTooltips(TooltipsPanelComponent tooltipsPanel) {
         tooltipsPanel.attachTooltips(self());
         self().getTraits().stream().filter(IFancyTooltip.class::isInstance).map(IFancyTooltip.class::cast)
                 .forEach(tooltipsPanel::attachTooltips);

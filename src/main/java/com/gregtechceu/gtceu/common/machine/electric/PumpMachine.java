@@ -5,13 +5,12 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
@@ -583,7 +582,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
                 .widget(new TankWidget(cache.getStorages()[0], 90, 35, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(new ToggleButtonWidget(7, 53, 18, 18,
+                .widget(new ToggleButtonComponent(7, 53, 18, 18,
                         GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))

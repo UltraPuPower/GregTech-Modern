@@ -1,22 +1,20 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
+import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.common.ui.widget.directional.CombinedDirectionalConfigurator;
-import com.gregtechceu.gtceu.common.ui.widget.directional.IDirectionalConfigHandler;
-import com.gregtechceu.gtceu.common.ui.widget.directional.handlers.AutoOutputFluidConfigHandler;
-import com.gregtechceu.gtceu.common.ui.widget.directional.handlers.AutoOutputItemConfigHandler;
-import com.gregtechceu.gtceu.common.ui.widget.directional.handlers.CoverableConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.directional.CombinedDirectionalConfigurator;
+import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.directional.handlers.AutoOutputFluidConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.directional.handlers.AutoOutputItemConfigHandler;
+import com.gregtechceu.gtceu.api.ui.component.directional.handlers.CoverableConfigHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -46,16 +44,12 @@ public class CombinedDirectionalFancyConfigurator implements IFancyUIProvider {
     }
 
     @Override
-    public Widget createMainPage(FancyMachineUIWidget widget) {
-    }
-
-    @Override
     public ParentUIComponent createMainPage(FancyMachineUIComponent widget) {
         Size parentSize = widget.getSize();
         return new CombinedDirectionalConfigurator(
                 widget, configs.stream().map(Supplier::get).toArray(IDirectionalConfigHandler[]::new), machine,
                 parentSize.width - 8,
-                parentSize.height - WidgetUtils.getInventoryHeight(true));
+                parentSize.height - UIComponentUtils.getInventoryHeight(true));
     }
 
     @Override

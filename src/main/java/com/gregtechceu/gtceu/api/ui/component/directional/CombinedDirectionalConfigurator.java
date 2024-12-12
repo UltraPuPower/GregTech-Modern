@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.ui.widget.directional;
+package com.gregtechceu.gtceu.api.ui.component.directional;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;

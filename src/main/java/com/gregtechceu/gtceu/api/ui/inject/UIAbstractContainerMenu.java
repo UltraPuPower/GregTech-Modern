@@ -39,7 +39,7 @@ public interface UIAbstractContainerMenu {
      * @param name The name the property can be found with
      * @return The property with the given name
      */
-    default  <R> SyncedProperty<R> getProperty(String name) {
+    default <R> SyncedProperty<R> getProperty(String name) {
         throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
     }
 

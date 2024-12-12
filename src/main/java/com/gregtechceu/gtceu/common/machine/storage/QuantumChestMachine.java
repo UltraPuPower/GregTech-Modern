@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -371,15 +371,15 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                 .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41,
                         stack -> stored.isEmpty() || ItemStack.isSameItemSameTags(stack, stored))
                         .setMaxStackSize(1))
-                .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
+                .addWidget(new ToggleButtonComponent(4, 41, 18, 18,
                         GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_auto_output.tooltip"))
-                .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
+                .addWidget(new ToggleButtonComponent(22, 41, 18, 18,
                         GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_lock.tooltip"))
-                .addWidget(new ToggleButtonWidget(40, 41, 18, 18,
+                .addWidget(new ToggleButtonComponent(40, 41, 18, 18,
                         GuiTextures.BUTTON_VOID, () -> isVoiding, (b) -> isVoiding = b)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_voiding_partial.tooltip"));

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -30,7 +30,7 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
                 18 + 18 * rowSize + 94, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
                 .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new ToggleButtonWidget(2, 18 + 18 * rowSize + 12 - 20, 18, 18,
+                .widget(new ToggleButtonComponent(2, 18 + 18 * rowSize + 12 - 20, 18, 18,
                         GuiTextures.BUTTON_ITEM_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled) // todo
                                                                                                          // steamify?
                         .setShouldUseBaseBackground()

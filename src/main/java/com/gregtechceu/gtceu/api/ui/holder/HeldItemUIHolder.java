@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.holder;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import net.minecraft.world.InteractionHand;
@@ -34,7 +34,7 @@ public class HeldItemUIHolder implements IUIHolder<HeldItemUIHolder> {
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<RootContainer> adapter) {
+    public void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter) {
         if (held.getItem() instanceof IHeldItemUIConstructor itemUIHolder) {
             itemUIHolder.loadClientUI(this.player, adapter, this);
         }
@@ -58,6 +58,6 @@ public class HeldItemUIHolder implements IUIHolder<HeldItemUIHolder> {
         void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder);;
 
         @OnlyIn(Dist.CLIENT)
-        void loadClientUI(Player entityPlayer, UIAdapter<RootContainer> adapter, HeldItemUIHolder holder);
+        void loadClientUI(Player entityPlayer, UIAdapter<ComponentGroup> adapter, HeldItemUIHolder holder);
     }
 }

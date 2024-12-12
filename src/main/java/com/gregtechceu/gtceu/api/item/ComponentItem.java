@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import com.gregtechceu.gtceu.common.item.IItemUIBehaviour;
@@ -322,7 +322,7 @@ public class ComponentItem extends Item
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void loadClientUI(Player entityPlayer, UIAdapter<RootContainer> adapter, HeldItemUIHolder holder) {
+    public void loadClientUI(Player entityPlayer, UIAdapter<ComponentGroup> adapter, HeldItemUIHolder holder) {
         for (IItemComponent component : components) {
             if (component instanceof IItemUIBehaviour uiBehaviour) {
                 uiBehaviour.loadClientUI(entityPlayer, adapter, holder);

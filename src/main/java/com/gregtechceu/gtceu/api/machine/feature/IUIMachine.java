@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.ui.holder.IUIHolder;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -11,19 +12,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote A machine that has gui. can be opened via right click.
- */
-public interface IUIMachine extends IUIHolder, IMachineFeature {
+public interface IUIMachine extends IUIHolder<MetaMachine>, IMachineFeature {
 
     default boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return true;
     }
 
-    default InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        if (this.shouldOpenUI(player, hand, hit)) {
+    default InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult result) {
+        if (this.shouldOpenUI(player, hand, result)) {
             if (player instanceof ServerPlayer serverPlayer) {
                 MachineUIFactory.INSTANCE.openUI(self(), serverPlayer);
             }
@@ -39,13 +35,13 @@ public interface IUIMachine extends IUIHolder, IMachineFeature {
     }
 
     @Override
-    default boolean isRemote() {
+    default boolean isClientSide() {
         var level = self().getLevel();
         return level == null ? LDLib.isRemote() : level.isClientSide;
     }
 
     @Override
-    default void markAsDirty() {
+    default void markDirty() {
         self().markDirty();
     }
 }

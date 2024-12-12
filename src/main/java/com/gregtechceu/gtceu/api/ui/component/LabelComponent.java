@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -18,26 +21,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+@Accessors(fluent = true, chain = true)
 public class LabelComponent extends BaseUIComponent {
 
     protected final Font textRenderer = Minecraft.getInstance().font;
 
+    protected Supplier<Component> textSupplier;
+    @Getter
     protected Component text;
     protected List<FormattedCharSequence> wrappedText;
 
+    @Getter
+    @Setter
     protected VerticalAlignment verticalTextAlignment = VerticalAlignment.TOP;
+    @Getter
+    @Setter
     protected HorizontalAlignment horizontalTextAlignment = HorizontalAlignment.LEFT;
 
+    @Getter
     protected final AnimatableProperty<Color> color = AnimatableProperty.of(Color.WHITE);
     protected final Observable<Integer> lineHeight = Observable.of(this.textRenderer.lineHeight);
+    @Getter
+    @Setter
     protected boolean shadow;
+    @Getter
     protected int maxWidth;
 
+    @Getter
     protected Function<Style, Boolean> textClickHandler = UIGuiGraphics.utilityScreen()::handleComponentClicked;
 
     protected LabelComponent(Component text) {
         this.text = text;
+        this.wrappedText = new ArrayList<>();
+
+        this.shadow = false;
+        this.maxWidth = Integer.MAX_VALUE;
+
+        this.lineHeight.observe($ -> this.notifyParentIfMounted());
+    }
+
+    protected LabelComponent(Supplier<Component> textSupplier) {
+        this.textSupplier = textSupplier;
         this.wrappedText = new ArrayList<>();
 
         this.shadow = false;
@@ -52,8 +78,10 @@ public class LabelComponent extends BaseUIComponent {
         return this;
     }
 
-    public Component text() {
-        return this.text;
+    public LabelComponent textSupplier(Supplier<Component> textSupplier) {
+        this.textSupplier = textSupplier;
+        this.notifyParentIfMounted();
+        return this;
     }
 
     public LabelComponent maxWidth(int maxWidth) {
@@ -62,44 +90,9 @@ public class LabelComponent extends BaseUIComponent {
         return this;
     }
 
-    public int maxWidth() {
-        return this.maxWidth;
-    }
-
-    public LabelComponent shadow(boolean shadow) {
-        this.shadow = shadow;
-        return this;
-    }
-
-    public boolean shadow() {
-        return this.shadow;
-    }
-
     public LabelComponent color(Color color) {
         this.color.set(color);
         return this;
-    }
-
-    public AnimatableProperty<Color> color() {
-        return this.color;
-    }
-
-    public LabelComponent verticalTextAlignment(VerticalAlignment verticalAlignment) {
-        this.verticalTextAlignment = verticalAlignment;
-        return this;
-    }
-
-    public VerticalAlignment verticalTextAlignment() {
-        return this.verticalTextAlignment;
-    }
-
-    public LabelComponent horizontalTextAlignment(HorizontalAlignment horizontalAlignment) {
-        this.horizontalTextAlignment = horizontalAlignment;
-        return this;
-    }
-
-    public HorizontalAlignment horizontalTextAlignment() {
-        return this.horizontalTextAlignment;
     }
 
     public LabelComponent lineHeight(int lineHeight) {
@@ -114,10 +107,6 @@ public class LabelComponent extends BaseUIComponent {
     public LabelComponent textClickHandler(Function<Style, Boolean> textClickHandler) {
         this.textClickHandler = textClickHandler;
         return this;
-    }
-
-    public Function<Style, Boolean> textClickHandler() {
-        return textClickHandler;
     }
 
     @Override
@@ -150,14 +139,20 @@ public class LabelComponent extends BaseUIComponent {
     }
 
     private void wrapLines() {
-        this.wrappedText = this.textRenderer.split(this.text,
-                this.horizontalSizing.get().isContent() ? this.maxWidth : this.width);
+        if (this.textSupplier != null) {
+            this.wrappedText = this.textRenderer.split(this.textSupplier.get(),
+                    this.horizontalSizing.get().isContent() ? this.maxWidth : this.width);
+        } else {
+            this.wrappedText = this.textRenderer.split(this.text,
+                    this.horizontalSizing.get().isContent() ? this.maxWidth : this.width);
+        }
     }
 
     @Override
     public void update(float delta, int mouseX, int mouseY) {
         super.update(delta, mouseX, mouseY);
         this.color.update(delta);
+        wrapLines();
     }
 
     @Override

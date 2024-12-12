@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
@@ -127,7 +127,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         group.addWidget(maxValueInput);
 
         // Invert Redstone Output Toggle:
-        group.addWidget(new ToggleButtonWidget(
+        group.addWidget(new ToggleButtonComponent(
                 9, 20, 20, 20,
                 GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
 
@@ -140,7 +140,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         });
 
         // Mode (EU / Percent) Toggle:
-        group.addWidget(new ToggleButtonWidget(
+        group.addWidget(new ToggleButtonComponent(
                 176 - 29, 20, 20, 20,
                 GuiTextures.ENERGY_DETECTOR_COVER_MODE_BUTTON, this::isUsePercent, this::setUsePercent) {
 

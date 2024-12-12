@@ -147,7 +147,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
         screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
                 .setMaxWidthLimit(150)
-                .clickHandler(this::handleDisplayClick));
+                .clickHandler((componentData, clickData) -> handleDisplayClick(componentData)));
         return new ModularUI(176, 216, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
                 .widget(screen)

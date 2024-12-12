@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -125,9 +125,9 @@ public class SimpleItemFilter implements ItemFilter {
                 group.addWidget(slot);
             }
         }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
+        group.addWidget(new ToggleButtonComponent(18 * 3 + 5, 0, 20, 20,
                 GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
+        group.addWidget(new ToggleButtonComponent(18 * 3 + 5, 20, 20, 20,
                 GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
         return group;
     }

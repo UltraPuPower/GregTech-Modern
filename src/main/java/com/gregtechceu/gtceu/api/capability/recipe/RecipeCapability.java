@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -91,11 +92,11 @@ public abstract class RecipeCapability<T> {
     }
 
     public String slotName(IO io) {
-        return "%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT));
+        return "%s-%s".formatted(name, io.name().toLowerCase(Locale.ROOT));
     }
 
     public String slotName(IO io, int index) {
-        return "%s_%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
+        return "%s-%s.%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
     }
 
     public Component getName() {
@@ -175,16 +176,16 @@ public abstract class RecipeCapability<T> {
     }
 
     @Nullable("null when getWidgetClass() == null")
-    public Widget createWidget() {
+    public UIComponent createWidget() {
         return null;
     }
 
     @Nullable
-    public Class<? extends Widget> getWidgetClass() {
+    public Class<? extends UIComponent> getWidgetClass() {
         return null;
     }
 
-    public void applyWidgetInfo(@NotNull Widget widget,
+    public void applyWidgetInfo(@NotNull UIComponent widget,
                                 int index,
                                 boolean isXEI,
                                 IO io,

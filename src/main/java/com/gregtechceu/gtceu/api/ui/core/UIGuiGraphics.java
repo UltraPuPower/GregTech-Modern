@@ -13,11 +13,12 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,6 +56,7 @@ public class UIGuiGraphics extends GuiGraphics {
         utilityScreen();
     }
 
+    @SuppressWarnings("DataFlowIssue")
     public static UIGuiGraphics of(GuiGraphics g) {
         var graphics = new UIGuiGraphics(Minecraft.getInstance(), g.bufferSource());
         ((GuiGraphicsAccessor) graphics)
@@ -71,7 +73,7 @@ public class UIGuiGraphics extends GuiGraphics {
     public void drawFluid(FluidStack stack, int capacity, int x, int y, int width, int height) {
         var sprite = getStillTexture(stack);
         if (sprite == null) {
-            sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+            sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                     .apply(MissingTextureAtlasSprite.getLocation());
             if (!FMLLoader.isProduction()) {
                 GTCEu.LOGGER.error("Missing fluid texture for fluid: {}", stack.getDisplayName().getString());
@@ -394,7 +396,7 @@ public class UIGuiGraphics extends GuiGraphics {
         Tesselator.getInstance().end();
     }
 
-    public void drawSolidRect(int x, int y, int width, int height, int color) {
+    public void drawSolidRect(float x, float y, float width, float height, int color) {
         this.fill(x, y, x + width, y + height, color);
         RenderSystem.enableBlend();
     }
@@ -491,6 +493,84 @@ public class UIGuiGraphics extends GuiGraphics {
 
         this.fill(x - insets.left(), y, x, y + height, color);
         this.fill(x + width, y, x + width + insets.right(), y + height, color);
+    }
+
+    /**
+     * Fills a rectangle with the specified color using the given coordinates as the boundaries.
+     *
+     * @param minX  the minimum x-coordinate of the rectangle.
+     * @param minY  the minimum y-coordinate of the rectangle.
+     * @param maxX  the maximum x-coordinate of the rectangle.
+     * @param maxY  the maximum y-coordinate of the rectangle.
+     * @param color the color to fill the rectangle with.
+     */
+    public void fill(float minX, float minY, float maxX, float maxY, int color) {
+        this.fill(minX, minY, maxX, maxY, 0, color);
+    }
+
+    /**
+     * Fills a rectangle with the specified color and z-level using the given coordinates as the boundaries.
+     *
+     * @param minX  the minimum x-coordinate of the rectangle.
+     * @param minY  the minimum y-coordinate of the rectangle.
+     * @param maxX  the maximum x-coordinate of the rectangle.
+     * @param maxY  the maximum y-coordinate of the rectangle.
+     * @param z     the z-level of the rectangle.
+     * @param color the color to fill the rectangle with.
+     */
+    public void fill(float minX, float minY, float maxX, float maxY, int z, int color) {
+        this.fill(RenderType.gui(), minX, minY, maxX, maxY, z, color);
+    }
+
+    /**
+     * Fills a rectangle with the specified color using the given render type and coordinates as the boundaries.
+     *
+     * @param renderType the render type to use.
+     * @param minX       the minimum x-coordinate of the rectangle.
+     * @param minY       the minimum y-coordinate of the rectangle.
+     * @param maxX       the maximum x-coordinate of the rectangle.
+     * @param maxY       the maximum y-coordinate of the rectangle.
+     * @param color      the color to fill the rectangle with.
+     */
+    public void fill(RenderType renderType, float minX, float minY, float maxX, float maxY, int color) {
+        this.fill(renderType, minX, minY, maxX, maxY, 0, color);
+    }
+
+    /**
+     * Fills a rectangle with the specified color and z-level using the given render type and coordinates as the boundaries.
+     *
+     * @param renderType the render type to use.
+     * @param minX       the minimum x-coordinate of the rectangle.
+     * @param minY       the minimum y-coordinate of the rectangle.
+     * @param maxX       the maximum x-coordinate of the rectangle.
+     * @param maxY       the maximum y-coordinate of the rectangle.
+     * @param z          the z-level of the rectangle.
+     * @param color      the color to fill the rectangle with.
+     */
+    public void fill(RenderType renderType, float minX, float minY, float maxX, float maxY, int z, int color) {
+        Matrix4f matrix4f = this.pose().last().pose();
+        if (minX < maxX) {
+            float i = minX;
+            minX = maxX;
+            maxX = i;
+        }
+
+        if (minY < maxY) {
+            float j = minY;
+            minY = maxY;
+            maxY = j;
+        }
+
+        float f3 = (float) FastColor.ARGB32.alpha(color) / 255.0F;
+        float f = (float)FastColor.ARGB32.red(color) / 255.0F;
+        float f1 = (float)FastColor.ARGB32.green(color) / 255.0F;
+        float f2 = (float)FastColor.ARGB32.blue(color) / 255.0F;
+        VertexConsumer vertexconsumer = this.bufferSource().getBuffer(renderType);
+        vertexconsumer.vertex(matrix4f, minX, minY, z).color(f, f1, f2, f3).endVertex();
+        vertexconsumer.vertex(matrix4f, minX, maxY, z).color(f, f1, f2, f3).endVertex();
+        vertexconsumer.vertex(matrix4f, maxX, maxY, z).color(f, f1, f2, f3).endVertex();
+        vertexconsumer.vertex(matrix4f, maxX, minY, z).color(f, f1, f2, f3).endVertex();
+        ((GuiGraphicsAccessor) this).callFlushIfUnmanaged();
     }
 
     /**

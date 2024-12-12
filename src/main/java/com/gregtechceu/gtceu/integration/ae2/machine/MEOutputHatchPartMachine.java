@@ -8,12 +8,12 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -99,10 +99,10 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
 
     ///////////////////////////////
     // ********** GUI ***********//
-    ///////////////////////////////
+    /// ////////////////////////////
 
     @Override
-    public Widget createBaseUIComponent() {
+    public ParentUIComponent createBaseUIComponent() {
         WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
         // ME Network status
         group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?

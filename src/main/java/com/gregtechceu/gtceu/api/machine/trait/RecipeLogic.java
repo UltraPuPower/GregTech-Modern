@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
+import java.util.function.DoubleConsumer;
 
 public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWorkable, IFancyTooltip {
 
@@ -101,6 +102,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Getter
     @Persisted
     protected int fuelMaxTime;
+    protected DoubleConsumer progressPercentListener = $ -> {};
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
     @Persisted
@@ -260,6 +262,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     }
                     progress++;
                     totalContinuousRunningTime++;
+                    progressPercentListener.accept(this.getProgressPercent());
                 } else {
                     setWaiting(result.reason().get());
                 }
@@ -277,6 +280,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         } else if (last != Status.WORKING && getStatus() == Status.WORKING) {
             lastRecipe.preWorking(machine);
         }
+    }
+
+    public void addProgressPercentListener(DoubleConsumer consumer) {
+        this.progressPercentListener = this.progressPercentListener.andThen(consumer);
     }
 
     protected void doDamping() {

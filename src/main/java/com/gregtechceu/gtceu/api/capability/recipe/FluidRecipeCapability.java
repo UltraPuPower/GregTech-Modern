@@ -15,6 +15,8 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
+import com.gregtechceu.gtceu.api.ui.component.TankComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
@@ -310,7 +312,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @NotNull
     @Override
-    public Widget createWidget() {
+    public UIComponent createWidget() {
         TankWidget tank = new TankWidget();
         tank.initTemplate();
         tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
@@ -319,12 +321,12 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @NotNull
     @Override
-    public Class<? extends Widget> getWidgetClass() {
-        return TankWidget.class;
+    public Class<? extends UIComponent> getWidgetClass() {
+        return TankComponent.class;
     }
 
     @Override
-    public void applyWidgetInfo(@NotNull Widget widget,
+    public void applyWidgetInfo(@NotNull UIComponent widget,
                                 int index,
                                 boolean isXEI,
                                 IO io,

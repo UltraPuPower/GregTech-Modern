@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -42,10 +43,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PowerSubstationMachine extends WorkableMultiblockMachine
                                     implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
@@ -346,24 +344,25 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
                         .setMaxWidthLimit(150)
-                        .clickHandler(this::handleDisplayClick)));
+                        .clickHandler((componentData, clickData) -> handleDisplayClick(componentData))));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
+        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIComponent(this, 198, 208));
     }
 
     @Override
     public List<IFancyUIProvider> getSubTabs() {
-        return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast)
+        return getParts().stream().filter(Objects::nonNull)
+                .map(IFancyUIProvider.class::cast)
                 .toList();
     }
 
     @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+    public void attachTooltips(TooltipsPanelComponent tooltipsPanel) {
         for (IMultiPart part : getParts()) {
             part.attachFancyTooltipsToController(this, tooltipsPanel);
         }

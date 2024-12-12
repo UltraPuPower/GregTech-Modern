@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
+import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
+import com.gregtechceu.gtceu.api.ui.editable.EditableMachineUI;
+import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -422,8 +422,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             main.setBackground(GuiTextures.BACKGROUND_INVERSE);
             return main;
         }, (group, machine) -> {
-            WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
+            UIComponentUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
+                var index = UIComponentUtils.widgetIdIndex(slot);
                 if (index >= 0 && index < machine.cache.getSlots()) {
                     slot.setHandlerSlot(machine.cache, index);
                     slot.setCanTakeItems(true);

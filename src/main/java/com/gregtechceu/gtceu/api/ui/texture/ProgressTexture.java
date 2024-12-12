@@ -7,18 +7,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
 
 import java.util.Map;
-import java.util.function.DoubleSupplier;
 
 @Accessors(fluent = true, chain = true)
 public class ProgressTexture extends TransformTexture {
 
-    @Nullable
-    @Setter
-    protected DoubleSupplier progressSupplier;
+    public static final ProgressTexture EMPTY = new ProgressTexture(UITexture.EMPTY, UITexture.EMPTY);
+
     @Setter
     protected FillDirection fillDirection = FillDirection.LEFT_TO_RIGHT;
     @Getter
@@ -33,7 +30,7 @@ public class ProgressTexture extends TransformTexture {
     @Setter
     private boolean demo;
 
-    public ProgressTexture(UITexture emptyBarArea, UITexture filledBarArea) {
+    protected ProgressTexture(UITexture emptyBarArea, UITexture filledBarArea) {
         this.emptyBarArea = emptyBarArea;
         this.filledBarArea = filledBarArea;
     }
@@ -52,8 +49,6 @@ public class ProgressTexture extends TransformTexture {
         }
         if (demo) {
             progress = Math.abs(System.currentTimeMillis() % 2000) / 2000.0;
-        } else if (progressSupplier != null) {
-            progress = progressSupplier.getAsDouble();
         }
     }
 
@@ -91,19 +86,6 @@ public class ProgressTexture extends TransformTexture {
         this.filledBarArea(model.parseTexture(UITexture.class, filledElement));
 
         UIParsing.apply(children, "progress", UIParsing::parseDouble, this::setProgress);
-    }
-
-    public static class Auto extends ProgressTexture {
-
-        public Auto(UITexture emptyBarArea, UITexture filledBarArea) {
-            super(emptyBarArea, filledBarArea);
-        }
-
-        @Override
-        public void updateTick() {
-            progress = Math.abs(System.currentTimeMillis() % 2000) / 2000.0;
-        }
-
     }
 
     public enum FillDirection {

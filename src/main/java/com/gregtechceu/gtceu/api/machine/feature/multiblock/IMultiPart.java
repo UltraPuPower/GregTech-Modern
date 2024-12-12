@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -136,5 +137,5 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     /**
      * Attach part's tooltips to the controller.
      */
-    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {}
+    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanelComponent tooltipsPanel) {}
 }

@@ -32,7 +32,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
@@ -1814,23 +1814,23 @@ public class GTItems {
                     SlotGenerator.begin(menu::addSlot, 0, 0)
                             .slot(slot0, 0, -32, -32)
                             .moveTo(9, 79)
-                            .playerInventory(player.getInventory());
+                            .playerInventory(menu.getPlayerInventory());
                 }
 
                 @OnlyIn(Dist.CLIENT)
                 @Override
-                public void loadClientUI(Player player, UIAdapter<RootContainer> adapter, HeldItemUIHolder holder) {
-                    RootContainer rootComponent = adapter.rootComponent;
+                public void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter, HeldItemUIHolder holder) {
+                    ComponentGroup rootComponent = adapter.rootComponent;
                     rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
                     FlowLayout layout;
-                    SyncedProperty<FluidStack> containedFluid = adapter.screen().getProperty("fluid.0");
+                    SyncedProperty<FluidStack> containedFluid = adapter.getMenuProperty("fluid.0");
 
                     CustomFluidTank tank = new CustomFluidTank(containedFluid.get());
                     containedFluid.observe(tank::setFluid);
 
                     rootComponent.child(layout = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166))
-                            .child(UIComponents.ninePatchTexture(GTCEu.id("background"))
+                            .child(UIComponents.texture(GuiTextures.BACKGROUND, 176, 166)
                                     .visibleArea(PositionedRectangle.of(0, 0, 176, 166))
                                     .sizing(Sizing.fill(), Sizing.fill()))
                             /*.child(UIComponents.box(Sizing.fixed(130), Sizing.fixed(100))
@@ -1860,10 +1860,10 @@ public class GTItems {
 
                     layout.child(
                             UIContainers.stack(Sizing.content(), Sizing.content())
-                                    .child(UIComponents.texture(GuiTextures.SLOT.imageLocation, 0, 0, 18, 18, 18, 18))
-                                    .child(UIComponents.slot(adapter.screen().getSlot(0)).id("item-in.0"))
+                                    .child(UIComponents.texture(GuiTextures.SLOT, 18, 18))
+                                    .child(UIComponents.slot(adapter.screen().getMenu().getSlot(0)).id("item-in.0"))
                                     .positioning(Positioning.relative(25, 25)));
-                    layout.child(UIComponents.playerInventory(adapter.screen(), 1)
+                    layout.child(UIComponents.playerInventory(adapter.screen().getMenu(), 1)
                             .positioning(Positioning.absolute(10, 84)));
 
                 }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.jei;
 
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
@@ -26,7 +26,7 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
 
     public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
 
-    public final UIAdapter<RootContainer> adapter;
+    public final UIAdapter<ComponentGroup> adapter;
 
     @Getter
     private final ScreenPosition position;
@@ -35,7 +35,7 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
 
     public JEIUIAdapter(Rect2i bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.getX(), bounds.getY(), bounds.getWidth(),
-                bounds.getHeight(), UIContainers::root);
+                bounds.getHeight(), UIContainers::group);
         this.adapter.inspectorZOffset = 900;
         this.position = new ScreenPosition(bounds.getX(), bounds.getY());
         this.area = new ScreenRectangle(position, bounds.getWidth(), bounds.getHeight());
@@ -49,7 +49,7 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
         this.adapter.inflateAndMount();
     }
 
-    public RootContainer rootComponent() {
+    public ComponentGroup rootComponent() {
         return this.adapter.rootComponent;
     }
 

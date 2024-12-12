@@ -1,9 +1,5 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
-import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import net.minecraft.network.chat.Component;

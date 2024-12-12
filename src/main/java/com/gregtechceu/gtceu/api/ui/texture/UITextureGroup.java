@@ -40,9 +40,9 @@ public class UITextureGroup extends TransformTexture {
     }
 
     @Override
-    public UITextureGroup setColor(int color) {
+    public UITextureGroup color(int color) {
         for (UITexture texture : children) {
-            texture.setColor(color);
+            texture.color(color);
         }
         return this;
     }

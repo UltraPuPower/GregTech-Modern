@@ -19,6 +19,8 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
 import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
@@ -478,7 +480,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @NotNull
     @Override
-    public Widget createWidget() {
+    public UIComponent createWidget() {
         SlotWidget slot = new SlotWidget();
         slot.initTemplate();
         return slot;
@@ -486,12 +488,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @NotNull
     @Override
-    public Class<? extends Widget> getWidgetClass() {
-        return SlotWidget.class;
+    public Class<? extends UIComponent> getWidgetClass() {
+        return SlotComponent.class;
     }
 
     @Override
-    public void applyWidgetInfo(@NotNull Widget widget,
+    public void applyWidgetInfo(@NotNull UIComponent widget,
                                 int index,
                                 boolean isXEI,
                                 IO io,

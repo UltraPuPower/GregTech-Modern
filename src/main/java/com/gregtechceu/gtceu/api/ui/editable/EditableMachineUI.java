@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.ui.editable;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
 import lombok.Getter;
@@ -11,27 +12,28 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public class EditableMachineUI implements IEditableUI<RootContainer, MetaMachine> {
+public class EditableMachineUI implements IEditableUI<ComponentGroup, MetaMachine> {
 
     @Getter
     final ResourceLocation uiPath;
-    final Supplier<RootContainer> widgetSupplier;
-    final BiConsumer<RootContainer, MetaMachine> binder;
+    final Supplier<ComponentGroup> widgetSupplier;
+    final BiConsumer<ComponentGroup, MetaMachine> binder;
     @Nullable
     private UIModel customUICache;
 
-    public EditableMachineUI(ResourceLocation uiPath, Supplier<RootContainer> widgetSupplier,
-                             BiConsumer<RootContainer, MetaMachine> binder) {
+    public EditableMachineUI(ResourceLocation uiPath, Supplier<ComponentGroup> widgetSupplier,
+                             BiConsumer<ComponentGroup, MetaMachine> binder) {
         this.uiPath = uiPath;
         this.widgetSupplier = widgetSupplier;
         this.binder = binder;
     }
 
-    public RootContainer createDefault() {
+    public ComponentGroup createDefault() {
         return widgetSupplier.get();
     }
 
-    public void setupUI(RootContainer template, MetaMachine machine) {
+    @Override
+    public void setupUI(ComponentGroup template, MetaMachine machine) {
         binder.accept(template, machine);
     }
 
@@ -40,10 +42,10 @@ public class EditableMachineUI implements IEditableUI<RootContainer, MetaMachine
     //////////////////////////////////////
 
     @Nullable
-    public RootContainer createCustomUI() {
+    public ComponentGroup createCustomUI() {
         if (hasCustomUI()) {
             var model = getCustomUI();
-            var group = model.parseComponentTree(RootContainer.class);
+            var group = model.parseComponentTree(ComponentGroup.class);
             group.moveTo(0, 0);
             return group;
         }

@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi;
 
-import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.RootContainer;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 import com.gregtechceu.gtceu.integration.xei.widgets.XEIWidgetComponent;
@@ -25,7 +22,6 @@ import lombok.experimental.Tolerate;
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -33,7 +29,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
     public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
 
-    public final UIAdapter<RootContainer> adapter;
+    public final UIAdapter<ComponentGroup> adapter;
 
     @Getter
     private final Bounds bounds;
@@ -46,7 +42,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
     public EMIUIAdapter(Bounds bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.x(), bounds.y(), bounds.width(), bounds.height(),
-                UIContainers::root);
+                UIContainers::group);
         this.adapter.inspectorZOffset = 900;
         this.bounds = bounds;
 
@@ -59,7 +55,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
         this.adapter.inflateAndMount();
     }
 
-    public RootContainer rootComponent() {
+    public ComponentGroup rootComponent() {
         return this.adapter.rootComponent;
     }
 

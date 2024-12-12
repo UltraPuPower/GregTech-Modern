@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 
 import net.minecraft.ChatFormatting;
@@ -198,12 +199,12 @@ public interface IRotorHolderMachine extends IMultiPart {
     //////////////////////////////////////
 
     @Override
-    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
+    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanelComponent tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
 
     @Override
-    default void attachTooltips(TooltipsPanel tooltipsPanel) {
+    default void attachTooltips(TooltipsPanelComponent tooltipsPanel) {
         tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
                 () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
                 () -> List.of(Component.translatable("gtceu.multiblock.universal.rotor_obstructed")

@@ -16,7 +16,6 @@ public class CustomFluidTank extends FluidTank
                              implements IFluidHandlerModifiable, ITagSerializable<CompoundTag>, IContentChangeAware {
 
     @Getter
-    @Setter
     protected Runnable onContentsChanged = () -> {};
 
     public CustomFluidTank(int capacity) {
@@ -63,5 +62,12 @@ public class CustomFluidTank extends FluidTank
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         readFromNBT(nbt);
+    }
+
+    public void setOnContentsChanged(Runnable onContentsChanged) {
+        this.onContentsChanged = () -> {
+            this.onContentsChanged.run();
+            onContentsChanged.run();
+        };
     }
 }

@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.api.ui.util.CursorAdapter;
 import com.gregtechceu.gtceu.client.renderdoc.RenderDoc;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -23,7 +25,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.client.event.ContainerScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiFunction;
@@ -179,6 +180,10 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     @Override
     public UIAdapter<?> adapter() {
         return this;
+    }
+
+    public <R> SyncedProperty<R> getMenuProperty(String name) {
+        return screen().getMenu().getProperty(name);
     }
 
     @Override

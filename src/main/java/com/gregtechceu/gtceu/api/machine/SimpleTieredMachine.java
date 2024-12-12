@@ -4,11 +4,18 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
+import com.gregtechceu.gtceu.api.ui.component.GhostCircuitSlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.editable.EditableMachineUI;
+import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
-import com.gregtechceu.gtceu.api.gui.widget.GhostCircuitSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
@@ -18,25 +25,24 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -49,6 +55,7 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -318,17 +325,49 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
     }
 
+    // TODO clear subscriptions when the UI is closed to not leak everything
+    @Override
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        var recipeTypeProperty = menu.createProperty(int.class, "current_recipe_type", this.getActiveRecipeType());
+        this.setRecipeTypeChangeListener(recipeTypeProperty::set);
+
+        var progressProperty = menu.createProperty(double.class, "progress", recipeLogic.getProgressPercent());
+        recipeLogic.addProgressPercentListener(progressProperty::set);
+
+        for (int i = 0; i < this.importFluids.getTanks(); i++) {
+            SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-in." + i,
+                    this.importFluids.getFluidInTank(i));
+            CustomFluidTank tank = this.importFluids.getStorages()[i];
+            tank.setOnContentsChanged(() -> prop.set(tank.getFluid()));
+        }
+        for (int i = 0; i < this.exportFluids.getTanks(); i++) {
+            SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-out." + i,
+                    this.exportFluids.getFluidInTank(i));
+            CustomFluidTank tank = this.exportFluids.getStorages()[i];
+            tank.setOnContentsChanged(() -> prop.set(tank.getFluid()));
+        }
+        // Position all slots at 0,0 as they'll be moved to the correct position on the client.
+        SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
+        for (int i = 0; i < this.importItems.getSlots(); i++) {
+            generator.slot(this.importItems, i, 0, 0);
+        }
+        for (int i = 0; i < this.exportItems.getSlots(); i++) {
+            generator.slot(this.exportItems, i, 0, 0);
+        }
+        generator.playerInventory(menu.getPlayerInventory());
+    }
+
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
-                WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-                SlotWidget batterySlot = createBatterySlot().createDefault();
-                WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width,
-                        Math.max(template.getSize().height, 78));
-                template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
-                batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
-                group.addWidget(batterySlot);
-                group.addWidget(template);
+            .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
+                ComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
+                SlotComponent batterySlot = createBatterySlot().createDefault();
+                ComponentGroup group = UIContainers.group(Sizing.content(),
+                        Sizing.fixed(Math.max(template.height(), 78)));
+                template.positioning(Positioning.relative(0, 50));
+                batterySlot.positioning(Positioning.absolute(group.width() / 2 - 9, group.height() - 18));
+                group.child(batterySlot);
+                group.child(template);
 
                 // TODO fix this.
                 // if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
@@ -363,40 +402,41 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     /**
      * Create an energy bar widget.
      */
-    protected static EditableUI<SlotWidget, SimpleTieredMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
-            var slotWidget = new SlotWidget();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
-            return slotWidget;
+    protected static EditableUI<SlotComponent, SimpleTieredMachine> createBatterySlot() {
+        return new EditableUI<>("battery_slot", SlotComponent.class, () -> {
+            var component = UIComponents.slot(0);
+            component.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
+            return component;
         }, (slotWidget, machine) -> {
-            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-            slotWidget.setCanPutItems(true);
-            slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(Component[]::new));
+            slotWidget.setSlot(machine.chargerInventory, 0);
+            slotWidget.canExtractOverride(true);
+            slotWidget.canInsertOverride(true);
+            slotWidget.tooltip(new ArrayList<>(
+                    LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()])
+            ));
         });
     }
 
     /**
      * Create an energy bar widget.
      */
-    protected static EditableUI<GhostCircuitSlotWidget, SimpleTieredMachine> createCircuitConfigurator() {
-        return new EditableUI<>("circuit_configurator", GhostCircuitSlotWidget.class, () -> {
-            var slotWidget = new GhostCircuitSlotWidget();
+    protected static EditableUI<GhostCircuitSlotComponent, SimpleTieredMachine> createCircuitConfigurator() {
+        return new EditableUI<>("circuit_configurator", GhostCircuitSlotComponent.class, () -> {
+            var slotWidget = new GhostCircuitSlotComponent();
             slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY);
             return slotWidget;
         }, (slotWidget, machine) -> {
             slotWidget.setCircuitInventory(machine.circuitInventory);
-            slotWidget.setCanPutItems(false);
-            slotWidget.setCanTakeItems(false);
-            slotWidget.setHoverTooltips(
-                    LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(Component[]::new));
+            slotWidget.canExtractOverride(false);
+            slotWidget.canInsertOverride(false);
+            slotWidget.tooltip(new ArrayList<>(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip")));
         });
     }
 
     //////////////////////////////////////
     // ******* Rendering ********//
-    //////////////////////////////////////
+    /// ///////////////////////////////////
     @Override
     public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                     Direction side) {

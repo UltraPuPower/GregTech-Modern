@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -323,15 +323,15 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         this::getLockedFluid, this::setLocked)
                         .setShowAmount(false)
                         .setBackground(ColorPattern.T_GRAY.rectTexture()))
-                .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
+                .addWidget(new ToggleButtonComponent(4, 41, 18, 18,
                         GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
-                .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
+                .addWidget(new ToggleButtonComponent(22, 41, 18, 18,
                         GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_lock.tooltip"))
-                .addWidget(new ToggleButtonWidget(40, 41, 18, 18,
+                .addWidget(new ToggleButtonComponent(40, 41, 18, 18,
                         GuiTextures.BUTTON_VOID, () -> isVoiding, (b) -> isVoiding = b)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_voiding_partial.tooltip"));

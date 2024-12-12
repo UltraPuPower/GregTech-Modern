@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -18,14 +16,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -39,7 +36,7 @@ import java.util.Map;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 
 public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
-                                      implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
+        implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
 
     private IEnergyContainer powerOutput;
     private IEnergyContainer powerInput;
@@ -193,19 +190,19 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public @NotNull Widget createBaseUIComponent() {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-                .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                        .setMaxWidthLimit(150)
-                        .clickHandler(this::handleDisplayClick)));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+    public @NotNull ParentUIComponent createBaseUIComponent() {
+        var group = UIContainers.verticalFlow(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
+        group.padding(Insets.of(8));
+        group.child(UIContainers.draggable(Sizing.fill(), Sizing.fill(), UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+                        .child(UIComponents.label(self().getBlockState().getBlock().getName()))
+                        .child(UIComponents.componentPanel(this::addDisplayText)
+                                .maxWidthLimit(150)
+                                .clickHandler(this::handleDisplayClick))
+                                .positioning(Positioning.absolute(4, 17))
+                        .padding(Insets.of(4))))
+                .surface((graphics, component) ->
+                        getScreenTexture().draw(graphics, 0, 0, component.x(), component.y(), component.width(), component.height()));
+        group.surface(Surface.UI_BACKGROUND_INVERSE);
         return group;
-    }
-
-    @Override
-    public @NotNull ModularUI createUI(@NotNull Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
     }
 }
