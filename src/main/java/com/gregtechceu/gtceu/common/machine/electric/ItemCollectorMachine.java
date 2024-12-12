@@ -446,7 +446,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
             var slotWidget = new SlotWidget();
             slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
             return slotWidget;
-        }, (slotWidget, machine) -> {
+        }, (slotWidget, adapter, machine) -> {
             slotWidget.setHandlerSlot(machine.chargerInventory, 0);
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
@@ -481,16 +481,16 @@ public class ItemCollectorMachine extends TieredEnergyMachine
             main.addWidget(filterSlotWidget);
             main.setBackground(GuiTextures.BACKGROUND_INVERSE);
             return main;
-        }, (group, machine) -> {
-            UIComponentUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = UIComponentUtils.widgetIdIndex(slot);
+        }, (group, adapter, machine) -> {
+            UIComponentUtils.componentByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
+                var index = UIComponentUtils.componentIdIndex(slot);
                 if (index >= 0 && index < machine.output.getSlots()) {
                     slot.setHandlerSlot(machine.output, index);
                     slot.setCanTakeItems(true);
                     slot.setCanPutItems(false);
                 }
             });
-            UIComponentUtils.widgetByIdForEach(group, "^filter_slot$", SlotWidget.class, slot -> {
+            UIComponentUtils.componentByIdForEach(group, "^filter_slot$", SlotWidget.class, slot -> {
                 slot.setHandlerSlot(machine.filterInventory, 0);
                 slot.setCanTakeItems(true);
                 slot.setCanPutItems(true);

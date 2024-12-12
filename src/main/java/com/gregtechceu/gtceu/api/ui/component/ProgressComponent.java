@@ -149,8 +149,4 @@ public class ProgressComponent extends BaseUIComponent {
         var overlayElement = children.get("overlay-texture");
         this.overlayTexture(model.parseTexture(UITexture.class, overlayElement));
     }
-
-    public static ProgressComponent parse(Element element) {
-        return new ProgressComponent(JEIProgress);
-    }
 }

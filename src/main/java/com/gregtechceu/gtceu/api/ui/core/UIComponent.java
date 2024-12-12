@@ -38,6 +38,11 @@ public interface UIComponent extends PositionedRectangle {
     default void init() {}
 
     /**
+     * Called once when the GUI is closed.
+     */
+    default void dispose() {}
+
+    /**
      * Draw the current state of this component onto the screen
      *
      * @param graphics     The transformation stack
@@ -90,7 +95,7 @@ public interface UIComponent extends PositionedRectangle {
     UIComponentMenuAccess containerAccess();
 
     @ApiStatus.Internal
-    void setContainerAccess(UIComponentMenuAccess adapter);
+    void containerAccess(UIComponentMenuAccess adapter);
 
     default void sendMessage(int id, Consumer<FriendlyByteBuf> writer) {
         this.containerAccess().sendMessage(this, id, writer);

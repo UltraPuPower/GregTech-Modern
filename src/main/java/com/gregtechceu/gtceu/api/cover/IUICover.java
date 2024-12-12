@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.api.cover;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-
-import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.utils.Position;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.holder.IUIHolder;
 
 import net.minecraft.world.entity.player.Player;
 
@@ -15,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
  * @date 2023/3/12
  * @implNote IUICover
  */
-public interface IUICover extends IUIHolder {
+public interface IUICover extends IUIHolder<CoverBehavior> {
 
     default CoverBehavior self() {
         return (CoverBehavior) this;
@@ -27,26 +24,26 @@ public interface IUICover extends IUIHolder {
     }
 
     @Override
-    default boolean isRemote() {
+    default boolean isClientSide() {
         return self().coverHolder.isRemote();
     }
 
     @Override
-    default void markAsDirty() {
+    default void markDirty() {
         self().coverHolder.markDirty();
     }
 
+    ParentUIComponent createUIWidget();
+
     @Override
-    default ModularUI createUI(Player entityPlayer) {
-        var widget = createUIWidget();
-        var size = widget.getSize();
-        widget.setSelfPosition(new Position((176 - size.width) / 2, 0));
-        return new ModularUI(176, size.height + 82, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(widget)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, size.height,
-                        true));
+    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        var rootComponent = adapter.rootComponent;
+
+        var component = createUIWidget();
+        component.positioning(Positioning.absolute((176 - rootComponent.width()) / 2, 0));
+        component.surface(Surface.UI_BACKGROUND);
+        rootComponent.child(UIComponents.playerInventory(adapter.screen().getMenu(), 0));
+        rootComponent.child(component);
     }
 
-    Widget createUIWidget();
 }

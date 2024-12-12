@@ -20,6 +20,10 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
@@ -33,7 +37,6 @@ import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.*;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.ChatFormatting;
@@ -478,12 +481,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 (List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>>) contents);
     }
 
-    @NotNull
     @Override
-    public UIComponent createWidget() {
-        SlotWidget slot = new SlotWidget();
-        slot.initTemplate();
-        return slot;
+    public @NotNull UIComponent createWidget() {
+        return UIComponents.slot(0);
     }
 
     @NotNull

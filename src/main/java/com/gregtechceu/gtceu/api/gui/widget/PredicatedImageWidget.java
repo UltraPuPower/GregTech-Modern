@@ -17,7 +17,7 @@ import java.util.function.BooleanSupplier;
 /**
  * @author KilaBash
  * @date 2023/2/22
- * @implNote PredicatedImageWidget
+ * @implNote PredicatedTextureComponent
  */
 @Accessors(chain = true)
 public class PredicatedImageWidget extends ImageWidget {

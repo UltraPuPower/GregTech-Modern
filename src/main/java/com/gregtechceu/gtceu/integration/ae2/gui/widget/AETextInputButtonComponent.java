@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 import java.util.function.Consumer;
 
 @Accessors(chain = true)
-public class AETextInputButtonComponent extends ComponentGroup {
+public class AETextInputButtonComponent extends UIComponentGroup {
 
     @Setter
     private Consumer<String> onConfirm;

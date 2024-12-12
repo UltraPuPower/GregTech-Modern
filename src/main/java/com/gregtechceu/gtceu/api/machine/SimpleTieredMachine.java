@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.GhostCircuitSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -67,12 +68,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @author KilaBash
  * @date 2023/2/19
  * @implNote SimpleMachine
- *           All simple single machines are implemented here.
+ * All simple single machines are implemented here.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleTieredMachine extends WorkableTieredMachine
-                                 implements IAutoOutputBoth, IFancyUIMachine, IHasCircuitSlot {
+        implements IAutoOutputBoth, IFancyUIMachine, IHasCircuitSlot {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleTieredMachine.class,
             WorkableTieredMachine.MANAGED_FIELD_HOLDER);
@@ -360,9 +361,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
-                ComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-                SlotComponent batterySlot = createBatterySlot().createDefault();
-                ComponentGroup group = UIContainers.group(Sizing.content(),
+                UIComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
+                UIComponentGroup batterySlot = createBatterySlot().createDefault();
+                UIComponentGroup group = UIContainers.group(Sizing.content(),
                         Sizing.fixed(Math.max(template.height(), 78)));
                 template.positioning(Positioning.relative(0, 50));
                 batterySlot.positioning(Positioning.absolute(group.width() / 2 - 9, group.height() - 18));
@@ -377,7 +378,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                 // }
 
                 return group;
-            }, (template, machine) -> {
+            }, (template, adapter, machine) -> {
                 if (machine instanceof SimpleTieredMachine tieredMachine) {
                     var storages = Tables.newCustomTable(new EnumMap<>(IO.class),
                             LinkedHashMap<RecipeCapability<?>, Object>::new);
@@ -388,13 +389,15 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                     storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
                     storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
 
-                    tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
-                            new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
+                    //noinspection DataFlowIssue
+                    tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false)
+                            .setupUI(template, adapter, new GTRecipeTypeUI.RecipeHolder(
+                                    adapter.menu().<Double>getProperty("progress")::get,
                                     storages,
                                     new CompoundTag(),
                                     Collections.emptyList(),
                                     false, false));
-                    createBatterySlot().setupUI(template, tieredMachine);
+                    createBatterySlot().setupUI(template, adapter, tieredMachine);
                     // createCircuitConfigurator().setupUI(template, tieredMachine);
                 }
             }));
@@ -402,18 +405,21 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     /**
      * Create an energy bar widget.
      */
-    protected static EditableUI<SlotComponent, SimpleTieredMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotComponent.class, () -> {
+    protected static EditableUI<UIComponentGroup, SimpleTieredMachine> createBatterySlot() {
+        return new EditableUI<>("battery_slot", UIComponentGroup.class, () -> {
+            var full = UIContainers.group(Sizing.fixed(18), Sizing.fixed(18));
             var component = UIComponents.slot(0);
-            component.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
-            return component;
-        }, (slotWidget, machine) -> {
-            slotWidget.setSlot(machine.chargerInventory, 0);
-            slotWidget.canExtractOverride(true);
-            slotWidget.canInsertOverride(true);
-            slotWidget.tooltip(new ArrayList<>(
+            var texture = UIComponents.texture(UITextures.group(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY), 18, 18);
+            full.children(List.of(component, texture));
+            return full;
+        }, (component, adapter, machine) -> {
+            SlotComponent slot = (SlotComponent) component.children().get(0);
+            slot.setSlot(machine.chargerInventory, 0);
+            slot.canExtractOverride(true);
+            slot.canInsertOverride(true);
+            slot.tooltip(new ArrayList<>(
                     LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()])
+                            GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()])
             ));
         });
     }
@@ -421,16 +427,19 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     /**
      * Create an energy bar widget.
      */
-    protected static EditableUI<GhostCircuitSlotComponent, SimpleTieredMachine> createCircuitConfigurator() {
-        return new EditableUI<>("circuit_configurator", GhostCircuitSlotComponent.class, () -> {
-            var slotWidget = new GhostCircuitSlotComponent();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY);
-            return slotWidget;
-        }, (slotWidget, machine) -> {
-            slotWidget.setCircuitInventory(machine.circuitInventory);
-            slotWidget.canExtractOverride(false);
-            slotWidget.canInsertOverride(false);
-            slotWidget.tooltip(new ArrayList<>(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip")));
+    protected static EditableUI<UIComponentGroup, SimpleTieredMachine> createCircuitConfigurator() {
+        return new EditableUI<>("circuit_configurator", UIComponentGroup.class, () -> {
+            var full = UIContainers.group(Sizing.fixed(18), Sizing.fixed(18));
+            var component = new GhostCircuitSlotComponent();
+            var texture = UIComponents.texture(UITextures.group(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY), 18, 18);
+            full.children(List.of(component, texture));
+            return full;
+        }, (component, adapter, machine) -> {
+            GhostCircuitSlotComponent slot = (GhostCircuitSlotComponent) component.children().get(0);
+            slot.setCircuitInventory(machine.circuitInventory);
+            slot.canExtractOverride(false);
+            slot.canInsertOverride(false);
+            slot.tooltip(new ArrayList<>(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip")));
         });
     }
 

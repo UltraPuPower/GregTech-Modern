@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.api.ui.component.TankComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
@@ -25,13 +26,13 @@ import com.gregtechceu.gtceu.utils.OverlayedTankHandler;
 import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -40,6 +41,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -310,12 +312,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 (List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>>) contents);
     }
 
-    @NotNull
     @Override
-    public UIComponent createWidget() {
-        TankWidget tank = new TankWidget();
-        tank.initTemplate();
-        tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
+    public @Nullable UIComponent createWidget() {
+        TankComponent tank = UIComponents.tank(EmptyFluidHandler.INSTANCE);
+        //tank.fillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
         return tank;
     }
 

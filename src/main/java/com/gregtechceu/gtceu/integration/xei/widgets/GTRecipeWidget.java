@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -97,11 +98,11 @@ public class GTRecipeWidget extends WidgetGroup {
                 LinkedHashMap<RecipeCapability<?>, List<Content>>::new);
         collectStorage(storages, contents, recipe);
 
-        WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress, storages,
+        UIComponentGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress, storages,
                 recipe.data.copy(), recipe.conditions);
         addSlots(contents, group, recipe);
 
-        var size = group.getSize();
+        var size = group.fullSize();
 
         // Ensure any previous instances of the widget are removed first. This applies when changing the recipe
         // preview's voltage tier, as this recipe widget stays the same while its contents are updated.
@@ -382,9 +383,9 @@ public class GTRecipeWidget extends WidgetGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                UIComponentUtils.widgetByIdForEach(group, "^%s.[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
+                UIComponentUtils.componentByIdForEach(group, "^%s.[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
                         widget -> {
-                            var index = UIComponentUtils.widgetIdIndex(widget);
+                            var index = UIComponentUtils.componentIdIndex(widget);
                             if (index >= 0 && index < contents.size()) {
                                 var content = contents.get(index);
                                 cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,

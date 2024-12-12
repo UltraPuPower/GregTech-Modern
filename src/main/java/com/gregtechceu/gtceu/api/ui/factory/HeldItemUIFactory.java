@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.ui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 
@@ -34,7 +34,7 @@ public class HeldItemUIFactory extends UIFactory<HeldItemUIHolder> {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter, HeldItemUIHolder holder) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
         holder.loadClientUI(player, adapter);
     }
 

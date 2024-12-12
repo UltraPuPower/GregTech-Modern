@@ -55,4 +55,8 @@ public class UITextures {
     public static ColorBorderTexture colorBorder(Color color, int border) {
         return new ColorBorderTexture(color, border);
     }
+
+    public static ColorRectTexture colorRect(Color color) {
+        return new ColorRectTexture(color);
+    }
 }

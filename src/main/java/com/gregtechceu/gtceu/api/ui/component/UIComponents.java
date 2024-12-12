@@ -219,6 +219,14 @@ public class UIComponents {
         return new ProgressComponent(progressSupplier);
     }
 
+    public static DualProgressComponent dualProgress() {
+        return new DualProgressComponent();
+    }
+
+    public static DualProgressComponent dualProgress(DoubleSupplier progressSupplier, double splitPoint) {
+        return new DualProgressComponent(progressSupplier, splitPoint);
+    }
+
     // -------
     // Utility
     // -------

@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -103,8 +103,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter) {
-        ComponentGroup rootComponent = adapter.rootComponent;
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        UIComponentGroup rootComponent = adapter.rootComponent;
         rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
         int xOffset = inventorySize >= 90 ? 162 : 0;

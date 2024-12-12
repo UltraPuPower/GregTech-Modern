@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.holder;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +16,7 @@ public interface IUIHolder<T> {
         public void loadServerUI(Player player, UIContainerMenu<Object> menu, Object holder) {}
 
         @Override
-        public void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter) {}
+        public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {}
 
         @Override
         public boolean isInvalid() {
@@ -35,7 +35,7 @@ public interface IUIHolder<T> {
     void loadServerUI(Player player, UIContainerMenu<T> menu, T holder);
 
     @OnlyIn(Dist.CLIENT)
-    void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter);
+    void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter);
 
     boolean isInvalid();
 

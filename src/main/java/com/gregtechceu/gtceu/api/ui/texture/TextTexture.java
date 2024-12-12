@@ -21,10 +21,13 @@ import org.w3c.dom.Element;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Accessors(fluent = true, chain = true)
 public class TextTexture extends TransformTexture {
 
+    @Setter
+    public Supplier<Component> textSupplier;
     @Setter
     public Component text;
 
@@ -79,6 +82,9 @@ public class TextTexture extends TransformTexture {
 
     @Override
     protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+        if (textSupplier != null) {
+            this.text = textSupplier.get();
+        }
         this.drawInternal(graphics, mouseX, mouseY, (int) x, (int) y, (int) width, (int) height);
     }
 

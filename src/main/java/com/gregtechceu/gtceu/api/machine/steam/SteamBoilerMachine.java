@@ -10,10 +10,17 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -299,6 +306,20 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     //////////////////////////////////////
 
     @Override
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        var progressProperty = menu.createProperty(double.class, "progress", recipeLogic.getProgressPercent());
+        recipeLogic.addProgressPercentListener(progressProperty::set);
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        UIComponentGroup rootComponent;
+        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
+
+        rootComponent.surface(Su)
+    }
+
+    @Override
     public ModularUI createUI(Player entityPlayer) {
         return new ModularUI(176, 166, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
@@ -365,4 +386,5 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         }
         return new ArrayList<>();
     }
+
 }

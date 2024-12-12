@@ -1,19 +1,21 @@
 package com.gregtechceu.gtceu.api.ui.component.directional.handlers;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
-import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
+import com.gregtechceu.gtceu.api.ui.component.*;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Color;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -31,55 +33,58 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
 
-    private static final IGuiTexture TEXTURE_OFF = new GuiTextureGroup(
+    private static final UITexture TEXTURE_OFF = UITextures.group(
             GuiTextures.VANILLA_BUTTON,
             GuiTextures.IO_CONFIG_ITEM_MODES_BUTTON.getSubTexture(0, 0, 1, 1 / 3f));
-    private static final IGuiTexture TEXTURE_OUTPUT = new GuiTextureGroup(
+    private static final UITexture TEXTURE_OUTPUT = UITextures.group(
             GuiTextures.VANILLA_BUTTON,
             GuiTextures.IO_CONFIG_ITEM_MODES_BUTTON.getSubTexture(0, 1 / 3f, 1, 1 / 3f));
-    private static final IGuiTexture TEXTURE_AUTO = new GuiTextureGroup(
+    private static final UITexture TEXTURE_AUTO = UITextures.group(
             GuiTextures.VANILLA_BUTTON,
             GuiTextures.IO_CONFIG_ITEM_MODES_BUTTON.getSubTexture(0, 2 / 3f, 1, 1 / 3f));
 
     private final IAutoOutputItem machine;
     private Direction side;
-    private ButtonWidget ioModeButton;
+    private ButtonComponent ioModeButton;
 
     public AutoOutputItemConfigHandler(IAutoOutputItem machine) {
         this.machine = machine;
     }
 
     @Override
-    public Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIComponent machineUI) {
-        WidgetGroup group = new WidgetGroup(0, 0, (18 * 2) + 1, 18);
+    public UIComponent getSideSelectorWidget(SceneComponent scene, FancyMachineUIComponent machineUI) {
+        FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed((18 * 2) + 1), Sizing.fixed(18));
 
-        group.addWidget(ioModeButton = new ButtonWidget(0, 0, 18, 18, this::onIOModePressed) {
+        group.child(ioModeButton = new ButtonComponent(Component.empty(), this::onIOModePressed) {
 
             @Override
-            public void updateScreen() {
-                super.updateScreen();
+            public void update(float delta, int mouseX, int mouseY) {
+                super.update(delta, mouseX, mouseY);
 
                 if (machine.getOutputFacingItems() == side) {
                     if (machine.isAutoOutputItems()) {
-                        setButtonTexture(TEXTURE_AUTO);
+                        renderer(Renderer.texture(TEXTURE_AUTO));
                     } else {
-                        setButtonTexture(TEXTURE_OUTPUT);
+                        renderer(Renderer.texture(TEXTURE_OUTPUT));
                     }
                 } else {
-                    setButtonTexture(TEXTURE_OFF);
+                    renderer(Renderer.texture(TEXTURE_OFF));
                 }
             }
         });
+        ioModeButton.sizing(Sizing.fill());
+        ioModeButton.positioning(Positioning.relative(100, 0));
 
-        group.addWidget(new ToggleButtonComponent(
-                19, 0, 18, 18, GuiTextures.BUTTON_ITEM_OUTPUT,
+        group.child(UIComponents.toggleButton(GuiTextures.BUTTON_ITEM_OUTPUT,
                 machine::isAllowInputFromOutputSideItems, machine::setAllowInputFromOutputSideItems)
-                .setShouldUseBaseBackground().setTooltipText("gtceu.gui.item_auto_output.allow_input"));
+                .setShouldUseBaseBackground().setTooltipText("gtceu.gui.item_auto_output.allow_input")
+                .positioning(Positioning.absolute(19, 0))
+                .sizing(Sizing.fill()));
 
         return group;
     }
 
-    private void onIOModePressed(ClickData cd) {
+    private void onIOModePressed(ButtonComponent btn) {
         if (this.side == null)
             return;
 
@@ -127,7 +132,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(SceneWidget sceneWidget, BlockPosFace blockPosFace) {
+    public void renderOverlay(SceneComponent sceneWidget, BlockPosFace blockPosFace) {
         if (machine.getOutputFacingItems() != blockPosFace.facing)
             return;
 
@@ -137,8 +142,9 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
 
     @Override
     public void addAdditionalUIElements(FlowLayout parent) {
-        LabelComponent text = new LabelComponent(Component.translatable("gtceu.gui.auto_output.name") {
+        LabelComponent text = new LabelComponent(Component.translatable("gtceu.gui.auto_output.name")) {
 
+            // TODO implement
             //@Override
             //public boolean isVisible() {
             //    return machine.isAutoOutputItems() && machine.getOutputFacingItems() != null;

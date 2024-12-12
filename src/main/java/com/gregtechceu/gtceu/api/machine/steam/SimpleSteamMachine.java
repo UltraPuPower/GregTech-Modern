@@ -6,24 +6,27 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.PredicatedTextureComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -159,7 +162,28 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //////////////////////////////////////
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        var progressProperty = menu.createProperty(double.class, "progress", recipeLogic.getProgressPercent());
+        recipeLogic.addProgressPercentListener(progressProperty::set);
+
+        // Position all slots at 0,0 as they'll be moved to the correct position on the client.
+        SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
+        for (int i = 0; i < this.importItems.getSlots(); i++) {
+            generator.slot(this.importItems, i, 0, 0);
+        }
+        for (int i = 0; i < this.exportItems.getSlots(); i++) {
+            generator.slot(this.exportItems, i, 0, 0);
+        }
+        generator.playerInventory(menu.getPlayerInventory());
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        var rootComponent = adapter.rootComponent;
+        var screenGroup = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166));
+        screenGroup.padding(Insets.of(5));
+        screenGroup.surface(isHighPressure ? Surface.UI_BACKGROUND_STEEL : Surface.UI_BACKGROUND_BRONZE);
+
         var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
         storages.put(IO.IN, ItemRecipeCapability.CAP, importItems.storage);
         storages.put(IO.OUT, ItemRecipeCapability.CAP, exportItems.storage);
@@ -170,18 +194,20 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
                 Collections.emptyList(),
                 true,
                 isHighPressure);
-        Position pos = new Position((Math.max(group.getSize().width + 4 + 8, 176) - 4 - group.getSize().width) / 2 + 4,
+        Positioning pos = Positioning.absolute((Math.max(group.width() + 4 + 8, 176) - 4 - group.width()) / 2 + 4,
                 32);
-        group.setSelfPosition(pos);
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
-                .widget(group)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new PredicatedImageWidget(pos.x + group.getSize().width / 2 - 9,
-                        pos.y + group.getSize().height / 2 - 9, 18, 18,
-                        GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                        .setPredicate(recipeLogic::isWaiting))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                        GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
+        group.positioning(pos);
+        screenGroup.child(group);
+
+        int itemSlotCount = importItems.getSlots() + exportItems.getSlots();
+        screenGroup.child(UIComponents.label(getBlockState().getBlock().getName())
+                .positioning(Positioning.relative(0, 0)));
+        screenGroup.child(new PredicatedTextureComponent(GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure), 18, 18)
+                .positioning(Positioning.absolute(pos.x + group.width() / 2 - 9,
+                        pos.y + group.height() / 2 - 9)))
+                .child(UIComponents.playerInventory(adapter.screen().getMenu(), itemSlotCount));
+
+        rootComponent.child(screenGroup);
     }
+
 }

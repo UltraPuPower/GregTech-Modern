@@ -33,7 +33,7 @@ public interface UIComponentStub extends UIComponent {
 
     @ApiStatus.Internal
     @Override
-    default void setContainerAccess(UIComponentMenuAccess adapter) {
+    default void containerAccess(UIComponentMenuAccess adapter) {
         throw new IllegalStateException("Interface stub method called");
     }
 

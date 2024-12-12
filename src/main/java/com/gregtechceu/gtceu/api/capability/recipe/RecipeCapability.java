@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -175,8 +174,7 @@ public abstract class RecipeCapability<T> {
         return null;
     }
 
-    @Nullable("null when getWidgetClass() == null")
-    public UIComponent createWidget() {
+    public @Nullable UIComponent createWidget() {
         return null;
     }
 

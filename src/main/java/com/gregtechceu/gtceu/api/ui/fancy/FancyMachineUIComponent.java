@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @ApiStatus.Internal
 @Accessors(fluent = true, chain = true)
 @Getter
-public class FancyMachineUIComponent extends ComponentGroup {
+public class FancyMachineUIComponent extends UIComponentGroup {
 
     protected final TitleBarComponent titleBar;
     protected final VerticalTabsComponent sideTabsComponent;

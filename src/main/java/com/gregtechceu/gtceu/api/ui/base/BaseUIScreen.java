@@ -12,14 +12,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import lombok.Getter;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 /**
  * A minimal implementation of a Screen which fully
@@ -104,7 +101,7 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
                 this.setFocused(this.uiAdapter);
 
                 this.build(this.uiAdapter.rootComponent);
-                this.uiAdapter.rootComponent.setContainerAccess(this.uiAdapter);
+                this.uiAdapter.rootComponent.containerAccess(this.uiAdapter);
                 this.uiAdapter.rootComponent.init();
 
                 this.uiAdapter.moveAndResize(0, 0, this.width, this.height);

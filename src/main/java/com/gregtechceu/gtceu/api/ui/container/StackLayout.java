@@ -85,7 +85,7 @@ public class StackLayout extends BaseParentUIComponent {
      */
     public StackLayout child(UIComponent child) {
         this.children.add(child);
-        child.setContainerAccess(this.parentAccess);
+        child.containerAccess(this.parentAccess);
         this.updateLayout();
         return this;
     }

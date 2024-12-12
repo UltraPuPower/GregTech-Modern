@@ -32,7 +32,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
@@ -1819,8 +1819,8 @@ public class GTItems {
 
                 @OnlyIn(Dist.CLIENT)
                 @Override
-                public void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter, HeldItemUIHolder holder) {
-                    ComponentGroup rootComponent = adapter.rootComponent;
+                public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
+                    UIComponentGroup rootComponent = adapter.rootComponent;
                     rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
                     FlowLayout layout;

@@ -4,10 +4,9 @@ import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.container.WrappingParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import net.minecraft.ChatFormatting;
@@ -19,7 +18,7 @@ import java.util.function.Consumer;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class TitleBarComponent extends ComponentGroup {
+public class TitleBarComponent extends UIComponentGroup {
 
     private static final int BORDER_SIZE = 3;
     private static final int HORIZONTAL_MARGIN = 8;

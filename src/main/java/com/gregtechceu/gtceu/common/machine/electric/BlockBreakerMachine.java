@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.editable.EditableMachineUI;
 import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -360,7 +362,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     // ********** GUI ***********//
     //////////////////////////////////////
     public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
+            .memoize((path, inventorySize) -> new EditableMachineUI(path, () -> {
                 var template = createTemplate(inventorySize).createDefault();
                 var energyBar = createEnergyBar().createDefault();
                 var batterySlot = createBatterySlot().createDefault();
@@ -382,7 +384,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                 group.addWidget(energyGroup);
                 group.addWidget(template);
                 return group;
-            }, (template, machine) -> {
+            }, (template, adapter, machine) -> {
                 if (machine instanceof BlockBreakerMachine blockBreakerMachine) {
                     createTemplate(inventorySize).setupUI(template, blockBreakerMachine);
                     createEnergyBar().setupUI(template, blockBreakerMachine);
@@ -390,12 +392,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                 }
             }));
 
-    protected static EditableUI<SlotWidget, BlockBreakerMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
+    protected static EditableUI<SlotComponent, BlockBreakerMachine> createBatterySlot() {
+        return new EditableUI<>("battery_slot", SlotComponent.class, () -> {
             var slotWidget = new SlotWidget();
             slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
             return slotWidget;
-        }, (slotWidget, machine) -> {
+        }, (slotWidget, adapter, machine) -> {
             slotWidget.setHandlerSlot(machine.chargerInventory, 0);
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
@@ -404,7 +406,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         });
     }
 
-    protected static EditableUI<WidgetGroup, BlockBreakerMachine> createTemplate(int inventorySize) {
+    protected static EditableUI<UIComponentGroup, BlockBreakerMachine> createTemplate(int inventorySize) {
         return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
             int rowSize = (int) Math.sqrt(inventorySize);
             WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8, rowSize * 18 + 8);
@@ -421,9 +423,9 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             }
             main.setBackground(GuiTextures.BACKGROUND_INVERSE);
             return main;
-        }, (group, machine) -> {
-            UIComponentUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = UIComponentUtils.widgetIdIndex(slot);
+        }, (group, adapter, machine) -> {
+            UIComponentUtils.componentByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
+                var index = UIComponentUtils.componentIdIndex(slot);
                 if (index >= 0 && index < machine.cache.getSlots()) {
                     slot.setHandlerSlot(machine.cache, index);
                     slot.setCanTakeItems(true);

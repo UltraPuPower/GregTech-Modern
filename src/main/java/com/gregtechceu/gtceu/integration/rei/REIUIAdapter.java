@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.rei;
 
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
@@ -27,7 +27,7 @@ public class REIUIAdapter extends Widget {
     public static final Point LAYOUT = new Point(-69, -69);
 
     private final CloseListener closeListener;
-    public final UIAdapter<ComponentGroup> adapter;
+    public final UIAdapter<UIComponentGroup> adapter;
 
     public REIUIAdapter(Rectangle bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.x, bounds.y, bounds.width, bounds.height,
@@ -54,7 +54,7 @@ public class REIUIAdapter extends Widget {
         this.adapter.inflateAndMount();
     }
 
-    public ComponentGroup rootComponent() {
+    public UIComponentGroup rootComponent() {
         return this.adapter.rootComponent;
     }
 

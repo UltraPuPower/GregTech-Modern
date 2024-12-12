@@ -39,8 +39,6 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
 
     @Getter
     private final Queue<IComponentUpdate> receivedComponentUpdates = new LinkedList<>();
-    @Getter
-    private final
 
     @Getter
     private final Inventory playerInventory;

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.ui.component.ProgressComponent;
 import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -133,14 +134,14 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     /**
      * Create an energy bar widget.
      */
-    protected static EditableUI<ProgressWidget, TieredEnergyMachine> createEnergyBar() {
+    protected static EditableUI<ProgressComponent, TieredEnergyMachine> createEnergyBar() {
         return new EditableUI<>("energy_container", ProgressWidget.class, () -> {
             var progressBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 18, 60,
                     new ProgressTexture(IGuiTexture.EMPTY, GuiTextures.ENERGY_BAR_BASE));
             progressBar.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
             progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
             return progressBar;
-        }, (progressBar, machine) -> {
+        }, (progressBar, adapter, machine) -> {
             progressBar.setProgressSupplier(
                     () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity());
         });

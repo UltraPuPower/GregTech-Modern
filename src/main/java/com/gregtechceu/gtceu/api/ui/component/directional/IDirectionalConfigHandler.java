@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.component.directional;
 
+import com.gregtechceu.gtceu.api.ui.component.SceneComponent;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.core.BlockPos;
@@ -17,7 +17,7 @@ public interface IDirectionalConfigHandler {
     /**
      * Returns the buttons to display inside the side selector
      */
-    UIComponent getSideSelectorWidget(SceneWidget scene, FancyMachineUIComponent machineUI);
+    UIComponent getSideSelectorWidget(SceneComponent scene, FancyMachineUIComponent machineUI);
 
     /**
      * Called whenever a side is selected in the side selector GUI
@@ -39,7 +39,7 @@ public interface IDirectionalConfigHandler {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderOverlay(SceneWidget sceneWidget, BlockPosFace blockPosFace) {
+    default void renderOverlay(SceneComponent sceneWidget, BlockPosFace blockPosFace) {
         // Do nothing by default
     }
 

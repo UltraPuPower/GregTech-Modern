@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 
+import com.gregtechceu.gtceu.api.ui.texture.ColorRectTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
@@ -22,6 +24,41 @@ public record Color(float red, float green, float blue, float alpha) implements 
     public static final Color GREEN = Color.ofRgb(0x00FF00);
     public static final Color BLUE = Color.ofRgb(0x0000FF);
     public static final Color HOVER_GRAY = Color.ofArgb(0x80FFFFFF);
+
+
+    public static final Color T_WHITE = Color.ofArgb(0x88ffffff);
+    public static final Color T_BLACK = Color.ofArgb(0x44222222);
+    public static final Color SEAL_BLACK = Color.ofArgb(0xFF313638);
+    public static final Color T_SEAL_BLACK = Color.ofArgb(0x88313638);
+    public static final Color GRAY = Color.ofArgb(0xff666666);
+    public static final Color T_GRAY = Color.ofArgb(0x66666666);
+    public static final Color DARK_GRAY = Color.ofArgb(0xff444444);
+    public static final Color T_DARK_GRAY = Color.ofArgb(0x44444444);
+    public static final Color LIGHT_GRAY = Color.ofArgb(0xffaaaaaa);
+    public static final Color T_LIGHT_GRAY = Color.ofArgb(0x88aaaaaa);
+
+    public static final Color T_GREEN = Color.ofArgb(0x8833ff00);
+    public static final Color T_RED = Color.ofArgb(0x889d0122);
+    public static final Color BRIGHT_RED = Color.ofArgb(0xffFF0000);
+    public static final Color T_BRIGHT_RED = Color.ofArgb(0x88FF0000);
+    public static final Color T_YELLOW = Color.ofArgb(0x88ffff33);
+    public static final Color CYAN = Color.ofArgb(0xff337777);
+    public static final Color T_CYAN = Color.ofArgb(0x88337777);
+    public static final Color PURPLE = Color.ofArgb(0xff9933ff);
+    public static final Color T_PURPLE = Color.ofArgb(0x889933ff);
+    public static final Color PINK = Color.ofArgb(0xffff33ff);
+    public static final Color T_PINK = Color.ofArgb(0x88ff33ff);
+    public static final Color T_BLUE = Color.ofArgb(0x884852ff);
+    public static final Color ORANGE = Color.ofArgb(0xffff8800);
+    public static final Color T_ORANGE = Color.ofArgb(0x88ff8800);
+    public static final Color BROWN = Color.ofArgb(0xffaa7744);
+    public static final Color T_BROWN = Color.ofArgb(0x88aa7744);
+    public static final Color LIME = Color.ofArgb(0xff77aa44);
+    public static final Color T_LIME = Color.ofArgb(0x8877aa44);
+    public static final Color MAGENTA = Color.ofArgb(0xffaa44aa);
+    public static final Color T_MAGENTA = Color.ofArgb(0x88aa44aa);
+    public static final Color LIGHT_BLUE = Color.ofArgb(0xff44aaff);
+    public static final Color T_LIGHT_BLUE = Color.ofArgb(0x8844aaff);
 
     private static final Map<String, Color> NAMED_TEXT_COLORS = Stream.of(ChatFormatting.values())
             .filter(ChatFormatting::isColor)
@@ -77,6 +114,10 @@ public record Color(float red, float green, float blue, float alpha) implements 
     public int argb() {
         return (int) (this.alpha * 255) << 24 | (int) (this.red * 255) << 16 | (int) (this.green * 255) << 8 |
                 (int) (this.blue * 255);
+    }
+
+    public ColorRectTexture rectTexture() {
+        return UITextures.colorRect(this);
     }
 
     public float[] hsv() {

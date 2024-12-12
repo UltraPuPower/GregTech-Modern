@@ -1,7 +1,8 @@
-package com.gregtechceu.gtceu.api.gui.widget;
+package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -11,19 +12,20 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.ScrollContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.texture.TextTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
-import com.lowdragmc.lowdraglib.gui.texture.*;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.ItemStackKey;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -54,56 +56,56 @@ import java.util.stream.Stream;
  * @implNote PatterShapeInfoWidget
  */
 @OnlyIn(Dist.CLIENT)
-public class PatternPreviewWidget extends WidgetGroup {
+public class PatternPreviewComponent extends FlowLayout {
 
     private boolean isLoaded;
     private static TrackedDummyWorld LEVEL;
     private static BlockPos LAST_POS = new BlockPos(0, 50, 0);
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
-    private final SceneWidget sceneWidget;
-    private final DraggableScrollableWidgetGroup scrollableWidgetGroup;
+    private final SceneComponent sceneComponent;
+    private final FlowLayout scrollContainer;
     public final MultiblockMachineDefinition controllerDefinition;
     public final MBPattern[] patterns;
     private final List<SimplePredicate> predicates;
     private int index;
     public int layer;
-    private SlotWidget[] slotWidgets;
-    private SlotWidget[] candidates;
+    private SlotComponent[] slotWidgets;
+    private SlotComponent[] candidates;
 
-    protected PatternPreviewWidget(MultiblockMachineDefinition controllerDefinition) {
-        super(0, 0, 160, 160);
-        setClientSideWidget();
+    protected PatternPreviewComponent(MultiblockMachineDefinition controllerDefinition) {
+        super(Sizing.fixed(160), Sizing.fixed(160), Algorithm.HORIZONTAL);
+        this.padding(Insets.of(4));
         this.controllerDefinition = controllerDefinition;
         predicates = new ArrayList<>();
         layer = -1;
 
-        addWidget(sceneWidget = new SceneWidget(3, 3, 150, 150, LEVEL)
-                .setOnSelected(this::onPosSelected)
-                .setRenderFacing(false)
-                .setRenderFacing(false));
+        child(sceneComponent = (SceneComponent) new SceneComponent(Sizing.fixed(150), Sizing.fixed(150), LEVEL)
+                .onSelected(this::onPosSelected)
+                .renderFacing(false)
+                .positioning(Positioning.absolute(0, 0)));
 
-        scrollableWidgetGroup = new DraggableScrollableWidgetGroup(3, 132, 154, 22)
-                .setXScrollBarHeight(4)
-                .setXBarStyle(GuiTextures.SLIDER_BACKGROUND, GuiTextures.BUTTON)
-                .setScrollable(true)
-                .setDraggable(true);
-        scrollableWidgetGroup.setScrollWheelDirection(DraggableScrollableWidgetGroup.ScrollWheelDirection.HORIZONTAL);
-        scrollableWidgetGroup.setScrollYOffset(0);
-        addWidget(scrollableWidgetGroup);
+        scrollContainer = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fill());
+        child(UIContainers.horizontalScroll(Sizing.fixed(154), Sizing.fixed(22), scrollContainer)
+                .scrollbarThickness(4)
+                .scrollbar(ScrollContainer.Scrollbar.custom(
+                        GuiTextures.SLIDER_BACKGROUND.imageLocation,
+                        GuiTextures.BUTTON.imageLocation))
+                .positioning(Positioning.absolute(0, 129)));
 
         if (ConfigHolder.INSTANCE.client.useVBO) {
             if (!RenderSystem.isOnRenderThread()) {
-                RenderSystem.recordRenderCall(sceneWidget::useCacheBuffer);
+                RenderSystem.recordRenderCall(sceneComponent::useCacheBuffer);
             } else {
-                sceneWidget.useCacheBuffer();
+                sceneComponent.useCacheBuffer();
             }
         }
 
-        addWidget(new ImageWidget(3, 3, 160, 10,
-                new TextTexture(controllerDefinition.getDescriptionId(), -1)
-                        .setType(TextTexture.TextType.ROLL)
-                        .setWidth(170)
-                        .setDropShadow(true)));
+        child(UIComponents.texture(UITextures.text(Component.translatable(controllerDefinition.getDescriptionId()))
+                        .textType(TextTexture.TextType.ROLL)
+                        .width(170)
+                        .dropShadow(true), 160, 10)
+                .positioning(Positioning.absolute(1, 1))
+                .sizing(Sizing.fill(), Sizing.fixed(10)));
 
         this.patterns = CACHE.computeIfAbsent(controllerDefinition, definition -> {
             HashSet<ItemStackKey> drops = new HashSet<>();
@@ -114,17 +116,23 @@ public class PatternPreviewWidget extends WidgetGroup {
                     .toArray(MBPattern[]::new);
         });
 
-        addWidget(new ButtonWidget(138, 30, 18, 18, new GuiTextureGroup(
-                ColorPattern.T_GRAY.rectTexture(),
-                new TextTexture("1").setSupplier(() -> "P:" + index)),
-                (x) -> setPage((index + 1 >= patterns.length) ? 0 : index + 1))
-                .setHoverBorderTexture(1, -1));
+        child(UIComponents.button(Component.empty(),
+                        (x) -> setPage((index + 1 >= patterns.length) ? 0 : index + 1))
+                .renderer(ButtonComponent.Renderer.texture(
+                        UITextures.group(
+                                Color.T_GRAY.rectTexture(),
+                                UITextures.text(Component.literal("1")).textSupplier(() -> Component.literal("P:" + index)))))
+                .sizing(Sizing.fixed(18))
+                .positioning(Positioning.absolute(138, 30)));
 
-        addWidget(new ButtonWidget(138, 50, 18, 18, new GuiTextureGroup(
-                ColorPattern.T_GRAY.rectTexture(),
-                new TextTexture("1").setSupplier(() -> layer >= 0 ? "L:" + layer : "ALL")),
-                cd -> updateLayer())
-                .setHoverBorderTexture(1, -1));
+        child(UIComponents.button(Component.empty(),
+                        cd -> updateLayer())
+                .renderer(ButtonComponent.Renderer.texture(UITextures.group(
+                        Color.T_GRAY.rectTexture(),
+                        UITextures.text(Component.literal("1")).textSupplier(() -> Component.literal(layer >= 0 ?
+                                "L:" + layer : "ALL")))))
+                .sizing(Sizing.fixed(18))
+                .positioning(Positioning.absolute(138, 50)));
 
         setPage(0);
     }
@@ -153,17 +161,17 @@ public class PatternPreviewWidget extends WidgetGroup {
                     LongSets.EMPTY_SET);
             Set<BlockPos> modelDisabled = set.stream().map(BlockPos::of).collect(Collectors.toSet());
             if (!modelDisabled.isEmpty()) {
-                sceneWidget.setRenderedCore(
+                sceneComponent.renderedCore(
                         stream.filter(pos -> !modelDisabled.contains(pos)).collect(Collectors.toList()), null);
             } else {
-                sceneWidget.setRenderedCore(stream.toList(), null);
+                sceneComponent.renderedCore(stream.toList(), null);
             }
         } else {
-            sceneWidget.setRenderedCore(stream.toList(), null);
+            sceneComponent.renderedCore(stream.toList(), null);
         }
     }
 
-    public static PatternPreviewWidget getPatternWidget(MultiblockMachineDefinition controllerDefinition) {
+    public static PatternPreviewComponent getPatternWidget(MultiblockMachineDefinition controllerDefinition) {
         if (LEVEL == null) {
             if (Minecraft.getInstance().level == null) {
                 GTCEu.LOGGER.error("Try to init pattern previews before level load");
@@ -171,7 +179,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
             LEVEL = new TrackedDummyWorld();
         }
-        return new PatternPreviewWidget(controllerDefinition);
+        return new PatternPreviewComponent(controllerDefinition);
     }
 
     public void setPage(int index) {
@@ -181,17 +189,19 @@ public class PatternPreviewWidget extends WidgetGroup {
         MBPattern pattern = patterns[index];
         setupScene(pattern);
         if (slotWidgets != null) {
-            for (SlotWidget slotWidget : slotWidgets) {
-                scrollableWidgetGroup.removeWidget(slotWidget);
+            for (SlotComponent slotWidget : slotWidgets) {
+                scrollContainer.removeChild(slotWidget);
             }
         }
-        slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
+        slotWidgets = new SlotComponent[Math.min(pattern.parts.size(), 18)];
         var itemHandler = new CycleItemStackHandler(pattern.parts);
         for (int i = 0; i < slotWidgets.length; i++) {
-            slotWidgets[i] = new SlotWidget(itemHandler, i, 4 + i * 18, 0, false, false)
-                    .setBackgroundTexture(ColorPattern.T_GRAY.rectTexture())
-                    .setIngredientIO(IngredientIO.INPUT);
-            scrollableWidgetGroup.addWidget(slotWidgets[i]);
+            slotWidgets[i] = (SlotComponent) UIComponents.slot(itemHandler, i)
+                    .canExtractOverride(false)
+                    .canInsertOverride(false)
+                    .ingredientIO(IO.IN)
+                    .positioning(Positioning.absolute(4 + i * 18, 0));
+            scrollContainer.child(slotWidgets[i]);
         }
     }
 
@@ -202,7 +212,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             this.layer = -1;
             loadControllerFormed(pattern.blockMap.keySet(), controllerBase);
         } else {
-            sceneWidget.setRenderedCore(pattern.blockMap.keySet(), null);
+            sceneComponent.renderedCore(pattern.blockMap.keySet(), null);
             controllerBase.onStructureInvalid();
         }
     }
@@ -216,8 +226,8 @@ public class PatternPreviewWidget extends WidgetGroup {
             predicates.addAll(predicate.limited);
             predicates.removeIf(p -> p == null || p.candidates == null); // why it happens?
             if (candidates != null) {
-                for (SlotWidget candidate : candidates) {
-                    removeWidget(candidate);
+                for (SlotComponent candidate : candidates) {
+                    removeChild(candidate);
                 }
             }
             List<List<ItemStack>> candidateStacks = new ArrayList<>();
@@ -229,17 +239,17 @@ public class PatternPreviewWidget extends WidgetGroup {
                     predicateTips.add(simplePredicate.getToolTips(predicate));
                 }
             }
-            candidates = new SlotWidget[candidateStacks.size()];
+            candidates = new SlotComponent[candidateStacks.size()];
             CycleItemStackHandler itemHandler = new CycleItemStackHandler(candidateStacks);
             int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
-                int finalI = i;
-                candidates[i] = new SlotWidget(itemHandler, i, 3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18, false,
-                        false)
-                        .setIngredientIO(IngredientIO.INPUT)
-                        .setBackgroundTexture(new ColorRectTexture(0x4fffffff))
-                        .setOnAddedTooltips((slot, list) -> list.addAll(predicateTips.get(finalI)));
-                addWidget(candidates[i]);
+                candidates[i] = (SlotComponent) UIComponents.slot(itemHandler, i)
+                        .canExtractOverride(false)
+                        .canInsertOverride(false)
+                        .ingredientIO(IO.IN)
+                        .positioning(Positioning.absolute(3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18))
+                        .tooltip(predicateTips.get(i));
+                child(candidates[i]);
             }
         }
     }
@@ -251,23 +261,23 @@ public class PatternPreviewWidget extends WidgetGroup {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    protected void parentUpdate(float delta, int mouseX, int mouseY) {
+        super.parentUpdate(delta, mouseX, mouseY);
         // I can only think of this way
         if (!isLoaded && LDLib.isEmiLoaded() && Minecraft.getInstance().screen instanceof RecipeScreen) {
             setPage(0);
             isLoaded = true;
         } else if (!isLoaded && LDLib.isReiLoaded() &&
                 Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen) {
-                    setPage(0);
-                    isLoaded = true;
-                }
+            setPage(0);
+            isLoaded = true;
+        }
     }
 
     @Override
-    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         RenderSystem.enableBlend();
-        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
+        super.draw(graphics, mouseX, mouseY, partialTicks, delta);
     }
 
     private MBPattern initializePattern(MultiblockShapeInfo shapeInfo, HashSet<ItemStackKey> blockDrops) {
@@ -327,10 +337,10 @@ public class PatternPreviewWidget extends WidgetGroup {
                     LongSets.EMPTY_SET);
             Set<BlockPos> modelDisabled = set.stream().map(BlockPos::of).collect(Collectors.toSet());
             if (!modelDisabled.isEmpty()) {
-                sceneWidget.setRenderedCore(
+                sceneComponent.renderedCore(
                         poses.stream().filter(pos -> !modelDisabled.contains(pos)).collect(Collectors.toList()), null);
             } else {
-                sceneWidget.setRenderedCore(poses, null);
+                sceneComponent.renderedCore(poses, null);
             }
         } else {
             GTCEu.LOGGER.warn("Pattern formed checking failed: {}", controllerBase.self().getDefinition());
@@ -341,8 +351,8 @@ public class PatternPreviewWidget extends WidgetGroup {
         Map<ItemStackKey, PartInfo> partsMap = new Object2ObjectOpenHashMap<>();
         for (Map.Entry<BlockPos, BlockInfo> entry : blocks.entrySet()) {
             BlockPos pos = entry.getKey();
-            BlockState blockState = ((Level) PatternPreviewWidget.LEVEL).getBlockState(pos);
-            ItemStack itemStack = blockState.getBlock().getCloneItemStack(PatternPreviewWidget.LEVEL, pos, blockState);
+            BlockState blockState = ((Level) PatternPreviewComponent.LEVEL).getBlockState(pos);
+            ItemStack itemStack = blockState.getBlock().getCloneItemStack(PatternPreviewComponent.LEVEL, pos, blockState);
 
             if (itemStack.isEmpty() && !blockState.getFluidState().isEmpty()) {
                 Fluid fluid = blockState.getFluidState().getType();
@@ -382,6 +392,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                         return item;
                     }).filter(item -> !item.isEmpty()).toList();
         }
+
     }
 
     private static class MBPattern {
@@ -411,5 +422,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             minY = min;
             maxY = max;
         }
+
     }
+
 }

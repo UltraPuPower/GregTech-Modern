@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 
 import java.util.List;
 
-public class PlayerInventoryComponent extends ComponentGroup {
+public class PlayerInventoryComponent extends UIComponentGroup {
 
     protected PlayerInventoryComponent(Inventory inventory) {
         super(Sizing.fixed(162), Sizing.fixed(76));

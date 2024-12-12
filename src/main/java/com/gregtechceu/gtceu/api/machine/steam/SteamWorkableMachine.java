@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;

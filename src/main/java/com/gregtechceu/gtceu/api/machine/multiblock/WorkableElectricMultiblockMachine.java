@@ -6,14 +6,10 @@ import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.Insets;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -24,9 +20,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -116,16 +109,22 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         var group = UIContainers.verticalFlow(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
         group.padding(Insets.of(4));
 
-        group.child()
-
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-                .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+        UIComponentGroup inner = UIContainers.group(Sizing.fill(), Sizing.fill());
+        inner.child(UIComponents.label(self().getBlockState().getBlock().getName())
+                        .positioning(Positioning.absolute(0, 1)))
+                .child(UIComponents.componentPanel(this::addDisplayText)
                         .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
-                        .setMaxWidthLimit(200)
-                        .clickHandler((componentData, clickData) -> handleDisplayClick(componentData))));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+                        .maxWidthLimit(200)
+                        .clickHandler(this::handleDisplayClick))
+                        .positioning(Positioning.absolute(0, 13));
+        group.child(UIContainers.verticalScroll(Sizing.fill(), Sizing.fill(), inner))
+                .surface(Surface.UI_BACKGROUND_INVERSE);
         return group;
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        IFancyUIMachine.super.loadClientUI(player, adapter);
     }
 
     @Override

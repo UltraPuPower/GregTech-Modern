@@ -10,14 +10,14 @@ import org.w3c.dom.Node;
 
 import java.util.*;
 
-public class ComponentGroup extends BaseParentUIComponent {
+public class UIComponentGroup extends BaseParentUIComponent {
 
     protected final List<UIComponent> children = new ArrayList<>();
     protected final List<UIComponent> childrenView = Collections.unmodifiableList(this.children);
 
     protected Size contentSize = Size.zero();
 
-    protected ComponentGroup(Sizing horizontalSizing, Sizing verticalSizing) {
+    protected UIComponentGroup(Sizing horizontalSizing, Sizing verticalSizing) {
         super(horizontalSizing, verticalSizing);
         horizontalAlignment.set(HorizontalAlignment.RIGHT);
         verticalAlignment.set(VerticalAlignment.TOP);
@@ -61,9 +61,9 @@ public class ComponentGroup extends BaseParentUIComponent {
      *
      * @param child The child to append to this layout
      */
-    public ComponentGroup child(UIComponent child) {
+    public UIComponentGroup child(UIComponent child) {
         this.children.add(child);
-        child.setContainerAccess(this.parentAccess);
+        child.containerAccess(this.parentAccess);
         this.updateLayout();
         return this;
     }
@@ -74,7 +74,7 @@ public class ComponentGroup extends BaseParentUIComponent {
      *
      * @param children The children to add to this layout
      */
-    public ComponentGroup children(Collection<? extends UIComponent> children) {
+    public UIComponentGroup children(Collection<? extends UIComponent> children) {
         this.children.addAll(children);
         this.updateLayout();
         return this;
@@ -87,7 +87,7 @@ public class ComponentGroup extends BaseParentUIComponent {
      * @param index The index at which to insert the child
      * @param child The child to append to this layout
      */
-    public ComponentGroup child(int index, UIComponent child) {
+    public UIComponentGroup child(int index, UIComponent child) {
         this.children.add(index, child);
         this.updateLayout();
         return this;
@@ -100,14 +100,14 @@ public class ComponentGroup extends BaseParentUIComponent {
      * @param index    The index at which to begin inserting children
      * @param children The children to add to this layout
      */
-    public ComponentGroup children(int index, Collection<? extends UIComponent> children) {
+    public UIComponentGroup children(int index, Collection<? extends UIComponent> children) {
         this.children.addAll(index, children);
         this.updateLayout();
         return this;
     }
 
     @Override
-    public ComponentGroup removeChild(UIComponent child) {
+    public UIComponentGroup removeChild(UIComponent child) {
         if (this.children.remove(child)) {
             child.dismount(DismountReason.REMOVED);
             this.updateLayout();
@@ -119,7 +119,7 @@ public class ComponentGroup extends BaseParentUIComponent {
     /**
      * Remove all children from this layout
      */
-    public ComponentGroup clearChildren() {
+    public UIComponentGroup clearChildren() {
         for (var child : this.children) {
             child.dismount(DismountReason.REMOVED);
         }

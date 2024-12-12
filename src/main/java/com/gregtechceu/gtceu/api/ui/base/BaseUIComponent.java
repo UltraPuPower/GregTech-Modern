@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.ui.base;
 
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.event.*;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
@@ -332,7 +331,7 @@ public abstract class BaseUIComponent implements UIComponent {
 
     @ApiStatus.Internal
     @Override
-    public void setContainerAccess(UIComponentMenuAccess access) {
+    public void containerAccess(UIComponentMenuAccess access) {
         this.access = access;
     }
 

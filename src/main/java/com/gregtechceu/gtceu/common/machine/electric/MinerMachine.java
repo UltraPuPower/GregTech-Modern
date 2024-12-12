@@ -271,16 +271,16 @@ public class MinerMachine extends WorkableTieredMachine
             group.addWidget(container);
             group.addWidget(slots);
             return group;
-        }, (group, machine) -> {
-            UIComponentUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = UIComponentUtils.widgetIdIndex(slot);
+        }, (group, adapter, machine) -> {
+            UIComponentUtils.componentByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
+                var index = UIComponentUtils.componentIdIndex(slot);
                 if (index >= 0 && index < machine.exportItems.getSlots()) {
                     slot.setHandlerSlot(machine.exportItems, index);
                     slot.setCanTakeItems(true);
                     slot.setCanPutItems(false);
                 }
             });
-            UIComponentUtils.widgetByIdForEach(group, "^component_panel$", ComponentPanelWidget.class, panel -> {
+            UIComponentUtils.componentByIdForEach(group, "^component_panel$", ComponentPanelWidget.class, panel -> {
                 panel.textSupplier(machine::addDisplayText);
             });
         });
@@ -294,7 +294,7 @@ public class MinerMachine extends WorkableTieredMachine
             var slotWidget = new SlotWidget();
             slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
             return slotWidget;
-        }, (slotWidget, machine) -> {
+        }, (slotWidget, adapter, machine) -> {
             slotWidget.setHandlerSlot(machine.chargerInventory, 0);
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);

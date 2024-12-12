@@ -82,6 +82,15 @@ public class ButtonComponent extends Button {
         return this.active;
     }
 
+    public ButtonComponent visible(boolean visible) {
+        this.visible = visible;
+        return this;
+    }
+
+    public boolean visible() {
+        return this.visible;
+    }
+
     @Override
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
@@ -97,11 +106,13 @@ public class ButtonComponent extends Button {
     @FunctionalInterface
     public interface Renderer {
 
-        Renderer VANILLA = (matrices, button, delta) -> {
+        Renderer EMPTY = (graphics, button, delta) -> {};
+
+        Renderer VANILLA = (graphics, button, delta) -> {
             RenderSystem.enableDepthTest();
 
             var texture = button.active ? button.isHovered ? HOVERED_TEXTURE : ACTIVE_TEXTURE : DISABLED_TEXTURE;
-            NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.width, button.height);
+            NinePatchTexture.draw(texture, graphics, button.getX(), button.getY(), button.width, button.height);
         };
 
         static Renderer flat(int color, int hoveredColor, int disabledColor) {

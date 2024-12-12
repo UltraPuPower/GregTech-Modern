@@ -2,15 +2,13 @@ package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
 
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -38,7 +36,7 @@ import java.util.List;
 public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
 
     @OnlyIn(Dist.CLIENT)
-    default void loadClientUI(Player player, UIAdapter<ComponentGroup> adapter) {
+    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
         adapter.rootComponent
                 .child(new FancyMachineUIComponent(this, Sizing.fixed(176), Sizing.fixed(166)));
     }
@@ -54,7 +52,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
             if (template == null) {
                 template = editableUI.createDefault();
             }
-            editableUI.setupUI(template, self());
+            editableUI.setupUI(template, , self());
             return template;
         }
         return createBaseUIComponent();
@@ -73,7 +71,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
         /*
         TrackedDummyWorld world = new TrackedDummyWorld();
         world.addBlock(BlockPos.ZERO, BlockInfo.fromBlockState(self().getBlockState()));
-        SceneWidget sceneWidget = new SceneWidget(0, 0, 100, 100, world) {
+        SceneComponent sceneWidget = new SceneComponent(0, 0, 100, 100, world) {
 
             @Override
             @OnlyIn(Dist.CLIENT)

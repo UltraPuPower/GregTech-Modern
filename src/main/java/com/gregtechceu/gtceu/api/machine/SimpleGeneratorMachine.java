@@ -180,7 +180,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
                     storages.put(IO.OUT, FluidRecipeCapability.CAP, generatorMachine.exportFluids);
 
                     generatorMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(
-                            template,
+                            template, ,
                             new GTRecipeTypeUI.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
                                     storages,
                                     new CompoundTag(),

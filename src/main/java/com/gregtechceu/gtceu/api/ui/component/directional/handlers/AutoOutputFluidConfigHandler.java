@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component.directional.handlers;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
-import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
-import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
+import com.gregtechceu.gtceu.api.ui.component.*;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Color;
@@ -18,7 +16,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -55,10 +52,10 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
     }
 
     @Override
-    public UIComponent getSideSelectorWidget(SceneWidget scene, FancyMachineUIComponent machineUI) {
-        FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed((18 * 2) + 1), Sizing.fixed(18));
+    public UIComponent getSideSelectorWidget(SceneComponent scene, FancyMachineUIComponent machineUI) {
+        FlowLayout group = UIContainers.horizontalFlow(Sizing.content(1), Sizing.content());
 
-        group.child(ioModeButton = new ButtonComponent(0, 0, 18, 18, this::onIOModePressed) {
+        group.child(ioModeButton = new ButtonComponent(Component.empty(), this::onIOModePressed) {
 
             @Override
             public void update(float delta, int mouseX, int mouseY) {
@@ -74,11 +71,14 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
                 }
             }
         });
+        ioModeButton.sizing(Sizing.fixed(18));
+        ioModeButton.positioning(Positioning.relative(100, 0));
 
-        group.child(new ToggleButtonComponent(
-                19, 0, 18, 18, GuiTextures.BUTTON_FLUID_OUTPUT,
-                machine::isAllowInputFromOutputSideFluids, machine::setAllowInputFromOutputSideFluids)
-                .setShouldUseBaseBackground().setTooltipText("gtceu.gui.fluid_auto_output.allow_input"));
+        group.child(UIComponents.toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT,
+                        machine::isAllowInputFromOutputSideFluids, machine::setAllowInputFromOutputSideFluids)
+                .setShouldUseBaseBackground().setTooltipText("gtceu.gui.fluid_auto_output.allow_input")
+                .positioning(Positioning.layout())
+                .sizing(Sizing.fixed(18)));
 
         return group;
     }
@@ -131,7 +131,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(SceneWidget sceneWidget, BlockPosFace blockPosFace) {
+    public void renderOverlay(SceneComponent sceneWidget, BlockPosFace blockPosFace) {
         if (machine.getOutputFacingFluids() != blockPosFace.facing)
             return;
 

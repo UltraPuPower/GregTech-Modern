@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.ui.editable;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
 import lombok.Getter;
@@ -12,29 +13,29 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public class EditableMachineUI implements IEditableUI<ComponentGroup, MetaMachine> {
+public class EditableMachineUI implements IEditableUI<UIComponentGroup, MetaMachine> {
 
     @Getter
     final ResourceLocation uiPath;
-    final Supplier<ComponentGroup> widgetSupplier;
-    final BiConsumer<ComponentGroup, MetaMachine> binder;
+    final Supplier<UIComponentGroup> widgetSupplier;
+    final BinderFunction<ParentUIComponent, MetaMachine> binder;
     @Nullable
     private UIModel customUICache;
 
-    public EditableMachineUI(ResourceLocation uiPath, Supplier<ComponentGroup> widgetSupplier,
-                             BiConsumer<ComponentGroup, MetaMachine> binder) {
+    public EditableMachineUI(ResourceLocation uiPath, Supplier<UIComponentGroup> widgetSupplier,
+                             BinderFunction<ParentUIComponent, MetaMachine> binder) {
         this.uiPath = uiPath;
         this.widgetSupplier = widgetSupplier;
         this.binder = binder;
     }
 
-    public ComponentGroup createDefault() {
+    public UIComponentGroup createDefault() {
         return widgetSupplier.get();
     }
 
     @Override
-    public void setupUI(ComponentGroup template, MetaMachine machine) {
-        binder.accept(template, machine);
+    public void setupUI(ParentUIComponent template, UIAdapter<UIComponentGroup> adapter, MetaMachine machine) {
+        binder.bind(template, adapter, machine);
     }
 
     //////////////////////////////////////
@@ -42,10 +43,10 @@ public class EditableMachineUI implements IEditableUI<ComponentGroup, MetaMachin
     //////////////////////////////////////
 
     @Nullable
-    public ComponentGroup createCustomUI() {
+    public UIComponentGroup createCustomUI() {
         if (hasCustomUI()) {
             var model = getCustomUI();
-            var group = model.parseComponentTree(ComponentGroup.class);
+            var group = model.parseComponentTree(UIComponentGroup.class);
             group.moveTo(0, 0);
             return group;
         }
@@ -54,7 +55,7 @@ public class EditableMachineUI implements IEditableUI<ComponentGroup, MetaMachin
 
     public UIModel getCustomUI() {
         if (this.customUICache == null) {
-            this.customUICache = UIModelLoader.get(uiPath);
+            this.customUICache = UIModelLoader.get(uiPath.withPrefix("machine/"));
         }
         return this.customUICache;
     }

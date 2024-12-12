@@ -18,30 +18,30 @@ import java.util.regex.Pattern;
  */
 public class UIComponentUtils {
 
-    public static List<UIComponent> getWidgetsById(ParentUIComponent group, String regex) {
+    public static List<UIComponent> getComponentsById(ParentUIComponent group, String regex) {
         return group.childrenByPattern(Pattern.compile(regex));
     }
 
     @Nullable
-    public static Widget getFirstWidgetById(WidgetGroup group, String regex) {
+    public static Widget getFirstComponentById(WidgetGroup group, String regex) {
         return group.getFirstWidgetById(Pattern.compile(regex));
     }
 
-    public static void widgetByIdForEach(ParentUIComponent group, String regex, Consumer<UIComponent> consumer) {
-        getWidgetsById(group, regex).forEach(consumer);
+    public static void componentByIdForEach(ParentUIComponent group, String regex, Consumer<UIComponent> consumer) {
+        getComponentsById(group, regex).forEach(consumer);
     }
 
-    public static <T extends UIComponent> void widgetByIdForEach(ParentUIComponent group, String regex, Class<T> clazz,
-                                                                 Consumer<T> consumer) {
-        for (UIComponent widget : getWidgetsById(group, regex)) {
+    public static <T extends UIComponent> void componentByIdForEach(ParentUIComponent group, String regex, Class<T> clazz,
+                                                                    Consumer<T> consumer) {
+        for (UIComponent widget : getComponentsById(group, regex)) {
             if (clazz.isInstance(widget)) {
                 consumer.accept(clazz.cast(widget));
             }
         }
     }
 
-    public static int widgetIdIndex(Widget widget) {
-        var id = widget.getId();
+    public static int componentIdIndex(UIComponent widget) {
+        String id = widget.id();
         if (id == null) return -1;
         var split = id.split("\\.");
         if (split.length == 0) return -1;

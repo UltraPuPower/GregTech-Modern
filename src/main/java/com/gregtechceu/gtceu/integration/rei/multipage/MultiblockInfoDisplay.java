@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.rei.multipage;
 
-import com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget;
+import com.gregtechceu.gtceu.api.ui.component.PatternPreviewComponent;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -15,7 +15,7 @@ public class MultiblockInfoDisplay extends ModularDisplay<WidgetGroup> {
     public final MultiblockMachineDefinition definition;
 
     public MultiblockInfoDisplay(MultiblockMachineDefinition definition) {
-        super(() -> PatternPreviewWidget.getPatternWidget(definition), MultiblockInfoDisplayCategory.CATEGORY);
+        super(() -> PatternPreviewComponent.getPatternWidget(definition), MultiblockInfoDisplayCategory.CATEGORY);
         this.definition = definition;
     }
 

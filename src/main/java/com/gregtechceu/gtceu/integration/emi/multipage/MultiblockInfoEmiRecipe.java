@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.emi.multipage;
 
-import com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget;
+import com.gregtechceu.gtceu.api.ui.component.PatternPreviewComponent;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
@@ -16,7 +16,7 @@ public class MultiblockInfoEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
     public final MultiblockMachineDefinition definition;
 
     public MultiblockInfoEmiRecipe(MultiblockMachineDefinition definition) {
-        super(() -> PatternPreviewWidget.getPatternWidget(definition));
+        super(() -> PatternPreviewComponent.getPatternWidget(definition));
         this.definition = definition;
     }
 

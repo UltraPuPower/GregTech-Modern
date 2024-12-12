@@ -2,21 +2,17 @@ package com.gregtechceu.gtceu.api.ui.component.directional;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.component.SceneComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Size;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
-import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -46,7 +42,7 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
     private final FancyMachineUIComponent machineUI;
     private final MetaMachine machine;
 
-    protected SceneWidget sceneWidget;
+    protected SceneComponent sceneComponent;
     protected TextureComponent textureComponent;
 
     protected @Nullable BlockPos selectedPos;
@@ -55,6 +51,7 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
     public CombinedDirectionalConfigurator(FancyMachineUIComponent machineUI, IDirectionalConfigHandler[] configHandlers,
                                            MetaMachine machine, int width, int height) {
         super(Sizing.fixed(width), Sizing.fixed(height), Algorithm.HORIZONTAL);
+        this.padding(Insets.of(4));
 
         this.machineUI = machineUI;
         this.configHandlers = configHandlers;
@@ -67,25 +64,25 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
 
         child(textureComponent = UIComponents.texture(GuiTextures.BACKGROUND_INVERSE, width, height));
         textureComponent.sizing(Sizing.fill(), Sizing.fill());
-        child(sceneWidget = createSceneWidget());
+        child(sceneComponent = createSceneComponent());
 
         for (IDirectionalConfigHandler configHandler : configHandlers) {
             configHandler.addAdditionalUIElements(this);
         }
 
-        addConfigWidgets(sceneWidget);
+        addConfigWidgets(sceneComponent);
     }
 
-    private SceneWidget createSceneWidget() {
+    private SceneComponent createSceneComponent() {
         var pos = this.machine.getPos();
 
-        SceneWidget sceneWidget = new SceneWidget(4, 4, width - 8, height - 8, this.machine.getLevel())
-                .setRenderedCore(List.of(pos), null)
-                .setRenderSelect(false)
-                .setOnSelected(this::onSideSelected);
+        SceneComponent sceneWidget = new SceneComponent(Sizing.fill(), Sizing.fill(), this.machine.getLevel())
+                .renderedCore(List.of(pos), null)
+                .renderSelect(false)
+                .onSelected(this::onSideSelected);
 
 
-        sceneWidget.getRenderer().addRenderedBlocks(
+        sceneWidget.renderer().addRenderedBlocks(
                 List.of(pos.above(), pos.below(), pos.north(), pos.south(), pos.east(), pos.west()),
                 new ISceneBlockRenderHook() {
 
@@ -97,26 +94,26 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
                     }
                 });
 
-        sceneWidget.getRenderer().setAfterWorldRender(this::renderOverlays);
+        sceneWidget.renderer().setAfterWorldRender(this::renderOverlays);
 
         var playerRotation = player().getRotationVector();
-        sceneWidget.setCameraYawAndPitch(playerRotation.x, playerRotation.y - 90);
+        sceneWidget.cameraYawAndPitch(playerRotation.x, playerRotation.y - 90);
 
-        sceneWidget.setBackground(ColorPattern.BLACK.rectTexture());
+        sceneWidget.surface(Surface.flat(Color.BLACK.rgb()));
         return sceneWidget;
     }
 
     private void renderOverlays(WorldSceneRenderer renderer) {
-        sceneWidget.renderBlockOverLay(renderer);
+        sceneComponent.renderBlockOverLay(renderer);
 
         for (Direction face : GTUtil.DIRECTIONS) {
             for (IDirectionalConfigHandler configHandler : configHandlers) {
-                configHandler.renderOverlay(sceneWidget, new BlockPosFace(machine.getPos(), face));
+                configHandler.renderOverlay(sceneComponent, new BlockPosFace(machine.getPos(), face));
             }
         }
     }
 
-    private void addConfigWidgets(SceneWidget sceneWidget) {
+    private void addConfigWidgets(SceneComponent sceneWidget) {
         int yOffsetLeft = 0, yOffsetRight = 0;
 
         for (IDirectionalConfigHandler configHandler : configHandlers) {
@@ -162,7 +159,7 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
         var result = super.onMouseDown(mouseX, mouseY, button);
 
         if (isMouseOverElement(mouseX, mouseY) && this.selectedSide == lastSide && this.selectedSide != null) {
-            var hover = sceneWidget.getHoverPosFace();
+            var hover = sceneComponent.hoverPosFace();
 
             if (hover != null && hover.pos.equals(machine.getPos()) && hover.facing == this.selectedSide) {
                 var cd = new ClickData();
@@ -182,11 +179,10 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
             return;
         }
 
-        var clickData = ClickData.readFromBuf(buf);
         var side = GTUtil.DIRECTIONS[buf.readByte()];
 
         for (IDirectionalConfigHandler configHandler : configHandlers) {
-            configHandler.handleClick(clickData, side);
+            configHandler.handleClick(null, side);
         }
     }
 }

@@ -387,7 +387,8 @@ public class UIParsing {
         registerComponentFactory("color-picker", element -> new ColorPickerComponent());
         registerComponentFactory("slim-slider", SlimSliderComponent::parse);
         registerComponentFactory("small-checkbox", element -> new SmallCheckboxComponent());
-        registerComponentFactory("progress", ProgressComponent::parse);
+        registerComponentFactory("progress", element -> UIComponents.progress(ProgressComponent.JEIProgress));
+        registerComponentFactory("dual-progress", element -> UIComponents.dualProgress());
 
 
         // Textures
@@ -398,5 +399,6 @@ public class UIParsing {
         registerTextureFactory("group", element -> UITextures.group());
         registerTextureFactory("text", element -> UITextures.text(Component.empty()));
         registerTextureFactory("color-border", ColorBorderTexture::parse);
+        registerTextureFactory("color", element -> new ColorRectTexture());
     }
 }

@@ -223,6 +223,14 @@ public interface ParentUIComponent extends UIComponent {
     }
 
     @Override
+    default void dispose() {
+        UIComponent.super.dispose();
+        for (UIComponent child : children()) {
+            child.dispose();
+        }
+    }
+
+    @Override
     default void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         UIComponent.super.parseProperties(model, element, children);
         UIParsing.apply(children, "padding", Insets::parse, this::padding);

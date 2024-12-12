@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.emi;
 
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
@@ -29,7 +29,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
     public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
 
-    public final UIAdapter<ComponentGroup> adapter;
+    public final UIAdapter<UIComponentGroup> adapter;
 
     @Getter
     private final Bounds bounds;
@@ -55,7 +55,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
         this.adapter.inflateAndMount();
     }
 
-    public ComponentGroup rootComponent() {
+    public UIComponentGroup rootComponent() {
         return this.adapter.rootComponent;
     }
 

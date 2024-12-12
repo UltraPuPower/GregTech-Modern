@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.jei;
 
-import com.gregtechceu.gtceu.api.ui.container.ComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
@@ -26,7 +26,7 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
 
     public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
 
-    public final UIAdapter<ComponentGroup> adapter;
+    public final UIAdapter<UIComponentGroup> adapter;
 
     @Getter
     private final ScreenPosition position;
@@ -49,7 +49,7 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
         this.adapter.inflateAndMount();
     }
 
-    public ComponentGroup rootComponent() {
+    public UIComponentGroup rootComponent() {
         return this.adapter.rootComponent;
     }
 

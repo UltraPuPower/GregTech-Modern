@@ -24,7 +24,9 @@ public class WrappingParentUIComponent<C extends UIComponent> extends BaseParent
     protected WrappingParentUIComponent(Sizing horizontalSizing, Sizing verticalSizing, C child) {
         super(horizontalSizing, verticalSizing);
         this.child = child;
-        this.child.setContainerAccess(this.parentAccess);
+        if (this.child != null) {
+            this.child.containerAccess(this.parentAccess);
+        }
         this.childView = Collections.singletonList(this.child);
     }
 
@@ -64,7 +66,7 @@ public class WrappingParentUIComponent<C extends UIComponent> extends BaseParent
         }
 
         this.child = newChild;
-        this.child.setContainerAccess(this.parentAccess);
+        this.child.containerAccess(this.parentAccess);
         this.childView = Collections.singletonList(this.child);
 
         this.updateLayout();

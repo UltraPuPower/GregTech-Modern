@@ -102,7 +102,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
 
                 this.uiAdapter.screen(this);
                 this.build(this.uiAdapter.rootComponent);
-                this.uiAdapter.rootComponent.setContainerAccess(this.uiAdapter);
+                this.uiAdapter.rootComponent.containerAccess(this.uiAdapter);
                 this.uiAdapter.rootComponent.init();
 
                 MutableInt width = new MutableInt(0);
@@ -293,6 +293,12 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
     @Override
     protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
 
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        this.uiAdapter.rootComponent.dispose();
     }
 
 }

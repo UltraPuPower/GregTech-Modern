@@ -22,8 +22,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.client.event.ContainerScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.BiFunction;
@@ -80,7 +82,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
 
         this.cursorAdapter = CursorAdapter.ofClientWindow();
         this.rootComponent = rootComponent;
-        this.rootComponent.setContainerAccess(this);
+        this.rootComponent.containerAccess(this);
     }
 
     /**
@@ -148,9 +150,9 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
      * <p>
      * After this method has executed, this adapter can safely be garbage-collected
      */
-    // TODO properly dispose root component
     public void dispose() {
         this.cursorAdapter.dispose();
+        this.rootComponent.dispose();
         this.disposed = true;
     }
 
@@ -179,6 +181,11 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     @Override
     public UIAdapter<?> adapter() {
         return this;
+    }
+
+    @Nullable
+    public AbstractContainerMenu menu() {
+        return screen() != null ? screen().getMenu() : null;
     }
 
     public <R> SyncedProperty<R> getMenuProperty(String name) {
