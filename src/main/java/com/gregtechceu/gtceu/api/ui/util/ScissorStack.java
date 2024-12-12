@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -32,7 +34,11 @@ public final class ScissorStack {
                 (int) (window.getGuiScaledHeight() - (y / scale) - height / scale),
                 (int) (width / scale),
                 (int) (height / scale),
-                null);
+                (PoseStack) null);
+    }
+
+    public static void push(int x, int y, int width, int height, GuiGraphics context) {
+        push(x, y, width, height, context.pose());
     }
 
     public static void push(int x, int y, int width, int height, @Nullable PoseStack poseStack) {
@@ -71,10 +77,11 @@ public final class ScissorStack {
         var scale = window.getGuiScale();
 
         GL11.glScissor(
-                (int) (newFrame.x() * scale),
-                (int) (window.getHeight() - (newFrame.y() * scale) - newFrame.height() * scale),
-                (int) (newFrame.width() * scale),
-                (int) (newFrame.height() * scale));
+                Math.max(0, (int) (newFrame.x() * scale)),
+                Math.max((int) (window.getHeight() - (newFrame.y() * scale) - newFrame.height() * scale), 0),
+                Math.min(Mth.clamp((int) (newFrame.width() * scale), 0, window.getWidth()), window.getWidth()),
+                Math.min(Mth.clamp((int) (newFrame.height() * scale), 0, window.getHeight()), window.getHeight())
+        );
     }
 
     public static void drawUnclipped(Runnable action) {

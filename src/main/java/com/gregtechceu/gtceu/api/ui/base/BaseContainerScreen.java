@@ -19,11 +19,14 @@ import net.minecraft.world.inventory.Slot;
 
 import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends AbstractContainerMenu>
         extends AbstractContainerScreen<C> implements DisposableScreen {
@@ -147,7 +150,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
      * @param index The index of the slot to disable
      */
     protected void disableSlot(int index) {
-        ((UISlotExtension) this.menu.slots.get(index)).gtceu$setDisabledOverride(true);
+        disableSlot(this.menu.slots.get(index));
     }
 
     /**
@@ -167,7 +170,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
      * @param index The index of the slot to enable
      */
     protected void enableSlot(int index) {
-        ((UISlotExtension) this.menu.slots.get(index)).gtceu$setDisabledOverride(false);
+        enableSlot(this.menu.slots.get(index));
     }
 
     /**
@@ -176,7 +179,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
      * a slot that is disabled through its own will
      */
     protected void enableSlot(Slot slot) {
-        ((UISlotExtension) slot).gtceu$setDisabledOverride(true);
+        ((UISlotExtension) slot).gtceu$setDisabledOverride(false);
     }
 
     protected boolean isSlotEnabled(int index) {
@@ -193,6 +196,26 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
      */
     protected <C extends UIComponent> @Nullable C component(Class<C> expectedClass, String id) {
         return this.uiAdapter.rootComponent.childById(expectedClass, id);
+    }
+
+    /**
+     * Compute a stream of all components for which to
+     * generate exclusion areas in a recipe viewer overlay.
+     * Called by the REI and EMI plugins
+     */
+    @ApiStatus.OverrideOnly
+    public Stream<UIComponent> componentsForExclusionAreas() {
+        if (this.children().isEmpty()) return Stream.of();
+
+        var rootComponent = uiAdapter.rootComponent;
+        var children = new ArrayList<UIComponent>();
+
+        rootComponent.collectDescendants(children);
+        children.remove(rootComponent);
+
+        return children.stream()
+                .filter(component -> !(component instanceof ParentUIComponent parent) ||
+                        parent.surface() != Surface.BLANK);
     }
 
     @Override

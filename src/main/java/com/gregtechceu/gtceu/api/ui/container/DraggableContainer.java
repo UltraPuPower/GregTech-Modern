@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
@@ -17,9 +16,6 @@ public class DraggableContainer<C extends UIComponent> extends WrappingParentUIC
 
     @Getter
     protected int foreheadSize = 10;
-    @Getter
-    @Setter
-    protected boolean alwaysOnTop = false;
 
     @Getter
     protected int baseX = 0, baseY = 0;
@@ -32,17 +28,8 @@ public class DraggableContainer<C extends UIComponent> extends WrappingParentUIC
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
-        if (this.alwaysOnTop) graphics.pose().translate(0, 0, 500);
         super.draw(graphics, mouseX, mouseY, partialTicks, delta);
         this.drawChildren(graphics, mouseX, mouseY, partialTicks, delta, this.childView);
-        if (this.alwaysOnTop) graphics.pose().translate(0, 0, -500);
-    }
-
-    @Override
-    public void drawTooltip(UIGuiGraphics context, int mouseX, int mouseY, float partialTicks, float delta) {
-        if (this.alwaysOnTop) context.pose().translate(0, 0, 500);
-        super.drawTooltip(context, mouseX, mouseY, partialTicks, delta);
-        if (this.alwaysOnTop) context.pose().translate(0, 0, -500);
     }
 
     @Override
@@ -102,6 +89,5 @@ public class DraggableContainer<C extends UIComponent> extends WrappingParentUIC
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
         UIParsing.apply(children, "forehead-size", UIParsing::parseUnsignedInt, this::foreheadSize);
-        UIParsing.apply(children, "always-on-top", UIParsing::parseBool, this::alwaysOnTop);
     }
 }

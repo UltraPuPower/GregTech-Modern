@@ -43,7 +43,6 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
     protected final static int UPDATE_UI_ID = 0x0001_0002;
 
     protected final IDirectionalConfigHandler[] configHandlers;
-    protected final int width, height;
     private final FancyMachineUIComponent machineUI;
     private final MetaMachine machine;
 
@@ -56,8 +55,6 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
     public CombinedDirectionalConfigurator(FancyMachineUIComponent machineUI, IDirectionalConfigHandler[] configHandlers,
                                            MetaMachine machine, int width, int height) {
         super(Sizing.fixed(width), Sizing.fixed(height), Algorithm.HORIZONTAL);
-        this.width = width;
-        this.height = height;
 
         this.machineUI = machineUI;
         this.configHandlers = configHandlers;

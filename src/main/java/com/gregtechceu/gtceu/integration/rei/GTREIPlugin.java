@@ -96,24 +96,9 @@ public class GTREIPlugin implements REIClientPlugin {
     @Override
     public void registerExclusionZones(ExclusionZones zones) {
         zones.register(BaseContainerScreen.class, screen -> {
-            if (screen.children().isEmpty()) return List.of();
-
-            var adapter = screen.getUiAdapter();
-            if (adapter == null) return List.of();
-
-            var rootComponent = adapter.rootComponent;
-            var children = new ArrayList<UIComponent>();
-            rootComponent.collectDescendants(children);
-            children.remove(rootComponent);
-
-            var rectangles = new ArrayList<Rectangle>();
-            children.forEach(component -> {
-                if (component instanceof ParentUIComponent parent && parent.surface() == Surface.BLANK) return;
-
-                var size = component.fullSize();
-                rectangles.add(new Rectangle(component.x(), component.y(), size.width(), size.height()));
-            });
-            return rectangles;
+            return ((BaseContainerScreen<?, ?>) screen).componentsForExclusionAreas()
+                    .map(rect -> new Rectangle(rect.x(), rect.y(), rect.width(), rect.height()))
+                    .toList();
         });
     }
 

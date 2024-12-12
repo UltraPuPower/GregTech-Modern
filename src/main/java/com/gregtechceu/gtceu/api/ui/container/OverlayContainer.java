@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.api.ui.container;
 
 import com.gregtechceu.gtceu.api.ui.core.*;
 
+import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class OverlayContainer<C extends UIComponent> extends WrappingParentUIComponent<C> {
@@ -15,6 +17,7 @@ public class OverlayContainer<C extends UIComponent> extends WrappingParentUICom
     @Getter
     @Setter
     protected boolean closeOnClick = true;
+    protected @Nullable EventSource<?>.Subscription exitSubscription = null;
 
     protected OverlayContainer(C child) {
         super(Sizing.fill(100), Sizing.fill(100), child);
@@ -35,12 +38,28 @@ public class OverlayContainer<C extends UIComponent> extends WrappingParentUICom
     @Override
     public void mount(ParentUIComponent parent, int x, int y) {
         super.mount(parent, x, y);
-        this.parent.focusHandler().focus(this, FocusSource.KEYBOARD_CYCLE);
+        this.exitSubscription = this.root().keyPress().subscribe((keyCode, scanCode, modifiers) -> {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                this.remove();
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    @Override
+    public void dismount(DismountReason reason) {
+        super.dismount(reason);
+
+        if (this.exitSubscription != null) {
+            this.exitSubscription.cancel();
+        }
     }
 
     @Override
     public boolean onMouseDown(double mouseX, double mouseY, int button) {
-        boolean handled = super.onMouseDown(mouseX, mouseY, button);
+        boolean handled = super.onMouseDown(mouseX, mouseY, button) || this.child.isInBoundingBox(mouseX, mouseY);
 
         if (!handled && this.closeOnClick) {
             this.remove();
@@ -51,16 +70,9 @@ public class OverlayContainer<C extends UIComponent> extends WrappingParentUICom
     }
 
     @Override
-    public boolean onKeyPress(int keyCode, int scanCode, int modifiers) {
-        boolean handled = super.onKeyPress(keyCode, scanCode, modifiers);
-
-        // TODO properly receive this event in the first place
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            this.remove();
-            return true;
-        }
-
-        return handled;
+    public boolean onMouseScroll(double mouseX, double mouseY, double amount) {
+        super.onMouseScroll(mouseX, mouseY, amount);
+        return true;
     }
 
     @Override
@@ -70,11 +82,11 @@ public class OverlayContainer<C extends UIComponent> extends WrappingParentUICom
 
     @Override
     protected int childMountX() {
-        return this.padding.get().left() + (this.width - this.child.fullSize().width()) / 2;
+        return this.x + this.padding.get().left() + (this.width - this.child.fullSize().width()) / 2;
     }
 
     @Override
     protected int childMountY() {
-        return this.padding.get().top() + (this.height() - this.child.fullSize().height()) / 2;
+        return this.y + this.padding.get().top() + (this.height() - this.child.fullSize().height()) / 2;
     }
 }

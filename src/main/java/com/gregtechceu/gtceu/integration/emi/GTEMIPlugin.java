@@ -97,22 +97,11 @@ public class GTEMIPlugin implements EmiPlugin {
         registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT.asItem(), Comparison.compareNbt());
 
         registry.addGenericExclusionArea((screen, consumer) -> {
-            if (screen.children().isEmpty() || !(screen instanceof BaseContainerScreen<?, ?> container)) return;
+            if (!(screen instanceof BaseContainerScreen<?, ?> owoHandledScreen)) return;
 
-            var adapter = container.getUiAdapter();
-            if (adapter == null) return;
-
-            var rootComponent = adapter.rootComponent;
-            var children = new ArrayList<UIComponent>();
-            rootComponent.collectDescendants(children);
-            children.remove(rootComponent);
-
-            children.forEach(component -> {
-                if (component instanceof ParentUIComponent parent && parent.surface() == Surface.BLANK) return;
-
-                var size = component.fullSize();
-                consumer.accept(new Bounds(component.x(), component.y(), size.width(), size.height()));
-            });
+            owoHandledScreen.componentsForExclusionAreas()
+                    .map(component -> new Bounds(component.x(), component.y(), component.width(), component.height()))
+                    .forEach(consumer);
         });
     }
 }

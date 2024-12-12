@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.base;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.ui.core.CursorStyle;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
-import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
 import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
 import com.gregtechceu.gtceu.api.ui.util.UIErrorToast;
@@ -15,11 +12,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import lombok.Getter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 /**
  * A minimal implementation of a Screen which fully
@@ -126,7 +126,7 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
      * A convenience shorthand for querying a component from the adapter's
      * root component via {@link ParentUIComponent#childById(Class, String)}
      */
-    protected <C extends UIComponent> C component(Class<C> expectedClass, String id) {
+    protected <C extends UIComponent> @Nullable C component(Class<C> expectedClass, String id) {
         return this.uiAdapter.rootComponent.childById(expectedClass, id);
     }
 
@@ -147,8 +147,7 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
         if (this.uiAdapter == null) return false;
 
         if ((modifiers & GLFW.GLFW_MOD_CONTROL) == 0 &&
-                this.uiAdapter.rootComponent.focusHandler()
-                        .focused() instanceof GreedyInputUIComponent inputComponent &&
+                this.uiAdapter.rootComponent.focusHandler().focused() instanceof GreedyInputUIComponent inputComponent &&
                 inputComponent.onKeyPress(keyCode, scanCode, modifiers)) {
             return true;
         }
@@ -167,8 +166,6 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (this.uiAdapter == null) return false;
-
         return this.uiAdapter.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
@@ -189,4 +186,5 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
     public void dispose() {
         if (this.uiAdapter != null) this.uiAdapter.dispose();
     }
+
 }

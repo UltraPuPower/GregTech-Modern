@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.event.WindowEvent;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -22,6 +24,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.latvian.mods.kubejs.util.RotationAxis;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL30;
 
@@ -42,7 +45,12 @@ import java.util.function.Consumer;
  * maintained in a stack, consecutively drawn to and merged back with the previous buffer
  */
 @ApiStatus.Experimental
+@Accessors(fluent = true, chain = true)
 public class RenderEffectWrapper<C extends UIComponent> extends WrappingParentUIComponent<C> {
+
+    @ApiStatus.Internal
+    @Getter
+    private static @Nullable RenderTarget currentRenderTarget = null;
 
     protected static final List<RenderTarget> FRAMEBUFFERS = new ArrayList<>();
     protected static int drawDepth = 0;
@@ -72,9 +80,13 @@ public class RenderEffectWrapper<C extends UIComponent> extends WrappingParentUI
             ScissorStack.drawUnclipped(() -> framebuffer.clear(Minecraft.ON_OSX));
             framebuffer.bindWrite(false);
 
+            var lastFramebuffer = currentRenderTarget;
+            currentRenderTarget = framebuffer;
+
             this.drawChildren(context, mouseX, mouseY, partialTicks, delta, this.childView);
 
             GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, previousFramebuffer);
+            currentRenderTarget = lastFramebuffer;
 
             var iter = this.effects.listIterator();
             while (iter.hasNext()) {

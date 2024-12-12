@@ -17,7 +17,7 @@ public interface UIAbstractContainerMenu {
      * @return All registered synced properties.
      */
     default List<SyncedProperty<?>> getProperties() {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
@@ -31,7 +31,7 @@ public interface UIAbstractContainerMenu {
      * @return The created property
      */
     default <T> SyncedProperty<T> createProperty(Class<T> klass, String name, T initial) {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
     }
     /**
      * Get a synced property by name
@@ -40,7 +40,7 @@ public interface UIAbstractContainerMenu {
      * @return The property with the given name
      */
     default <R> SyncedProperty<R> getProperty(String name) {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
@@ -55,7 +55,7 @@ public interface UIAbstractContainerMenu {
      *                     received on the server
      */
     default <R extends Record> void addServerboundMessage(Class<R> messageClass, Consumer<R> handler) {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
@@ -70,7 +70,7 @@ public interface UIAbstractContainerMenu {
      *                     received on the client
      */
     default <R extends Record> void addClientboundMessage(Class<R> messageClass, Consumer<R> handler) {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
@@ -80,13 +80,13 @@ public interface UIAbstractContainerMenu {
      * the message will be sent to
      */
     default <R extends Record> void sendMessage(@NotNull R message) {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
      * @return The player this container is attached to
      */
     default Player player() {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
     }
 }

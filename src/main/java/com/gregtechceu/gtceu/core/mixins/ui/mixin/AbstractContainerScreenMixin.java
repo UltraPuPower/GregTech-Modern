@@ -44,17 +44,17 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "render", at = @At("HEAD"))
-    private void captureOwoState(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void gtceu$captureState(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         gtceu$inGTScreen = (Object) this instanceof BaseContainerScreen<?, ?>;
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void resetOwoState(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void gtceu$resetState(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         gtceu$inGTScreen = false;
     }
 
     @Inject(method = "renderSlot", at = @At("HEAD"))
-    private void injectSlotScissors(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
+    private void gtceu$injectSlotScissors(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
         if (!gtceu$inGTScreen) return;
 
         var scissorArea = ((UISlotExtension) slot).gtceu$getScissorArea();
@@ -65,7 +65,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Inject(method = "renderSlot", at = @At("RETURN"))
-    private void clearSlotScissors(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
+    private void gtceu$clearSlotScissors(GuiGraphics graphics, Slot slot, CallbackInfo ci) {
         if (!gtceu$inGTScreen) return;
 
         var scissorArea = ((UISlotExtension) slot).gtceu$getScissorArea();
@@ -75,14 +75,14 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Inject(method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;III)V", at = @At(value = "HEAD"))
-    private static void enableSlotDepth(GuiGraphics graphics, int x, int y, int z, CallbackInfo ci) {
+    private static void gtceu$enableSlotDepth(GuiGraphics graphics, int x, int y, int z, CallbackInfo ci) {
         if (!gtceu$inGTScreen) return;
         RenderSystem.enableDepthTest();
         graphics.pose().translate(0, 0, 300);
     }
 
     @Inject(method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;III)V", at = @At("TAIL"))
-    private static void clearSlotDepth(GuiGraphics graphics, int x, int y, int z, CallbackInfo ci) {
+    private static void gtceu$clearSlotDepth(GuiGraphics graphics, int x, int y, int z, CallbackInfo ci) {
         if (!gtceu$inGTScreen) return;
         graphics.pose().translate(0, 0, -300);
     }

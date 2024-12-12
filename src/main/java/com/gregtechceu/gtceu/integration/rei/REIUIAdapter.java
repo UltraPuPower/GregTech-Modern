@@ -16,6 +16,7 @@ import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -25,6 +26,7 @@ public class REIUIAdapter extends Widget {
 
     public static final Point LAYOUT = new Point(-69, -69);
 
+    private final CloseListener closeListener;
     public final UIAdapter<ComponentGroup> adapter;
 
     public REIUIAdapter(Rectangle bounds) {
@@ -33,7 +35,18 @@ public class REIUIAdapter extends Widget {
         this.adapter.inspectorZOffset = 900;
 
         if (Minecraft.getInstance().screen != null) {
-            MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Closing event) -> this.adapter.dispose());
+            MinecraftForge.EVENT_BUS.register(this.closeListener = new CloseListener());
+        } else {
+            this.closeListener = null;
+        }
+    }
+
+    private class CloseListener {
+
+        @SubscribeEvent
+        public void listen(ScreenEvent.Closing event) {
+            MinecraftForge.EVENT_BUS.unregister(REIUIAdapter.this.closeListener);
+            REIUIAdapter.this.adapter.dispose();
         }
     }
 
