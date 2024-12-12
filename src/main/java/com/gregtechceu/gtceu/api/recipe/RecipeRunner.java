@@ -67,8 +67,6 @@ class RecipeRunner {
 
         fillContentMatchList(entries);
 
-        if (capability == null)
-            return null;
 
         return this.handleContents();
     }
