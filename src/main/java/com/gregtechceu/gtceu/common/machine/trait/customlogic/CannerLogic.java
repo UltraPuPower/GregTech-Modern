@@ -26,18 +26,12 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
-        var itemInputs = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
-                        ArrayList::new)
-                .stream()
+        var itemInputs = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).stream()
                 .filter(IItemHandlerModifiable.class::isInstance)
                 .map(IItemHandlerModifiable.class::cast)
                 .toArray(IItemHandlerModifiable[]::new);
 
-        var fluidInputs = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
-                        ArrayList::new)
-                .stream()
+        var fluidInputs = holder.getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).stream()
                 .filter(IFluidHandler.class::isInstance).map(IFluidHandler.class::cast)
                 .toArray(IFluidHandler[]::new);
 
