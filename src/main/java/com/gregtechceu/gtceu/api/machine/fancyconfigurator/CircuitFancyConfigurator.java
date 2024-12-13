@@ -1,31 +1,31 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyCustomMiddleClickAction;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyCustomMouseWheelAction;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * @implNote CircuitFancyConfigurator
  */
 public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCustomMouseWheelAction,
-                                      IFancyCustomMiddleClickAction {
+        IFancyCustomMiddleClickAction {
 
     private static final int SET_TO_ZERO = 2;
     private static final int SET_TO_EMPTY = 3;
@@ -56,12 +56,12 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
     }
 
     @Override
-    public IGuiTexture getIcon() {
+    public UITexture getIcon() {
         if (IntCircuitBehaviour.isIntegratedCircuit(circuitSlot.getStackInSlot(0))) {
-            return new ItemStackTexture(circuitSlot.getStackInSlot(0));
+            return UITextures.item(circuitSlot.getStackInSlot(0));
         }
-        return new GuiTextureGroup(new ItemStackTexture(IntCircuitBehaviour.stack(0)),
-                new ItemStackTexture(Items.BARRIER));
+        return UITextures.group(UITextures.item(IntCircuitBehaviour.stack(0)),
+                UITextures.item(Items.BARRIER.getDefaultInstance()));
     }
 
     @Override
@@ -73,7 +73,8 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
         if (nextValue == NO_CONFIG) {
             if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                 circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
-                writeClientAction.accept(SET_TO_EMPTY, buf -> {});
+                writeClientAction.accept(SET_TO_EMPTY, buf -> {
+                });
             }
         } else {
             circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(nextValue));
@@ -104,35 +105,44 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
 
     @Override
     public void onMiddleClick(BiConsumer<Integer, Consumer<FriendlyByteBuf>> writeClientAction) {
-        if (!ConfigHolder.INSTANCE.machines.ghostCircuit && !circuitSlot.getStackInSlot(0).isEmpty())
+        if (!ConfigHolder.INSTANCE.machines.ghostCircuit && !circuitSlot.getStackInSlot(0).isEmpty()) {
             circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(0));
-        else
+        } else {
             circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
-        writeClientAction.accept(SET_TO_EMPTY, buf -> {});
+            writeClientAction.accept(SET_TO_EMPTY, buf -> {
+            });
+        }
     }
 
     @Override
-    public Widget createConfigurator() {
-        var group = new WidgetGroup(0, 0, 174, 132);
-        group.addWidget(new LabelWidget(9, 8, "Programmed Circuit Configuration"));
-        group.addWidget(new SlotWidget(circuitSlot, 0, (group.getSize().width - 18) / 2, 20,
-                !ConfigHolder.INSTANCE.machines.ghostCircuit, !ConfigHolder.INSTANCE.machines.ghostCircuit)
-                .setBackground(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY)));
+    public UIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
+        var group = UIContainers.group(Sizing.fixed(174), Sizing.fixed(132));
+        // FIXME MAKE TRANSLATABLE
+        group.child(UIComponents.label(Component.literal("Programmed Circuit Configuration"))
+                .positioning(Positioning.absolute(9, 8)));
+        group.child(UIComponents.slot(circuitSlot, 0)
+                .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY))
+                .canExtract(!ConfigHolder.INSTANCE.machines.ghostCircuit)
+                .canInsert(!ConfigHolder.INSTANCE.machines.ghostCircuit)
+                .positioning(Positioning.relative(50, 15)));
         if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            group.addWidget(new ButtonWidget((group.getSize().width - 18) / 2, 20, 18, 18, IGuiTexture.EMPTY,
-                    clickData -> {
-                        if (!clickData.isRemote) {
-                            circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
-                        }
-                    }));
+            group.child(UIComponents.button(Component.empty(),
+                            clickData -> {
+                                if (!clickData.isRemote) {
+                                    circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
+                                }
+                            })
+                    .renderer(ButtonComponent.Renderer.EMPTY)
+                    .positioning(Positioning.relative(50, 15))
+                    .sizing(Sizing.fixed(18)));
         }
+
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 9, 2);
         int idx = 0;
         for (int x = 0; x <= 2; x++) {
             for (int y = 0; y <= 8; y++) {
                 int finalIdx = idx;
-                group.addWidget(new ButtonWidget(5 + (18 * y), 48 + (18 * x), 18, 18,
-                        new GuiTextureGroup(GuiTextures.SLOT,
-                                new ItemStackTexture(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18)),
+                grid.child(UIComponents.button(Component.empty(),
                         clickData -> {
                             if (!clickData.isRemote) {
                                 ItemStack stack = circuitSlot.getStackInSlot(0).copy();
@@ -143,15 +153,16 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
                                     circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                                 }
                             }
-                        }));
+                        }).renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
+                                UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
+                        .positioning(Positioning.absolute(5 + (18 * y), 48 + (18 * x)))
+                        .sizing(Sizing.fixed(18)), y, x);
                 idx++;
             }
         }
         for (int x = 0; x <= 5; x++) {
             int finalIdx = x + 27;
-            group.addWidget(new ButtonWidget(5 + (18 * x), 102, 18, 18,
-                    new GuiTextureGroup(GuiTextures.SLOT,
-                            new ItemStackTexture(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18)),
+            grid.child(UIComponents.button(Component.empty(),
                     clickData -> {
                         if (!clickData.isRemote) {
                             ItemStack stack = circuitSlot.getStackInSlot(0).copy();
@@ -162,17 +173,19 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
                                 circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                             }
                         }
-                    }));
+                    }).renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
+                            UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
+                    .positioning(Positioning.absolute(5 + (18 * x), 102))
+                    .sizing(Sizing.fixed(18)), 8, x);
         }
+        group.child(grid);
         return group;
     }
 
     @Override
     public List<Component> getTooltips() {
         var list = new ArrayList<>(IFancyConfigurator.super.getTooltips());
-        list.addAll(Arrays.stream(
-                LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(new MutableComponent[0]))
-                .toList());
+        list.addAll(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip"));
         return list;
     }
 
@@ -203,4 +216,5 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
             return currentValue - 1;
         }
     }
+
 }

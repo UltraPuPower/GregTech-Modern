@@ -7,19 +7,19 @@ import org.jetbrains.annotations.Nullable;
 public interface UISlotExtension {
 
     default void gtceu$setDisabledOverride(boolean disabled) {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in SlotMixin");
     }
 
     default boolean gtceu$getDisabledOverride() {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in SlotMixin");
     }
 
     default void gtceu$setScissorArea(@Nullable PositionedRectangle scissor) {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in SlotMixin");
     }
 
     @Nullable
     default PositionedRectangle gtceu$getScissorArea() {
-        throw new IllegalStateException("Implemented in AbstractContainerMenuMixin");
+        throw new UnsupportedOperationException("Implemented in SlotMixin");
     }
 }

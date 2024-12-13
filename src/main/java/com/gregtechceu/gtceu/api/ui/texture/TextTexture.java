@@ -42,7 +42,7 @@ public class TextTexture extends TransformTexture {
     @Setter
     public float rollSpeed = 1;
     @Setter
-    public boolean dropShadow;
+    public boolean dropShadow = false;
 
     @Setter
     public TextType textType;

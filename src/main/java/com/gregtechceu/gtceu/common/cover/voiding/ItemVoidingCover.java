@@ -10,10 +10,7 @@ import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.Insets;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -95,7 +92,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     /// ///////////////////////////////////
 
     @Override
-    public ParentUIComponent createUIWidget() {
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
         final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(120));
         group.padding(Insets.both(10, 5));
         group.child(UIComponents.label(Component.translatable(getUITitle())));

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
@@ -55,12 +54,6 @@ public class GTCommands {
         dispatcher.register(
                 literal("gtceu")
                         .requires(source -> source.hasPermission(3))
-                        .then(literal("ui_editor")
-                                .executes(context -> {
-                                    GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE,
-                                            context.getSource().getPlayerOrException());
-                                    return 1;
-                                }))
                         .then(literal("check_recipes_valid")
                                 .executes(context -> {
                                     for (Recipe<?> recipe : context.getSource().getServer().getRecipeManager()

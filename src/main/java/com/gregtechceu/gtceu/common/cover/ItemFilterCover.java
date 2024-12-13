@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 
@@ -97,7 +99,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createUIWidget(UIAdapter<UIComponentGroup> adapter) {
         final var group = new WidgetGroup(0, 0, 178, 85);
         group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
         group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,

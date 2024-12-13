@@ -8,6 +8,12 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
+import com.gregtechceu.gtceu.api.ui.component.NumberInputComponent;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 
@@ -53,8 +59,8 @@ public class FluidRegulatorCover extends PumpCover {
     protected int globalTransferLimit;
     protected int fluidTransferBuffered = 0;
 
-    private NumberInputWidget<Integer> transferSizeInput;
-    private EnumSelectorWidget<BucketMode> transferBucketModeInput;
+    private NumberInputComponent<Integer> transferSizeInput;
+    private EnumSelectorComponent<BucketMode> transferBucketModeInput;
 
     public FluidRegulatorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                                int maxTransferRate) {
@@ -189,7 +195,7 @@ public class FluidRegulatorCover extends PumpCover {
 
         configureTransferSizeInput();
 
-        if (!this.isRemote()) {
+        if (!this.isClientSide()) {
             configureFilter();
         }
     }
@@ -221,19 +227,22 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
+    protected void buildAdditionalUI(UIComponentGroup group) {
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
+                TransferMode.values(), transferMode, this::setTransferMode)
+                .positioning(Positioning.absolute(146, 45)));
 
-        this.transferSizeInput = new IntInputWidget(35, 45, 84, 20,
+        this.transferSizeInput = new IntInputComponent(Sizing.fixed(84), Sizing.fixed(20),
                 this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(0)
                 .setMax(Integer.MAX_VALUE);
+        this.transferSizeInput.positioning(Positioning.absolute(35, 45));
         configureTransferSizeInput();
-        group.addWidget(this.transferSizeInput);
+        group.child(this.transferSizeInput);
 
-        this.transferBucketModeInput = new EnumSelectorWidget<>(121, 45, 20, 20, BucketMode.values(),
-                transferBucketMode, this::setTransferBucketMode);
-        group.addWidget(this.transferBucketModeInput);
+        this.transferBucketModeInput = new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
+                BucketMode.values(), transferBucketMode, this::setTransferBucketMode);
+        this.transferBucketModeInput.positioning(Positioning.absolute(121, 45));
+        group.child(this.transferBucketModeInput);
     }
 
     private int getCurrentBucketModeTransferSize() {
@@ -249,8 +258,9 @@ public class FluidRegulatorCover extends PumpCover {
         if (this.transferSizeInput == null || transferBucketModeInput == null)
             return;
 
-        this.transferSizeInput.setVisible(shouldShowTransferSize());
-        this.transferBucketModeInput.setVisible(shouldShowTransferSize());
+        // TODO implement
+        //this.transferSizeInput.setVisible(shouldShowTransferSize());
+        //this.transferBucketModeInput.setVisible(shouldShowTransferSize());
     }
 
     private boolean shouldShowTransferSize() {
@@ -262,4 +272,5 @@ public class FluidRegulatorCover extends PumpCover {
 
         return !this.filterHandler.getFilter().supportsAmounts();
     }
+
 }

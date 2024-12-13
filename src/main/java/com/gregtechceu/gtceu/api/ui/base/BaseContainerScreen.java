@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.base;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
 import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
@@ -15,6 +16,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 
 import lombok.Getter;
@@ -125,7 +127,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
 
                 this.uiAdapter.rootComponent.forEachDescendant(child -> {
                     if (child instanceof SlotComponent slot) {
-                        slot.refreshSlotPosition(this);
+                        slot.finalizeSlot(this);
                     }
                 });
             } catch (Exception error) {
@@ -269,6 +271,16 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         return this.uiAdapter.mouseDragged(mouseX, mouseY, button, deltaX, deltaY) ||
                 super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType type) {
+        if (uiAdapter.rootComponent.getHoveredComponent(slot.x, slot.y) instanceof SlotComponent slotComponent) {
+            if (slotComponent.slotClick(mouseButton, type, this.menu.player())) {
+                return;
+            }
+        }
+        super.slotClicked(slot, slotId, mouseButton, type);
     }
 
     @Nullable

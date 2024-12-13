@@ -9,16 +9,19 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -27,6 +30,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -51,7 +55,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineControllerCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
     private CustomItemStackHandler sideCoverSlot;
-    private ButtonWidget modeButton;
+    private ButtonComponent modeButton;
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -198,7 +202,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 75);
 
         group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
@@ -216,10 +220,10 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
                 GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
 
             @Override
-            public void updateScreen() {
-                super.updateScreen();
-                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.machine_controller.invert." + (isPressed ? "enabled" : "disabled"))));
+            public void update(float delta, int mouseX, int mouseY) {
+                super.update(delta, mouseX, mouseY);
+                tooltip(LangHandler.getMultiLang(
+                        "cover.machine_controller.invert." + (pressed ? "enabled" : "disabled")));
             }
         });
 
@@ -257,9 +261,9 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     private void updateModeButton() {
         if (modeButton == null) return;
 
-        modeButton.setButtonTexture(new GuiTextureGroup(
+        modeButton.renderer(ButtonComponent.Renderer.texture(UITextures.group(
                 GuiTextures.VANILLA_BUTTON,
-                new TextTexture(controllerMode.localeName)));
+                UITextures.text(Component.translatable(controllerMode.localeName)))));
     }
 
     private void updateCoverSlot() {

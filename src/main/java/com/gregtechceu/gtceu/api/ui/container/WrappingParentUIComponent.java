@@ -63,6 +63,7 @@ public class WrappingParentUIComponent<C extends UIComponent> extends BaseParent
     public WrappingParentUIComponent<C> child(C newChild) {
         if (this.child != null) {
             this.child.dismount(DismountReason.REMOVED);
+            this.child.containerAccess(null);
         }
 
         this.child = newChild;

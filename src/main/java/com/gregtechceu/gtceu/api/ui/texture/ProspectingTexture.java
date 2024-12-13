@@ -1,9 +1,11 @@
-package com.gregtechceu.gtceu.api.gui.texture;
+package com.gregtechceu.gtceu.api.ui.texture;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 
+import com.gregtechceu.gtceu.api.ui.core.Color;
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
@@ -110,7 +112,7 @@ public class ProspectingTexture extends AbstractTexture {
             for (int j = 0; j < wh; j++) {
                 var items = this.data[i * mode.cellSize / 16][j * mode.cellSize / 16];
                 // draw bg
-                image.setPixelRGBA(i, j, (darkMode ? ColorPattern.GRAY.color : ColorPattern.WHITE.color));
+                image.setPixelRGBA(i, j, (darkMode ? Color.GRAY.argb() : Color.WHITE.rgb()));
                 // draw items
                 for (var item : items) {
                     if (!selected.equals(SELECTED_ALL) && !selected.equals(mode.getUniqueID(item))) continue;
@@ -144,7 +146,7 @@ public class ProspectingTexture extends AbstractTexture {
         image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false, true);
     }
 
-    public void draw(GuiGraphics graphics, int x, int y) {
+    public void draw(UIGuiGraphics graphics, int x, int y) {
         if (this.getId() == -1) return;
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();

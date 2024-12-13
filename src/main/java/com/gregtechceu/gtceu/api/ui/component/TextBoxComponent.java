@@ -25,6 +25,7 @@ import org.w3c.dom.Element;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Accessors(fluent = true, chain = true)
@@ -42,6 +43,9 @@ public class TextBoxComponent extends EditBox {
     protected NumberFormat numberInstance;
     protected Component hover;
     private boolean isDragging;
+
+    @Setter
+    private Function<String, String> validator;
 
     protected TextBoxComponent(Sizing horizontalSizing) {
         super(Minecraft.getInstance().font, 0, 0, 0, 0, Component.empty());

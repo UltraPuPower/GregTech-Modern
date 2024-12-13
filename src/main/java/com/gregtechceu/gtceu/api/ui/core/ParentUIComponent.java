@@ -323,6 +323,22 @@ public interface ParentUIComponent extends UIComponent {
         return this.isInBoundingBox(x, y) ? this : null;
     }
 
+    @Nullable
+    @Override
+    default UIComponent getHoveredComponent(int mouseX, int mouseY) {
+        for (int i = children().size() - 1; i >= 0; i--) {
+            UIComponent widget = children().get(i);
+            // TODO
+            if(true /*widget.isVisible()*/) {
+                widget = widget.getHoveredComponent(mouseX, mouseY);
+                if (widget != null) {
+                    return widget;
+                }
+            }
+        }
+        return UIComponent.super.getHoveredComponent(mouseX, mouseY);
+    }
+
     /**
      * Collect the entire component hierarchy below the given component
      * into the given list

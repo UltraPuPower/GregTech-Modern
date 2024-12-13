@@ -131,7 +131,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
         rootComponent.surface(Surface.UI_BACKGROUND);
         rootComponent.child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(10, 5)))
-                .child(UIComponents.playerInventory(menu, 0, GuiTextures.SLOT)
+                .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT)
                         .positioning(Positioning.absolute(7 + xOffset,
                                 18 + 18 * rowSize + 12)));
 
@@ -143,8 +143,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
                 // +36 for player inventory
                 stack.child(UIComponents.slot(menu.getSlot(index + 36))
-                                .canInsertOverride(true)
-                                .canExtractOverride(true)
+                                .canInsert(true)
+                                .canExtract(true)
                                 .sizing(Sizing.fill()))
                         .child(UIComponents.texture(GuiTextures.SLOT, 18, 18)
                                 .sizing(Sizing.fill()));

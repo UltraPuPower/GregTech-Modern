@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.common.cover.data;
 
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import lombok.Getter;
 
-public enum BucketMode implements EnumSelectorWidget.SelectableEnum {
+public enum BucketMode implements EnumSelectorComponent.SelectableEnum {
 
     BUCKET("cover.bucket.mode.bucket", "minecraft:textures/item/water_bucket", 1000),
     MILLI_BUCKET("cover.bucket.mode.milli_bucket", "gtceu:textures/gui/icon/bucket_mode/water_drop", 1);

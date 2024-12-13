@@ -12,10 +12,10 @@ import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -84,7 +84,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
         return group;
     }
 
-    private void onIOModePressed(ButtonComponent btn) {
+    private void onIOModePressed(com.gregtechceu.gtceu.api.ui.util.ClickData btn) {
         if (this.side == null)
             return;
 

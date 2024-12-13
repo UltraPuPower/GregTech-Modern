@@ -16,7 +16,6 @@ import java.util.function.Predicate;
 public class CustomFluidTank extends FluidTank
                              implements IFluidHandlerModifiable, ITagSerializable<CompoundTag>, IContentChangeAware {
 
-    @Getter
     protected List<Runnable> onContentsChanged = new ArrayList<>();
 
     public CustomFluidTank(int capacity) {
@@ -65,6 +64,15 @@ public class CustomFluidTank extends FluidTank
         readFromNBT(nbt);
     }
 
+
+    public Runnable getOnContentsChanged() {
+        return () -> {
+            for (Runnable r : this.onContentsChanged) {
+                r.run();
+            }
+        };
+    }
+
     public void setOnContentsChanged(Runnable onContentsChanged) {
         this.onContentsChanged.clear();
         this.onContentsChanged.add(onContentsChanged);
@@ -74,5 +82,13 @@ public class CustomFluidTank extends FluidTank
         int size = this.onContentsChanged.size();
         this.onContentsChanged.add(onContentsChanged);
         return size;
+    }
+    
+    public void removeOnContersChanged(int index) {
+        this.onContentsChanged.remove(index);
+    }
+
+    public void removeOnContersChanged(Runnable onContentsChanged) {
+        this.onContentsChanged.remove(onContentsChanged);
     }
 }

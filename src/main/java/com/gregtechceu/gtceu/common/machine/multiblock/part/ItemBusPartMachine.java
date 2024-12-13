@@ -233,8 +233,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
                 layout.children(List.of(
                         UIComponents.slot(getInventory().storage, index++)
-                                .canExtractOverride(true)
-                                .canInsertOverride(io.support(IO.IN))
+                                .canExtract(true)
+                                .canInsert(io.support(IO.IN))
                                 .ingredientIO(this.io),
                         UIComponents.texture(GuiTextures.SLOT, 18, 18)
                                 .sizing(Sizing.fixed(18))));

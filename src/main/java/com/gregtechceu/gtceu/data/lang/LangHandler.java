@@ -1471,7 +1471,7 @@ public class LangHandler {
      * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
      * @return Returns all translation components from a multi lang's sub-keys
      */
-    public static List<MutableComponent> getMultiLang(String key) {
+    public static List<Component> getMultiLang(String key) {
         var outputKeys = new ArrayList<String>();
         var i = 0;
         var next = getSubKey(key, i);
@@ -1529,8 +1529,8 @@ public class LangHandler {
      * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
      * @return Returns all translation components from a multi lang's sub-keys.
      */
-    public static List<MutableComponent> getSingleOrMultiLang(String key) {
-        List<MutableComponent> multiLang = getMultiLang(key);
+    public static List<Component> getSingleOrMultiLang(String key) {
+        List<Component> multiLang = getMultiLang(key);
 
         if (!multiLang.isEmpty()) {
             return multiLang;

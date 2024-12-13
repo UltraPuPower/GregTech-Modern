@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -18,6 +17,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
@@ -25,14 +25,10 @@ import com.gregtechceu.gtceu.utils.GTHashMaps;
 import com.gregtechceu.gtceu.utils.OverlayedTankHandler;
 import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -313,9 +309,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public @Nullable UIComponent createWidget() {
+    public @Nullable UIComponent createUIComponent() {
         TankComponent tank = UIComponents.tank(EmptyFluidHandler.INSTANCE);
-        //tank.fillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
+        tank.fillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
         return tank;
     }
 
@@ -335,20 +331,20 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
-        if (widget instanceof TankWidget tank) {
+        if (widget instanceof TankComponent tank) {
             if (storage instanceof TagOrCycleFluidHandler fluidHandler) {
                 tank.setFluidTank(fluidHandler, index);
             } else if (storage instanceof IFluidHandlerModifiable fluidHandler) {
                 tank.setFluidTank(new OverlayingFluidStorage(fluidHandler, index));
             }
-            tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
-            tank.setAllowClickFilled(!isXEI);
-            tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
+            tank.ingredientIO(io);
+            tank.canInsert(!isXEI && io.support(IO.IN));
+            tank.canExtract(!isXEI);
             if (content != null) {
                 float chance = (float) recipeType.getChanceFunction()
                         .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
-                tank.setXEIChance(chance);
-                tank.setOnAddedTooltips((w, tooltips) -> {
+                tank.recipeViewerChance(chance);
+                tank.tooltip((w, tooltips) -> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
                     if (!isXEI && ingredient.getStacks().length > 0) {
                         FluidStack stack = ingredient.getStacks()[0];
@@ -365,7 +361,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                     }
                 });
                 if (io == IO.IN && (content.chance == 0)) {
-                    tank.setIngredientIO(IngredientIO.CATALYST);
+                    tank.ingredientIO(IO.NONE);
                 }
             }
         }

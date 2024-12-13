@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -116,7 +117,7 @@ public class ConfiguratorPanelComponent extends FlowLayout {
         protected final IFancyConfigurator configurator;
         protected final ButtonComponent button;
         @Nullable
-        protected final FlowLayout view;
+        protected FlowLayout view;
         // dragging
         protected double lastDeltaX, lastDeltaY;
         protected int dragOffsetX, dragOffsetY;
@@ -160,8 +161,15 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             if (configurator instanceof IFancyConfiguratorButton) {
                 this.view = null;
                 this.child(button);
-            } else {
-                var config = configurator.createConfigurator();
+            }
+            // moved else block to containerAccess() below
+        }
+
+        @Override
+        public void containerAccess(UIComponentMenuAccess access) {
+            super.containerAccess(access);
+            if (!(configurator instanceof IFancyConfiguratorButton)) {
+                var config = configurator.createConfigurator((UIAdapter<UIComponentGroup>) access.adapter());
                 config.positioning(Positioning.absolute(border, 0));
 
                 this.view = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
@@ -179,18 +187,6 @@ public class ConfiguratorPanelComponent extends FlowLayout {
                 //this.child(view);
             }
         }
-
-        // TODO add
-        /*
-        @Override
-        public void detectAndSendChanges() {
-            super.detectAndSendChanges();
-            configurator.detectAndSendChange((id, sender) -> writeUpdateInfo(0, buf -> {
-                buf.writeVarInt(id);
-                sender.accept(buf);
-            }));
-        }
-        */
 
         @Override
         public void receiveMessage(int id, FriendlyByteBuf buf) {
@@ -272,6 +268,11 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             if (UIComponent.isMouseOver(x + width - 20, y + 4, 16, 16, mouseX, mouseY)) {
                 tooltip(configurator.getTooltips());
             }
+
+            configurator.detectAndSendChange((id, sender) -> sendMessage(0, buf -> {
+                buf.writeVarInt(id);
+                sender.accept(buf);
+            }));
         }
 
         @Override
@@ -344,7 +345,9 @@ public class ConfiguratorPanelComponent extends FlowLayout {
 
         public FloatingTab(IFancyConfigurator configurator) {
             super(configurator);
-            this.view.surface(Surface.UI_BACKGROUND);
+            if (this.view != null) {
+                this.view.surface(Surface.UI_BACKGROUND);
+            }
         }
 
         @Override

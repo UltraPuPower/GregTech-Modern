@@ -38,11 +38,11 @@ public class CoverConfigurator implements IFancyConfigurator {
     }
 
     @Override
-    public ParentUIComponent createConfigurator() {
+    public ParentUIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
         UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
         if (side != null) {
             if (coverable.getCoverAtSide(side) instanceof IUICover iuiCover) {
-                ParentUIComponent coverConfigurator = iuiCover.createUIWidget();
+                ParentUIComponent coverConfigurator = iuiCover.createUIWidget(adapter);
                 coverConfigurator.surface(Surface.UI_BACKGROUND);
                 coverConfigurator.positioning(Positioning.absolute(4, -4));
                 group.child(coverConfigurator);

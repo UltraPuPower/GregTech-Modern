@@ -197,8 +197,8 @@ public class PatternPreviewComponent extends FlowLayout {
         var itemHandler = new CycleItemStackHandler(pattern.parts);
         for (int i = 0; i < slotWidgets.length; i++) {
             slotWidgets[i] = (SlotComponent) UIComponents.slot(itemHandler, i)
-                    .canExtractOverride(false)
-                    .canInsertOverride(false)
+                    .canExtract(false)
+                    .canInsert(false)
                     .ingredientIO(IO.IN)
                     .positioning(Positioning.absolute(4 + i * 18, 0));
             scrollContainer.child(slotWidgets[i]);
@@ -244,8 +244,8 @@ public class PatternPreviewComponent extends FlowLayout {
             int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 candidates[i] = (SlotComponent) UIComponents.slot(itemHandler, i)
-                        .canExtractOverride(false)
-                        .canInsertOverride(false)
+                        .canExtract(false)
+                        .canInsert(false)
                         .ingredientIO(IO.IN)
                         .positioning(Positioning.absolute(3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18))
                         .tooltip(predicateTips.get(i));

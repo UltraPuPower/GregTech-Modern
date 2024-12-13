@@ -17,15 +17,9 @@ import java.util.List;
 
 public class PlayerInventoryComponent extends UIComponentGroup {
 
-    protected PlayerInventoryComponent(Inventory inventory) {
+    protected PlayerInventoryComponent(Inventory inventory, UITexture slotTexture) {
         super(Sizing.fixed(162), Sizing.fixed(76));
-        setByInventory(inventory);
-        this.allowOverflow(true);
-    }
-
-    protected PlayerInventoryComponent(AbstractContainerMenu menu, int startSlotIndex, UITexture slotTexture) {
-        super(Sizing.fixed(162), Sizing.fixed(76));
-        setByMenu(menu, startSlotIndex, slotTexture);
+        setByInventory(inventory, slotTexture);
         this.allowOverflow(true);
     }
 
@@ -33,26 +27,30 @@ public class PlayerInventoryComponent extends UIComponentGroup {
         super(Sizing.fixed(162), Sizing.fixed(76));
     }
 
-    public PlayerInventoryComponent setByInventory(Inventory inventory) {
+    public PlayerInventoryComponent setByInventory(Inventory inventory, UITexture slotTexture) {
         GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 3, 9);
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
-                StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
-                layout.children(List.of(UIComponents.slot(inventory, x + x * 9 + 9),
-                        UIComponents.texture(GuiTextures.SLOT, 18, 18)))
-                        .positioning(Positioning.absolute(x * 18, y * 18));
-                grid.child(layout, x, y);
+                grid.child(UIComponents.slot(inventory, y + x * 9 + 9)
+                                .backgroundTexture(slotTexture)
+                                .positioning(Positioning.absolute(x * 18, y * 18)),
+                        x, y);
             }
         }
         this.child(grid);
 
         var grid2 = UIContainers.grid(Sizing.content(), Sizing.content(), 1, 9);
         for (int x = 0; x < 9; x++) {
+            grid.child(UIComponents.slot(inventory, x)
+                            .backgroundTexture(slotTexture)
+                            .positioning(Positioning.absolute(x * 18, y * 18)),
+                    0, x);
+
             StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
             layout.children(List.of(
-                            UIComponents.slot(inventory, x)
-                                    .positioning(Positioning.absolute(x * 18, 58)),
-                    UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                    UIComponents.slot(inventory, x)
+                            .positioning(Positioning.absolute(x * 18, 58)),
+                    UIComponents.texture(slotTexture, 18, 18)
                             .positioning(Positioning.absolute(x * 18, 58))
                             .sizing(Sizing.fixed(18))));
             grid2.child(layout, x, 0);
@@ -61,47 +59,8 @@ public class PlayerInventoryComponent extends UIComponentGroup {
         return this;
     }
 
-    public PlayerInventoryComponent setByMenu(AbstractContainerMenu menu, int startSlotIndex, UITexture slotTexture) {
-        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 3, 9);
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 9; y++) {
-                StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
-                layout.children(List.of(UIComponents.slot(menu.getSlot(y + x * 9 + startSlotIndex)),
-                        UIComponents.texture(slotTexture, 18, 18)
-                                .sizing(Sizing.fixed(18))));
-                grid.child(layout, x, y);
-            }
-        }
-        grid.positioning(Positioning.absolute(0, 0));
-        this.child(grid);
-
-        var grid2 = UIContainers.grid(Sizing.content(), Sizing.content(), 1, 9);
-        for (int y = 0; y < 9; y++) {
-            StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
-            layout.children(List.of(
-                    UIComponents.slot(menu.getSlot(y + 27 + startSlotIndex)),
-                    UIComponents.texture(slotTexture, 18, 18)
-                            .sizing(Sizing.fixed(18))));
-            grid2.child(layout, 0, y);
-        }
-        grid2.positioning(Positioning.absolute(0, 58));
-        this.child(grid2);
-        return this;
-    }
-
-    public static void addServerInventory(AbstractContainerMenu menu, Inventory inventory, int startX, int startY) {
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 9; x++) {
-                ((AbstractContainerMenuAccessor) menu).gtceu$addSlot(new Slot(inventory, x + y * 9 + 9, 18 * x + startX, 18 * y + startY));
-            }
-        }
-
-        for (int x = 0; x < 9; x++) {
-            ((AbstractContainerMenuAccessor) menu).gtceu$addSlot(new Slot(inventory, x, 18 * x + startX, startY + 59));
-        }
-    }
-
     public static PlayerInventoryComponent parse(Element element) {
         return new PlayerInventoryComponent();
     }
+
 }

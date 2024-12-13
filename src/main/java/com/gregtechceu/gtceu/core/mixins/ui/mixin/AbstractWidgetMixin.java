@@ -14,7 +14,9 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,8 +28,10 @@ import org.w3c.dom.Element;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+@SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(AbstractWidget.class)
 public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventListener {
 
@@ -71,8 +75,8 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
 
     @ApiStatus.Internal
     @Override
-    public void containerAccess(UIComponentMenuAccess adapter) {
-        this.gtceu$getWrapper().containerAccess(adapter);
+    public void containerAccess(UIComponentMenuAccess access) {
+        this.gtceu$getWrapper().containerAccess(access);
     }
 
     @Override
@@ -191,6 +195,11 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     }
 
     @Override
+    public EventSource<MouseMoved> mouseMoved() {
+        return this.gtceu$getWrapper().mouseMoved();
+    }
+
+    @Override
     public EventSource<KeyPress> keyPress() {
         return this.gtceu$getWrapper().keyPress();
     }
@@ -231,6 +240,11 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     }
 
     @Override
+    public boolean onMouseMoved(double mouseX, double mouseY) {
+        return this.gtceu$getWrapper().onMouseMoved(mouseX, mouseY);
+    }
+
+    @Override
     public boolean onKeyPress(int keyCode, int scanCode, int modifiers) {
         return this.gtceu$getWrapper().onKeyPress(keyCode, scanCode, modifiers);
     }
@@ -246,9 +260,9 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     }
 
     @Override
-    public void onFocusGained(FocusSource source) {
+    public void onFocusGained(FocusSource source, UIComponent lastFocus) {
         this.setFocused(source == FocusSource.KEYBOARD_CYCLE);
-        this.gtceu$getWrapper().onFocusGained(source);
+        this.gtceu$getWrapper().onFocusGained(source, lastFocus);
     }
 
     @Override
@@ -295,6 +309,11 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     @Override
     public UIComponent cursorStyle(CursorStyle style) {
         return this.gtceu$getWrapper().cursorStyle(style);
+    }
+
+    @Override
+    public UIComponent tooltip(@NotNull BiConsumer<UIComponent, List<Component>> tooltip) {
+        return this.gtceu$getWrapper().tooltip(tooltip);
     }
 
     @Override

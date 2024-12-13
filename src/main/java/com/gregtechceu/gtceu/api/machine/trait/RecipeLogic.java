@@ -40,6 +40,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 import java.util.function.DoubleConsumer;
+import java.util.function.IntConsumer;
 
 public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWorkable, IFancyTooltip {
 
@@ -102,7 +103,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Getter
     @Persisted
     protected int fuelMaxTime;
-    protected DoubleConsumer progressPercentListener = $ -> {};
+    protected final List<DoubleConsumer> progressPercentListener = new ArrayList<>();
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
     @Persisted
@@ -262,7 +263,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     }
                     progress++;
                     totalContinuousRunningTime++;
-                    progressPercentListener.accept(this.getProgressPercent());
+                    progressPercentListener.forEach(consumer -> consumer.accept(this.getProgressPercent()));
                 } else {
                     setWaiting(result.reason().get());
                 }
@@ -282,8 +283,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    public void addProgressPercentListener(DoubleConsumer consumer) {
-        this.progressPercentListener = this.progressPercentListener.andThen(consumer);
+    public int addProgressPercentListener(DoubleConsumer consumer) {
+        int index = this.progressPercentListener.size();
+        this.progressPercentListener.add(consumer);
+        return index;
+    }
+
+    public void removeProgressPercentListener(int index) {
+        this.progressPercentListener.remove(index);
+    }
+
+    public void removeProgressPercentListener(DoubleConsumer listener) {
+        this.progressPercentListener.remove(listener);
     }
 
     protected void doDamping() {

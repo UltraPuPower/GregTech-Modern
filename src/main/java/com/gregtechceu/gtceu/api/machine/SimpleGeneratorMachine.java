@@ -23,6 +23,8 @@ import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -36,9 +38,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -140,19 +140,27 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
         var recipeTypeProperty = menu.createProperty(int.class, "current_recipe_type", this.getActiveRecipeType());
-        this.setRecipeTypeChangeListener(recipeTypeProperty::set);
+        final int changeListener = this.addRecipeTypeChangeListener(recipeTypeProperty::set);
+
+        var progressProperty = menu.createProperty(double.class, "progress", recipeLogic.getProgressPercent());
+        final int progressListener = recipeLogic.addProgressPercentListener(progressProperty::set);
+
+        final IntList[] inputFluidsToClose = new IntList[this.importFluids.getTanks()];
+        final IntList[] outputFluidsToClose = new IntList[this.exportFluids.getTanks()];
 
         for (int i = 0; i < this.importFluids.getTanks(); i++) {
             SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-in." + i,
                     this.importFluids.getFluidInTank(i));
             CustomFluidTank tank = this.importFluids.getStorages()[i];
-            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
+            inputFluidsToClose[i] = new IntArrayList();
+            inputFluidsToClose[i].add(tank.addOnContentsChanged(() -> prop.set(tank.getFluid())));
         }
         for (int i = 0; i < this.exportFluids.getTanks(); i++) {
             SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-out." + i,
                     this.exportFluids.getFluidInTank(i));
             CustomFluidTank tank = this.exportFluids.getStorages()[i];
-            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
+            outputFluidsToClose[i] = new IntArrayList();
+            outputFluidsToClose[i].add(tank.addOnContentsChanged(() -> prop.set(tank.getFluid())));
         }
         // Position all slots at 0,0 as they'll be moved to the correct position on the client.
         SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
@@ -163,6 +171,24 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
             generator.slot(this.exportItems, i, 0, 0);
         }
         generator.playerInventory(menu.getPlayerInventory());
+
+        // clear up all listener references
+        menu.setCloseCallback(p -> {
+            this.removeRecipeTypeChangeListener(changeListener);
+            recipeLogic.removeProgressPercentListener(progressListener);
+            var importStorages = this.importFluids.getStorages();
+            for (int i = 0; i < inputFluidsToClose.length; i++) {
+                for (int j : inputFluidsToClose[i]) {
+                    importStorages[i].removeOnContersChanged(j);
+                }
+            }
+            var exportStorages = this.exportFluids.getStorages();
+            for (int i = 0; i < outputFluidsToClose.length; i++) {
+                for (int j : outputFluidsToClose[i]) {
+                    exportStorages[i].removeOnContersChanged(j);
+                }
+            }
+        });
     }
 
     @SuppressWarnings("UnstableApiUsage")

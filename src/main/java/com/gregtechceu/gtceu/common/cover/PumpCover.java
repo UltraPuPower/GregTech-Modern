@@ -17,13 +17,23 @@ import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
+import com.gregtechceu.gtceu.api.ui.component.NumberInputComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -95,7 +105,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
-    private NumberInputWidget<Integer> transferRateWidget;
+    private NumberInputComponent<Integer> transferRateWidget;
 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                      int maxTransferRate) {
@@ -299,28 +309,34 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
+        final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(137));
+        group.child(UIComponents.label(Component.translatable(getUITitle(), GTValues.VN[tier]))
+                .positioning(Positioning.absolute(10, 5)));
 
-        transferRateWidget = new IntInputWidget(10, 20, 134, 20,
+        transferRateWidget = new IntInputComponent(Sizing.fixed(134), Sizing.fixed(20),
                 this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0);
+        transferRateWidget.positioning(Positioning.absolute(10, 20));
         setBucketMode(this.bucketMode); // initial input widget config happens here
-        group.addWidget(transferRateWidget);
+        group.child(transferRateWidget);
 
-        group.addWidget(new EnumSelectorWidget<>(
-                146, 20, 20, 20,
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
                 Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxFluidTransferRate).toList(),
-                bucketMode, this::setBucketMode).setTooltipSupplier(this::getBucketModeTooltip));
+                bucketMode, this::setBucketMode)
+                .setTooltipSupplier(this::getBucketModeTooltip)
+                .positioning(Positioning.absolute(146, 20)));
 
-        group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
+                List.of(IO.IN, IO.OUT), io, this::setIo)
+                .positioning(Positioning.absolute(10, 45)));
 
-        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
                 ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
-                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+                .tooltip(LangHandler.getMultiLang("cover.universal.manual_import_export.mode.description")))
+                .positioning(Positioning.absolute(146, 107));
 
-        group.addWidget(filterHandler.createFilterSlotUI(125, 108));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
+        group.child(filterHandler.createFilterSlotUI(125, 108));
+        group.child(filterHandler.createFilterConfigUI(10, 72, 156, 60));
 
         buildAdditionalUI(group);
 
@@ -345,7 +361,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return "cover.pump.title";
     }
 
-    protected void buildAdditionalUI(WidgetGroup group) {
+    protected void buildAdditionalUI(UIComponentGroup group) {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
@@ -398,5 +414,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             }
             return super.drain(resource, action);
         }
+
     }
+
 }

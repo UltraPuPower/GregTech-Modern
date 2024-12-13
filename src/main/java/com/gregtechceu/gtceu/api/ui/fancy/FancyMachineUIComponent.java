@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -93,7 +94,7 @@ public class FancyMachineUIComponent extends UIComponentGroup {
         super.init();
 
         if (this.playerInventory != null) {
-            this.playerInventory.setByInventory(player().getInventory());
+            this.playerInventory.setByInventory(player().getInventory(), GuiTextures.SLOT);
         }
 
         this.allPages = Stream.concat(Stream.of(this.mainPage), this.mainPage.getSubTabs().stream()).toList();

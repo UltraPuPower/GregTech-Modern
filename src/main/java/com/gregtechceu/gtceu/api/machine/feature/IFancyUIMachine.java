@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
 
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -129,9 +128,6 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                     .setTooltipsSupplier(pressed -> List.of(
                             Component.translatable(
                                     pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))));
-        }
-        if (this instanceof IOverclockMachine overclockMachine) {
-            configuratorPanel.attachConfigurators(new OverclockFancyConfigurator(overclockMachine));
         }
         if (this instanceof MetaMachine machine) {
             for (var direction : Direction.values()) {

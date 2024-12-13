@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
@@ -114,7 +116,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
+    public Widget createUIWidget(UIAdapter<UIComponentGroup> adapter) {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
         group.addWidget(new LabelWidget(10, 5, "cover.advanced_item_detector.label"));
 

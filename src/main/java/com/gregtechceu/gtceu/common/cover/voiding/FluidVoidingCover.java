@@ -5,10 +5,12 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -92,7 +94,7 @@ public class FluidVoidingCover extends PumpCover {
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
         final var group = new WidgetGroup(0, 0, 176, 120);
         group.addWidget(new LabelWidget(10, 5, getUITitle()));
 

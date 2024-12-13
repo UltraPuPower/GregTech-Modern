@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -18,9 +17,6 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -79,10 +75,12 @@ public class DimensionCondition extends RecipeCondition {
                 new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
         ItemStack icon = dimMarker.getIcon();
         CustomItemStackHandler handler = new CustomItemStackHandler(1);
+        // TODO change to item component (?)
         SlotComponent dimSlot = UIComponents.slot(handler, 0)
-                .canInsertOverride(false)
-                .canExtractOverride(false)
+                .canInsert(false)
+                .canExtract(false)
                 .ingredientIO(IO.IN);
+        dimSlot.positioning(Positioning.relative(100, 100));
         handler.setStackInSlot(0, icon);
 
         layout.child(dimSlot);

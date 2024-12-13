@@ -173,7 +173,7 @@ public abstract class RecipeCapability<T> {
         return null;
     }
 
-    public @Nullable UIComponent createWidget() {
+    public @Nullable UIComponent createUIComponent() {
         return null;
     }
 

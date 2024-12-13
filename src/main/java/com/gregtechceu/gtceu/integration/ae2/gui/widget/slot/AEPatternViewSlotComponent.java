@@ -19,8 +19,8 @@ public class AEPatternViewSlotComponent extends SlotComponent {
                                    boolean canTakeItems,
                                    boolean canPutItems) {
         super(inventory, slotIndex);
-        this.canInsertOverride(canPutItems);
-        this.canExtractOverride(canTakeItems);
+        this.canInsert(canPutItems);
+        this.canExtract(canTakeItems);
     }
 
     public AEPatternViewSlotComponent(IItemHandlerModifiable itemHandler, int slotIndex) {

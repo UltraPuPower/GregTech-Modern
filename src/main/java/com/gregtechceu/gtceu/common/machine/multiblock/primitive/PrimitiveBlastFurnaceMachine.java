@@ -179,28 +179,28 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                         .sizing(Sizing.fixed(20), Sizing.fixed(15)));
 
         rootComponent.child(UIComponents.slot(menu.getSlot(4))
-                        .canInsertOverride(false)
-                        .canExtractOverride(true)
+                        .canInsert(false)
+                        .canExtract(true)
                         .positioning(Positioning.absolute(104, 38)))
                 .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY), 18, 18)
                         .positioning(Positioning.absolute(104, 38))
                         .sizing(Sizing.fixed(18)))
                 .child(UIComponents.slot(menu.getSlot(5))
-                        .canInsertOverride(false)
-                        .canExtractOverride(true)
+                        .canInsert(false)
+                        .canExtract(true)
                         .positioning(Positioning.absolute(122, 38)))
                 .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY), 18, 18)
                         .positioning(Positioning.absolute(122, 38))
                         .sizing(Sizing.fixed(18)))
                 .child(UIComponents.slot(menu.getSlot(6))
-                        .canInsertOverride(false)
-                        .canExtractOverride(true)
+                        .canInsert(false)
+                        .canExtract(true)
                         .positioning(Positioning.absolute(140, 38)))
                 .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY), 18, 18)
                         .positioning(Positioning.absolute(140, 38))
                         .sizing(Sizing.fixed(18)));
 
-        rootComponent.child(UIComponents.playerInventory(menu, 6, GuiTextures.PRIMITIVE_SLOT)
+        rootComponent.child(UIComponents.playerInventory(player.getInventory(), GuiTextures.PRIMITIVE_SLOT)
                         .positioning(Positioning.absolute(7, 84)));
     }
 

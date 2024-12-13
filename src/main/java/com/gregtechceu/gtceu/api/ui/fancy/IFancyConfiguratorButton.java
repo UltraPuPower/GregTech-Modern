@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -34,7 +35,7 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
     }
 
     @Override
-    default UIComponent createConfigurator() {
+    default UIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
         throw new NotImplementedException();
     }
 

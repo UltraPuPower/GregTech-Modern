@@ -1,11 +1,16 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
+import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -94,42 +99,41 @@ public class SimpleItemFilter implements ItemFilter {
         onUpdated.accept(this);
     }
 
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+    public UIComponent openConfigurator(int x, int y) {
+        UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
+        group.positioning(Positioning.absolute(x, y));
+        GridLayout grid = UIContainers.grid(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3), 3, 3); // 80 55
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
 
                 var handler = new CustomItemStackHandler(matches[index]);
 
-                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+                var slot = new PhantomSlotComponent(handler, 0) {
 
                     @Override
-                    public void updateScreen() {
-                        super.updateScreen();
-                        setMaxStackSize(maxStackSize);
-                    }
-
-                    @Override
-                    public void detectAndSendChanges() {
-                        super.detectAndSendChanges();
+                    public void update(float delta, int mouseX, int mouseY) {
+                        super.update(delta, mouseX, mouseY);
                         setMaxStackSize(maxStackSize);
                     }
                 };
 
-                slot.setChangeListener(() -> {
+                slot.changeListener(() -> {
                     matches[index] = handler.getStackInSlot(0);
                     onUpdated.accept(this);
-                }).setBackground(GuiTextures.SLOT);
+                }).backgroundTexture(GuiTextures.SLOT);
 
-                group.addWidget(slot);
+                grid.child(slot, j, i);
             }
         }
-        group.addWidget(new ToggleButtonComponent(18 * 3 + 5, 0, 20, 20,
-                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonComponent(18 * 3 + 5, 20, 20, 20,
-                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
-        return group;
+        group.child(grid);
+        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList))
+                .positioning(Positioning.absolute(18 * 3 + 5, 0))
+                .sizing(Sizing.fixed(20));
+        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt)
+                .positioning(Positioning.absolute(18 * 3 + 5, 20))
+                .sizing(Sizing.fixed(20)));
+        return grid;
     }
 
     @Override

@@ -105,6 +105,7 @@ public class UIComponentGroup extends BaseParentUIComponent {
     public UIComponentGroup removeChild(UIComponent child) {
         if (this.children.remove(child)) {
             child.dismount(DismountReason.REMOVED);
+            child.containerAccess(null);
             this.updateLayout();
         }
 
@@ -117,6 +118,7 @@ public class UIComponentGroup extends BaseParentUIComponent {
     public UIComponentGroup clearChildren() {
         for (var child : this.children) {
             child.dismount(DismountReason.REMOVED);
+            child.containerAccess(null);
         }
 
         this.children.clear();

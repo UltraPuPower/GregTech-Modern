@@ -12,13 +12,16 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @Accessors(fluent = true, chain = true)
@@ -259,7 +262,7 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
-    public void onFocusGained(FocusSource source) {
+    public void onFocusGained(FocusSource source, UIComponent lastFocus) {
         this.focusGainedEvents.sink().onFocusGained(source);
     }
 
@@ -300,7 +303,17 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
-    public UIComponent tooltip(List<ClientTooltipComponent> tooltip) {
+    public BaseUIComponent tooltip(@NotNull BiConsumer<UIComponent, List<Component>> tooltip) {
+        List<Component> tips = new ArrayList<>();
+        tooltip.accept(this, tips);
+        tips.stream()
+                .map(tip -> ClientTooltipComponent.create(tip.getVisualOrderText()))
+                .forEach(this.tooltip::add);
+        return this;
+    }
+
+    @Override
+    public BaseUIComponent tooltip(List<ClientTooltipComponent> tooltip) {
         this.tooltip = tooltip;
         return this;
     }
@@ -346,6 +359,7 @@ public abstract class BaseUIComponent implements UIComponent {
         return containerAccess().screen().getMenu().player();
     }
 
+    @NotNull
     public ItemStack getCarried() {
         if(containerAccess() == null || containerAccess().screen() == null) return ItemStack.EMPTY;
         return containerAccess().screen().getMenu().getCarried();

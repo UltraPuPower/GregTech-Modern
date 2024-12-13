@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public interface UIComponent extends PositionedRectangle {
@@ -95,7 +96,7 @@ public interface UIComponent extends PositionedRectangle {
     UIComponentMenuAccess containerAccess();
 
     @ApiStatus.Internal
-    void containerAccess(UIComponentMenuAccess adapter);
+    void containerAccess(UIComponentMenuAccess access);
 
     default void sendMessage(int id, Consumer<FriendlyByteBuf> writer) {
         this.containerAccess().sendMessage(this, id, writer);
@@ -206,6 +207,14 @@ public interface UIComponent extends PositionedRectangle {
      */
     @Nullable
     String id();
+
+    /**
+     * Set the tooltip this component should display
+     * while hovered
+     *
+     * @param tooltip The tooltip to display
+     */
+    UIComponent tooltip(@NotNull BiConsumer<UIComponent, List<Component>> tooltip);
 
     /**
      * Set the tooltip this component should display
@@ -487,7 +496,7 @@ public interface UIComponent extends PositionedRectangle {
     /**
      * Called when this component gains focus, due to being clicked or selected via tab-cycling
      */
-    void onFocusGained(FocusSource source);
+    void onFocusGained(FocusSource source, UIComponent lastFocus);
 
     EventSource<FocusGained> focusGained();
 

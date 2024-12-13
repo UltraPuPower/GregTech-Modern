@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
@@ -21,9 +20,6 @@ import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.StackLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
@@ -36,8 +32,6 @@ import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.*;
-
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -482,7 +476,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     @Override
-    public @NotNull UIComponent createWidget() {
+    public @NotNull UIComponent createUIComponent() {
         return UIComponents.slot(0);
     }
 
@@ -502,13 +496,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
-        if (widget instanceof SlotWidget slot) {
+        if (widget instanceof SlotComponent slot) {
             if (storage instanceof IItemHandlerModifiable items) {
                 if (index >= 0 && index < items.getSlots()) {
-                    slot.setHandlerSlot(items, index);
-                    slot.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
-                    slot.setCanTakeItems(!isXEI);
-                    slot.setCanPutItems(!isXEI && io.support(IO.IN));
+                    slot.setSlot(items, index);
+                    slot.ingredientIO(io);
+                    slot.canInsert(!isXEI && io.support(IO.IN));
+                    slot.canExtract(!isXEI);
                 }
                 // 1 over container size.
                 // If in a recipe viewer and a research slot can be added, add it.
@@ -526,10 +520,10 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                 dataItems.add(dataStick);
                             }
                             CycleItemStackHandler handler = new CycleItemStackHandler(List.of(dataItems));
-                            slot.setHandlerSlot(handler, 0);
-                            slot.setIngredientIO(IngredientIO.INPUT);
-                            slot.setCanTakeItems(false);
-                            slot.setCanPutItems(false);
+                            slot.setSlot(handler, 0);
+                            slot.ingredientIO(IO.IN);
+                            slot.canInsert(false);
+                            slot.canExtract(false);
                         }
                     }
                 }
@@ -537,8 +531,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             if (content != null) {
                 float chance = (float) recipeType.getChanceFunction()
                         .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
-                slot.setXEIChance(chance);
-                slot.setOnAddedTooltips((w, tooltips) -> {
+                slot.recipeViewerChance(chance);
+                slot.tooltip((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
                             tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
@@ -561,7 +555,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     }
                 });
                 if (io == IO.IN && (content.chance == 0 || this.of(content.content) instanceof IntCircuitIngredient)) {
-                    slot.setIngredientIO(IngredientIO.CATALYST);
+                    slot.ingredientIO(IO.NONE);
                 }
             }
         }

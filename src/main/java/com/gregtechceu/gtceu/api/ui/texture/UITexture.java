@@ -31,6 +31,9 @@ public interface UITexture {
         return this;
     }
 
+    default void draw(UIGuiGraphics graphics, PositionedRectangle rectangle) {
+        this.draw(graphics, 0, 0, rectangle.x(), rectangle.y(), rectangle.width(), rectangle.height());
+    }
 
     void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height);
 

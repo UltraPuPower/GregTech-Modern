@@ -541,8 +541,8 @@ public class GTRecipeTypes {
                         .filter(coil -> coil.getKey().getCoilTemperature() >= temp)
                         .map(coil -> new ItemStack(coil.getValue().get())).toList());
                 widgetGroup.child(UIComponents.slot(new CycleItemStackHandler(items), 0)
-                        .canInsertOverride(false)
-                        .canExtractOverride(false)
+                        .canInsert(false)
+                        .canExtract(false)
                         .positioning(Positioning.relative(100, 100))
                         .margins(Insets.of(0, 40, 0, 25)));
             })
@@ -717,8 +717,8 @@ public class GTRecipeTypes {
                         if (!recipe.conditions.isEmpty() && recipe.conditions.get(0) instanceof RPMCondition) {
                             var handler = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
                             group.child(UIComponents.slot(handler, 0)
-                                    .canInsertOverride(false)
-                                    .canExtractOverride(false)
+                                    .canInsert(false)
+                                    .canExtract(false)
                                     .margins(Insets.of(30)));
                         }
                     });

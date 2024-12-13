@@ -336,7 +336,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .canInsert(true)
                         .canExtract(false)
                         .showAmount(false)
-                        //.fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+                        .fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
                         .positioning(Positioning.absolute(83, 26))
                         .sizing(Sizing.fixed(10), Sizing.fixed(54)))
                 .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), 10, 54)
@@ -354,11 +354,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .sizing(Sizing.fixed(10), Sizing.fixed(54)))
                 .child(UIComponents.texture(GuiTextures.CANISTER_OVERLAY_STEAM.get(isHighPressure), 18, 18)
                         .positioning(Positioning.absolute(43, 44)))
-                .child(UIComponents.playerInventory(menu, getUIItemSlotCount(), GuiTextures.SLOT_STEAM.get(isHighPressure))
+                .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT_STEAM.get(isHighPressure))
                         .positioning(Positioning.absolute(7, 84)));
     }
-
-    abstract int getUIItemSlotCount();
 
     //////////////////////////////////////
     // ********* Client *********//

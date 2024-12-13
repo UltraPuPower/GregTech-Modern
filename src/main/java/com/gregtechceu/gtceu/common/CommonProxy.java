@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.ui.factory.HeldItemUIFactory;
 import com.gregtechceu.gtceu.api.ui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.ui.factory.UIFactory;
@@ -107,12 +108,10 @@ public class CommonProxy {
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
-        // UIFactory.register(MachineUIFactory.INSTANCE);
-        // UIFactory.register(CoverUIFactory.INSTANCE);
-        // UIFactory.register(GTUIEditorFactory.INSTANCE);
 
         UIFactory.register(HeldItemUIFactory.INSTANCE);
         UIFactory.register(MachineUIFactory.INSTANCE);
+        UIFactory.register(CoverUIFactory.INSTANCE);
 
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();

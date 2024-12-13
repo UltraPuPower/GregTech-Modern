@@ -98,6 +98,7 @@ public class StackLayout extends BaseParentUIComponent {
      */
     public StackLayout children(Collection<? extends UIComponent> children) {
         this.children.addAll(children);
+        children.forEach(child -> child.containerAccess(this.parentAccess));
         this.updateLayout();
         return this;
     }
@@ -111,6 +112,7 @@ public class StackLayout extends BaseParentUIComponent {
      */
     public StackLayout child(int index, UIComponent child) {
         this.children.add(index, child);
+        child.containerAccess(this.parentAccess);
         this.updateLayout();
         return this;
     }
@@ -124,6 +126,7 @@ public class StackLayout extends BaseParentUIComponent {
      */
     public StackLayout children(int index, Collection<? extends UIComponent> children) {
         this.children.addAll(index, children);
+        children.forEach(child -> child.containerAccess(this.parentAccess));
         this.updateLayout();
         return this;
     }
@@ -132,6 +135,7 @@ public class StackLayout extends BaseParentUIComponent {
     public StackLayout removeChild(UIComponent child) {
         if (this.children.remove(child)) {
             child.dismount(UIComponent.DismountReason.REMOVED);
+            child.containerAccess(null);
             this.updateLayout();
         }
 
@@ -144,6 +148,7 @@ public class StackLayout extends BaseParentUIComponent {
     public StackLayout clearChildren() {
         for (var child : this.children) {
             child.dismount(DismountReason.REMOVED);
+            child.containerAccess(null);
         }
 
         this.children.clear();

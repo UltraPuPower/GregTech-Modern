@@ -86,12 +86,8 @@ public class UIComponents {
         return new SlotComponent(slot);
     }
 
-    public static PlayerInventoryComponent playerInventory(Inventory inventory) {
-        return new PlayerInventoryComponent(inventory);
-    }
-
-    public static PlayerInventoryComponent playerInventory(AbstractContainerMenu menu, int startSlotIndex, UITexture slotTexture) {
-        return new PlayerInventoryComponent(menu, startSlotIndex, slotTexture);
+    public static PlayerInventoryComponent playerInventory(Inventory inventory, UITexture slotTexture) {
+        return new PlayerInventoryComponent(inventory, slotTexture);
     }
 
     public static PlayerInventoryComponent playerInventory() {

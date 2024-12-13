@@ -1,9 +1,17 @@
-package com.gregtechceu.gtceu.api.gui.widget;
+package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.ScrollContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Color;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.item.ProspectorScannerBehavior;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -40,14 +48,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
-public class ProspectingMapWidget extends WidgetGroup implements SearchComponentWidget.IWidgetSearch<Object> {
+public class ProspectingMapComponent extends UIComponentGroup implements SearchComponent.IComponentSearch<Object> {
 
     private final int chunkRadius;
     private final ProspectorMode mode;
     private final int scanTick;
     @Getter
     private boolean darkMode = false;
-    private final DraggableScrollableWidgetGroup itemList;
+    private final FlowLayout itemList;
     @OnlyIn(Dist.CLIENT)
     private ProspectingTexture texture;
     private int playerChunkX;
@@ -58,26 +66,32 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     private final Set<Object> items = new CopyOnWriteArraySet<>();
     private final Map<String, SelectableWidgetGroup> selectedMap = new ConcurrentHashMap<>();
 
-    public ProspectingMapWidget(int xPosition, int yPosition, int width, int height, int chunkRadius,
-                                @NotNull ProspectorMode mode, int scanTick) {
-        super(xPosition, yPosition, width, height);
+    public ProspectingMapComponent(Sizing horizontalSizing, Sizing verticalSizing, int chunkRadius,
+                                   @NotNull ProspectorMode mode, int scanTick) {
+        super(horizontalSizing, verticalSizing);
         this.chunkRadius = chunkRadius;
         this.mode = mode;
         this.scanTick = scanTick;
         int imageWidth = (chunkRadius * 2 - 1) * 16;
         int imageHeight = (chunkRadius * 2 - 1) * 16;
-        addWidget(new ImageWidget(0, (height - imageHeight) / 2 - 4, imageWidth + 8, imageHeight + 8,
-                GuiTextures.BACKGROUND_INVERSE));
-        var group = (WidgetGroup) new WidgetGroup(imageWidth + 10, 0, width - (imageWidth + 10), height)
-                .setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(itemList = new DraggableScrollableWidgetGroup(4, 28, group.getSize().width - 8,
-                group.getSize().height - 32)
-                .setYScrollBarWidth(2).setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1)));
-        group.addWidget(new SearchComponentWidget<>(6, 6, group.getSize().width - 12, 18, this));
-        addWidget(group);
+        child(UIComponents.texture(GuiTextures.BACKGROUND_INVERSE, imageWidth + 8, imageHeight + 8)
+                .positioning(Positioning.absolute(0, (height - imageHeight) / 2 - 4))
+                .sizing(Sizing.fixed(imageWidth + 8), Sizing.fixed(imageHeight + 8)));
+        var group = (UIComponentGroup) UIContainers.group(Sizing.fixed(width - (imageWidth + 10)), Sizing.fill())
+                //.setBackground(GuiTextures.BACKGROUND_INVERSE)
+                .positioning(Positioning.absolute(imageWidth + 10, 0))
+                .padding(Insets.both(8, 32));
+
+        itemList = UIContainers.verticalFlow(Sizing.fill(), Sizing.fill());
+        group.child(UIContainers.verticalScroll(Sizing.fill(), Sizing.fill(), itemList)
+                .scrollbarThickness(2).scrollbar(ScrollContainer.Scrollbar.flat(Color.T_WHITE)));
+
+        group.child(new SearchComponent<>(6, 6, group.width() - 12, 18, this));
+        child(group);
         addNewItem("[all]", "all resources", IGuiTexture.EMPTY, -1);
     }
 
+    /*
     @Override
     public void writeInitialData(FriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
@@ -98,13 +112,12 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
                 buffer.readVarInt(),
                 gui.entityPlayer.getVisualRotationYInDegrees(), mode, chunkRadius, darkMode);
     }
+    */
 
     public void setDarkMode(boolean mode) {
         if (darkMode != mode) {
             darkMode = mode;
-            if (isRemote()) {
-                texture.setDarkMode(darkMode);
-            }
+            texture.setDarkMode(darkMode);
         }
     }
 

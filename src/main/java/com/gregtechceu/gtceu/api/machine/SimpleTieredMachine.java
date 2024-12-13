@@ -40,6 +40,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -326,26 +328,30 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
     }
 
-    // TODO clear subscriptions when the UI is closed to not leak everything
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
         var recipeTypeProperty = menu.createProperty(int.class, "current_recipe_type", this.getActiveRecipeType());
-        this.setRecipeTypeChangeListener(recipeTypeProperty::set);
+        final int changeListener = this.addRecipeTypeChangeListener(recipeTypeProperty::set);
 
         var progressProperty = menu.createProperty(double.class, "progress", recipeLogic.getProgressPercent());
-        recipeLogic.addProgressPercentListener(progressProperty::set);
+        final int progressListener = recipeLogic.addProgressPercentListener(progressProperty::set);
+
+        final IntList[] inputFluidsToClose = new IntList[this.importFluids.getTanks()];
+        final IntList[] outputFluidsToClose = new IntList[this.exportFluids.getTanks()];
 
         for (int i = 0; i < this.importFluids.getTanks(); i++) {
             SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-in." + i,
                     this.importFluids.getFluidInTank(i));
             CustomFluidTank tank = this.importFluids.getStorages()[i];
-            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
+            inputFluidsToClose[i] = new IntArrayList();
+            inputFluidsToClose[i].add(tank.addOnContentsChanged(() -> prop.set(tank.getFluid())));
         }
         for (int i = 0; i < this.exportFluids.getTanks(); i++) {
             SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-out." + i,
                     this.exportFluids.getFluidInTank(i));
             CustomFluidTank tank = this.exportFluids.getStorages()[i];
-            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
+            outputFluidsToClose[i] = new IntArrayList();
+            outputFluidsToClose[i].add(tank.addOnContentsChanged(() -> prop.set(tank.getFluid())));
         }
         // Position all slots at 0,0 as they'll be moved to the correct position on the client.
         SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
@@ -356,13 +362,31 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             generator.slot(this.exportItems, i, 0, 0);
         }
         generator.playerInventory(menu.getPlayerInventory());
+
+        // clear up all listener references
+        menu.setCloseCallback(p -> {
+            this.removeRecipeTypeChangeListener(changeListener);
+            recipeLogic.removeProgressPercentListener(progressListener);
+            var importStorages = this.importFluids.getStorages();
+            for (int i = 0; i < inputFluidsToClose.length; i++) {
+                for (int j : inputFluidsToClose[i]) {
+                    importStorages[i].removeOnContersChanged(j);
+                }
+            }
+            var exportStorages = this.exportFluids.getStorages();
+            for (int i = 0; i < outputFluidsToClose.length; i++) {
+                for (int j : outputFluidsToClose[i]) {
+                    exportStorages[i].removeOnContersChanged(j);
+                }
+            }
+        });
     }
 
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
                 UIComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-                UIComponentGroup batterySlot = createBatterySlot().createDefault();
+                SlotComponent batterySlot = createBatterySlot().createDefault();
                 UIComponentGroup group = UIContainers.group(Sizing.content(),
                         Sizing.fixed(Math.max(template.height(), 78)));
                 group.positioning(Positioning.relative(50, 50));
@@ -406,19 +430,16 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     /**
      * Create an energy bar widget.
      */
-    protected static EditableUI<UIComponentGroup, SimpleTieredMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", UIComponentGroup.class, () -> {
-            var full = UIContainers.group(Sizing.fixed(18), Sizing.fixed(18));
-            var component = UIComponents.slot(0);
-            var texture = UIComponents.texture(UITextures.group(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY), 18, 18);
-            full.children(List.of(component, texture));
-            return full;
+    protected static EditableUI<SlotComponent, SimpleTieredMachine> createBatterySlot() {
+        return new EditableUI<>("battery_slot", SlotComponent.class, () -> {
+            var slot = UIComponents.slot(0);
+            slot.backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY));
+            return slot;
         }, (component, adapter, machine) -> {
-            SlotComponent slot = (SlotComponent) component.children().get(0);
-            slot.setSlot(machine.chargerInventory, 0);
-            slot.canExtractOverride(true);
-            slot.canInsertOverride(true);
-            slot.tooltip(new ArrayList<>(
+            component.setSlot(machine.chargerInventory, 0);
+            component.canExtract(true);
+            component.canInsert(true);
+            component.tooltip(new ArrayList<>(
                     LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
                             GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()])
             ));
@@ -428,19 +449,16 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     /**
      * Create an energy bar widget.
      */
-    protected static EditableUI<UIComponentGroup, SimpleTieredMachine> createCircuitConfigurator() {
-        return new EditableUI<>("circuit_configurator", UIComponentGroup.class, () -> {
-            var full = UIContainers.group(Sizing.fixed(18), Sizing.fixed(18));
+    protected static EditableUI<GhostCircuitSlotComponent, SimpleTieredMachine> createCircuitConfigurator() {
+        return new EditableUI<>("circuit_configurator", GhostCircuitSlotComponent.class, () -> {
             var component = new GhostCircuitSlotComponent();
-            var texture = UIComponents.texture(UITextures.group(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY), 18, 18);
-            full.children(List.of(component, texture));
-            return full;
+            component.backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY));
+            return component;
         }, (component, adapter, machine) -> {
-            GhostCircuitSlotComponent slot = (GhostCircuitSlotComponent) component.children().get(0);
-            slot.setCircuitInventory(machine.circuitInventory);
-            slot.canExtractOverride(false);
-            slot.canInsertOverride(false);
-            slot.tooltip(new ArrayList<>(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip")));
+            component.setCircuitInventory(machine.circuitInventory);
+            component.canExtract(false);
+            component.canInsert(false);
+            component.tooltip(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip"));
         });
     }
 

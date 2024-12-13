@@ -1,10 +1,9 @@
-package com.gregtechceu.gtceu.api.gui.widget;
+package com.gregtechceu.gtceu.api.ui.component;
 
+import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.utils.GTMath;
-
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -17,23 +16,14 @@ import java.util.function.Supplier;
  * The input is limited by a minimum and maximum value.
  * </p>
  */
-public class LongInputWidget extends NumberInputWidget<Long> {
+public class LongInputComponent extends NumberInputComponent<Long> {
 
-    public LongInputWidget(Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
+    public LongInputComponent(Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
         super(valueSupplier, onChanged);
     }
 
-    public LongInputWidget(Position position, Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
-        super(position, valueSupplier, onChanged);
-    }
-
-    public LongInputWidget(Position position, Size size, Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
-        super(position, size, valueSupplier, onChanged);
-    }
-
-    public LongInputWidget(int x, int y, int width, int height, Supplier<Long> valueSupplier,
-                           Consumer<Long> onChanged) {
-        super(x, y, width, height, valueSupplier, onChanged);
+    public LongInputComponent(Sizing horizontalSizing, Sizing verticalSizing, Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
+        super(horizontalSizing, verticalSizing, valueSupplier, onChanged);
     }
 
     @Override
@@ -77,7 +67,7 @@ public class LongInputWidget extends NumberInputWidget<Long> {
     }
 
     @Override
-    protected void setTextFieldRange(TextFieldWidget textField, Long min, Long max) {
+    protected void setTextFieldRange(TextBoxComponent textField, Long min, Long max) {
         textField.setNumbersOnly(min, max);
     }
 

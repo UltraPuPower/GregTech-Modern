@@ -1,11 +1,16 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Color;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
+import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -13,6 +18,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
@@ -30,6 +36,7 @@ import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -52,10 +59,56 @@ public class TankComponent extends BaseUIComponent {
     @Setter
     protected boolean canExtract = true;
 
+    @Nullable
+    protected Integer fluidObserverIndex;
+
+    @Setter
+    protected Runnable changeListener;
+    @Getter
+    @Setter
+    protected IO ingredientIO;
+    @Getter
+    @Setter
+    protected UITexture backgroundTexture;
+    @Getter
+    @Setter
+    protected UITexture overlayTexture;
+    @Getter
+    @Setter
+    protected ProgressTexture.FillDirection fillDirection;
+    @Setter
+    @Getter
+    protected float recipeViewerChance = 1f;
+
     protected TankComponent(IFluidHandler fluidHandler, int tank) {
         this.handler = fluidHandler;
         this.tank = tank;
+        this.sizing(Sizing.fixed(18));
         Observable.observeAll(this::updateListener, this.lastFluidInTank);
+    }
+
+    @Override
+    public void mount(ParentUIComponent parent, int x, int y) {
+        super.mount(parent, x, y);
+        if (handler == null && this.id() != null) {
+            SyncedProperty<FluidStack> foundProp = containerAccess().screen().getMenu().getProperty(this.id());
+            if (foundProp != null) {
+                fluidObserverIndex = foundProp.observe(lastFluidInTank::set);
+            }
+        }
+    }
+
+    @Override
+    public void dismount(DismountReason reason) {
+        if (reason == DismountReason.REMOVED && fluidObserverIndex != null) {
+            if (handler == null && this.id() != null) {
+                SyncedProperty<FluidStack> foundProp = containerAccess().screen().getMenu().getProperty(this.id());
+                if (foundProp != null) {
+                    foundProp.removeObserver(fluidObserverIndex);
+                }
+            }
+        }
+        super.dismount(reason);
     }
 
     public TankComponent setFluidTank(IFluidHandler handler) {
@@ -78,6 +131,10 @@ public class TankComponent extends BaseUIComponent {
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
+        if (backgroundTexture != null) {
+            backgroundTexture.draw(graphics, mouseX, mouseY, x(), y(), width(), height());
+        }
+
         if (handler != null) {
             FluidStack stack = handler.getFluidInTank(tank);
             int capacity = handler.getTankCapacity(tank);
@@ -117,6 +174,10 @@ public class TankComponent extends BaseUIComponent {
             }
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.f, 1.f, 1.f, 1.f);
+        }
+
+        if (overlayTexture != null) {
+            overlayTexture.draw(graphics, mouseX, mouseY, x(), y(), width(), height());
         }
 
         if (hovered) {
@@ -241,12 +302,12 @@ public class TankComponent extends BaseUIComponent {
 
     @Override
     protected int determineHorizontalContentSize(Sizing sizing) {
-        return 16;
+        return 18;
     }
 
     @Override
     protected int determineVerticalContentSize(Sizing sizing) {
-        return 16;
+        return 18;
     }
 
     @NotNull

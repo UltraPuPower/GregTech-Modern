@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.gui.util;
+package com.gregtechceu.gtceu.api.ui.util;
 
 import java.util.function.DoubleSupplier;
 

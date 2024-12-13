@@ -8,10 +8,13 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public interface UIComponentStub extends UIComponent {
@@ -33,7 +36,7 @@ public interface UIComponentStub extends UIComponent {
 
     @ApiStatus.Internal
     @Override
-    default void containerAccess(UIComponentMenuAccess adapter) {
+    default void containerAccess(UIComponentMenuAccess access) {
         throw new IllegalStateException("Interface stub method called");
     }
 
@@ -99,6 +102,11 @@ public interface UIComponentStub extends UIComponent {
 
     @Override
     default UIComponent cursorStyle(CursorStyle style) {
+        throw new IllegalStateException("Interface stub method called");
+    }
+
+    @Override
+    default UIComponent tooltip(@NotNull BiConsumer<UIComponent, List<Component>> tooltip) {
         throw new IllegalStateException("Interface stub method called");
     }
 
@@ -198,6 +206,16 @@ public interface UIComponentStub extends UIComponent {
     }
 
     @Override
+    default boolean onMouseMoved(double mouseX, double mouseY) {
+        throw new IllegalStateException("Interface stub method called");
+    }
+
+    @Override
+    default EventSource<MouseMoved> mouseMoved() {
+        throw new IllegalStateException("Interface stub method called");
+    }
+
+    @Override
     default boolean onKeyPress(int keyCode, int scanCode, int modifiers) {
         throw new IllegalStateException("Interface stub method called");
     }
@@ -218,7 +236,7 @@ public interface UIComponentStub extends UIComponent {
     }
 
     @Override
-    default void onFocusGained(FocusSource source) {
+    default void onFocusGained(FocusSource source, UIComponent lastFocus) {
         throw new IllegalStateException("Interface stub method called");
     }
 

@@ -65,8 +65,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item
-                           implements HeldItemUIFactory.IHeldItemUIHolder, HeldItemUIHolder.IHeldItemUIConstructor,
-                           IItemRendererProvider, IComponentItem {
+                           implements HeldItemUIHolder.IHeldItemUIConstructor, IItemRendererProvider, IComponentItem {
 
     protected int burnTime = -1;
 
@@ -297,17 +296,6 @@ public class ComponentItem extends Item
             }
         }
         return super.getDescriptionId(stack);
-    }
-
-    @Override
-    @Nullable
-    public ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
-        for (IItemComponent component : components) {
-            if (component instanceof IItemUIFactory uiFactory) {
-                return uiFactory.createUI(holder, entityPlayer);
-            }
-        }
-        return null;
     }
 
     @Override

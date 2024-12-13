@@ -2,9 +2,15 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
+import com.gregtechceu.gtceu.api.ui.component.ScrollablePhantomFluidComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -38,7 +44,8 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
 
-    protected Consumer<FluidFilter> itemWriter = filter -> {};
+    protected Consumer<FluidFilter> itemWriter = filter -> {
+    };
     protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
@@ -97,7 +104,9 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     public UIComponent openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+        UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
+        GridLayout grid = UIContainers.grid(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3), 3, 3); // 80 55
+        grid.positioning(Positioning.absolute(x, y));
         fluidStorageSlots = new CustomFluidTank[9];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -106,35 +115,32 @@ public class SimpleFluidFilter implements FluidFilter {
                 fluidStorageSlots[index] = new CustomFluidTank(maxStackSize);
                 fluidStorageSlots[index].setFluid(matches[index]);
 
-                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18, 18,
+                var tank = new ScrollablePhantomFluidComponent(fluidStorageSlots[index], 0,
                         () -> fluidStorageSlots[index].getFluid(),
                         (fluid) -> fluidStorageSlots[index].setFluid(fluid)) {
 
                     @Override
-                    public void updateScreen() {
-                        super.updateScreen();
-                        setShowAmount(maxStackSize > 1L);
-                    }
-
-                    @Override
-                    public void detectAndSendChanges() {
-                        super.detectAndSendChanges();
-                        setShowAmount(maxStackSize > 1L);
+                    public void update(float delta, int mouseX, int mouseY) {
+                        super.update(delta, mouseX, mouseY);
+                        showAmount(maxStackSize > 1);
                     }
                 };
 
-                tank.setChangeListener(() -> {
+                tank.changeListener(() -> {
                     matches[index] = fluidStorageSlots[index].getFluidInTank(0);
                     onUpdated.accept(this);
-                }).setBackground(GuiTextures.SLOT);
+                }).backgroundTexture(GuiTextures.SLOT);
 
-                group.addWidget(tank);
+                grid.child(tank, j, i);
             }
         }
-        group.addWidget(new ToggleButtonComponent(18 * 3 + 5, 0, 20, 20,
-                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonComponent(18 * 3 + 5, 20, 20, 20,
-                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
+        group.child(grid);
+        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList)
+                .positioning(Positioning.absolute(18 * 3 + 5, 0))
+                .sizing(Sizing.fixed(20)));
+        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt)
+                .positioning(Positioning.absolute(18 * 3 + 5, 20))
+                .sizing(Sizing.fixed(20)));
         return group;
     }
 
@@ -181,4 +187,5 @@ public class SimpleFluidFilter implements FluidFilter {
                 match.setAmount(Math.min(match.getAmount(), maxStackSize));
         }
     }
+
 }

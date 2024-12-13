@@ -5,13 +5,19 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -20,6 +26,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -73,14 +80,30 @@ public class StorageCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 126, 87);
-
-        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle())));
-
+    public void loadServerUI(Player player, UIContainerMenu<CoverBehavior> menu, CoverBehavior holder) {
+        var generator = SlotGenerator.begin(menu::addSlot, 0, 0);
         for (int slot = 0; slot < SIZE; slot++) {
-            group.addWidget(new SlotWidget(inventory, slot, 7 + (slot % 6) * 18, 21 + (slot / 6) * 18));
+            generator.slot(inventory, slot, 0, 0);
         }
+    }
+
+    @Override
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
+        var menu = adapter.menu();
+
+        final var group = UIContainers.group(Sizing.fixed(126), Sizing.fixed(87));
+
+        group.child(UIComponents.label(Component.translatable(getUITitle()))
+                .positioning(Positioning.absolute(10, 5)));
+
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 1, SIZE);
+        grid.positioning(Positioning.absolute(7, 21));
+        for (int slot = 0; slot < SIZE; slot++) {
+            grid.child(UIComponents.slot(menu.getSlot(slot))
+                    .positioning(Positioning.absolute((slot % 6) * 18, (slot / 6) * 18)),
+                    0, slot);
+        }
+        group.child(grid);
 
         return group;
     }
@@ -102,16 +125,18 @@ public class StorageCover extends CoverBehavior implements IUICover {
         }
 
         @Override
-        public IGuiTexture getIcon() {
+        public UITexture getIcon() {
             return GuiTextures.MAINTENANCE_ICON;
         }
 
         @Override
-        public Widget createConfigurator() {
-            final var group = new WidgetGroup(0, 0, 126, 87);
+        public UIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
+            final var group = UIContainers.group(Sizing.fixed(126), Sizing.fixed(87));
+            group.padding(Insets.both(7, 21));
 
             for (int slot = 0; slot < SIZE; slot++) {
-                group.addWidget(new SlotWidget(inventory, slot, 7 + (slot % 6) * 18, 21 + (slot / 6) * 18));
+                group.child(UIComponents.slot(inventory, slot)
+                        .positioning(Positioning.absolute((slot % 6) * 18, (slot / 6) * 18)));
             }
 
             return group;

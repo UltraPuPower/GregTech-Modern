@@ -8,10 +8,7 @@ import com.gregtechceu.gtceu.api.ui.component.*;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.ui.component.CoverConfigurator;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
@@ -46,7 +43,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
     private ConfiguratorPanelComponent panel;
     private ConfiguratorPanelComponent.FloatingTab coverConfigurator;
 
-    private SlotComponent slotWidget;
+    private SlotComponent slotComponent;
     private CoverBehavior coverBehavior;
 
     public CoverableConfigHandler(ICoverable machine) {
@@ -78,7 +75,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         FlowLayout group = UIContainers.horizontalFlow(Sizing.content(1), Sizing.content());
         this.panel = machineUI.configuratorPanel();
 
-        group.child(slotWidget = (SlotComponent) UIComponents.slot(handler, 0)
+        group.child(slotComponent = (SlotComponent) UIComponents.slot(handler, 0)
                 .changeListener(this::coverItemChanged)
                 .positioning(Positioning.absolute(19, 0))
                 .sizing(Sizing.fixed(18)));
@@ -174,13 +171,13 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
             }
 
             @Override
-            public ParentUIComponent createConfigurator() {
+            public ParentUIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
                 UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content(10));
 
                 if (side == null || !(coverable.getCoverAtSide(side) instanceof IUICover iuiCover))
                     return group;
 
-                ParentUIComponent coverConfigurator = iuiCover.createUIWidget();
+                ParentUIComponent coverConfigurator = iuiCover.createUIWidget(adapter);
                 coverConfigurator.moveTo(coverConfigurator.x() - 1, coverConfigurator.y() - 20);
 
                 group.child(coverConfigurator);

@@ -202,13 +202,12 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         group.positioning(pos);
         screenGroup.child(group);
 
-        int itemSlotCount = importItems.getSlots() + exportItems.getSlots();
         screenGroup.child(UIComponents.label(getBlockState().getBlock().getName())
                 .positioning(Positioning.relative(0, 0)));
         screenGroup.child(new PredicatedTextureComponent(GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure), 18, 18)
                 .positioning(Positioning.absolute(pos.x + group.width() / 2 - 9,
                         pos.y + group.height() / 2 - 9)))
-                .child(UIComponents.playerInventory(adapter.screen().getMenu(), itemSlotCount, GuiTextures.SLOT));
+                .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT));
 
         rootComponent.child(screenGroup);
     }

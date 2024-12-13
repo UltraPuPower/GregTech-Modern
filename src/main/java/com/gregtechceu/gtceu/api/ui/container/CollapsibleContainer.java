@@ -138,6 +138,7 @@ public class CollapsibleContainer extends FlowLayout {
     @Override
     public FlowLayout children(Collection<? extends UIComponent> children) {
         this.collapsibleChildren.addAll(children);
+        children.forEach(child -> child.containerAccess(this.parentAccess));
         if (this.expanded) this.contentLayout.children(children);
         return this;
     }
@@ -145,6 +146,7 @@ public class CollapsibleContainer extends FlowLayout {
     @Override
     public FlowLayout child(int index, UIComponent child) {
         this.collapsibleChildren.add(index, child);
+        child.containerAccess(this.parentAccess);
         if (this.expanded) this.contentLayout.child(index, child);
         return this;
     }
@@ -152,6 +154,7 @@ public class CollapsibleContainer extends FlowLayout {
     @Override
     public FlowLayout children(int index, Collection<? extends UIComponent> children) {
         this.collapsibleChildren.addAll(index, children);
+        children.forEach(child -> child.containerAccess(this.parentAccess));
         if (this.expanded) this.contentLayout.children(index, children);
         return this;
     }

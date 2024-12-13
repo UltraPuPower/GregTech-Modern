@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -82,23 +83,12 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-        int xOffset = inventorySize >= 90 ? 162 : 0;
-        int yOverflow = xOffset > 0 ? 18 : 9;
-        int yOffset = inventorySize > 3 * yOverflow ?
-                (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
-
-        int x = 0;
-        int y = 0;
+        var generator = SlotGenerator.begin(menu::addSlot, 0, 0);
         for (int slot = 0; slot < inventorySize; slot++) {
-            menu.addSlot(new SlotItemHandler(inventory, slot, x * 18 + 8, y * 18 + 18));
-            x++;
-            if (x == yOverflow) {
-                x = 0;
-                y++;
-            }
+            generator.slot(inventory, slot, 0, 0);
         }
 
-        PlayerInventoryComponent.addServerInventory(menu, player.getInventory(), 8 + xOffset / 2, 83 + yOffset);
+        generator.playerInventory(player.getInventory());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -116,7 +106,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
         rootComponent.child(parent = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset), Sizing.fixed(166 + yOffset))
                 .child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(5, 5)))
-                .child(UIComponents.playerInventory(adapter.screen().getMenu(), inventorySize, GuiTextures.SLOT)
+                .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT)
                         .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset)))
                 .positioning(Positioning.relative(50, 50))
                 .surface(Surface.UI_BACKGROUND));

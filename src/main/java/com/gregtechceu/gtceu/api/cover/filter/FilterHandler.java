@@ -71,8 +71,8 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     public UIComponent createFilterSlotUI(int xPos, int yPos) {
         return UIComponents.slot(getFilterSlot(), 0)
                 .changeListener(this::updateFilter)
-                .positioning(Positioning.absolute(xPos, yPos))
-                .setBackgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY));
+                .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY))
+                .positioning(Positioning.absolute(xPos, yPos));
     }
 
     public UIComponent createFilterConfigUI(int xPos, int yPos, int width, int height) {

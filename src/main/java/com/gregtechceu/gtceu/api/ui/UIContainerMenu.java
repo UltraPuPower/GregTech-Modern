@@ -49,6 +49,9 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     private T holder;
     private final boolean isClient;
 
+    @Setter
+    private Consumer<Player> closeCallback;
+
     public static <T> UIContainerMenu<T> initClient(int containerId, Inventory playerInventory, @Nullable FriendlyByteBuf data) {
         if (data != null) {
             ResourceLocation uiFactoryId = data.readResourceLocation();
@@ -96,7 +99,6 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
         if (holder == null) {
             return;
         }
-        addAllSlots();
     }
 
     public void clear() {
@@ -105,18 +107,12 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
         ((AbstractContainerMenuAccessor) this).gtceu$getRemoteSlots().clear();
     }
 
-    public void addAllSlots() {
-        /*
-        rootComponent.forEachDescendant(child -> {
-            // hard-code this as I can't think of a feasible way to do it automatically
-            if (child instanceof PlayerInventoryComponent inventoryComponent) {
-                inventoryComponent.setInventory(this.playerInventory);
-            }
-            if (child instanceof SlotComponent slot) {
-                addSlotComponent(slot.slot(), slot);
-            }
-        });
-        */
+    @Override
+    public void removed(Player player) {
+        if (closeCallback != null) {
+            closeCallback.accept(player);
+        }
+        super.removed(player);
     }
 
     // WARNING! WIDGET CHANGES SHOULD BE *STRICTLY* SYNCHRONIZED BETWEEN SERVER AND CLIENT,

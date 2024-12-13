@@ -438,7 +438,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     @Override
-    public ParentUIComponent createUIWidget() {
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
         final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(137));
         group.padding(Insets.both(10, 5));
         group.child(UIComponents.label(Component.translatable(getUITitle(), GTValues.VN[tier])));

@@ -295,15 +295,15 @@ public class GTRecipeTypeUI {
             }
             int capCount = entry.getValue();
             for (int slotIndex = 0; slotIndex < capCount; slotIndex++) {
-                var slot = cap.createWidget();
+                var component = cap.createUIComponent();
                 //noinspection DataFlowIssue
-                slot.positioning(Positioning.absolute((index % 3) * 18, (index / 3) * 18))
+                component.positioning(Positioning.absolute((index % 3) * 18, (index / 3) * 18))
                         .id(cap.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
                 var texture = UIComponents.texture(getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure), 18, 18);
 
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
-                layout.children(List.of(slot, texture));
-                group.child(slot, index % 3, index / 3);
+                layout.children(List.of(component, texture));
+                group.child(component, index % 3, index / 3);
                 index++;
             }
             // move to new row

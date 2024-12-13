@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHand
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -83,7 +83,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
         return group;
     }
 
-    private void onIOModePressed(ButtonComponent button) {
+    private void onIOModePressed(ClickData button) {
         if (this.side == null)
             return;
 

@@ -2,31 +2,35 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.LongInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -54,8 +58,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     @Getter
     private boolean usePercent;
 
-    private LongInputWidget minValueInput;
-    private LongInputWidget maxValueInput;
+    private LongInputComponent minValueInput;
+    private LongInputComponent maxValueInput;
 
     public AdvancedEnergyDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -109,52 +113,84 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     // *********** GUI ***********//
     //////////////////////////////////////
 
+
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 105);
-        group.addWidget(new LabelWidget(10, 5, "cover.advanced_energy_detector.label"));
+    public void loadServerUI(Player player, UIContainerMenu<CoverBehavior> menu, CoverBehavior holder) {
+        menu.addServerboundMessage(UpdateMinValue.class, msg -> setMinValue(msg.value()));
+        menu.addServerboundMessage(UpdateMaxValue.class, msg -> setMaxValue(msg.value()));
+        menu.addServerboundMessage(UpdateUsePercent.class, msg -> setUsePercent(msg.value()));
+        menu.addServerboundMessage(UpdateInverted.class, msg -> setInverted(msg.value()));
+    }
 
-        group.addWidget(new TextBoxWidget(10, 55, 25,
-                List.of(LocalizationUtils.format("cover.advanced_energy_detector.min"))));
+    @Override
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
+        var menu = adapter.menu();
 
-        group.addWidget(new TextBoxWidget(10, 80, 25,
-                List.of(LocalizationUtils.format("cover.advanced_energy_detector.max"))));
+        UIComponentGroup group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(105));
+        group.child(UIComponents.label(Component.translatable("cover.advanced_energy_detector.label"))
+                .positioning(Positioning.absolute(10, 5)));
 
-        minValueInput = new LongInputWidget(40, 50, 176 - 40 - 10, 20, this::getMinValue, this::setMinValue);
-        maxValueInput = new LongInputWidget(40, 75, 176 - 40 - 10, 20, this::getMaxValue, this::setMaxValue);
+        group.child(UIComponents.textArea(Sizing.fixed(25), Sizing.content(),
+                Component.translatable("cover.advanced_energy_detector.min").getString())
+                .positioning(Positioning.absolute(10, 55)));
+
+        group.child(UIComponents.textArea(Sizing.fixed(25), Sizing.content(),
+                Component.translatable("cover.advanced_energy_detector.max").getString())
+                .positioning(Positioning.absolute(10, 80)));
+
+        minValueInput = new LongInputComponent(Sizing.fixed(176 - 40 - 10), Sizing.fixed(20),
+                this::getMinValue, value -> {
+            this.setMinValue(value);
+            menu.sendMessage(new UpdateMinValue(value));
+        });
+        minValueInput.positioning(Positioning.absolute(40, 50));
+        maxValueInput = new LongInputComponent(Sizing.fixed(176 - 40 - 10), Sizing.fixed(20),
+                this::getMaxValue, value -> {
+            this.setMaxValue(value);
+            menu.sendMessage(new UpdateMaxValue(value));
+        });
+        maxValueInput.positioning(Positioning.absolute(40, 75));
         initializeMinMaxInputs(usePercent);
-        group.addWidget(minValueInput);
-        group.addWidget(maxValueInput);
+        group.child(minValueInput);
+        group.child(maxValueInput);
 
         // Invert Redstone Output Toggle:
-        group.addWidget(new ToggleButtonComponent(
-                9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
+        group.child(new ToggleButtonComponent(GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, value -> {
+            this.setInverted(value);
+            menu.sendMessage(new UpdateInverted(value));
+        }) {
 
             @Override
-            public void updateScreen() {
-                super.updateScreen();
-                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_energy_detector.invert." + (isPressed ? "enabled" : "disabled"))));
+            public void update(float delta, int mouseX, int mouseY) {
+                super.update(delta, mouseX, mouseY);
+                tooltip(LangHandler.getMultiLang(
+                        "cover.advanced_energy_detector.invert." + (pressed ? "enabled" : "disabled")));
             }
-        });
+        }.positioning(Positioning.absolute(9, 20)).sizing(Sizing.fixed(20)));
 
         // Mode (EU / Percent) Toggle:
-        group.addWidget(new ToggleButtonComponent(
-                176 - 29, 20, 20, 20,
-                GuiTextures.ENERGY_DETECTOR_COVER_MODE_BUTTON, this::isUsePercent, this::setUsePercent) {
+        group.child(new ToggleButtonComponent(GuiTextures.ENERGY_DETECTOR_COVER_MODE_BUTTON, this::isUsePercent,
+                value -> {
+                    this.setUsePercent(value);
+                    menu.sendMessage(new UpdateUsePercent(value));
+                }) {
 
             @Override
-            public void updateScreen() {
-                super.updateScreen();
-
-                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_energy_detector.use_percent." + (isPressed ? "enabled" : "disabled"))));
+            public void update(float delta, int mouseX, int mouseY) {
+                super.update(delta, mouseX, mouseY);
+                tooltip(LangHandler.getMultiLang(
+                        "cover.advanced_energy_detector.use_percent." + (pressed ? "enabled" : "disabled")));
             }
-        });
+        }.positioning(Positioning.absolute(167 - 29, 20))
+                .sizing(Sizing.fixed(20)));
 
         return group;
     }
+
+    public record UpdateMinValue(long value) {}
+    public record UpdateMaxValue(long value) {}
+    public record UpdateUsePercent(boolean value) {}
+    public record UpdateInverted(boolean value) {}
 
     private void initializeMinMaxInputs(boolean wasPercent) {
         if (LDLib.isRemote() || minValueInput == null || maxValueInput == null)
