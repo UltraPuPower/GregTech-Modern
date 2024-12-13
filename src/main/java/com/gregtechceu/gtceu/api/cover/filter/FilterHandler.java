@@ -7,6 +7,13 @@ import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -41,7 +48,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
     private @Nullable F filter;
     private @Nullable CustomItemStackHandler filterSlot;
-    private @Nullable WidgetGroup filterGroup;
+    private @Nullable UIComponentGroup filterGroup;
 
     private @NotNull Consumer<F> onFilterLoaded = (filter) -> {};
     private @NotNull Consumer<F> onFilterRemoved = (filter) -> {};
@@ -61,16 +68,18 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     // ***** PUBLIC API ******//
     //////////////////////////////////
 
-    public Widget createFilterSlotUI(int xPos, int yPos) {
-        return new SlotWidget(getFilterSlot(), 0, xPos, yPos)
-                .setChangeListener(this::updateFilter)
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY));
+    public UIComponent createFilterSlotUI(int xPos, int yPos) {
+        return UIComponents.slot(getFilterSlot(), 0)
+                .changeListener(this::updateFilter)
+                .positioning(Positioning.absolute(xPos, yPos))
+                .setBackgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY));
     }
 
-    public Widget createFilterConfigUI(int xPos, int yPos, int width, int height) {
-        this.filterGroup = new WidgetGroup(xPos, yPos, width, height);
+    public UIComponent createFilterConfigUI(int xPos, int yPos, int width, int height) {
+        this.filterGroup = UIContainers.group(Sizing.fixed(width), Sizing.fixed(height));
+        filterGroup.positioning(Positioning.absolute(xPos, yPos));
         if (!this.filterItem.isEmpty()) {
-            this.filterGroup.addWidget(getFilter().openConfigurator(0, 0));
+            this.filterGroup.child(getFilter().openConfigurator(0, 0));
         }
 
         return this.filterGroup;
@@ -164,10 +173,10 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         if (this.filterGroup == null)
             return;
 
-        this.filterGroup.clearAllWidgets();
+        this.filterGroup.clearChildren();
 
         if (!this.filterItem.isEmpty() && this.filter != null) {
-            this.filterGroup.addWidget(this.filter.openConfigurator(0, 0));
+            this.filterGroup.child(this.filter.openConfigurator(0, 0));
         }
     }
 

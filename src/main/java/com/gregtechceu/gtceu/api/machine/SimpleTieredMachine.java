@@ -365,6 +365,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                 UIComponentGroup batterySlot = createBatterySlot().createDefault();
                 UIComponentGroup group = UIContainers.group(Sizing.content(),
                         Sizing.fixed(Math.max(template.height(), 78)));
+                group.positioning(Positioning.relative(50, 50));
                 template.positioning(Positioning.relative(50, 50));
                 batterySlot.positioning(Positioning.absolute(group.width() / 2 - 9, group.height() - 18));
                 group.child(batterySlot);

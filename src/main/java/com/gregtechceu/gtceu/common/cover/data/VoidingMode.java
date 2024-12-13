@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import lombok.Getter;
 
-public enum VoidingMode implements EnumSelectorWidget.SelectableEnum {
+public enum VoidingMode implements EnumSelectorComponent.SelectableEnum {
 
     VOID_ANY("cover.voiding.voiding_mode.void_any", "void_any", 1),
     VOID_OVERFLOW("cover.voiding.voiding_mode.void_overflow", "void_overflow", 1024);

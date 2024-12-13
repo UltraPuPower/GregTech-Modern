@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -236,8 +237,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public ParentUIComponent createBaseUIComponent() {
-        WidgetGroup builder = (WidgetGroup) super.createBaseUIComponent();
+    public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
+        WidgetGroup builder = (WidgetGroup) super.createBaseUIComponent(component);
         // Create the hover grid
         builder.addWidget(new ExtendedProgressWidget(
                 () -> hpcaHandler.getAllocatedCWUt() > 0 ? progressSupplier.getAsDouble() : 0,

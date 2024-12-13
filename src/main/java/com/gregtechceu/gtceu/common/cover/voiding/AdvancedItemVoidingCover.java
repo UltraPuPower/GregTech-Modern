@@ -6,9 +6,13 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -38,7 +42,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     @Getter
     protected int globalVoidingLimit = 1;
 
-    private IntInputWidget stackSizeInput;
+    private IntInputComponent stackSizeInput;
 
     public AdvancedItemVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -100,7 +104,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
         configureStackSizeInput();
 
-        if (!this.isRemote()) {
+        if (!this.isClientSide()) {
             configureFilter();
         }
     }
@@ -115,15 +119,17 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
+    protected void buildAdditionalUI(UIComponentGroup group) {
+        group.child(
+                new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20), VoidingMode.values(), voidingMode, this::setVoidingMode)
+                        .positioning(Positioning.absolute(146, 20)));
 
-        this.stackSizeInput = new IntInputWidget(64, 20, 80, 20,
-                () -> globalVoidingLimit, val -> globalVoidingLimit = val);
+        this.stackSizeInput = new IntInputComponent(() -> globalVoidingLimit, val -> globalVoidingLimit = val);
         configureStackSizeInput();
+        stackSizeInput.positioning(Positioning.absolute(64, 20))
+                        .sizing(Sizing.fixed(80), Sizing.fixed(20));
 
-        group.addWidget(this.stackSizeInput);
+        group.child(this.stackSizeInput);
     }
 
     @Override

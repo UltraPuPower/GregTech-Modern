@@ -11,21 +11,22 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -36,6 +37,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -93,7 +95,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
-    private Widget ioModeSwitch;
+    private UIComponent ioModeSwitch;
 
     @Persisted
     @DescSynced
@@ -137,7 +139,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -195,7 +198,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     //////////////////////////////////////
     // ***** Transfer Logic *****//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
@@ -425,40 +429,52 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     //////////////////////////////////////
     // *********** GUI ***********//
-    //////////////////////////////////////
-    @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
 
-        group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
+    /// ///////////////////////////////////
+
+    @Override
+    public void loadServerUI(Player player, UIContainerMenu<CoverBehavior> menu, CoverBehavior holder) {
+
+    }
+
+    @Override
+    public ParentUIComponent createUIWidget() {
+        final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(137));
+        group.padding(Insets.both(10, 5));
+        group.child(UIComponents.label(Component.translatable(getUITitle(), GTValues.VN[tier])));
+
+        group.child(new IntInputComponent(Sizing.fixed(156), Sizing.fixed(20), () -> this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
 
-        ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
-                (clickData, value) -> {
+        ioModeSwitch = UIComponents.switchComponent((clickData, value) -> {
                     setIo(value ? IO.IN : IO.OUT);
-                    ioModeSwitch.setHoverTooltips(
-                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
+                    ioModeSwitch.tooltip(List.of(
+                            Component.translatable("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))));
                 })
-                .setTexture(
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
-                .setPressed(io == IO.IN)
-                .setHoverTooltips(
-                        LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
-        group.addWidget(ioModeSwitch);
+                .texture(
+                        UITextures.group(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
+                        UITextures.group(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
+                .pressed(io == IO.IN)
+                .tooltip(List.of(
+                        Component.translatable("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))
+                ))
+                .positioning(Positioning.absolute(0, 40))
+                .sizing(Sizing.fixed(20));
+        group.child(ioModeSwitch);
 
         if (shouldDisplayDistributionMode()) {
-            group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,
-                    DistributionMode.VALUES, distributionMode, this::setDistributionMode));
+            group.child(new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
+                    DistributionMode.VALUES, distributionMode, this::setDistributionMode)
+                    .positioning(Positioning.absolute(146, 67)));
         }
 
-        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
                 ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
-                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+                .positioning(Positioning.absolute(146, 107))
+                .tooltip(List.of(Component.translatable("cover.universal.manual_import_export.mode.description"))));
 
-        group.addWidget(filterHandler.createFilterSlotUI(125, 108));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
+        group.child(filterHandler.createFilterSlotUI(125, 108));
+        group.child(filterHandler.createFilterConfigUI(10, 72, 156, 60));
 
         buildAdditionalUI(group);
 
@@ -476,7 +492,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return "cover.conveyor.title";
     }
 
-    protected void buildAdditionalUI(WidgetGroup group) {
+    protected void buildAdditionalUI(UIComponentGroup group) {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
@@ -486,7 +502,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     /////////////////////////////////////
     // *** CAPABILITY OVERRIDE ***//
-    /////////////////////////////////////
+    /// //////////////////////////////////
 
     private CoverableItemHandlerWrapper itemHandlerWrapper;
 

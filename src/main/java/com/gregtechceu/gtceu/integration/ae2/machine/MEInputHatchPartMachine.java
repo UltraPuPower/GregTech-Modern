@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
@@ -128,7 +129,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     /// ////////////////////////////
 
     @Override
-    public ParentUIComponent createBaseUIComponent() {
+    public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
         group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?

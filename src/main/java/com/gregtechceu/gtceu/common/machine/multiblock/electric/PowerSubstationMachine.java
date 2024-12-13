@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
@@ -338,7 +340,12 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public Widget createBaseUIComponent() {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        IFancyUIMachine.super.loadClientUI(player, adapter);
+    }
+
+    @Override
+    public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))

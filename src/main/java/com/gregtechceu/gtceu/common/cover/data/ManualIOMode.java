@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-public enum ManualIOMode implements EnumSelectorWidget.SelectableEnum {
+public enum ManualIOMode implements EnumSelectorComponent.SelectableEnum {
 
     DISABLED("disabled"),
     FILTERED("filtered"),
@@ -25,7 +26,7 @@ public enum ManualIOMode implements EnumSelectorWidget.SelectableEnum {
     }
 
     @Override
-    public IGuiTexture getIcon() {
-        return new ResourceTexture("gtceu:textures/gui/icon/manual_io_mode/" + localeName + ".png");
+    public UITexture getIcon() {
+        return UITextures.resource(GTCEu.id("gtceu:textures/gui/icon/manual_io_mode/" + localeName + ".png"));
     }
 }

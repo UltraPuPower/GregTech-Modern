@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +58,7 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public WidgetGroup openConfigurator(int x, int y) {
+        public UIComponent openConfigurator(int x, int y) {
             throw new NotImplementedException("Not available for empty item filter");
         }
 

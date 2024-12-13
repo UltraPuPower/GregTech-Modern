@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 
 import lombok.Getter;
 
-public enum TransferMode implements EnumSelectorWidget.SelectableEnum {
+public enum TransferMode implements EnumSelectorComponent.SelectableEnum {
 
     TRANSFER_ANY("cover.robotic_arm.transfer_mode.transfer_any", "transfer_any", 1),
     TRANSFER_EXACT("cover.robotic_arm.transfer_mode.transfer_exact", "transfer_exact", 1024),
@@ -16,12 +16,12 @@ public enum TransferMode implements EnumSelectorWidget.SelectableEnum {
     @Getter
     public final String tooltip;
     @Getter
-    public final IGuiTexture icon;
+    public final UITexture icon;
     public final int maxStackSize;
 
     TransferMode(String tooltip, String textureName, int maxStackSize) {
         this.tooltip = tooltip;
         this.maxStackSize = maxStackSize;
-        this.icon = new ResourceTexture("gtceu:textures/gui/icon/transfer_mode/" + textureName + ".png");
+        this.icon = UITextures.resource(GTCEu.id("textures/gui/icon/transfer_mode/" + textureName + ".png"));
     }
 }

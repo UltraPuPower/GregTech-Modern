@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +16,7 @@ import java.util.function.Predicate;
  */
 public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
 
-    WidgetGroup openConfigurator(int x, int y);
+    UIComponent openConfigurator(int x, int y);
 
     CompoundTag saveFilter();
 

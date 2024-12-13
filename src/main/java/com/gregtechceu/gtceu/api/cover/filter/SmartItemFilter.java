@@ -1,16 +1,21 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -59,9 +64,11 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3);
-        group.addWidget(new EnumSelectorWidget<>(16, 8, 32, 32,
+    public UIComponent openConfigurator(int x, int y) {
+        FlowLayout group = UIContainers.verticalFlow(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3));
+        group.padding(Insets.both(16, 8));
+        group.positioning(Positioning.absolute(x, y));
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(32), Sizing.fixed(32),
                 SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
         return group;
     }
@@ -101,7 +108,7 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @MethodsReturnNonnullByDefault
-    private enum SmartFilteringMode implements EnumSelectorWidget.SelectableEnum {
+    private enum SmartFilteringMode implements EnumSelectorComponent.SelectableEnum {
 
         ELECTROLYZER("electrolyzer", GTRecipeTypes.ELECTROLYZER_RECIPES),
         CENTRIFUGE("centrifuge", GTRecipeTypes.CENTRIFUGE_RECIPES),
@@ -124,8 +131,8 @@ public class SmartItemFilter implements ItemFilter {
         }
 
         @Override
-        public IGuiTexture getIcon() {
-            return new ResourceTexture("gtceu:textures/block/machines/" + localeName + "/overlay_front.png");
+        public UITexture getIcon() {
+            return UITextures.resource(GTCEu.id("textures/block/machines/" + localeName + "/overlay_front.png"));
         }
     }
 }

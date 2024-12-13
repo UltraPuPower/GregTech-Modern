@@ -7,16 +7,21 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -87,19 +92,21 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
 
     //////////////////////////////////////
     // *********** GUI ***********//
-    //////////////////////////////////////
+    /// ///////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 120);
-        group.addWidget(new LabelWidget(10, 5, getUITitle()));
+    public ParentUIComponent createUIWidget() {
+        final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(120));
+        group.padding(Insets.both(10, 5));
+        group.child(UIComponents.label(Component.translatable(getUITitle())));
 
-        group.addWidget(new ToggleButtonComponent(10, 20, 20, 20,
-                GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled));
+        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled)
+                .positioning(Positioning.absolute(0, 5))
+                .sizing(Sizing.fixed(20)));
 
-        // group.addWidget(filterHandler.createFilterSlotUI(36, 21));
-        group.addWidget(filterHandler.createFilterSlotUI(148, 91));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 50, 126, 60));
+        // group.child(filterHandler.createFilterSlotUI(36, 21));
+        group.child(filterHandler.createFilterSlotUI(148, 91));
+        group.child(filterHandler.createFilterConfigUI(10, 50, 126, 60));
 
         buildAdditionalUI(group);
 
@@ -111,7 +118,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
         return "cover.item.voiding.title";
     }
 
-    protected void buildAdditionalUI(WidgetGroup group) {
+    protected void buildAdditionalUI(UIComponentGroup group) {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 

@@ -42,7 +42,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     }
 
     /**
-     * We should not override this method in general, and use {@link IFancyUIMachine#createBaseUIComponent()} instead,
+     * We should not override this method in general, and use {@link IFancyUIMachine#createBaseUIComponent(FancyMachineUIComponent)} instead,
      */
     @Override
     default ParentUIComponent createMainPage(FancyMachineUIComponent component) {
@@ -58,13 +58,13 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                     self());
             return template;
         }
-        return createBaseUIComponent();
+        return createBaseUIComponent(component);
     }
 
     /**
      * Create the core widget of this machine.
      */
-    default ParentUIComponent createBaseUIComponent() {
+    default ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         var group = UIContainers.group(Sizing.content(), Sizing.content());
 
         group.child(UIComponents.texture(GuiTextures.SCENE, 0, 0)

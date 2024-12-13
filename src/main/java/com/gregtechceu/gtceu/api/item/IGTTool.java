@@ -20,6 +20,13 @@ import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -83,7 +90,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
 
-public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
+public interface IGTTool extends HeldItemUIHolder.IHeldItemUIConstructor, ItemLike {
 
     GTToolType getToolType();
 
@@ -832,46 +839,101 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     @Override
-    default ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
+    default void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
         CompoundTag tag = getBehaviorsTag(holder.getHeld());
         AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
-        return new ModularUI(120, 80, holder, entityPlayer).background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(6, 10, "item.gtceu.tool.aoe.columns"))
-                .widget(new LabelWidget(49, 10, "item.gtceu.tool.aoe.rows"))
-                .widget(new LabelWidget(79, 10, "item.gtceu.tool.aoe.layers"))
-                .widget(new ButtonWidget(15, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseColumn(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(15, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseColumn(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(50, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseRow(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(50, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseRow(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(85, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseLayer(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(85, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseLayer(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new LabelWidget(23, 65,
-                        () -> Integer.toString(1 +
-                                2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getHeld()), defaultDefinition))))
-                .widget(new LabelWidget(58, 65,
-                        () -> Integer.toString(
-                                1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getHeld()), defaultDefinition))))
-                .widget(new LabelWidget(93, 65, () -> Integer
-                        .toString(1 + AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition))));
+
+        menu.addServerboundMessage(SyncColumn.class, column -> {
+            if (column.positive) {
+                AoESymmetrical.increaseColumn(tag, defaultDefinition);
+            } else {
+                AoESymmetrical.decreaseColumn(tag, defaultDefinition);
+            }
+        });
+
+        menu.addServerboundMessage(SyncRow.class, row -> {
+            if (row.positive) {
+                AoESymmetrical.increaseRow(tag, defaultDefinition);
+            } else {
+                AoESymmetrical.decreaseRow(tag, defaultDefinition);
+            }
+        });
+
+        menu.addServerboundMessage(SyncLayer.class, layer -> {
+            if (layer.positive) {
+                AoESymmetrical.increaseLayer(tag, defaultDefinition);
+            } else {
+                AoESymmetrical.decreaseLayer(tag, defaultDefinition);
+            }
+        });
     }
+
+    @Override
+    default void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
+        final var menu = adapter.menu();
+        CompoundTag tag = getBehaviorsTag(holder.getHeld());
+        AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
+
+        var rootComponent = UIContainers.group(Sizing.fixed(120), Sizing.fixed(80));
+        rootComponent.positioning(Positioning.relative(50, 50));
+        adapter.rootComponent.child(rootComponent);
+
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 4, 3);
+        grid.positioning(Positioning.relative(50, 50))
+                .surface(Surface.UI_BACKGROUND)
+                .padding(Insets.both(32, 20));
+
+        grid
+                .child(UIComponents.label(Component.translatable("item.gtceu.tool.aoe.columns")),
+                        0, 0)
+                .child(UIComponents.button(Component.literal("+"), (data) -> {
+                    AoESymmetrical.decreaseColumn(tag, defaultDefinition);
+                    menu.sendMessage(new SyncColumn(true));
+                }).sizing(Sizing.fixed(20)), 0, 1)
+                .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
+                        0, 2)
+                .child(UIComponents.button(Component.literal("-"), (data) -> {
+                    AoESymmetrical.decreaseColumn(tag, defaultDefinition);
+                    menu.sendMessage(new SyncColumn(false));
+                }).sizing(Sizing.fixed(20)), 0, 3);
+
+        grid
+                .child(UIComponents.label(Component.translatable("item.gtceu.tool.aoe.rows")),
+                        1, 0)
+                .child(UIComponents.button(Component.literal("+"), (data) -> {
+                    AoESymmetrical.increaseRow(tag, defaultDefinition);
+                    menu.sendMessage(new SyncRow(true));
+                }).sizing(Sizing.fixed(20)), 1, 1)
+                .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
+                        1, 2)
+                .child(UIComponents.button(Component.literal("-"), (data) -> {
+                    AoESymmetrical.decreaseRow(tag, defaultDefinition);
+                    menu.sendMessage(new SyncRow(false));
+                }).sizing(Sizing.fixed(20)), 1, 3);
+
+        grid
+                .child(UIComponents.label(Component.translatable("item.gtceu.tool.aoe.layers")),
+                        2, 0)
+                .child(UIComponents.button(Component.literal("+"), (data) -> {
+                    AoESymmetrical.increaseLayer(tag, defaultDefinition);
+                    menu.sendMessage(new SyncLayer(true));
+                }).sizing(Sizing.fixed(20)), 2, 1)
+                .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
+                        2, 2)
+                .child(UIComponents.button(Component.literal("-"), (data) -> {
+                    AoESymmetrical.decreaseLayer(tag, defaultDefinition);
+                    menu.sendMessage(new SyncLayer(false));
+                }).sizing(Sizing.fixed(20)), 2, 3);
+
+
+        rootComponent.child(grid);
+    }
+
+    record SyncColumn(boolean positive) {}
+
+    record SyncRow(boolean positive) {}
+
+    record SyncLayer(boolean positive) {}
 
     default Set<GTToolType> getToolClasses(ItemStack stack) {
         return new HashSet<>(getToolType().toolClasses);

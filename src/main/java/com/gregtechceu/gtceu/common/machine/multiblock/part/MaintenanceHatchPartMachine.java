@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -330,7 +331,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     // ******** GUI *********//
     //////////////////////////////////////
     @Override
-    public Widget createBaseUIComponent() {
+    public Widget createBaseUIComponent(FancyMachineUIComponent component) {
         WidgetGroup group;
         if (isConfigurable) {
             group = new WidgetGroup(0, 0, 150, 70);

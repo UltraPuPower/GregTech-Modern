@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -190,7 +191,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public @NotNull ParentUIComponent createBaseUIComponent() {
+    public @NotNull ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         var group = UIContainers.verticalFlow(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
         group.padding(Insets.of(8));
         group.child(UIContainers.draggable(Sizing.fill(), Sizing.fill(), UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
@@ -200,8 +201,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                                 .clickHandler(this::handleDisplayClick))
                                 .positioning(Positioning.absolute(4, 17))
                         .padding(Insets.of(4))))
-                .surface((graphics, component) ->
-                        getScreenTexture().draw(graphics, 0, 0, component.x(), component.y(), component.width(), component.height()));
+                .surface((graphics, c) ->
+                        getScreenTexture().draw(graphics, 0, 0, c.x(), c.y(), c.width(), c.height()));
         group.surface(Surface.UI_BACKGROUND_INVERSE);
         return group;
     }
