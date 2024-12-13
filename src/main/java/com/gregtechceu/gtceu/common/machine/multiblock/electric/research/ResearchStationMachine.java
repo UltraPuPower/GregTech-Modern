@@ -196,7 +196,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
         public RecipeHandler.ActionResult matchRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
             if (!holder.hasCapabilityProxies()) return RecipeHandler.ActionResult
-                    .fail(() -> Component.translatable("gtceu.recipe_logic.no_capabilities"));
+                    .FAIL_NO_CAPABILITIES;
             return RecipeHandler.handleRecipe(IO.IN, holder, recipe, recipe.inputs, Collections.emptyMap(), false,
                     true);
         }
@@ -205,7 +205,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             if (recipe.hasTick()) {
                 if (!holder.hasCapabilityProxies())
                     return RecipeHandler.ActionResult
-                            .fail(() -> Component.translatable("gtceu.recipe_logic.no_capabilities"));
+                            .FAIL_NO_CAPABILITIES;
                 return RecipeHandler.handleRecipe(IO.IN, holder, recipe, recipe.tickInputs, Collections.emptyMap(),
                         false, true);
             }
