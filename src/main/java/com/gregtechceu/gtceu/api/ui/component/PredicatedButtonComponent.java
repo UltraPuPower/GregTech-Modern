@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -11,7 +12,7 @@ public class PredicatedButtonComponent extends ButtonComponent {
 
     private final BooleanSupplier predicate;
 
-    public PredicatedButtonComponent(UITexture buttonTexture, Consumer<ButtonComponent> onPressed,
+    public PredicatedButtonComponent(UITexture buttonTexture, Consumer<ClickData> onPressed,
                                      BooleanSupplier predicate, boolean defaultVisibility) {
         super(Component.empty(), onPressed);
         this.predicate = predicate;
@@ -19,12 +20,12 @@ public class PredicatedButtonComponent extends ButtonComponent {
         visible(defaultVisibility);
     }
 
-    public PredicatedButtonComponent(UITexture buttonTexture, Consumer<ButtonComponent> onPressed,
+    public PredicatedButtonComponent(UITexture buttonTexture, Consumer<ClickData> onPressed,
                                      BooleanSupplier predicate) {
         this(buttonTexture, onPressed, predicate, false);
     }
 
-    public PredicatedButtonComponent(Consumer<ButtonComponent> onPressed,
+    public PredicatedButtonComponent(Consumer<ClickData> onPressed,
                                      BooleanSupplier predicate) {
         super(Component.empty(), onPressed);
         this.predicate = predicate;

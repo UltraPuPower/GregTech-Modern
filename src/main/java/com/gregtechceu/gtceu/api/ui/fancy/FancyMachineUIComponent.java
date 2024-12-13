@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerScreenAccessor;
 import lombok.Getter;
 import lombok.Setter;
@@ -123,7 +124,7 @@ public class FancyMachineUIComponent extends UIComponentGroup {
         performNavigation(nextPage, nextHomePage);
     }
 
-    protected void navigateBack(ButtonComponent clickData) {
+    protected void navigateBack(ClickData clickData) {
         NavigationEntry navigationEntry = previousPages.pop();
 
         performNavigation(navigationEntry.page, navigationEntry.homePage);
@@ -149,7 +150,7 @@ public class FancyMachineUIComponent extends UIComponentGroup {
     // *********** PAGE SWITCHER ***********//
     ///////////////////////////////////////////////
 
-    protected void openPageSwitcher(ButtonComponent clickData) {
+    protected void openPageSwitcher(ClickData clickData) {
         pageSwitcher.setPageList(allPages, currentHomePage);
 
         // If we're in another tab of the current page, ensure nav to its main tab when closing the page switcher:

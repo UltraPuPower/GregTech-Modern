@@ -1842,7 +1842,7 @@ public class GTItems {
                             .child(UIComponents.item(new ItemStack(Items.ROTTEN_FLESH, 3))
                                     .positioning(Positioning.absolute(80, 50))
                                     .tooltip(Component.translatable("gtceu.alloy_smelter")))
-                            .child(UIComponents.button(Component.literal("✔"), (ButtonComponent button) -> {
+                            .child(UIComponents.button(Component.literal("✔"), (cd) -> {
                                         player.sendSystemMessage(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"));
                                     }).tooltip(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"))
                                     .positioning(Positioning.relative(75, 10)))
@@ -1863,7 +1863,7 @@ public class GTItems {
                                     .child(UIComponents.texture(GuiTextures.SLOT, 18, 18))
                                     .child(UIComponents.slot(adapter.screen().getMenu().getSlot(0)).id("item-in.0"))
                                     .positioning(Positioning.relative(25, 25)));
-                    layout.child(UIComponents.playerInventory(adapter.screen().getMenu(), 1)
+                    layout.child(UIComponents.playerInventory(adapter.screen().getMenu(), 1, GuiTextures.SLOT)
                             .positioning(Positioning.absolute(10, 84)));
 
                 }

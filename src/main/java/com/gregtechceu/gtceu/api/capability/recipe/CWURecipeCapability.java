@@ -5,11 +5,10 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerInteger;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 
-import org.apache.commons.lang3.mutable.MutableInt;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
@@ -37,16 +36,14 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
-                           boolean isInput, MutableInt yOffset) {
+    public void addXEIInfo(UIComponentGroup group, GTRecipe recipe, List<Content> contents, boolean perTick,
+                           boolean isInput) {
         if (perTick) {
             int cwu = contents.stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum();
-            group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
-                    LocalizationUtils.format("gtceu.recipe.computation_per_tick", cwu)));
+            group.child(UIComponents.label(Component.translatable("gtceu.recipe.computation_per_tick", cwu)));
         }
         if (recipe.data.getBoolean("duration_is_total_cwu")) {
-            group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
-                    LocalizationUtils.format("gtceu.recipe.total_computation", recipe.duration)));
+            group.child(UIComponents.label(Component.translatable("gtceu.recipe.total_computation", recipe.duration)));
         }
     }
 }

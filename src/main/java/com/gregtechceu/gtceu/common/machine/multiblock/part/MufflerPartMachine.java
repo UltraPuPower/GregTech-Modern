@@ -2,18 +2,27 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -55,7 +64,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -63,7 +73,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
     //////////////////////////////////////
     // ******** Muffler *********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public void recoverItemsTable(ItemStack... recoveryItems) {
@@ -94,26 +105,52 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
     //////////////////////////////////////
     // ********** GUI ***********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
+
+
     @Override
-    public ModularUI createUI(Player entityPlayer) {
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        // Position all slots at 0,0 as they'll be moved to the correct position on the client.
+        SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
+        generator.playerInventory(menu.getPlayerInventory());
+        for (int i = 0; i < this.inventory.getSlots(); i++) {
+            generator.slot(this.inventory, i, 0, 0);
+        }
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
         int rowSize = (int) Math.sqrt(inventory.getSlots());
         int xOffset = rowSize == 10 ? 9 : 0;
-        var modular = new ModularUI(176 + xOffset * 2,
-                18 + 18 * rowSize + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset,
-                        18 + 18 * rowSize + 12, true));
 
+        var menu = adapter.menu();
+        UIComponentGroup rootComponent;
+        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176 + xOffset * 2), Sizing.fixed(18 + 18 * rowSize + 94)));
+
+        rootComponent.surface(Surface.UI_BACKGROUND);
+        rootComponent.child(UIComponents.label(getBlockState().getBlock().getName())
+                        .positioning(Positioning.absolute(10, 5)))
+                .child(UIComponents.playerInventory(menu, 0, GuiTextures.SLOT)
+                        .positioning(Positioning.absolute(7 + xOffset,
+                                18 + 18 * rowSize + 12)));
+
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), rowSize, rowSize);
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
-                modular.widget(new SlotWidget(inventory, index,
-                        (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, false)
-                        .setBackgroundTexture(GuiTextures.SLOT));
+                StackLayout stack = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+
+                // +36 for player inventory
+                stack.child(UIComponents.slot(menu.getSlot(index + 36))
+                                .canInsertOverride(true)
+                                .canExtractOverride(true)
+                                .sizing(Sizing.fill()))
+                        .child(UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                                .sizing(Sizing.fill()));
+                grid.child(stack, x, y);
             }
         }
-        return modular;
+        rootComponent.child(grid);
     }
 }

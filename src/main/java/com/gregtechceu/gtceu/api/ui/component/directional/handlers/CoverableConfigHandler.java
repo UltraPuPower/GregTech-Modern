@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -151,7 +152,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         updateWidgetVisibility();
     }
 
-    private void toggleConfigTab(ButtonComponent cd) {
+    private void toggleConfigTab(ClickData cd) {
         if (this.coverConfigurator == null)
             openConfigTab();
         else

@@ -50,11 +50,6 @@ public class UIComponentGroup extends BaseParentUIComponent {
         });
     }
 
-    @Override
-    protected void updateLayout() {
-        super.updateLayout();
-    }
-
     /**
      * Add a single child to this layout. If you need to add multiple
      * children, use {@link #children(Collection)} instead

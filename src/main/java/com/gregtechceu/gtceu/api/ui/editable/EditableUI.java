@@ -33,7 +33,7 @@ public class EditableUI<W extends UIComponent, T> implements IEditableUI<W, T> {
     }
 
     @Override
-    public void setupUI(ParentUIComponent template, UIAdapter<UIComponentGroup> adapter, T instance) {
+    public void setupUI(UIComponentGroup template, UIAdapter<UIComponentGroup> adapter, T instance) {
         UIComponentUtils.componentByIdForEach(template, "^" + id + "$", clazz, w -> binder.bind(w, adapter, instance));
     }
 }

@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.api.cover;
 
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.IUIHolder;
 
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -42,7 +44,7 @@ public interface IUICover extends IUIHolder<CoverBehavior> {
         var component = createUIWidget();
         component.positioning(Positioning.absolute((176 - rootComponent.width()) / 2, 0));
         component.surface(Surface.UI_BACKGROUND);
-        rootComponent.child(UIComponents.playerInventory(adapter.screen().getMenu(), 0));
+        rootComponent.child(UIComponents.playerInventory(adapter.screen().getMenu(), 0, GuiTextures.SLOT));
         rootComponent.child(component);
     }
 

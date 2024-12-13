@@ -64,7 +64,7 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
                 .surface((graphics, component) ->
                         getScreenTexture().draw(graphics, 0, 0, component.x(), component.y(), component.width(), component.height()));
         rootComponent.child(screen)
-                .child(UIComponents.playerInventory(adapter.screen().getMenu(), 0)
+                .child(UIComponents.playerInventory(adapter.screen().getMenu(), 0, GuiTextures.SLOT)
                         .positioning(Positioning.absolute(3, 129)));
     }
 }

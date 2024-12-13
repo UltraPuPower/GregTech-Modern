@@ -9,16 +9,17 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.CannerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.FormingPressLogic;
@@ -30,10 +31,9 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
+import static com.gregtechceu.gtceu.api.ui.texture.ProgressTexture.FillDirection.*;
 
 /**
  * @author KilaBash
@@ -73,7 +73,7 @@ public class GTRecipeTypes {
 
     //////////////////////////////////////
     // ********* Steam **********//
-    //////////////////////////////////////
+    /// ///////////////////////////////////
     public final static GTRecipeType STEAM_BOILER_RECIPES = register("steam_boiler", STEAM)
             .setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
@@ -89,7 +89,7 @@ public class GTRecipeTypes {
 
     //////////////////////////////////////
     // ********* Common *********//
-    //////////////////////////////////////
+    /// ///////////////////////////////////
     public final static GTRecipeType FURNACE_RECIPES = register("electric_furnace", ELECTRIC, RecipeType.SMELTING)
             .setMaxIOSize(1, 1, 0, 0).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(4))
@@ -437,14 +437,26 @@ public class GTRecipeTypes {
                 var fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
                 var fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
                 if (fluidA != Fluids.EMPTY) {
-                    widgetGroup.addWidget(new TankWidget(new CustomFluidTank(new FluidStack(fluidA, 1000)),
-                            widgetGroup.getSize().width - 30, widgetGroup.getSize().height - 30, false, false)
-                            .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
+                    widgetGroup.child(UIComponents.fluid(new FluidStack(fluidA, 1000))
+                            .showAmount(false)
+                            .sizing(Sizing.fixed(18))
+                            .positioning(Positioning.relative(100, 100))
+                            .margins(Insets.of(30)));
+                    widgetGroup.child(UIComponents.texture(GuiTextures.FLUID_SLOT, 18, 18)
+                            .sizing(Sizing.fixed(18))
+                            .positioning(Positioning.relative(100, 100))
+                            .margins(Insets.of(30)));
                 }
                 if (fluidB != Fluids.EMPTY) {
-                    widgetGroup.addWidget(new TankWidget(new CustomFluidTank(new FluidStack(fluidB, 1000)),
-                            widgetGroup.getSize().width - 30 - 20, widgetGroup.getSize().height - 30, false, false)
-                            .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
+                    widgetGroup.child(UIComponents.fluid(new FluidStack(fluidB, 1000))
+                            .showAmount(false)
+                            .sizing(Sizing.fixed(18))
+                            .positioning(Positioning.relative(100, 100))
+                            .margins(Insets.both(30 + 20, 30)));
+                    widgetGroup.child(UIComponents.texture(GuiTextures.FLUID_SLOT, 18, 18)
+                            .sizing(Sizing.fixed(18))
+                            .positioning(Positioning.relative(100, 100))
+                            .margins(Insets.both(30 + 20, 30)));
                 }
             })
             .setMaxTooltips(4)
@@ -461,7 +473,7 @@ public class GTRecipeTypes {
 
     //////////////////////////////////////
     // ******* Generator *******//
-    //////////////////////////////////////
+    /// ///////////////////////////////////
     public final static GTRecipeType COMBUSTION_GENERATOR_FUELS = register("combustion_generator", GENERATOR)
             .setMaxIOSize(0, 0, 1, 0).setEUIO(IO.OUT)
             .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
@@ -488,7 +500,7 @@ public class GTRecipeTypes {
 
     //////////////////////////////////////
     // ******* Multiblock *******//
-    //////////////////////////////////////
+    /// ///////////////////////////////////
     public final static GTRecipeType LARGE_BOILER_RECIPES = register("large_boiler", MULTIBLOCK)
             .setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
@@ -510,17 +522,17 @@ public class GTRecipeTypes {
             .setMaxIOSize(3, 3, 1, 1).setEUIO(IO.IN)
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
-                return LocalizationUtils.format("gtceu.recipe.temperature", temp);
+                return Component.translatable("gtceu.recipe.temperature", FormattingUtil.formatNumbers(temp));
             })
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                 if (requiredCoil != null && requiredCoil.getMaterial() != null) {
-                    return LocalizationUtils.format("gtceu.recipe.coil.tier",
+                    return Component.translatable("gtceu.recipe.coil.tier",
                             I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
                 }
-                return "";
+                return Component.empty();
             })
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
@@ -528,8 +540,11 @@ public class GTRecipeTypes {
                 items.add(GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .filter(coil -> coil.getKey().getCoilTemperature() >= temp)
                         .map(coil -> new ItemStack(coil.getValue().get())).toList());
-                widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0,
-                        widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 32, false, false));
+                widgetGroup.child(UIComponents.slot(new CycleItemStackHandler(items), 0)
+                        .canInsertOverride(false)
+                        .canExtractOverride(false)
+                        .positioning(Positioning.relative(100, 100))
+                        .margins(Insets.of(0, 40, 0, 25)));
             })
             .setSound(GTSoundEntries.FURNACE);
 
@@ -668,7 +683,7 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ARC)
             .setOffsetVoltageText(true)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start",
+            .addDataInfo(data -> Component.translatable("gtceu.recipe.eu_to_start",
                     FormattingUtil.formatNumberReadable2F(data.getLong("eu_to_start"), false),
                     FusionReactorMachine.getFusionTier(data.getLong("eu_to_start"))));
 
@@ -677,7 +692,7 @@ public class GTRecipeTypes {
 
     //////////////////////////////////////
     // ****** Integration *******//
-    //////////////////////////////////////
+    /// ///////////////////////////////////
     @Nullable
     public static GTRecipeType CREATE_MIXER_RECIPES;
 
@@ -701,8 +716,10 @@ public class GTRecipeTypes {
                     .setUiBuilder((recipe, group) -> {
                         if (!recipe.conditions.isEmpty() && recipe.conditions.get(0) instanceof RPMCondition) {
                             var handler = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
-                            group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
-                                    group.getSize().height - 30, false, false));
+                            group.child(UIComponents.slot(handler, 0)
+                                    .canInsertOverride(false)
+                                    .canExtractOverride(false)
+                                    .margins(Insets.of(30)));
                         }
                     });
             MIXER_RECIPES.onRecipeBuild((builder, provider) -> {

@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.machine.steam;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -15,30 +13,29 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
-import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
+import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -53,6 +50,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
@@ -307,41 +305,60 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        for (int i = 0; i < this.waterTank.getTanks(); i++) {
+            SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "water." + i,
+                    this.waterTank.getFluidInTank(i));
+            CustomFluidTank tank = this.waterTank.getStorages()[i];
+            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
+        }
+
         var progressProperty = menu.createProperty(double.class, "progress", recipeLogic.getProgressPercent());
         recipeLogic.addProgressPercentListener(progressProperty::set);
     }
 
     @Override
     public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        var menu = adapter.menu();
         UIComponentGroup rootComponent;
         adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
 
-        rootComponent.surface(Su)
+        rootComponent.surface(isHighPressure ? Surface.UI_BACKGROUND_STEEL : Surface.UI_BACKGROUND_BRONZE);
+        rootComponent.child(UIComponents.label(getBlockState().getBlock().getName())
+                .positioning(Positioning.absolute(6, 6)))
+                .child(UIComponents.progress(menu.<Double>getProperty("progress")::get)
+                        .fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+                        .progressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), GuiTextures.PROGRESS_BAR_BOILER_HEAT)
+                        .dynamicHoverTips(pct -> Component.translatable("gtceu.multiblock.large_boiler.temperature",
+                                currentTemperature + 274, getMaxTemperature() + 274))
+                        .positioning(Positioning.absolute(96, 26))
+                        .sizing(Sizing.fixed(10), Sizing.fixed(54)))
+                .child(UIComponents.tank(waterTank.getStorages()[0], 0)
+                        .canInsert(true)
+                        .canExtract(false)
+                        .showAmount(false)
+                        //.fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+                        .positioning(Positioning.absolute(83, 26))
+                        .sizing(Sizing.fixed(10), Sizing.fixed(54)))
+                .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), 10, 54)
+                        .positioning(Positioning.absolute(83, 26))
+                        .sizing(Sizing.fixed(10), Sizing.fixed(54)))
+                .child(UIComponents.tank(steamTank.getStorages()[0], 0)
+                        .canInsert(false)
+                        .canExtract(true)
+                        .showAmount(false)
+                        //.fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+                        .positioning(Positioning.absolute(70, 26))
+                        .sizing(Sizing.fixed(10), Sizing.fixed(54)))
+                .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), 10, 54)
+                        .positioning(Positioning.absolute(70, 26))
+                        .sizing(Sizing.fixed(10), Sizing.fixed(54)))
+                .child(UIComponents.texture(GuiTextures.CANISTER_OVERLAY_STEAM.get(isHighPressure), 18, 18)
+                        .positioning(Positioning.absolute(43, 44)))
+                .child(UIComponents.playerInventory(menu, getUIItemSlotCount(), GuiTextures.SLOT_STEAM.get(isHighPressure))
+                        .positioning(Positioning.absolute(7, 84)));
     }
 
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new ProgressWidget(this::getTemperaturePercent, 96, 26, 10, 54)
-                        .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure),
-                                GuiTextures.PROGRESS_BAR_BOILER_HEAT)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setDynamicHoverTips(pct -> I18n.get("gtceu.multiblock.large_boiler.temperature",
-                                currentTemperature + 274, getMaxTemperature() + 274)))
-                .widget(new TankWidget(waterTank.getStorages()[0], 83, 26, 10, 54, false, true)
-                        .setShowAmount(false)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)))
-                .widget(new TankWidget(steamTank.getStorages()[0], 70, 26, 10, 54, true, false)
-                        .setShowAmount(false)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)))
-                .widget(new ImageWidget(43, 44, 18, 18, GuiTextures.CANISTER_OVERLAY_STEAM.get(isHighPressure)))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                        GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
-    }
+    abstract int getUIItemSlotCount();
 
     //////////////////////////////////////
     // ********* Client *********//

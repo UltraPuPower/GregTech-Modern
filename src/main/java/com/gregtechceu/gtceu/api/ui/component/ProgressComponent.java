@@ -28,7 +28,7 @@ public class ProgressComponent extends BaseUIComponent {
     @Setter
     public DoubleSupplier progressSupplier;
     @Setter
-    private Function<Double, String> dynamicHoverTips;
+    private Function<Double, Component> dynamicHoverTips;
     @Setter
     private UITexture progressTexture;
     @Setter
@@ -80,8 +80,7 @@ public class ProgressComponent extends BaseUIComponent {
         if (((tooltip() != null && !tooltip().isEmpty()) || dynamicHoverTips != null)) {
             var tips = new ArrayList<>(Objects.requireNonNullElseGet(tooltip(), Collections::emptyList));
             if (dynamicHoverTips != null) {
-                tips.add(ClientTooltipComponent.create(
-                        Component.translatable(dynamicHoverTips.apply(lastProgressValue)).getVisualOrderText()));
+                tips.add(ClientTooltipComponent.create(dynamicHoverTips.apply(lastProgressValue).getVisualOrderText()));
             }
             this.tooltip(tips);
         }

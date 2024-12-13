@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.Minecraft;
@@ -91,25 +92,25 @@ public class Content {
         return chanceBoost < 0 ? -fixed : fixed;
     }
 
-    public IGuiTexture createOverlay(boolean perTick, int recipeTier, int chanceTier,
-                                     @Nullable ChanceBoostFunction function) {
-        return new IGuiTexture() {
+    public UITexture createOverlay(boolean perTick, int recipeTier, int chanceTier,
+                                   @Nullable ChanceBoostFunction function) {
+        return new UITexture() {
 
             @Override
-            @OnlyIn(Dist.CLIENT)
-            public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
+            public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
                 drawChance(graphics, x, y, width, height, recipeTier, chanceTier, function);
                 drawRangeAmount(graphics, x, y, width, height);
                 drawFluidAmount(graphics, x, y, width, height);
                 if (perTick) {
                     drawTick(graphics, x, y, width, height);
                 }
+
             }
         };
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawRangeAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawRangeAmount(GuiGraphics graphics, float x, float y, float width, float height) {
         if (content instanceof IntProviderIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
@@ -131,7 +132,7 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawFluidAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawFluidAmount(GuiGraphics graphics, float x, float y, float width, float height) {
         if (content instanceof FluidIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
@@ -150,7 +151,7 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int recipeTier,
+    public void drawChance(GuiGraphics graphics, float x, float y, float width, float height, int recipeTier,
                            int chanceTier, @Nullable ChanceBoostFunction function) {
         if (chance == ChanceLogic.getMaxChancedValue()) return;
         graphics.pose().pushPose();
@@ -172,7 +173,7 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTick(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawTick(GuiGraphics graphics, float x, float y, float width, float height) {
         graphics.pose().pushPose();
         RenderSystem.disableDepthTest();
         graphics.pose().translate(0, 0, 400);

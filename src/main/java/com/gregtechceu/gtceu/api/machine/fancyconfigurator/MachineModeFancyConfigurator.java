@@ -89,6 +89,7 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
 
         }
 
+        /*
         @Override
         public void writeInitialData(FriendlyByteBuf buffer) {
             buffer.writeVarInt(machine.getActiveRecipeType());
@@ -99,15 +100,17 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
             machine.setActiveRecipeType(buffer.readVarInt());
         }
 
+        // TODO implement?
         @Override
         public void detectAndSendChanges() {
-            this.writeUpdateInfo(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
+            this.sendMessage(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
         }
+        */
 
         @Override
-        public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+        public void receiveMessage(int id, FriendlyByteBuf buf) {
             if (id == 0) {
-                machine.setActiveRecipeType(buffer.readVarInt());
+                machine.setActiveRecipeType(buf.readVarInt());
             }
         }
     }

@@ -377,7 +377,7 @@ public class UIParsing {
         // Widgets
         registerComponentFactory("label", element -> UIComponents.label(Component.empty()));
         registerComponentFactory("box", element -> UIComponents.box(Sizing.content(), Sizing.content()));
-        registerComponentFactory("button", element -> UIComponents.button(Component.empty(), (ButtonComponent button) -> {}));
+        registerComponentFactory("button", element -> UIComponents.button(Component.empty(), cd -> {}));
         registerComponentFactory("checkbox", element -> UIComponents.checkbox(Component.empty()));
         registerComponentFactory("text-box", element -> UIComponents.textBox(Sizing.content()));
         registerComponentFactory("text-area", element -> UIComponents.textArea(Sizing.content(), Sizing.content()));

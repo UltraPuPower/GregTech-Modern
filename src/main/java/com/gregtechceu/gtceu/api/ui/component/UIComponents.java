@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
-import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -43,7 +42,7 @@ public class UIComponents {
     // Wrapped Vanilla Widgets
     // -----------------------
 
-    public static ButtonComponent button(Component message, Consumer<ButtonComponent> onPress) {
+    public static ButtonComponent button(Component message, Consumer<ClickData> onPress) {
         return new ButtonComponent(message, onPress);
     }
 
@@ -91,8 +90,8 @@ public class UIComponents {
         return new PlayerInventoryComponent(inventory);
     }
 
-    public static PlayerInventoryComponent playerInventory(AbstractContainerMenu menu, int startSlotIndex) {
-        return new PlayerInventoryComponent(menu, startSlotIndex);
+    public static PlayerInventoryComponent playerInventory(AbstractContainerMenu menu, int startSlotIndex, UITexture slotTexture) {
+        return new PlayerInventoryComponent(menu, startSlotIndex, slotTexture);
     }
 
     public static PlayerInventoryComponent playerInventory() {
@@ -157,7 +156,7 @@ public class UIComponents {
         return new CheckboxComponent(message);
     }
 
-    public static SwitchComponent switchComponent(BiConsumer<SwitchComponent, Boolean> onPressed) {
+    public static SwitchComponent switchComponent(BiConsumer<ClickData, Boolean> onPressed) {
         return new SwitchComponent(onPressed);
     }
 

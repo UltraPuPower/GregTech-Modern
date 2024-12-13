@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.function.BiConsumer;
@@ -22,40 +24,42 @@ public class SwitchComponent extends BaseUIComponent {
     protected UITexture pressedTexture;
     @Setter
     protected UITexture hoverTexture;
-    @Setter
     protected boolean pressed;
 
     @Setter
-    protected BiConsumer<SwitchComponent, Boolean> onPressCallback;
+    protected BiConsumer<ClickData, Boolean> onPressCallback;
     @Setter
     protected BooleanSupplier supplier;
 
-    protected SwitchComponent(BiConsumer<SwitchComponent, Boolean> onPressed) {
+    protected SwitchComponent(BiConsumer<ClickData, Boolean> onPressed) {
         this.onPressCallback = onPressed;
     }
 
-    public SwitchComponent setTexture(UITexture baseTexture, UITexture pressedTexture) {
-        setBaseTexture(baseTexture);
-        setPressedTexture(pressedTexture);
+    public SwitchComponent texture(UITexture baseTexture, UITexture pressedTexture) {
+        this.baseTexture = baseTexture;
+        this.pressedTexture = pressedTexture;
         return this;
     }
 
-    public SwitchComponent setBaseTexture(UITexture... baseTexture) {
+    @Tolerate
+    public SwitchComponent baseTexture(UITexture... baseTexture) {
         this.baseTexture = UITextures.group(baseTexture);
         return this;
     }
 
-    public SwitchComponent setPressedTexture(UITexture... pressedTexture) {
+    @Tolerate
+    public SwitchComponent pressedTexture(UITexture... pressedTexture) {
         this.pressedTexture = UITextures.group(pressedTexture);
         return this;
     }
 
-    public SwitchComponent setHoverTexture(UITexture... hoverTexture) {
+    @Tolerate
+    public SwitchComponent hoverTexture(UITexture... hoverTexture) {
         this.hoverTexture = UITextures.group(hoverTexture);
         return this;
     }
 
-    public SwitchComponent setHoverBorderTexture(int border, int color) {
+    public SwitchComponent hoverBorderTexture(int border, int color) {
         this.hoverTexture = UITextures.colorBorder(Color.ofArgb(color), border);
         return this;
     }
@@ -122,11 +126,13 @@ public class SwitchComponent extends BaseUIComponent {
     public boolean onMouseDown(double mouseX, double mouseY, int button) {
         if (isMouseOverElement(mouseX, mouseY)) {
             pressed = !pressed;
+            ClickData clickData = new ClickData(button);
             sendMessage(1, buffer -> {
+                clickData.writeToBuf(buffer);
                 buffer.writeBoolean(pressed);
             });
             if (onPressCallback != null) {
-                onPressCallback.accept(this, pressed);
+                onPressCallback.accept(clickData, pressed);
             }
             UIComponent.playButtonClickSound();
             return true;
@@ -138,7 +144,8 @@ public class SwitchComponent extends BaseUIComponent {
     public void receiveMessage(int id, FriendlyByteBuf buf) {
         if (id == 1) {
             if (onPressCallback != null) {
-                onPressCallback.accept(this, pressed = buf.readBoolean());
+                ClickData clickData = ClickData.readFromBuf(buf);
+                onPressCallback.accept(clickData, pressed = buf.readBoolean());
             }
         } else if (id == 2) {
             pressed = buf.readBoolean();

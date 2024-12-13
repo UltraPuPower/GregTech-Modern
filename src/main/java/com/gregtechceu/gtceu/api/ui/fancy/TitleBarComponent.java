@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -49,7 +50,7 @@ public class TitleBarComponent extends UIComponentGroup {
     private final TextureComponent tabIcon;
     private final LabelComponent tabTitle;
 
-    protected TitleBarComponent(int parentWidth, Consumer<ButtonComponent> onBackClicked, Consumer<ButtonComponent> onMenuClicked) {
+    protected TitleBarComponent(int parentWidth, Consumer<ClickData> onBackClicked, Consumer<ClickData> onMenuClicked) {
         super(Sizing.fixed(parentWidth), Sizing.fixed(HEIGHT));
         this.margins(Insets.of(0, 0, HORIZONTAL_MARGIN, HORIZONTAL_MARGIN));
         this.innerHeight = HEIGHT - BORDER_SIZE;

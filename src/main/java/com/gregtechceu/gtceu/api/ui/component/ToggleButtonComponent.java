@@ -35,10 +35,10 @@ public class ToggleButtonComponent extends SwitchComponent {
         super((clickData, aBoolean) -> setPressedExecutor.accept(aBoolean.booleanValue()));
         texture = buttonTexture;
         if (buttonTexture instanceof ResourceTexture resourceTexture) {
-            setTexture(resourceTexture.getSubTexture(0, 0, 1, 0.5),
+            texture(resourceTexture.getSubTexture(0, 0, 1, 0.5),
                     resourceTexture.getSubTexture(0, 0.5, 1, 0.5));
         } else {
-            setTexture(buttonTexture, buttonTexture);
+            texture(buttonTexture, buttonTexture);
         }
 
         supplier(isPressedCondition);
@@ -46,7 +46,7 @@ public class ToggleButtonComponent extends SwitchComponent {
 
     public ToggleButtonComponent setShouldUseBaseBackground() {
         if (texture != null) {
-            setTexture(
+            texture(
                     UITextures.group(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5), texture),
                     UITextures.group(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5), texture));
         }

@@ -59,25 +59,25 @@ public class SlotComponent extends BaseUIComponent {
     protected SlotComponent(int index) {
         this.index = index;
         this.slot = new MutableSlotWrapper(new UIContainerMenu.EmptySlotPlaceholder());
-        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
+        this.sizing(Sizing.fixed(18));
     }
 
     protected SlotComponent(IItemHandlerModifiable itemHandler, int index) {
         this.index = index;
         this.slot = new MutableSlotWrapper(new SlotItemHandler(itemHandler, index, x, y));
-        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
+        this.sizing(Sizing.fixed(18));
     }
 
     protected SlotComponent(Container container, int index) {
         this.index = index;
         this.slot = new MutableSlotWrapper(new Slot(container, index, x, y));
-        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
+        this.sizing(Sizing.fixed(18));
     }
 
     protected SlotComponent(Slot slot) {
         this.index = slot.getSlotIndex();
         this.slot = new MutableSlotWrapper(slot);
-        this.sizing(Sizing.fixed(18), Sizing.fixed(18));
+        this.sizing(Sizing.fixed(18));
     }
 
     public SlotComponent setSlot(IItemHandlerModifiable handler, int index) {

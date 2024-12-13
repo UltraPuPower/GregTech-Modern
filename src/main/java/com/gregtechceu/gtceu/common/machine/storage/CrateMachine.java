@@ -116,7 +116,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
         rootComponent.child(parent = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset), Sizing.fixed(166 + yOffset))
                 .child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(5, 5)))
-                .child(UIComponents.playerInventory(adapter.screen().getMenu(), inventorySize)
+                .child(UIComponents.playerInventory(adapter.screen().getMenu(), inventorySize, GuiTextures.SLOT)
                         .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset)))
                 .positioning(Positioning.relative(50, 50))
                 .surface(Surface.UI_BACKGROUND));

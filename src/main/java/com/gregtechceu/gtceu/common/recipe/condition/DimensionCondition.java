@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -8,6 +9,13 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -28,11 +36,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author KilaBash
- * @date 2022/05/27
- * @implNote DimensionCondition, specific dimension
- */
 @NoArgsConstructor
 public class DimensionCondition extends RecipeCondition {
 
@@ -68,20 +71,27 @@ public class DimensionCondition extends RecipeCondition {
         return Component.translatable("recipe.condition.dimension.tooltip", dimension);
     }
 
-    public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {
+    public StackLayout setupDimensionMarkers(int xOffset, int yOffset) {
+        StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+        layout.positioning(Positioning.absolute(xOffset, yOffset));
+
         DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension,
                 new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
         ItemStack icon = dimMarker.getIcon();
         CustomItemStackHandler handler = new CustomItemStackHandler(1);
-        SlotWidget dimSlot = new SlotWidget(handler, 0, xOffset, yOffset, false, false)
-                .setIngredientIO(IngredientIO.INPUT);
+        SlotComponent dimSlot = UIComponents.slot(handler, 0)
+                .canInsertOverride(false)
+                .canExtractOverride(false)
+                .ingredientIO(IO.IN);
         handler.setStackInSlot(0, icon);
+
+        layout.child(dimSlot);
         if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
-            dimSlot.setOverlay(
-                    new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))
-                            .scale(0.75f).transform(-3.0f, 5.0f));
+            layout.child(UIComponents.texture(UITextures.text(
+                            Component.literal("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)))
+                    .scale(0.75f).transform(-3.0f, 5.0f), 18, 18));
         }
-        return dimSlot;
+        return layout;
     }
 
     public ResourceLocation getDimension() {

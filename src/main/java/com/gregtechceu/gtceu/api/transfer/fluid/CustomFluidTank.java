@@ -8,15 +8,16 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import lombok.Getter;
-import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class CustomFluidTank extends FluidTank
                              implements IFluidHandlerModifiable, ITagSerializable<CompoundTag>, IContentChangeAware {
 
     @Getter
-    protected Runnable onContentsChanged = () -> {};
+    protected List<Runnable> onContentsChanged = new ArrayList<>();
 
     public CustomFluidTank(int capacity) {
         this(capacity, e -> true);
@@ -33,7 +34,7 @@ public class CustomFluidTank extends FluidTank
 
     @Override
     protected void onContentsChanged() {
-        onContentsChanged.run();
+        onContentsChanged.forEach(Runnable::run);
     }
 
     public CustomFluidTank copy() {
@@ -65,9 +66,13 @@ public class CustomFluidTank extends FluidTank
     }
 
     public void setOnContentsChanged(Runnable onContentsChanged) {
-        this.onContentsChanged = () -> {
-            this.onContentsChanged.run();
-            onContentsChanged.run();
-        };
+        this.onContentsChanged.clear();
+        this.onContentsChanged.add(onContentsChanged);
+    }
+
+    public int addOnContentsChanged(Runnable onContentsChanged) {
+        int size = this.onContentsChanged.size();
+        this.onContentsChanged.add(onContentsChanged);
+        return size;
     }
 }

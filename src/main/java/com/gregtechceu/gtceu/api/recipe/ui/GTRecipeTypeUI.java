@@ -15,10 +15,7 @@ import com.gregtechceu.gtceu.api.ui.component.DualProgressComponent;
 import com.gregtechceu.gtceu.api.ui.component.ProgressComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.*;
-import com.gregtechceu.gtceu.api.ui.core.Insets;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.editable.IEditableUI;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
@@ -31,9 +28,7 @@ import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.nbt.CompoundTag;
 
@@ -77,7 +72,7 @@ public class GTRecipeTypeUI {
     private ProgressTexture.FillDirection steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
     @Setter
     @Nullable
-    protected BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
+    protected BiConsumer<GTRecipe, UIComponentGroup> uiBuilder;
     @Setter
     @Getter
     protected int maxTooltips = 3;
@@ -116,7 +111,7 @@ public class GTRecipeTypeUI {
         if (size == null) {
             var originalSize = createEditableUITemplate(false, false).createDefault().fullSize();
             this.originalWidth = originalSize.width();
-            this.xeiSize = size = new Size(Math.max(originalWidth, 150),
+            this.xeiSize = size = Size.of(Math.max(originalWidth, 150),
                     getPropertyHeightShift() + 5 + originalSize.height());
         }
         return size;
@@ -138,6 +133,7 @@ public class GTRecipeTypeUI {
      */
     @OnlyIn(Dist.CLIENT)
     public UIComponentGroup createUITemplate(DoubleSupplier progressSupplier,
+                                             UIAdapter<UIComponentGroup> adapter,
                                              Table<IO, RecipeCapability<?>, Object> storages,
                                              CompoundTag data,
                                              List<RecipeCondition> conditions,
@@ -145,16 +141,17 @@ public class GTRecipeTypeUI {
                                              boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
         var group = template.createDefault();
-        template.setupUI(group, ,
+        template.setupUI(group, adapter,
                 new RecipeHolder(progressSupplier, storages, data, conditions, isSteam, isHighPressure));
         return group;
     }
 
     public UIComponentGroup createUITemplate(DoubleSupplier progressSupplier,
+                                             UIAdapter<UIComponentGroup> adapter,
                                              Table<IO, RecipeCapability<?>, Object> storages,
                                              CompoundTag data,
                                              List<RecipeCondition> conditions) {
-        return createUITemplate(progressSupplier, storages, data, conditions, false, false);
+        return createUITemplate(progressSupplier, adapter, storages, data, conditions, false, false);
     }
 
     /**
@@ -215,7 +212,7 @@ public class GTRecipeTypeUI {
             // add recipe button
             if (!isJEI && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
                 for (UIComponent component : progress) {
-                    template.child(UIComponents.button(Component.empty(), btn -> {
+                    template.child(UIComponents.button(Component.empty(), cd -> {
                                 if (LDLib.isReiLoaded()) {
                                     ViewSearchBuilder.builder().addCategories(
                                                     recipeType.getCategories().stream()
@@ -360,7 +357,7 @@ public class GTRecipeTypeUI {
         return maxPropertyCount * 10; // GTRecipeWidget#LINE_HEIGHT
     }
 
-    public void appendJEIUI(GTRecipe recipe, WidgetGroup widgetGroup) {
+    public void appendJEIUI(GTRecipe recipe, UIComponentGroup widgetGroup) {
         if (uiBuilder != null) {
             uiBuilder.accept(recipe, widgetGroup);
         }

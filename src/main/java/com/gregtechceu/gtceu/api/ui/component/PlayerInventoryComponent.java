@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.*;
 
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -21,9 +23,9 @@ public class PlayerInventoryComponent extends UIComponentGroup {
         this.allowOverflow(true);
     }
 
-    protected PlayerInventoryComponent(AbstractContainerMenu menu, int startSlotIndex) {
+    protected PlayerInventoryComponent(AbstractContainerMenu menu, int startSlotIndex, UITexture slotTexture) {
         super(Sizing.fixed(162), Sizing.fixed(76));
-        setByMenu(menu, startSlotIndex);
+        setByMenu(menu, startSlotIndex, slotTexture);
         this.allowOverflow(true);
     }
 
@@ -59,13 +61,13 @@ public class PlayerInventoryComponent extends UIComponentGroup {
         return this;
     }
 
-    public PlayerInventoryComponent setByMenu(AbstractContainerMenu menu, int startSlotIndex) {
+    public PlayerInventoryComponent setByMenu(AbstractContainerMenu menu, int startSlotIndex, UITexture slotTexture) {
         GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 3, 9);
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 9; y++) {
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
                 layout.children(List.of(UIComponents.slot(menu.getSlot(y + x * 9 + startSlotIndex)),
-                        UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                        UIComponents.texture(slotTexture, 18, 18)
                                 .sizing(Sizing.fixed(18))));
                 grid.child(layout, x, y);
             }
@@ -78,7 +80,7 @@ public class PlayerInventoryComponent extends UIComponentGroup {
             StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
             layout.children(List.of(
                     UIComponents.slot(menu.getSlot(y + 27 + startSlotIndex)),
-                    UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                    UIComponents.texture(slotTexture, 18, 18)
                             .sizing(Sizing.fixed(18))));
             grid2.child(layout, 0, y);
         }

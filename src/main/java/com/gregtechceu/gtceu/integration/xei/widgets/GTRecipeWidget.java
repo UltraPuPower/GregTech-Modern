@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
-import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -16,18 +15,17 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
+import com.gregtechceu.gtceu.api.ui.component.PredicatedButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.ProgressComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -39,7 +37,6 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -54,26 +51,25 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * @date 2023/2/25
  * @implNote GTRecipeWidget
  */
-public class GTRecipeWidget extends WidgetGroup {
+public class GTRecipeWidget extends UIComponentGroup {
 
-    public static final String RECIPE_CONTENT_GROUP_ID = "recipeContentGroup";
-    public static final Pattern RECIPE_CONTENT_GROUP_ID_REGEX = Pattern.compile("^recipeContentGroup$");
+    public static final String RECIPE_CONTENT_GROUP_ID = "recipe_content_group";
+    public static final Pattern RECIPE_CONTENT_GROUP_ID_REGEX = Pattern.compile("^recipe_content_group$");
 
     public static final int LINE_HEIGHT = 10;
 
-    private final int xOffset;
     private final GTRecipe recipe;
-    private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
+    private final List<LabelComponent> recipeParaTexts = new ArrayList<>();
     private final int minTier;
     private int tier;
-    private int yOffset;
-    private LabelWidget voltageTextWidget;
+    private LabelComponent voltageTextWidget;
 
     public GTRecipeWidget(GTRecipe recipe) {
-        super(getXOffset(recipe), 0, recipe.recipeType.getRecipeUI().getJEISize().width,
-                recipe.recipeType.getRecipeUI().getJEISize().height);
+        super(Sizing.fixed(recipe.recipeType.getRecipeUI().getJEISize().width()),
+                Sizing.fixed(recipe.recipeType.getRecipeUI().getJEISize().height()));
+        positioning(Positioning.absolute(getXOffset(recipe), 0));
         this.recipe = recipe;
-        this.xOffset = getXOffset(recipe);
+        this.padding(Insets.of(0, 0, -getXOffset(recipe) + 3, 0));
         this.minTier = RecipeHelper.getRecipeEUtTier(recipe);
         setRecipeWidget();
         setTierToMin();
@@ -82,8 +78,8 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     private static int getXOffset(GTRecipe recipe) {
-        if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getJEISize().width) {
-            return (recipe.recipeType.getRecipeUI().getJEISize().width -
+        if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getJEISize().width()) {
+            return (recipe.recipeType.getRecipeUI().getJEISize().width() -
                     recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
         }
         return 0;
@@ -91,14 +87,15 @@ public class GTRecipeWidget extends WidgetGroup {
 
     @SuppressWarnings("UnstableApiUsage")
     private void setRecipeWidget() {
-        setClientSideWidget();
-
         var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
         var contents = Tables.newCustomTable(new EnumMap<>(IO.class),
                 LinkedHashMap<RecipeCapability<?>, List<Content>>::new);
         collectStorage(storages, contents, recipe);
 
-        UIComponentGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress, storages,
+        //noinspection unchecked
+        UIComponentGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressComponent.JEIProgress,
+                (UIAdapter<UIComponentGroup>) this.containerAccess().adapter(),
+                storages,
                 recipe.data.copy(), recipe.conditions);
         addSlots(contents, group, recipe);
 
@@ -106,83 +103,82 @@ public class GTRecipeWidget extends WidgetGroup {
 
         // Ensure any previous instances of the widget are removed first. This applies when changing the recipe
         // preview's voltage tier, as this recipe widget stays the same while its contents are updated.
-        group.setId(RECIPE_CONTENT_GROUP_ID);
-        getWidgetsById(RECIPE_CONTENT_GROUP_ID_REGEX).forEach(this::removeWidget);
+        group.id(RECIPE_CONTENT_GROUP_ID);
+        childrenByPattern(RECIPE_CONTENT_GROUP_ID_REGEX).forEach(this::removeChild);
 
-        addWidget(group);
+        child(group);
 
         var EUt = RecipeHelper.getInputEUt(recipe);
         if (EUt == 0) {
             EUt = RecipeHelper.getOutputEUt(recipe);
         }
-        int yOffset = 5 + size.height;
-        this.yOffset = yOffset;
+        int yOffset = 5 + size.height();
         yOffset += EUt > 0 ? 20 : 0;
         if (recipe.data.getBoolean("duration_is_total_cwu")) {
-            yOffset -= 10;
+            yOffset -= LINE_HEIGHT;
         }
 
         /// add text based on i/o's
-        MutableInt yOff = new MutableInt(yOffset);
         for (var capability : recipe.inputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), false, true, yOff);
+            capability.getKey().addXEIInfo(this, recipe, capability.getValue(), false, true);
         }
         for (var capability : recipe.tickInputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, true, yOff);
+            capability.getKey().addXEIInfo(this, recipe, capability.getValue(), true, true);
         }
         for (var capability : recipe.outputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), false, false, yOff);
+            capability.getKey().addXEIInfo(this, recipe, capability.getValue(), false, false);
         }
         for (var capability : recipe.tickOutputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, false, yOff);
+            capability.getKey().addXEIInfo(this, recipe, capability.getValue(), true, false);
         }
 
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
             if (condition instanceof DimensionCondition dimCondition) {
-                addWidget(dimCondition
-                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
-                                recipe.recipeType.getRecipeUI().getJEISize().height - 32)
-                        .setBackgroundTexture(IGuiTexture.EMPTY));
-            } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
+                child(dimCondition
+                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width() - 44,
+                                recipe.recipeType.getRecipeUI().getJEISize().height() - 32));
+            } else child(UIComponents.label(condition.getTooltips()));
         }
-        for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
-            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data)));
+        for (Function<CompoundTag, Component> dataInfo : recipe.recipeType.getDataInfos()) {
+            child(UIComponents.label(dataInfo.apply(recipe.data)));
         }
         recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
     }
 
     private void initializeRecipeTextWidget() {
         String tierText = GTValues.VNF[tier];
-        int textsY = yOffset - 10;
         int duration = recipe.duration;
         long inputEUt = RecipeHelper.getInputEUt(recipe);
         long outputEUt = RecipeHelper.getOutputEUt(recipe);
         List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, outputEUt);
         for (Component text : texts) {
-            textsY += 10;
-            LabelWidget labelWidget = new LabelWidget(3 - xOffset, textsY, text).setTextColor(-1).setDropShadow(true);
-            addWidget(labelWidget);
+            LabelComponent labelWidget = UIComponents.label(text).color(Color.BLACK);
+            labelWidget.sizing(Sizing.content(), Sizing.fixed(LINE_HEIGHT));
+            child(labelWidget);
             recipeParaTexts.add(labelWidget);
         }
         if (inputEUt > 0) {
-            LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10,
-                    tierText).setTextColor(-1).setDropShadow(false);
+            LabelComponent voltageTextWidget = UIComponents.label(Component.literal(tierText)).color(Color.BLACK);
+            voltageTextWidget.sizing(Sizing.content(), Sizing.fixed(LINE_HEIGHT))
+                    .positioning(Positioning.absolute(100, 100))
+                    .margins(Insets.of(0, -LINE_HEIGHT, 0, getVoltageXOffset()));
             if (recipe.recipeType.isOffsetVoltageText()) {
-                voltageTextWidget.setSelfPositionY(getSize().height - recipe.recipeType.getVoltageTextOffset());
+                voltageTextWidget.margins(Insets.of(0, recipe.recipeType.getVoltageTextOffset(), 0, getVoltageXOffset()));
             }
             // make it clickable
             // voltageTextWidget.setBackground(new GuiTextureGroup(GuiTextures.BUTTON));
-            addWidget(new ButtonWidget(voltageTextWidget.getPositionX(), voltageTextWidget.getPositionY(),
-                    voltageTextWidget.getSizeWidth(), voltageTextWidget.getSizeHeight(),
-                    cd -> setRecipeOC(cd.button, cd.isShiftClick))
-                    .setHoverTooltips(
+            child(this.voltageTextWidget = voltageTextWidget);
+            updateLayout();
+            child(UIComponents.button(Component.empty(), cd -> setRecipeOC(cd.button, cd.isShiftClick))
+                    .sizing(voltageTextWidget.horizontalSizing().get(), voltageTextWidget.verticalSizing().get())
+                    .positioning(voltageTextWidget.positioning().get())
+                    .tooltip(List.of(
                             Component.translatable("gtceu.oc.tooltip.0", GTValues.VNF[minTier]),
                             Component.translatable("gtceu.oc.tooltip.1"),
                             Component.translatable("gtceu.oc.tooltip.2"),
                             Component.translatable("gtceu.oc.tooltip.3"),
-                            Component.translatable("gtceu.oc.tooltip.4")));
-            addWidget(this.voltageTextWidget = voltageTextWidget);
+                            Component.translatable("gtceu.oc.tooltip.4"))));
         }
     }
 
@@ -219,17 +215,18 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private void addButtons() {
         // add a recipe id getter, btw all the things can only click within the WidgetGroup while using EMI
-        int x = getSize().width - xOffset - 18;
-        int y = getSize().height - 30;
-        addWidget(
-                new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")),
-                        cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),
-                        () -> !FMLLoader.isProduction(), !FMLLoader.isProduction())
-                        .setHoverTooltips("click to copy: " + recipe.id));
+        int x = width() - 15;
+        int y = height() - 30;
+        child(new PredicatedButtonComponent(UITextures.group(GuiTextures.BUTTON, UITextures.text(Component.literal("ID"))),
+                cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),
+                () -> !FMLLoader.isProduction(), !FMLLoader.isProduction())
+                .positioning(Positioning.absolute(x, y))
+                // TODO make translatable
+                .tooltip(Component.literal("click to copy: " + recipe.id)));
     }
 
     private int getVoltageXOffset() {
-        int x = getSize().width - switch (tier) {
+        int x = width() - switch (tier) {
             case ULV, LuV, ZPM, UHV, UEV, UXV -> 20;
             case OpV, MAX -> 22;
             case UIV -> 18;
@@ -272,12 +269,12 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);
         for (int i = 0; i < texts.size(); i++) {
-            recipeParaTexts.get(i).setComponent(texts.get(i));
+            recipeParaTexts.get(i).text(texts.get(i));
         }
-        voltageTextWidget.setText(tierText);
-        voltageTextWidget.setSelfPositionX(getVoltageXOffset() - xOffset);
-        detectAndSendChanges();
-        updateScreen();
+        voltageTextWidget.text(Component.literal(tierText));
+        voltageTextWidget.margins(Insets.of(0, recipe.recipeType.getVoltageTextOffset(), 0, getVoltageXOffset()));
+        // TODO implement
+        //detectAndSendChanges();
     }
 
     public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips, int recipeTier,
@@ -291,7 +288,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 float boostedChanceFloat = 100f * boostedChance / content.maxChance;
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltips.add(Component.translatable("gtceu.gui.content.chance_base_logic",
-                            FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                    FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltips.add(
@@ -305,7 +302,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 }
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltips.add(Component.translatable("gtceu.gui.content.chance_boosted_logic",
-                            FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                                    FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltips.add(
@@ -374,7 +371,7 @@ public class GTRecipeWidget extends WidgetGroup {
         }
     }
 
-    public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable, WidgetGroup group,
+    public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable, UIComponentGroup group,
                          GTRecipe recipe) {
         for (var capabilityEntry : contentTable.rowMap().entrySet()) {
             IO io = capabilityEntry.getKey();
@@ -384,14 +381,16 @@ public class GTRecipeWidget extends WidgetGroup {
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
                 UIComponentUtils.componentByIdForEach(group, "^%s.[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
-                        widget -> {
-                            var index = UIComponentUtils.componentIdIndex(widget);
+                        component -> {
+                            var index = UIComponentUtils.componentIdIndex(component);
                             if (index >= 0 && index < contents.size()) {
                                 var content = contents.get(index);
-                                cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
+                                cap.applyWidgetInfo(component, index, true, io, null, recipe.getType(), recipe, content,
                                         null, minTier, tier);
-                                widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
-                                        recipe.getType().getChanceFunction()));
+                                group.child(UIComponents.texture(content.createOverlay(index >= nonTickCount, minTier, tier,
+                                                recipe.getType().getChanceFunction()), component.width(), component.height())
+                                        .sizing(component.horizontalSizing().get(), component.verticalSizing().get())
+                                        .positioning(component.positioning().get()));
                             }
                         });
             }

@@ -179,6 +179,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
     @Override
     public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        var menu = adapter.menu();
         var rootComponent = adapter.rootComponent;
         var screenGroup = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166));
         screenGroup.padding(Insets.of(5));
@@ -188,7 +189,9 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         storages.put(IO.IN, ItemRecipeCapability.CAP, importItems.storage);
         storages.put(IO.OUT, ItemRecipeCapability.CAP, exportItems.storage);
 
-        var group = getRecipeType().getRecipeUI().createUITemplate(recipeLogic::getProgressPercent,
+        //noinspection DataFlowIssue
+        var group = getRecipeType().getRecipeUI().createUITemplate(menu.<Double>getProperty("progress")::get,
+                adapter,
                 storages,
                 new CompoundTag(),
                 Collections.emptyList(),
@@ -205,7 +208,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         screenGroup.child(new PredicatedTextureComponent(GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure), 18, 18)
                 .positioning(Positioning.absolute(pos.x + group.width() / 2 - 9,
                         pos.y + group.height() / 2 - 9)))
-                .child(UIComponents.playerInventory(adapter.screen().getMenu(), itemSlotCount));
+                .child(UIComponents.playerInventory(adapter.screen().getMenu(), itemSlotCount, GuiTextures.SLOT));
 
         rootComponent.child(screenGroup);
     }

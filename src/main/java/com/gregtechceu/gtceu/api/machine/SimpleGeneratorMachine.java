@@ -2,7 +2,11 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.editable.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
@@ -18,10 +22,6 @@ import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.GTMath;
-
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
@@ -146,31 +146,35 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
             SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-in." + i,
                     this.importFluids.getFluidInTank(i));
             CustomFluidTank tank = this.importFluids.getStorages()[i];
-            tank.setOnContentsChanged(() -> prop.set(tank.getFluid()));
+            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
         }
         for (int i = 0; i < this.exportFluids.getTanks(); i++) {
             SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-out." + i,
                     this.exportFluids.getFluidInTank(i));
             CustomFluidTank tank = this.exportFluids.getStorages()[i];
-            tank.setOnContentsChanged(() -> prop.set(tank.getFluid()));
+            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
         }
-        SlotGenerator.begin(menu::addSlot, 0, 0)
-                .playerInventory(menu.getPlayerInventory());
+        // Position all slots at 0,0 as they'll be moved to the correct position on the client.
+        SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
+        for (int i = 0; i < this.importItems.getSlots(); i++) {
+            generator.slot(this.importItems, i, 0, 0);
+        }
+        for (int i = 0; i < this.exportItems.getSlots(); i++) {
+            generator.slot(this.exportItems, i, 0, 0);
+        }
+        generator.playerInventory(menu.getPlayerInventory());
     }
 
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, recipeType) -> new EditableMachineUI("generator", path, () -> {
-                WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-                WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width + 4 + 8,
-                        template.getSize().height + 8);
-                Size size = group.getSize();
-                template.setSelfPosition(new Position(
-                        (size.width - 4 - template.getSize().width) / 2 + 4,
-                        (size.height - template.getSize().height) / 2));
-                group.addWidget(template);
+            .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
+                UIComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
+                UIComponentGroup group = UIContainers.group(Sizing.content(),
+                        Sizing.fixed(Math.max(template.height(), 78)));
+                template.positioning(Positioning.relative(50, 50));
+                group.child(template);
                 return group;
-            }, (template, machine) -> {
+            }, (template, adapter, machine) -> {
                 if (machine instanceof SimpleGeneratorMachine generatorMachine) {
                     var storages = Tables.newCustomTable(new EnumMap<>(IO.class),
                             LinkedHashMap<RecipeCapability<?>, Object>::new);
@@ -180,13 +184,13 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
                     storages.put(IO.OUT, FluidRecipeCapability.CAP, generatorMachine.exportFluids);
 
                     generatorMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(
-                            template, ,
+                            template, adapter,
                             new GTRecipeTypeUI.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
                                     storages,
                                     new CompoundTag(),
                                     Collections.emptyList(),
                                     false, false));
-                    createEnergyBar().setupUI(template, generatorMachine);
+                    createEnergyBar().setupUI(template, adapter, generatorMachine);
                 }
             }));
 }

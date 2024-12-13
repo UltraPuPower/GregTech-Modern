@@ -12,9 +12,9 @@ public interface IEditableUI<W extends UIComponent, T> {
 
     W createDefault();
 
-    void setupUI(ParentUIComponent template, UIAdapter<UIComponentGroup> adapter, T instance);
+    void setupUI(UIComponentGroup template, UIAdapter<UIComponentGroup> adapter, T instance);
 
-    record Normal<A extends UIComponent, B>(Supplier<A> supplier, BinderFunction<ParentUIComponent, B> binder)
+    record Normal<A extends UIComponent, B>(Supplier<A> supplier, BinderFunction<UIComponentGroup, B> binder)
             implements IEditableUI<A, B> {
 
         @Override
@@ -23,7 +23,7 @@ public interface IEditableUI<W extends UIComponent, T> {
         }
 
         @Override
-        public void setupUI(ParentUIComponent template, UIAdapter<UIComponentGroup> adapter, B instance) {
+        public void setupUI(UIComponentGroup template, UIAdapter<UIComponentGroup> adapter, B instance) {
             binder.bind(template, adapter, instance);
         }
     }

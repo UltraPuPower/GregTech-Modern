@@ -4,18 +4,24 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -28,6 +34,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -111,32 +118,90 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.PRIMITIVE_BACKGROUND)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new SlotWidget(importItems.storage, 0, 52, 20, true, true)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY)))
-                .widget(new SlotWidget(importItems.storage, 1, 52, 38, true, true)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
-                .widget(new SlotWidget(importItems.storage, 2, 52, 56, true, true)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
-                .widget(new ProgressWidget(recipeLogic::getProgressPercent, 77, 39, 20, 15,
-                        GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR))
-                .widget(new SlotWidget(exportItems.storage, 0, 104, 38, true, false)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY)))
-                .widget(new SlotWidget(exportItems.storage, 1, 122, 38, true, false)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
-                .widget(new SlotWidget(exportItems.storage, 2, 140, 38, true, false)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.PRIMITIVE_SLOT, 7, 84,
-                        true));
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        var progressProperty = menu.createProperty(double.class, "progress", recipeLogic.getProgressPercent());
+        recipeLogic.addProgressPercentListener(progressProperty::set);
+
+        for (int i = 0; i < this.importFluids.getTanks(); i++) {
+            SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-in." + i,
+                    this.importFluids.getFluidInTank(i));
+            CustomFluidTank tank = this.importFluids.getStorages()[i];
+            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
+        }
+        for (int i = 0; i < this.exportFluids.getTanks(); i++) {
+            SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "fluid-out." + i,
+                    this.exportFluids.getFluidInTank(i));
+            CustomFluidTank tank = this.exportFluids.getStorages()[i];
+            tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
+        }
+        // Position all slots at 0,0 as they'll be moved to the correct position on the client.
+        SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
+        for (int i = 0; i < this.importItems.getSlots(); i++) {
+            generator.slot(this.importItems, i, 0, 0);
+        }
+        for (int i = 0; i < this.exportItems.getSlots(); i++) {
+            generator.slot(this.exportItems, i, 0, 0);
+        }
+        generator.playerInventory(menu.getPlayerInventory());
+
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+        var menu = adapter.menu();
+        UIComponentGroup rootComponent;
+        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
+
+        rootComponent.surface(GuiTextures.PRIMITIVE_BACKGROUND::draw);
+        rootComponent.child(UIComponents.label(getBlockState().getBlock().getName())
+                        .positioning(Positioning.absolute(5, 5)));
+
+        rootComponent.child(UIComponents.slot(menu.getSlot(0))
+                        .positioning(Positioning.absolute(52, 20)))
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY), 18, 18)
+                        .positioning(Positioning.absolute(52, 20))
+                        .sizing(Sizing.fixed(18)))
+                .child(UIComponents.slot(menu.getSlot(1))
+                        .positioning(Positioning.absolute(52, 38)))
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY), 18, 18)
+                        .positioning(Positioning.absolute(52, 38))
+                        .sizing(Sizing.fixed(18)))
+                .child(UIComponents.slot(menu.getSlot(2))
+                        .positioning(Positioning.absolute(52, 38)))
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY), 18, 18)
+                        .positioning(Positioning.absolute(52, 38))
+                        .sizing(Sizing.fixed(18)));
+
+
+        rootComponent.child(UIComponents.progress(adapter.menu().<Double>getProperty("progress")::get)
+                        .progressTexture(GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR)
+                        .positioning(Positioning.absolute(77, 39))
+                        .sizing(Sizing.fixed(20), Sizing.fixed(15)));
+
+        rootComponent.child(UIComponents.slot(menu.getSlot(4))
+                        .canInsertOverride(false)
+                        .canExtractOverride(true)
+                        .positioning(Positioning.absolute(104, 38)))
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY), 18, 18)
+                        .positioning(Positioning.absolute(104, 38))
+                        .sizing(Sizing.fixed(18)))
+                .child(UIComponents.slot(menu.getSlot(5))
+                        .canInsertOverride(false)
+                        .canExtractOverride(true)
+                        .positioning(Positioning.absolute(122, 38)))
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY), 18, 18)
+                        .positioning(Positioning.absolute(122, 38))
+                        .sizing(Sizing.fixed(18)))
+                .child(UIComponents.slot(menu.getSlot(6))
+                        .canInsertOverride(false)
+                        .canExtractOverride(true)
+                        .positioning(Positioning.absolute(140, 38)))
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY), 18, 18)
+                        .positioning(Positioning.absolute(140, 38))
+                        .sizing(Sizing.fixed(18)));
+
+        rootComponent.child(UIComponents.playerInventory(menu, 6, GuiTextures.PRIMITIVE_SLOT)
+                        .positioning(Positioning.absolute(7, 84)));
     }
 
     @Override

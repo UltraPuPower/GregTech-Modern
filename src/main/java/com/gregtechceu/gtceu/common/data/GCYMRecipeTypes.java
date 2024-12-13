@@ -4,22 +4,23 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gregtechceu.gtceu.api.ui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MULTIBLOCK;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.register;
-import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
 
 /**
  * @author Rundas
@@ -29,7 +30,7 @@ public class GCYMRecipeTypes {
 
     //////////////////////////////////////
     // ******* Multiblock *******//
-    //////////////////////////////////////
+    /// ///////////////////////////////////
     public final static GTRecipeType ALLOY_BLAST_RECIPES = register("alloy_blast_smelter", MULTIBLOCK)
             .setMaxIOSize(9, 0, 3, 1)
             .setEUIO(IO.IN)
@@ -42,17 +43,17 @@ public class GCYMRecipeTypes {
             .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
-                return LocalizationUtils.format("gtceu.recipe.temperature", FormattingUtil.formatNumbers(temp));
+                return Component.translatable("gtceu.recipe.temperature", FormattingUtil.formatNumbers(temp));
             })
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                 if (requiredCoil != null && requiredCoil.getMaterial() != null) {
-                    return LocalizationUtils.format("gtceu.recipe.coil.tier",
+                    return Component.translatable("gtceu.recipe.coil.tier",
                             I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
                 }
-                return "";
+                return Component.empty();
             })
             .setMaxTooltips(4)
             .setUiBuilder((recipe, widgetGroup) -> {
@@ -61,8 +62,11 @@ public class GCYMRecipeTypes {
                 items.add(GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .filter(coil -> coil.getKey().getCoilTemperature() >= temp)
                         .map(coil -> new ItemStack(coil.getValue().get())).toList());
-                widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0,
-                        widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 40, false, false));
+                widgetGroup.child(UIComponents.slot(new CycleItemStackHandler(items), 0)
+                        .canInsertOverride(false)
+                        .canExtractOverride(false)
+                        .positioning(Positioning.relative(100, 100))
+                        .margins(Insets.of(0, 40, 0, 25)));
             })
             .setSound(GTSoundEntries.ARC);
 

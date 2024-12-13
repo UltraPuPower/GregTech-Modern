@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractWidgetAccessor;
-import com.gregtechceu.gtceu.core.mixins.ui.accessor.ButtonAccessor;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +27,7 @@ import org.w3c.dom.Node;
 import java.util.Map;
 import java.util.function.Consumer;
 
+@SuppressWarnings("LombokSetterMayBeUsed")
 @Accessors(fluent = true, chain = true)
 public class ButtonComponent extends Button {
 
@@ -40,9 +41,12 @@ public class ButtonComponent extends Button {
     @Getter
     @Setter
     protected boolean textShadow = true;
+    @Setter
+    protected Consumer<ClickData> onPress;
 
-    protected ButtonComponent(Component message, Consumer<ButtonComponent> onPress) {
-        super(0, 0, 0, 0, message, button -> onPress.accept((ButtonComponent) button), Button.DEFAULT_NARRATION);
+    protected ButtonComponent(Component message, Consumer<ClickData> onPress) {
+        super(0, 0, 0, 0, message, button -> {}, Button.DEFAULT_NARRATION);
+        this.onPress = onPress;
         this.sizing(Sizing.content());
     }
 
@@ -68,11 +72,6 @@ public class ButtonComponent extends Button {
                     DefaultTooltipPositioner.INSTANCE, mouseX, mouseY);
     }
 
-    public ButtonComponent onPress(Consumer<ButtonComponent> onPress) {
-        ((ButtonAccessor) this).setOnPress(button -> onPress.accept((ButtonComponent) button));
-        return this;
-    }
-
     public ButtonComponent active(boolean active) {
         this.active = active;
         return this;
@@ -89,6 +88,20 @@ public class ButtonComponent extends Button {
 
     public boolean visible() {
         return this.visible;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (this.active() && this.visible() && isMouseOverElement(mouseX, mouseY)) {
+            ClickData clickData = new ClickData(button);
+            sendMessage(1, clickData::writeToBuf);
+            if (onPress != null) {
+                onPress.accept(clickData);
+            }
+            UIComponent.playButtonClickSound();
+            return true;
+        }
+        return false;
     }
 
     @Override

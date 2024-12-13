@@ -68,7 +68,7 @@ public class AETextInputButtonComponent extends UIComponentGroup {
                         this.removeChild(textField);
                     }
                 })
-                .setTexture(
+                .texture(
                         UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.literal("✎")))),
                         UITextures.group(GuiTextures.VANILLA_BUTTON,  UITextures.text(Component.literal("✔"))))
                 .setHoverTooltips(hoverTexts);

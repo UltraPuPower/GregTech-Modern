@@ -6,11 +6,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.ui.component.ProgressComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -135,14 +134,11 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
      * Create an energy bar widget.
      */
     protected static EditableUI<ProgressComponent, TieredEnergyMachine> createEnergyBar() {
-        return new EditableUI<>("energy_container", ProgressWidget.class, () -> {
-            var progressBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 18, 60,
-                    new ProgressTexture(IGuiTexture.EMPTY, GuiTextures.ENERGY_BAR_BASE));
-            progressBar.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
-            progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
-            return progressBar;
+        return new EditableUI<>("energy_container", ProgressComponent.class, () -> {
+            return UIComponents.progress(ProgressWidget.JEIProgress)
+                    .progressTexture(GuiTextures.ENERGY_BAR_BACKGROUND, GuiTextures.ENERGY_BAR_BASE);
         }, (progressBar, adapter, machine) -> {
-            progressBar.setProgressSupplier(
+            progressBar.progressSupplier(
                     () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity());
         });
     }

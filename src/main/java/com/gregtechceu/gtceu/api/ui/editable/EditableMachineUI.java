@@ -18,12 +18,12 @@ public class EditableMachineUI implements IEditableUI<UIComponentGroup, MetaMach
     @Getter
     final ResourceLocation uiPath;
     final Supplier<UIComponentGroup> widgetSupplier;
-    final BinderFunction<ParentUIComponent, MetaMachine> binder;
+    final BinderFunction<UIComponentGroup, MetaMachine> binder;
     @Nullable
     private UIModel customUICache;
 
     public EditableMachineUI(ResourceLocation uiPath, Supplier<UIComponentGroup> widgetSupplier,
-                             BinderFunction<ParentUIComponent, MetaMachine> binder) {
+                             BinderFunction<UIComponentGroup, MetaMachine> binder) {
         this.uiPath = uiPath;
         this.widgetSupplier = widgetSupplier;
         this.binder = binder;
@@ -34,7 +34,7 @@ public class EditableMachineUI implements IEditableUI<UIComponentGroup, MetaMach
     }
 
     @Override
-    public void setupUI(ParentUIComponent template, UIAdapter<UIComponentGroup> adapter, MetaMachine machine) {
+    public void setupUI(UIComponentGroup template, UIAdapter<UIComponentGroup> adapter, MetaMachine machine) {
         binder.bind(template, adapter, machine);
     }
 

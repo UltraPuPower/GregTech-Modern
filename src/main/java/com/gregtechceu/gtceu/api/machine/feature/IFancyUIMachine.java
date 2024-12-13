@@ -45,14 +45,17 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
      * We should not override this method in general, and use {@link IFancyUIMachine#createBaseUIComponent()} instead,
      */
     @Override
-    default ParentUIComponent createMainPage(FancyMachineUIComponent widget) {
+    default ParentUIComponent createMainPage(FancyMachineUIComponent component) {
         var editableUI = self().getDefinition().getEditableUI();
         if (editableUI != null) {
             var template = editableUI.createCustomUI();
             if (template == null) {
                 template = editableUI.createDefault();
             }
-            editableUI.setupUI(template, , self());
+            //noinspection unchecked
+            editableUI.setupUI(template,
+                    (UIAdapter<UIComponentGroup>) component.containerAccess().adapter(),
+                    self());
             return template;
         }
         return createBaseUIComponent();
