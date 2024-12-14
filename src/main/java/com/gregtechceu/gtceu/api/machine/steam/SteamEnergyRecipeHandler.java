@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

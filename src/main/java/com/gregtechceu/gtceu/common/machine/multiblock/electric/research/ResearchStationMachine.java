@@ -67,7 +67,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 this.computationProvider = provider;
             }
             if (part instanceof IObjectHolder objectHolder) {
-                this.getCapabilitiesProxy().put(IO.IN, List.of(RecipeHandlerList.of(IO.IN, objectHolder.getAsHandler())));
+                this.getCapabilitiesProxy().put(IO.IN,
+                        List.of(RecipeHandlerList.of(IO.IN, objectHolder.getAsHandler())));
             }
         }
 
@@ -195,8 +196,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
 
         public RecipeHandler.ActionResult matchRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
-            if (!holder.hasCapabilityProxies()) return RecipeHandler.ActionResult
-                    .FAIL_NO_CAPABILITIES;
+            if (!holder.hasCapabilityProxies()) return RecipeHandler.ActionResult.FAIL_NO_CAPABILITIES;
             return RecipeHandler.handleRecipe(IO.IN, holder, recipe, recipe.inputs, Collections.emptyMap(), false,
                     true);
         }
@@ -204,8 +204,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         public RecipeHandler.ActionResult matchTickRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
             if (recipe.hasTick()) {
                 if (!holder.hasCapabilityProxies())
-                    return RecipeHandler.ActionResult
-                            .FAIL_NO_CAPABILITIES;
+                    return RecipeHandler.ActionResult.FAIL_NO_CAPABILITIES;
                 return RecipeHandler.handleRecipe(IO.IN, holder, recipe, recipe.tickInputs, Collections.emptyMap(),
                         false, true);
             }
