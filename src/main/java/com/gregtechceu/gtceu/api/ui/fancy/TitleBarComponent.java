@@ -84,8 +84,7 @@ public class TitleBarComponent extends UIComponentGroup {
 
         tabTitle.text(currentPage.getTitle().copy().withStyle(ChatFormatting.BLACK));
         tabTitle.maxWidth(this.width());
-        // TODO implement text rolling
-        //titleText.setRollSpeed(ROLL_SPEED);
+        tabTitle.rollSpeed(ROLL_SPEED);
 
         tabIcon.texture(currentPage.getTabIcon());
 
