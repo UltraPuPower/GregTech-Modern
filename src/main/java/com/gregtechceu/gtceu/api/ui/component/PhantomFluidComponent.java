@@ -1,26 +1,17 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
-import com.lowdragmc.lowdraglib.gui.ingredient.Target;
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
+import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.emi.emi.api.stack.EmiStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -28,16 +19,14 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Accessors(fluent = true, chain = true)
-public class PhantomFluidComponent extends TankComponent implements IGhostIngredientTarget {
+public class PhantomFluidComponent extends TankComponent implements GhostIngredientSlot<FluidStack> {
 
     private final Supplier<FluidStack> phantomFluidGetter;
     private final Consumer<FluidStack> phantomFluidSetter;
@@ -90,70 +79,19 @@ public class PhantomFluidComponent extends TankComponent implements IGhostIngred
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<Target> getPhantomTargets(Object ingredient) {
-        if (LDLib.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-            ingredient = new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getTag());
-        } else if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
-            var key = emiStack.getKey();
-            if (key instanceof Fluid f) {
-                int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
-                ingredient = new FluidStack(f, amount, emiStack.getNbt());
-            } else if (key instanceof Item i) {
-                ingredient = new ItemStack(i, (int) emiStack.getAmount());
-                ((ItemStack) ingredient).setTag(emiStack.getNbt());
-            } else {
-                ingredient = null;
-            }
-        } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-            ingredient = jeiStack.getIngredient();
+    public void setGhostIngredient(@NotNull FluidStack ingredient) {
+        if (!ingredient.isEmpty()) {
+            sendMessage(2, ingredient::writeToPacket);
         }
 
-        if (!(ingredient instanceof FluidStack) && drainFrom(ingredient).isEmpty()) {
-            return Collections.emptyList();
+        if (phantomFluidSetter != null) {
+            phantomFluidSetter.accept(ingredient);
         }
+    }
 
-        Rect2i rectangle = new Rect2i(x(), y(), width(), height());
-        return Lists.newArrayList(new Target() {
-
-            @Nonnull
-            @Override
-            public Rect2i getArea() {
-                return rectangle;
-            }
-
-            @Override
-            public void accept(@Nonnull Object ingredient) {
-                if (LDLib.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-                    ingredient = new FluidStack(fluidStack.getFluid(),
-                            (int) fluidStack.getAmount(),
-                            fluidStack.getTag());
-                } else if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
-                    var key = emiStack.getKey();
-                    if (key instanceof Fluid f) {
-                        int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
-                        ingredient = new FluidStack(f, amount, emiStack.getNbt());
-                    } else if (key instanceof Item i) {
-                        ingredient = new ItemStack(i, (int) emiStack.getAmount());
-                        ((ItemStack) ingredient).setTag(emiStack.getNbt());
-                    } else {
-                        ingredient = null;
-                    }
-                }
-
-                FluidStack ingredientStack;
-                if (ingredient instanceof FluidStack fluidStack) ingredientStack = fluidStack;
-                else ingredientStack = drainFrom(ingredient);
-
-                if (!ingredientStack.isEmpty()) {
-                    sendMessage(2, ingredientStack::writeToPacket);
-                }
-
-                if (phantomFluidSetter != null) {
-                    phantomFluidSetter.accept(ingredientStack);
-                }
-            }
-        });
+    @Override
+    public Class<FluidStack> ghostIngredientClass() {
+        return FluidStack.class;
     }
 
     @Override
@@ -223,13 +161,13 @@ public class PhantomFluidComponent extends TankComponent implements IGhostIngred
             int height = height() - 2;
             int x = x() + 1;
             int y = y() + 1;
-            DrawerHelper.drawFluidForGui(graphics, FluidHelperImpl.toFluidStack(stack), stack.getAmount(),
-                    (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)),
-                    ((int) (height * drawnHeight)));
+            graphics.drawFluid(lastFluidInTank(), stack.getAmount(),
+                    (int) (x + drawnU * width), (int) (y + drawnV * height),
+                    ((int) (width * drawnWidth)), ((int) (height * drawnHeight)));
             if (showAmount) {
                 graphics.pose().pushPose();
                 graphics.pose().scale(0.5F, 0.5F, 1);
-                String s = TextFormattingUtil.formatLongToCompactStringBuckets(stack.getAmount(), 3) + "B";
+                String s = FormattingUtil.formatBuckets(stack.getAmount());
                 Font fontRenderer = Minecraft.getInstance().font;
                 graphics.drawString(fontRenderer, s,
                         (int) ((x() + (width() / 3f)) * 2 - fontRenderer.width(s) + 21),

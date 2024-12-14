@@ -5,18 +5,19 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -95,15 +96,18 @@ public class FluidVoidingCover extends PumpCover {
 
     @Override
     public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        final var group = new WidgetGroup(0, 0, 176, 120);
-        group.addWidget(new LabelWidget(10, 5, getUITitle()));
+        final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(120));
+        group.padding(Insets.both(10, 5));
 
-        group.addWidget(new ToggleButtonComponent(10, 20, 20, 20,
-                GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled));
+        group.child(UIComponents.label(Component.translatable(getUITitle()))
+                .positioning(Positioning.relative(0, 0)));
 
-        // group.addWidget(filterHandler.createFilterSlotUI(36, 21));
-        group.addWidget(filterHandler.createFilterSlotUI(148, 91));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 50, 126, 60));
+        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled)
+                .positioning(Positioning.absolute(0, 15))
+                .sizing(Sizing.fixed(20)));
+
+        group.child(filterHandler.createFilterSlotUI(138, 86));
+        group.child(filterHandler.createFilterConfigUI(0, 45, 126, 60, adapter));
 
         buildAdditionalUI(group);
 
@@ -115,7 +119,7 @@ public class FluidVoidingCover extends PumpCover {
         return "cover.fluid.voiding.title";
     }
 
-    protected void buildAdditionalUI(WidgetGroup group) {
+    protected void buildAdditionalUI(UIComponentGroup group) {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 

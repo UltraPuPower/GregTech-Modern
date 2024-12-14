@@ -15,10 +15,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import org.w3c.dom.Element;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
@@ -35,6 +33,10 @@ public class ProgressComponent extends BaseUIComponent {
     private UITexture overlayTexture;
     @Getter
     private double lastProgressValue;
+
+    private List<Component> serverTooltips = new ArrayList<>();
+    @Setter
+    private Consumer<List<Component>> serverTooltipSupplier;
 
     public ProgressComponent() {
         this(JEIProgress,  ProgressTexture.EMPTY);

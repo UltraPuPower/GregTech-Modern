@@ -128,7 +128,8 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             padding(Insets.of(getTabSize()));
             positioning(Positioning.absolute(0, tabs.size() * (getTabSize() + 2)));
             this.configurator = configurator;
-            this.button = new ButtonComponent(Component.empty(), b -> {}) {
+            this.button = new ButtonComponent(Component.empty(), b -> {
+            }) {
 
                 @Override
                 public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -173,18 +174,19 @@ public class ConfiguratorPanelComponent extends FlowLayout {
                 config.positioning(Positioning.absolute(border, 0));
 
                 this.view = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
-                this.view.padding(Insets.both(getTabSize() + border, border * 2));
-
-                //this.view.setVisible(false);
-                //this.view.setActive(false);
-                this.view.sizing(Sizing.fixed(config.width() + border * 2), Sizing.fixed(config.height() + button.height() + border));
-                this.view.child(config);
-                this.view.child(UIComponents.label(configurator.getTitle())
-                        .maxWidth(config.width() - getTabSize())
-                        .sizing(Sizing.fixed(config.width() - getTabSize() - 5), Sizing.fixed(getTabSize() - border))
-                        .positioning(Positioning.relative(border + 5, border)));
+                this.view.padding(Insets.both(getTabSize() + border, border * 2))
+                        .<FlowLayout>configure(c -> {
+                            c.enabled(false)
+                                    .sizing(Sizing.fixed(config.width() + border * 2),
+                                            Sizing.fixed(config.height() + button.height() + border));
+                        })
+                        .child(config)
+                        .child(UIComponents.label(configurator.getTitle())
+                                .maxWidth(config.width() - getTabSize())
+                                .sizing(Sizing.fixed(config.width() - getTabSize() - 5), Sizing.fixed(getTabSize() - border))
+                                .positioning(Positioning.relative(border + 5, border)));
                 this.child(button);
-                //this.child(view);
+                this.child(view);
             }
         }
 

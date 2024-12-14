@@ -83,6 +83,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
         this.cursorAdapter = CursorAdapter.ofClientWindow();
         this.rootComponent = rootComponent;
         this.rootComponent.containerAccess(this);
+        this.rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
     }
 
     /**

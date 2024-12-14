@@ -1,8 +1,13 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.fluids.FluidStack;
@@ -59,7 +64,12 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         }
 
         @Override
-        public UIComponent openConfigurator(int x, int y) {
+        public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+            throw new NotImplementedException("Not available for empty fluid filter");
+        }
+
+        @Override
+        public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
             throw new NotImplementedException("Not available for empty fluid filter");
         }
 

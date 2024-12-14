@@ -1,24 +1,30 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Color;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
+import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
+import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
+import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidStackHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
@@ -37,12 +43,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.w3c.dom.Element;
 
 import java.util.List;
+import java.util.Map;
 
 @Accessors(fluent = true, chain = true)
-public class TankComponent extends BaseUIComponent {
+public class TankComponent extends BaseUIComponent implements ClickableIngredientSlot<FluidStack> {
 
     protected static final int SET_FLUID = 1;
 
@@ -69,7 +77,7 @@ public class TankComponent extends BaseUIComponent {
     protected IO ingredientIO;
     @Getter
     @Setter
-    protected UITexture backgroundTexture;
+    protected UITexture backgroundTexture = GuiTextures.FLUID_SLOT;
     @Getter
     @Setter
     protected UITexture overlayTexture;
@@ -79,6 +87,11 @@ public class TankComponent extends BaseUIComponent {
     @Setter
     @Getter
     protected float recipeViewerChance = 1f;
+
+    @Setter
+    protected boolean drawContents = true;
+    @Setter
+    protected boolean drawTooltip = true;
 
     protected TankComponent(IFluidHandler fluidHandler, int tank) {
         this.handler = fluidHandler;
@@ -93,6 +106,7 @@ public class TankComponent extends BaseUIComponent {
         if (handler == null && this.id() != null) {
             SyncedProperty<FluidStack> foundProp = containerAccess().screen().getMenu().getProperty(this.id());
             if (foundProp != null) {
+                lastFluidInTank.set(foundProp.get());
                 fluidObserverIndex = foundProp.observe(lastFluidInTank::set);
             }
         }
@@ -102,13 +116,20 @@ public class TankComponent extends BaseUIComponent {
     public void dismount(DismountReason reason) {
         if (reason == DismountReason.REMOVED && fluidObserverIndex != null) {
             if (handler == null && this.id() != null) {
-                SyncedProperty<FluidStack> foundProp = containerAccess().screen().getMenu().getProperty(this.id());
-                if (foundProp != null) {
-                    foundProp.removeObserver(fluidObserverIndex);
-                }
+                containerAccess().screen().getMenu().removeProperty(this.id());
             }
         }
         super.dismount(reason);
+    }
+
+    @Override
+    public void dispose() {
+        if (fluidObserverIndex != null) {
+            if (handler == null && this.id() != null) {
+                containerAccess().screen().getMenu().removeProperty(this.id());
+            }
+        }
+        super.dispose();
     }
 
     public TankComponent setFluidTank(IFluidHandler handler) {
@@ -135,6 +156,10 @@ public class TankComponent extends BaseUIComponent {
             backgroundTexture.draw(graphics, mouseX, mouseY, x(), y(), width(), height());
         }
 
+        if (!drawContents) {
+            return;
+        }
+
         if (handler != null) {
             FluidStack stack = handler.getFluidInTank(tank);
             int capacity = handler.getTankCapacity(tank);
@@ -156,21 +181,29 @@ public class TankComponent extends BaseUIComponent {
             if (!lastFluidInTank().isEmpty()) {
                 double progress = lastFluidInTank().getAmount() * 1.0 /
                         Math.max(Math.max(lastFluidInTank().getAmount(), lastTankCapacity), 1);
+                float drawnU = (float) fillDirection.getDrawnU(progress);
+                float drawnV = (float) fillDirection.getDrawnV(progress);
+                float drawnWidth = (float) fillDirection.getDrawnWidth(progress);
+                float drawnHeight = (float) fillDirection.getDrawnHeight(progress);
 
-                int width = width();
-                int height = height();
-                int x = x();
-                int y = y();
-                graphics.drawFluid(lastFluidInTank(), lastTankCapacity, x, y, width, height);
+                int width = width() - 2;
+                int height = height() - 2;
+                int x = x() + 1;
+                int y = y() + 1;
+                graphics.drawFluid(lastFluidInTank(), lastTankCapacity,
+                        (int) (x + drawnU * width), (int) (y + drawnV * height),
+                        ((int) (width * drawnWidth)), ((int) (height * drawnHeight)));
 
-                graphics.pose().pushPose();
-                graphics.pose().scale(0.5f, 0.5f, 1.0f);
-                String s = FormattingUtil.formatBuckets(lastFluidInTank().getAmount());
-                Font f = Minecraft.getInstance().font;
-                graphics.drawString(f, s,
-                        (int) ((x + width / 3.0f)) * 2 - f.width(s) + 21,
-                        (int) ((y + (height / 3.0f) + 6) * 2), Color.WHITE.argb(), true);
-                graphics.pose().popPose();
+                if (showAmount && !lastFluidInTank().isEmpty()) {
+                    graphics.pose().pushPose();
+                    graphics.pose().scale(0.5f, 0.5f, 1.0f);
+                    String s = FormattingUtil.formatBuckets(lastFluidInTank().getAmount());
+                    Font f = Minecraft.getInstance().font;
+                    graphics.drawString(f, s,
+                            (int) ((x + width / 3.0f)) * 2 - f.width(s) + 21,
+                            (int) ((y + (height / 3.0f) + 6) * 2), Color.WHITE.argb(), true);
+                    graphics.pose().popPose();
+                }
             }
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.f, 1.f, 1.f, 1.f);
@@ -288,16 +321,9 @@ public class TankComponent extends BaseUIComponent {
         return super.onMouseDown(mouseX, mouseY, button);
     }
 
-    public static TankComponent parse(Element element) {
-        UIParsing.expectAttributes(element, "tank");
-        int tank = UIParsing.parseUnsignedInt(element.getAttributeNode("tank"));
-
-        return new TankComponent(EmptyFluidHandler.INSTANCE, tank);
-    }
-
     @Override
     public boolean shouldDrawTooltip(double mouseX, double mouseY) {
-        return !this.lastFluidInTank().isEmpty() && super.shouldDrawTooltip(mouseX, mouseY);
+        return drawTooltip && !this.lastFluidInTank().isEmpty() && super.shouldDrawTooltip(mouseX, mouseY);
     }
 
     @Override
@@ -327,4 +353,52 @@ public class TankComponent extends BaseUIComponent {
             this.tooltip((List<ClientTooltipComponent>) null);
         }
     }
+
+    @Override
+    public @UnknownNullability("Nullability depends on the type of ingredient") EntryList<FluidStack> getIngredients() {
+        if (handler instanceof CycleFluidStackHandler stackHandler) {
+            return stackHandler.getStackList(this.tank);
+        } else if (handler instanceof CycleFluidEntryHandler entryHandler) {
+            return entryHandler.getEntry(this.tank);
+        }
+
+        return FluidStackList.of(this.lastFluidInTank());
+    }
+
+    @Override
+    public @NotNull Class<FluidStack> ingredientClass() {
+        return FluidStack.class;
+    }
+
+    @Override
+    public float chance() {
+        return recipeViewerChance;
+    }
+
+    @Override
+    public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
+        super.parseProperties(model, element, children);
+        UIParsing.apply(children, "can-insert", UIParsing::parseBool, this::canInsert);
+        UIParsing.apply(children, "can-extract", UIParsing::parseBool, this::canExtract);
+        UIParsing.apply(children, "ingredient-io", UIParsing.parseEnum(IO.class), this::ingredientIO);
+
+        if (children.containsKey("background-texture")) {
+            this.backgroundTexture = model.parseTexture(UITexture.class, children.get("background-texture"));
+        }
+        if (children.containsKey("overlay-texture")) {
+            this.overlayTexture = model.parseTexture(UITexture.class, children.get("overlay-texture"));
+        }
+        UIParsing.apply(children, "fill-direction", UIParsing.parseEnum(ProgressTexture.FillDirection.class), this::fillDirection);
+        UIParsing.apply(children, "chance", UIParsing::parseFloat, this::recipeViewerChance);
+        UIParsing.apply(children, "draw-contents", UIParsing::parseBool, this::drawContents);
+        UIParsing.apply(children, "draw-tooltip", UIParsing::parseBool, this::drawTooltip);
+    }
+
+    public static TankComponent parse(Element element) {
+        UIParsing.expectAttributes(element, "tank");
+        int tank = UIParsing.parseUnsignedInt(element.getAttributeNode("tank"));
+
+        return new TankComponent(EmptyFluidHandler.INSTANCE, tank);
+    }
+
 }

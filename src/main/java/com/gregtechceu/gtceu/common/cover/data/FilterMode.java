@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -12,7 +14,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public enum FilterMode implements EnumSelectorWidget.SelectableEnum {
+public enum FilterMode implements EnumSelectorComponent.SelectableEnum {
 
     FILTER_INSERT("filter_insert"),
     FILTER_EXTRACT("filter_extract"),
@@ -32,8 +34,8 @@ public enum FilterMode implements EnumSelectorWidget.SelectableEnum {
     }
 
     @Override
-    public IGuiTexture getIcon() {
-        return new ResourceTexture("gtceu:textures/gui/icon/filter_mode/" + localeName + ".png");
+    public UITexture getIcon() {
+        return UITextures.resource(GTCEu.id("textures/gui/icon/filter_mode/" + localeName + ".png"));
     }
 
     public boolean filters(IO io) {

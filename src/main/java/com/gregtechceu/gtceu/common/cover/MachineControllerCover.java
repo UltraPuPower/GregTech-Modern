@@ -7,22 +7,15 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
-import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.*;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -203,21 +196,27 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     @Override
     public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 75);
+        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(75));
+        group.padding(Insets.both(0, 5));
 
-        group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
-        group.addWidget(new IntInputWidget(10, 20, 131, 20,
-                this::getMinRedstoneStrength, this::setMinRedstoneStrength).setMin(1).setMax(15));
+        group.child(UIComponents.label(Component.translatable("cover.machine_controller.title"))
+                .positioning(Positioning.absolute(0, 5)));
+        group.child(new IntInputComponent(this::getMinRedstoneStrength, this::setMinRedstoneStrength)
+                .setMin(1)
+                .setMax(15)
+                .positioning(Positioning.absolute(0, 20))
+                .sizing(Sizing.fixed(131), Sizing.fixed(20)));
 
-        modeButton = new ButtonWidget(10, 45, 131, 20,
-                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON),
-                cd -> selectNextMode());
-        group.addWidget(modeButton);
+        modeButton = UIComponents.button(Component.empty(), cd -> selectNextMode())
+                .renderer(ButtonComponent.Renderer.texture(GuiTextures.VANILLA_BUTTON))
+                .configure(c -> {
+                    c.positioning(Positioning.absolute(10, 45))
+                            .sizing(Sizing.fixed(131), Sizing.fixed(20));
+                });
+        group.child(modeButton);
 
         // Inverted Mode Toggle:
-        group.addWidget(new ToggleButtonComponent(
-                146, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
+        group.child(new ToggleButtonComponent(GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
 
             @Override
             public void update(float delta, int mouseX, int mouseY) {
@@ -225,16 +224,17 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
                 tooltip(LangHandler.getMultiLang(
                         "cover.machine_controller.invert." + (pressed ? "enabled" : "disabled")));
             }
-        });
+        }.positioning(Positioning.absolute(146, 20))
+                .sizing(Sizing.fixed(20)));
 
         sideCoverSlot = new CustomItemStackHandler(1);
-        group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
+        group.child(new PhantomSlotComponent(sideCoverSlot, 0) {
 
             @Override
             public ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, ItemStack stackHeld) {
                 return sideCoverSlot.getStackInSlot(0);
             }
-        });
+        }.positioning(Positioning.absolute(147, 46)));
 
         updateUI();
 
@@ -283,4 +283,5 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
                             sideCoverSlot.onContentsChanged(0);
                         });
     }
+
 }

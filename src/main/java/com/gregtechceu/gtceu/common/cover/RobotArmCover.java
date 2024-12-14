@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 
@@ -45,7 +47,7 @@ public class RobotArmCover extends ConveyorCover {
     protected int globalTransferLimit;
     protected int itemsTransferBuffered;
 
-    private IntInputWidget stackSizeInput;
+    private IntInputComponent stackSizeInput;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                          int maxTransferRate) {
@@ -173,13 +175,18 @@ public class RobotArmCover extends ConveyorCover {
     @Override
     protected void buildAdditionalUI(UIComponentGroup group) {
         group.child(
-                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
+                new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
+                        TransferMode.values(), transferMode, this::setTransferMode)
+                        .positioning(Positioning.absolute(146, 45)));
 
-        this.stackSizeInput = new IntInputWidget(64, 45, 80, 20,
-                () -> globalTransferLimit, val -> globalTransferLimit = val);
+        this.stackSizeInput = new IntInputComponent(() -> globalTransferLimit, val -> globalTransferLimit = val)
+                .configure(c -> {
+                    c.positioning(Positioning.absolute(64, 45))
+                            .sizing(Sizing.fixed(80), Sizing.fixed(20));
+                });
         configureStackSizeInput();
 
-        group.addWidget(this.stackSizeInput);
+        group.child(this.stackSizeInput);
     }
 
     private void setTransferMode(TransferMode transferMode) {
@@ -187,7 +194,7 @@ public class RobotArmCover extends ConveyorCover {
 
         configureStackSizeInput();
 
-        if (!this.isRemote()) {
+        if (!this.isClientSide()) {
             configureFilter();
         }
     }
@@ -205,7 +212,7 @@ public class RobotArmCover extends ConveyorCover {
         if (this.stackSizeInput == null)
             return;
 
-        this.stackSizeInput.setVisible(shouldShowStackSize());
+        this.stackSizeInput.enabled(shouldShowStackSize());
         this.stackSizeInput.setMin(1);
         this.stackSizeInput.setMax(this.transferMode.maxStackSize);
     }

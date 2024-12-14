@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -12,12 +11,10 @@ import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -75,11 +72,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
                 .positioning(Positioning.absolute(xPos, yPos));
     }
 
-    public UIComponent createFilterConfigUI(int xPos, int yPos, int width, int height) {
+    public UIComponent createFilterConfigUI(int xPos, int yPos, int width, int height, UIAdapter<UIComponentGroup> adapter) {
         this.filterGroup = UIContainers.group(Sizing.fixed(width), Sizing.fixed(height));
         filterGroup.positioning(Positioning.absolute(xPos, yPos));
         if (!this.filterItem.isEmpty()) {
-            this.filterGroup.child(getFilter().openConfigurator(0, 0));
+            this.filterGroup.child(getFilter().openConfigurator(0, 0, adapter));
         }
 
         return this.filterGroup;
@@ -176,7 +173,8 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         this.filterGroup.clearChildren();
 
         if (!this.filterItem.isEmpty() && this.filter != null) {
-            this.filterGroup.child(this.filter.openConfigurator(0, 0));
+            this.filterGroup.child(this.filter.openConfigurator(0, 0,
+                    (UIAdapter<UIComponentGroup>) this.filterGroup.containerAccess().adapter()));
         }
     }
 

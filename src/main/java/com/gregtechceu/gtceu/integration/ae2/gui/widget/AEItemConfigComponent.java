@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEItemConfigSlotWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEItemConfigSlotComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
@@ -8,15 +8,15 @@ import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import appeng.api.stacks.GenericStack;
 
 /**
- * @Author GlodBlock
+ * @author GlodBlock
  * @Description Display {@link net.minecraft.world.item.ItemStack} config
- * @Date 2023/4/22-1:02
+ * @date 2023/4/22-1:02
  */
-public class AEItemConfigWidget extends ConfigWidget {
+public class AEItemConfigComponent extends ConfigComponent {
 
     private final ExportOnlyAEItemList itemList;
 
-    public AEItemConfigWidget(int x, int y, ExportOnlyAEItemList list) {
+    public AEItemConfigComponent(int x, int y, ExportOnlyAEItemList list) {
         super(x, y, list.getInventory(), list.isStocking());
         this.itemList = list;
     }
@@ -30,7 +30,7 @@ public class AEItemConfigWidget extends ConfigWidget {
             this.displayList[index] = new ExportOnlyAEItemSlot();
             this.cached[index] = new ExportOnlyAEItemSlot();
             line = index / 8;
-            this.addWidget(new AEItemConfigSlotWidget((index - line * 8) * 18, line * (18 * 2 + 2), this, index));
+            this.addWidget(new AEItemConfigSlotComponent((index - line * 8) * 18, line * (18 * 2 + 2), this, index));
         }
     }
 

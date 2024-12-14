@@ -372,7 +372,6 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     @Override
     public List<Component> getFullTooltipTexts() {
         List<Component> tooltips = new ArrayList<>();
-        boolean isPhantom = this instanceof PhantomFluidWidget;
         var stack = currentJEIRenderedIngredient != null ? currentJEIRenderedIngredient : lastFluidInTank;
         if (stack != null && !stack.isEmpty()) {
             tooltips.add(stack.getDisplayName());

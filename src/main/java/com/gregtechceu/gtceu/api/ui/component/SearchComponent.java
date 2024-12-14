@@ -2,15 +2,16 @@ package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.ScrollContainer;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIComponent;
-import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.texture.TextTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.utils.ISearch;
 import com.lowdragmc.lowdraglib.utils.SearchEngine;
 import lombok.Setter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +19,7 @@ public class SearchComponent<T> extends FlowLayout {
 
     public final SearchEngine<T> engine;
     public final IComponentSearch<T> search;
-    public final ScrollContainer<?> popUp;
+    public final ScrollContainer<UIComponent> popUp;
     public final TextBoxComponent textBoxComponent;
     private int capacity = 10;
     protected boolean isShow;
@@ -41,8 +42,9 @@ public class SearchComponent<T> extends FlowLayout {
                 super.onFocusGained(source, lastFocus);
             }
         }.verticalSizing(verticalSizing));
-        this.children(popUp = new ScrollContainer<>(ScrollContainer.ScrollDirection.VERTICAL, horizontalSizing,
-                verticalSizing) {
+        this.child(popUp = new ScrollContainer<>(ScrollContainer.ScrollDirection.VERTICAL,
+                Sizing.fill(), Sizing.content(15),
+                null) {
 
             @Override
             public void onFocusGained(FocusSource source, UIComponent lastFocus) {
@@ -50,53 +52,52 @@ public class SearchComponent<T> extends FlowLayout {
                     return;
                 }
                 super.onFocusGained(source, lastFocus);
+                setShow(true);
             }
+
             @Override
-            public void onFocusChanged(@Nullable Widget lastFocus, Widget focus) {
-                if (lastFocus != null && focus != null && lastFocus.parent == focus.parent) {
-                    return;
-                }
-                super.onFocusChanged(lastFocus, focus);
-                setShow(isFocus());
+            public void onFocusLost() {
+                super.onFocusLost();
+                setShow(false);
             }
         });
-        // TODO implement
-        //popUp.setVisible(false);
-        //popUp.setActive(true);
+        popUp.enabled(false);
         this.search = search;
         this.engine = new SearchEngine<>(search, (r) -> {
-            int size = popUp.getAllWidgetSize();
-            popUp.setSize(new Size(getSize().width, Math.min(size + 1, capacity) * 15));
+            int size = popUp.children().size();
             if (showUp) {
-                popUp.setSelfPosition(new Position(0, -Math.min(size + 1, capacity) * 15));
+                popUp.moveTo(this.x(), this.y() - Math.min(size + 1, capacity) * 15);
             } else {
-                popUp.setSelfPosition(new Position(0, height));
+                popUp.moveTo(this.x(), this.y() + height);
             }
-            popUp.waitToAdded(new ButtonWidget(0, size * 15, width,
-                    15, new TextTexture(search.resultDisplay(r)).setWidth(width).setType(TextTexture.TextType.ROLL),
-                    cd -> {
+            UITexture text = UITextures.text(search.resultDisplay(r)).width(width).textType(TextTexture.TextType.ROLL);
+            popUp.child(UIComponents.button(Component.empty(), cd -> {
                         search.selectResult(r);
                         setShow(false);
-                        textBoxComponent.setCurrentString(search.resultDisplay(r));
-                    }).setHoverBorderTexture(-1, -1));
+                        textBoxComponent.text(search.resultDisplay(r).getString());
+                    }).renderer(ButtonComponent.Renderer.texture(
+                            text,
+                            UITextures.group(text, UITextures.colorBorder(Color.BLACK, -1)),
+                            text))
+                    .positioning(Positioning.absolute(0, size * 15))
+                    .sizing(Sizing.fill(), Sizing.fixed(15)));
             if (isServer) {
-                writeUpdateInfo(-2, buf -> search.serialize(r, buf));
+                sendMessage(-2, buf -> search.serialize(r, buf));
             }
         });
 
-        textBoxComponent.setTextResponder(s -> {
-            popUp.clearAllWidgets();
-            popUp.setSize(new Size(getSize().width, 0));
+        textBoxComponent.setResponder(s -> {
+            popUp.child(null);
+            popUp.height(0);
             if (showUp) {
-                popUp.setSelfPosition(new Position(0, 0));
+                popUp.moveTo(x(), y());
             } else {
-                popUp.setSelfPosition(new Position(0, height));
+                popUp.moveTo(x(), y() + height());
             }
             setShow(true);
             this.engine.searchWord(s);
             if (isServer) {
-                writeUpdateInfo(-1, buffer -> {
-                });
+                sendMessage(-1, buffer -> {});
             }
         });
     }
@@ -104,30 +105,34 @@ public class SearchComponent<T> extends FlowLayout {
     @Override
     public void receiveMessage(int id, FriendlyByteBuf buffer) {
         if (id == -1) {
-            popUp.clearAllWidgets();
-            popUp.setSize(new Size(getSize().width, 0));
+            popUp.child(null);
+            popUp.height(0);
             if (showUp) {
-                popUp.setSelfPosition(new Position(0, 0));
+                popUp.moveTo(x(), y());
             } else {
-                popUp.setSelfPosition(new Position(0, getSize().height));
+                popUp.moveTo(x(), y() + height());
             }
         } else if (id == -2) {
             T r = search.deserialize(buffer);
             int size = popUp.children().size();
             int width = width();
-            popUp.setSize(new Size(getSize().width, Math.min(size + 1, capacity) * 15));
             if (showUp) {
-                popUp.setSelfPosition(new Position(0, -Math.min(size + 1, capacity) * 15));
+                popUp.moveTo(this.x(), this.y() - Math.min(size + 1, capacity) * 15);
             } else {
-                popUp.setSelfPosition(new Position(0, getSize().height));
+                popUp.moveTo(this.x(), this.y() + height);
             }
-            popUp.addWidget(new ButtonWidget(0, size * 15, width,
-                    15, new TextTexture(search.resultDisplay(r)).setWidth(width).setType(TextTexture.TextType.ROLL),
-                    cd -> {
+
+            UITexture text = UITextures.text(search.resultDisplay(r)).width(width).textType(TextTexture.TextType.ROLL);
+            popUp.child(UIComponents.button(Component.empty(), cd -> {
                         search.selectResult(r);
                         setShow(false);
-                        textBoxComponent.setCurrentString(search.resultDisplay(r));
-                    }).setHoverBorderTexture(-1, -1));
+                        textBoxComponent.text(search.resultDisplay(r).getString());
+                    }).renderer(ButtonComponent.Renderer.texture(
+                            text,
+                            UITextures.group(text, UITextures.colorBorder(Color.BLACK, -1)),
+                            text))
+                    .positioning(Positioning.absolute(0, size * 15))
+                    .sizing(Sizing.fill(), Sizing.fixed(15)));
         } else {
             super.receiveMessage(id, buffer);
         }
@@ -135,61 +140,46 @@ public class SearchComponent<T> extends FlowLayout {
 
     public SearchComponent<T> setCapacity(int capacity) {
         this.capacity = capacity;
-        popUp.setSize(new Size(getSize().width, Math.min(popUp.getAllWidgetSize(), capacity) * 15));
         if (showUp) {
-            popUp.setSelfPosition(new Position(0, -Math.min(popUp.getAllWidgetSize(), capacity) * 15));
+            popUp.moveTo(this.x(), this.y() - Math.min(popUp.children().size() + 1, capacity) * 15);
         } else {
-            popUp.setSelfPosition(new Position(0, getSize().height));
+            popUp.moveTo(this.x(), this.y() + height);
         }
         return this;
     }
 
-    public SearchComponent<T> setCurrentString(String currentString) {
-        textBoxComponent.setCurrentString(currentString);
+    public SearchComponent<T> text(String currentString) {
+        textBoxComponent.text(currentString);
         return this;
     }
 
-    public String getCurrentString() {
-        return textBoxComponent.getCurrentString();
+    public String getValue() {
+        return textBoxComponent.getValue();
     }
 
     public void setShow(boolean isShow) {
         this.isShow = isShow;
-        popUp.setVisible(isShow);
-        popUp.setActive(isShow);
-    }
-
-    @Override
-    public void drawInForeground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        boolean lastVisible = popUp.isVisible();
-        popUp.setVisible(false);
-        super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
-        popUp.setVisible(lastVisible);
-
-        if (isShow) {
-            graphics.m_280168_().m_252880_(0, 0, 200);
-            popUp.drawInBackground(graphics, mouseX, mouseY, partialTicks);
-            popUp.drawInForeground(graphics, mouseX, mouseY, partialTicks);
-            graphics.m_280168_().m_252880_(0, 0, -200);
-        }
+        popUp.enabled(isShow);
     }
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
+        boolean lastVisible = popUp.enabled();
+        popUp.enabled(false);
         super.draw(graphics, mouseX, mouseY, partialTicks, delta);
-    }
+        popUp.enabled(lastVisible);
 
-    @Override
-    public void drawInBackground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        boolean lastVisible = popUp.isVisible();
-        popUp.setVisible(false);
-        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
-        popUp.setVisible(lastVisible);
+        if (isShow) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 200);
+            popUp.draw(graphics, mouseX, mouseY, partialTicks, delta);
+            graphics.pose().popPose();
+        }
     }
 
     public interface IComponentSearch<T> extends ISearch<T> {
 
-        String resultDisplay(T value);
+        Component resultDisplay(T value);
 
         void selectResult(T value);
 
@@ -197,14 +187,14 @@ public class SearchComponent<T> extends FlowLayout {
          * just used for server side
          */
         default void serialize(T value, FriendlyByteBuf buf) {
-            buf.writeUtf(resultDisplay(value));
+            buf.writeComponent(resultDisplay(value));
         }
 
         /**
          * just used for server side
          */
         default T deserialize(FriendlyByteBuf buf) {
-            return (T) buf.readUtf();
+            return (T) buf.readComponent();
         }
 
     }

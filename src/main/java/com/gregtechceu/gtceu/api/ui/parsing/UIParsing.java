@@ -394,6 +394,7 @@ public class UIParsing {
         // Textures
         registerTextureFactory("resource", ResourceTexture::parse);
         registerTextureFactory("item", element -> UITextures.item(ItemStack.EMPTY));
+        registerTextureFactory("fluid", element -> UITextures.fluid(FluidStack.EMPTY));
         registerTextureFactory("progress", element -> UITextures.progress(null, null));
         registerTextureFactory("nine-patch", NinePatchTexture::parse);
         registerTextureFactory("group", element -> UITextures.group());

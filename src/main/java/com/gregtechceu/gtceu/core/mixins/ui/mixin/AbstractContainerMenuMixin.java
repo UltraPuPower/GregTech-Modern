@@ -155,6 +155,12 @@ public abstract class AbstractContainerMenuMixin implements UIAbstractContainerM
     }
 
     @Override
+    public void removeProperty(String name) {
+        var prop = this.gtceu$propertiesByName.remove(name);
+        this.gtceu$properties.remove(prop);
+    }
+
+    @Override
     public void gtceu$readPropertySync(FriendlyByteBuf buf) {
         int count = buf.readVarInt();
 

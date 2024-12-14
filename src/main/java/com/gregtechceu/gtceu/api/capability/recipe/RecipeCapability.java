@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -182,15 +183,15 @@ public abstract class RecipeCapability<T> {
         return null;
     }
 
-    public void applyWidgetInfo(@NotNull UIComponent widget,
-                                int index,
-                                boolean isXEI,
-                                IO io,
-                                @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
-                                @NotNull GTRecipeType recipeType,
-                                @Nullable("null when content == null") GTRecipe recipe,
-                                @Nullable Content content,
-                                @Nullable Object storage, int recipeTier, int chanceTier) {}
+    public void applyUIComponentInfo(@NotNull UIComponent widget,
+                                     UIAdapter<UIComponentGroup> adapter, int index,
+                                     boolean isXEI,
+                                     IO io,
+                                     @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
+                                     @NotNull GTRecipeType recipeType,
+                                     @Nullable("null when content == null") GTRecipe recipe,
+                                     @Nullable Content content,
+                                     @Nullable Object storage, int recipeTier, int chanceTier) {}
 
     /**
      * Create a cache map for chanced outputs

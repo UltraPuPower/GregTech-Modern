@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
+import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
-
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,7 +14,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.GenericStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +22,13 @@ import java.util.Optional;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawGradientRect;
 
 /**
- * @Author GlodBlock
+ * @author GlodBlock
  * @Description A configurable slot
- * @Date 2023/4/22-0:30
+ * @date 2023/4/22-0:30
  */
-public class AEConfigSlotWidget extends Widget {
+public class AEConfigSlotComponent extends BaseUIComponent {
 
-    protected ConfigWidget parentWidget;
+    protected ConfigComponent parentWidget;
     protected int index;
     protected final static int REMOVE_ID = 1000;
     protected final static int UPDATE_ID = 1001;
@@ -38,16 +36,13 @@ public class AEConfigSlotWidget extends Widget {
     protected final static int PICK_UP_ID = 1003;
     protected boolean select = false;
 
-    public AEConfigSlotWidget(Position pos, Size size, ConfigWidget widget, int index) {
-        super(pos, size);
+    public AEConfigSlotComponent(ConfigComponent widget, int index) {
         this.parentWidget = widget;
         this.index = index;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
+    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
         if (slot.getConfig() == null) {
             if (mouseOverConfig(mouseX, mouseY)) {
@@ -85,13 +80,11 @@ public class AEConfigSlotWidget extends Widget {
     }
 
     protected boolean mouseOverConfig(double mouseX, double mouseY) {
-        Position position = getPosition();
-        return isMouseOver(position.x, position.y, 18, 18, mouseX, mouseY);
+        return UIComponent.isMouseOver(x(), y(), 18, 18, mouseX, mouseY);
     }
 
     protected boolean mouseOverStock(double mouseX, double mouseY) {
-        Position position = getPosition();
-        return isMouseOver(position.x, position.y + 18, 18, 18, mouseX, mouseY);
+        return UIComponent.isMouseOver(x(), y() + 18, 18, 18, mouseX, mouseY);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -110,4 +103,5 @@ public class AEConfigSlotWidget extends Widget {
         if (!parentWidget.isStocking()) return true;
         return !parentWidget.hasStackInConfig(stack);
     }
+
 }

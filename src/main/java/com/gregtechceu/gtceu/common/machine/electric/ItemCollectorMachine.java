@@ -7,10 +7,20 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.editable.EditableMachineUI;
 import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -20,26 +30,25 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -403,97 +412,111 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
+    @Override
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        // Position all slots at 0,0 as they'll be moved to the correct position on the client.
+        SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
+        for (int i = 0; i < this.output.getSlots(); i++) {
+            generator.slot(this.output, i, 0, 0);
+        }
+        for (int i = 0; i < this.chargerInventory.getSlots(); i++) {
+            generator.slot(this.chargerInventory, i, 0, 0);
+        }
+        for (int i = 0; i < this.filterInventory.getSlots(); i++) {
+            generator.slot(this.filterInventory, i, 0, 0);
+        }
+        generator.playerInventory(menu.getPlayerInventory());
+    }
+
     public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
+            .memoize((path, inventorySize) -> new EditableMachineUI(path, () -> {
                 var template = createTemplate(inventorySize).createDefault();
                 var energyBar = createEnergyBar().createDefault();
                 var batterySlot = createBatterySlot().createDefault();
 
-                var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-                batterySlot.setSelfPosition(
-                        new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-                energyGroup.addWidget(energyBar);
-                energyGroup.addWidget(batterySlot);
-                var group = new WidgetGroup(0, 0,
-                        Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                        Math.max(template.getSize().height + 8 + 30, energyGroup.getSize().height + 8));
-                var size = group.getSize();
-                energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+                var energyGroup = UIContainers.verticalFlow(Sizing.fill(), Sizing.fill());
+                energyBar.positioning(Positioning.layout());
+                energyGroup.child(energyBar);
+                batterySlot.positioning(Positioning.layout());
+                energyGroup.child(batterySlot);
+                var group = UIContainers.group(Sizing.content(12), Sizing.content(8));
 
-                template.setSelfPosition(new Position(
-                        (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 +
-                                energyGroup.getSize().width + 2,
-                        (size.height - template.getSize().height) / 2 + 15));
+                energyGroup.positioning(Positioning.relative(5, 50));
+                template.positioning(Positioning.relative(50, 50));
 
-                group.addWidget(energyGroup);
-                group.addWidget(template);
+                group.child(energyGroup);
+                group.child(template);
                 return group;
-            }, (template, machine) -> {
+            }, (template, adapter, machine) -> {
                 if (machine instanceof ItemCollectorMachine itemCollectorMachine) {
-                    createTemplate(inventorySize).setupUI(template, itemCollectorMachine);
-                    createEnergyBar().setupUI(template, itemCollectorMachine);
-                    createBatterySlot().setupUI(template, itemCollectorMachine);
-                    var rangeSelector = new IntInputWidget((template.getSize().width - 80) / 2, 5, 80, 20,
+                    createTemplate(inventorySize).setupUI(template, adapter, itemCollectorMachine);
+                    createEnergyBar().setupUI(template, adapter, itemCollectorMachine);
+                    createBatterySlot().setupUI(template, adapter, itemCollectorMachine);
+
+                    var rangeSelector = new IntInputComponent(Sizing.fixed(80), Sizing.fixed(20),
                             itemCollectorMachine::getRange, itemCollectorMachine::setRange);
+                    rangeSelector.positioning(Positioning.relative(40, 5));
                     rangeSelector.setMin(1);
                     rangeSelector.setMax(itemCollectorMachine.maxRange);
-                    template.addWidget(rangeSelector);
+                    template.child(rangeSelector);
                 }
             }));
 
-    protected static EditableUI<SlotWidget, ItemCollectorMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
-            var slotWidget = new SlotWidget();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
+    protected static EditableUI<SlotComponent, ItemCollectorMachine> createBatterySlot() {
+        return new EditableUI<>("battery_slot", SlotComponent.class, () -> {
+            var slotWidget = UIComponents.slot(0);
+            slotWidget.backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY));
             return slotWidget;
         }, (slotWidget, adapter, machine) -> {
-            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-            slotWidget.setCanPutItems(true);
-            slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+            slotWidget.setSlot(machine.chargerInventory, 0);
+            slotWidget.canInsert(true);
+            slotWidget.canExtract(true);
+            slotWidget.tooltip(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]));
         });
     }
 
-    protected static EditableUI<WidgetGroup, ItemCollectorMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
+    protected static EditableUI<UIComponentGroup, ItemCollectorMachine> createTemplate(int inventorySize) {
+        return new EditableUI<>("functional_container", UIComponentGroup.class, () -> {
             int rowSize = (int) Math.sqrt(inventorySize);
-            WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8 + 25, rowSize * 18 + 8);
+            UIComponentGroup main = UIContainers.group(Sizing.fixed(rowSize * 18 + 8 + 25), Sizing.fixed(rowSize * 18 + 8));
+            main.margins(Insets.both(4, 4));
 
+            GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), rowSize, rowSize);
             for (int y = 0; y < rowSize; y++) {
                 for (int x = 0; x < rowSize; x++) {
                     int index = y * rowSize + x;
-                    SlotWidget slotWidget = new SlotWidget();
-                    slotWidget.initTemplate();
-                    slotWidget.setSelfPosition(new Position(24 + x * 18, 4 + y * 18));
-                    slotWidget.setBackground(GuiTextures.SLOT);
-                    slotWidget.setId("slot_" + index);
-                    main.addWidget(slotWidget);
+                    SlotComponent slotWidget = UIComponents.slot(0);
+                    slotWidget.positioning(Positioning.absolute(x * 18, y * 18));
+                    slotWidget.backgroundTexture(GuiTextures.SLOT);
+                    slotWidget.id("slot." + index);
+                    grid.child(slotWidget, x, y);
                 }
             }
+            grid.positioning(Positioning.absolute(20, 0));
+            main.child(grid);
 
-            SlotWidget filterSlotWidget = new SlotWidget();
-            filterSlotWidget.initTemplate();
-            filterSlotWidget
-                    .setSelfPosition(new Position(4, (main.getSize().height - filterSlotWidget.getSize().height) / 2));
-            filterSlotWidget.setBackground(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY);
-            filterSlotWidget.setId("filter_slot");
-            main.addWidget(filterSlotWidget);
-            main.setBackground(GuiTextures.BACKGROUND_INVERSE);
+            SlotComponent filterSlotComponent = UIComponents.slot(0);
+            filterSlotComponent
+                    .positioning(Positioning.relative(4, 50));
+            filterSlotComponent.backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY));
+            filterSlotComponent.id("filter_slot");
+            main.child(filterSlotComponent);
+            main.surface(Surface.UI_BACKGROUND_INVERSE);
             return main;
         }, (group, adapter, machine) -> {
-            UIComponentUtils.componentByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
+            UIComponentUtils.componentByIdForEach(group, "^slot_[0-9]+$", SlotComponent.class, slot -> {
                 var index = UIComponentUtils.componentIdIndex(slot);
                 if (index >= 0 && index < machine.output.getSlots()) {
-                    slot.setHandlerSlot(machine.output, index);
-                    slot.setCanTakeItems(true);
-                    slot.setCanPutItems(false);
+                    slot.setSlot(machine.output, index);
+                    slot.canExtract(true);
+                    slot.canInsert(false);
                 }
             });
-            UIComponentUtils.componentByIdForEach(group, "^filter_slot$", SlotWidget.class, slot -> {
-                slot.setHandlerSlot(machine.filterInventory, 0);
-                slot.setCanTakeItems(true);
-                slot.setCanPutItems(true);
+            UIComponentUtils.componentByIdForEach(group, "^filter_slot$", SlotComponent.class, slot -> {
+                slot.setSlot(machine.filterInventory, 0);
+                slot.canExtract(true);
+                slot.canInsert(true);
             });
 
         });

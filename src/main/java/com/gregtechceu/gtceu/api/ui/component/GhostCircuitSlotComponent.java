@@ -1,15 +1,16 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import lombok.Getter;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
@@ -67,7 +68,8 @@ public class GhostCircuitSlotComponent extends SlotComponent {
             } else if (button == 1 && Screen.hasShiftDown()) {
                 // clear on shift-right-click
                 this.circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-                sendMessage(SET_TO_EMPTY, buf -> {});
+                sendMessage(SET_TO_EMPTY, buf -> {
+                });
             } else if (button == 1) {
                 // decrement on right-click
                 int newValue = getNextValue(false);
@@ -129,7 +131,8 @@ public class GhostCircuitSlotComponent extends SlotComponent {
     public void setCircuitValue(int newValue) {
         if (newValue == NO_CONFIG) {
             this.circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-            sendMessage(SET_TO_EMPTY, buf -> {});
+            sendMessage(SET_TO_EMPTY, buf -> {
+            });
         } else {
             this.circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(newValue));
             sendMessage(SET_TO_N, buf -> buf.writeVarInt(newValue));
@@ -150,56 +153,68 @@ public class GhostCircuitSlotComponent extends SlotComponent {
         // FIXME WHY IS THIS NOT TRANSLATABLE WHAT
         group.child(UIComponents.label(Component.translatable("Programmed Circuit Configuration"))
                 .positioning(Positioning.absolute(9, 8)));
-        group.child(UIComponents.slot(this.circuitInventory, 0,
-                !ConfigHolder.INSTANCE.machines.ghostCircuit, !ConfigHolder.INSTANCE.machines.ghostCircuit)
-                .setBackground(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY)));
+        group.child(UIComponents.slot(this.circuitInventory, 0)
+                .canInsert(!ConfigHolder.INSTANCE.machines.ghostCircuit)
+                .canExtract(!ConfigHolder.INSTANCE.machines.ghostCircuit)
+                .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY)));
         if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            group.addWidget(new ButtonWidget((group.getSize().width - 18) / 2, 20, 18, 18, IGuiTexture.EMPTY,
-                    clickData -> {
-                        if (!clickData.isRemote) {
-                            circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-                        }
-                    }));
+            group.child(UIComponents.button(Component.empty(),
+                            clickData -> {
+                                if (!clickData.isClientSide) {
+                                    circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
+                                }
+                            })
+                    .renderer(ButtonComponent.Renderer.EMPTY)
+                    .positioning(Positioning.relative(50, 15))
+                    .sizing(Sizing.fixed(18)));
         }
+
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 9, 4)
+                .configure(layout -> layout.positioning(Positioning.absolute(5, 48)));
         int idx = 0;
         for (int x = 0; x <= 2; x++) {
             for (int y = 0; y <= 8; y++) {
                 int finalIdx = idx;
-                group.addWidget(new ButtonWidget(5 + (18 * y), 48 + (18 * x), 18, 18,
-                        new GuiTextureGroup(GuiTextures.SLOT,
-                                new ItemStackTexture(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18)),
-                        clickData -> {
-                            if (!clickData.isRemote) {
-                                ItemStack stack = circuitInventory.getStackInSlot(0).copy();
-                                if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
-                                    IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
-                                    circuitInventory.setStackInSlot(0, stack);
-                                } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                                    circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
-                                }
-                            }
-                        }));
+                grid.child(UIComponents.button(Component.empty(),
+                                clickData -> {
+                                    if (!clickData.isClientSide) {
+                                        ItemStack stack = circuitInventory.getStackInSlot(0).copy();
+                                        if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
+                                            IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
+                                            circuitInventory.setStackInSlot(0, stack);
+                                        } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                                            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
+                                        }
+                                    }
+                                })
+                        .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
+                                UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
+                        .sizing(Sizing.fixed(18)),
+                        y, x);
                 idx++;
             }
         }
         for (int x = 0; x <= 5; x++) {
             int finalIdx = x + 27;
-            group.addWidget(new ButtonWidget(5 + (18 * x), 102, 18, 18,
-                    new GuiTextureGroup(GuiTextures.SLOT,
-                            new ItemStackTexture(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18)),
-                    clickData -> {
-                        if (!clickData.isRemote) {
-                            ItemStack stack = circuitInventory.getStackInSlot(0).copy();
-                            if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
-                                IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
-                                circuitInventory.setStackInSlot(0, stack);
-                            } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                                circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
-                            }
-                        }
-                    }));
+            grid.child(UIComponents.button(Component.empty(),
+                            clickData -> {
+                                if (!clickData.isClientSide) {
+                                    ItemStack stack = circuitInventory.getStackInSlot(0).copy();
+                                    if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
+                                        IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
+                                        circuitInventory.setStackInSlot(0, stack);
+                                    } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                                        circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
+                                    }
+                                }
+                            })
+                    .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
+                            UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
+                    .sizing(Sizing.fixed(18)), 9, x);
         }
+        group.child(grid);
         group.surface(Surface.UI_BACKGROUND);
         return group;
     }
+
 }

@@ -11,7 +11,8 @@ import lombok.Getter;
 /**
  * The capability can be input or output or both
  * <p/>
- * Also used in recipe viewer compat, where {@code NONE} signifies a catalyst (e.g. unconsumed ingredient)
+ * Also used in recipe viewer compatibility, where {@code NONE} signifies a catalyst (e.g. unconsumed ingredient)
+ * and {@code null} is "do not add".
  */
 public enum IO implements EnumSelectorComponent.SelectableEnum {
 

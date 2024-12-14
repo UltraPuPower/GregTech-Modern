@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEFluidConfigSlotWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEFluidConfigSlotComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
@@ -8,21 +8,21 @@ import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import appeng.api.stacks.GenericStack;
 
 /**
- * @Author GlodBlock
+ * @author GlodBlock
  * @Description Display {@link net.minecraftforge.fluids.FluidStack} config
- * @Date 2023/4/21-1:45
+ * @date 2023/4/21-1:45
  */
-public class AEFluidConfigWidget extends ConfigWidget {
+public class AEFluidConfigComponent extends ConfigComponent {
 
     private final ExportOnlyAEFluidList fluidList;
 
-    public AEFluidConfigWidget(int x, int y, ExportOnlyAEFluidList list) {
+    public AEFluidConfigComponent(int x, int y, ExportOnlyAEFluidList list) {
         super(x, y, list.getInventory(), list.isStocking());
         this.fluidList = list;
     }
 
     @Override
-    void init() {
+    public void init() {
         int line;
         this.displayList = new IConfigurableSlot[this.config.length];
         this.cached = new IConfigurableSlot[this.config.length];
@@ -30,7 +30,7 @@ public class AEFluidConfigWidget extends ConfigWidget {
             this.displayList[index] = new ExportOnlyAEFluidSlot();
             this.cached[index] = new ExportOnlyAEFluidSlot();
             line = index / 8;
-            this.addWidget(new AEFluidConfigSlotWidget((index - line * 8) * 18, line * (18 * 2 + 2), this, index));
+            this.child(new AEFluidConfigSlotComponent((index - line * 8) * 18, line * (18 * 2 + 2), this, index));
         }
     }
 

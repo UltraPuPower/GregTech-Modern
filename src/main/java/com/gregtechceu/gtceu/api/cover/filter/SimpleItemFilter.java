@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -10,12 +11,15 @@ import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -99,7 +103,12 @@ public class SimpleItemFilter implements ItemFilter {
         onUpdated.accept(this);
     }
 
-    public UIComponent openConfigurator(int x, int y) {
+    @Override
+    public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+        // TODO implement
+    }
+
+    public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
         UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
         group.positioning(Positioning.absolute(x, y));
         GridLayout grid = UIContainers.grid(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3), 3, 3); // 80 55

@@ -6,24 +6,27 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -99,13 +102,17 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        final var group = new WidgetGroup(0, 0, 178, 85);
-        group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
-                FilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getItemFilter().openConfigurator(62, 25));
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
+        final var group = UIContainers.group(Sizing.fixed(178), Sizing.fixed(85));
+        group.child(UIComponents.label(Component.translatable(attachItem.getDescriptionId()))
+                .positioning(Positioning.absolute(60, 5)));
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(18), Sizing.fixed(18),
+                FilterMode.VALUES, filterMode, this::setFilterMode)
+                .positioning(Positioning.absolute(35, 25)));
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(18), Sizing.fixed(18),
+                ManualIOMode.VALUES, allowFlow, this::setAllowFlow)
+                .positioning(Positioning.absolute(35, 45)));
+        group.child(getItemFilter().openConfigurator(62, 25, adapter));
         return group;
     }
 

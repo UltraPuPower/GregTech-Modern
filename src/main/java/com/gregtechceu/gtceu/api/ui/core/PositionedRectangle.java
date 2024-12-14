@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Represents a rectangle positioned in 2D-space
@@ -26,6 +28,14 @@ public interface PositionedRectangle extends Animatable<PositionedRectangle> {
      * @return The height of this rectangle
      */
     int height();
+
+    /**
+     * @return The area this rectangle takes up
+     */
+    @Contract(pure = true)
+    default Rect2i area() {
+        return new Rect2i(x(), y(), width(), height());
+    }
 
     /**
      * @return {@code true} if this rectangle contains the given point

@@ -4,14 +4,16 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
+import com.gregtechceu.gtceu.api.ui.component.NumberInputComponent;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -46,8 +48,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
 
-    private NumberInputWidget<Integer> stackSizeInput;
-    private EnumSelectorWidget<BucketMode> stackSizeBucketModeInput;
+    private NumberInputComponent<Integer> stackSizeInput;
+    private EnumSelectorComponent<BucketMode> stackSizeBucketModeInput;
 
     public AdvancedFluidVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -99,7 +101,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         configureStackSizeInput();
 
-        if (!this.isRemote()) {
+        if (!this.isClientSide()) {
             configureFilter();
         }
     }
@@ -124,19 +126,22 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
+    protected void buildAdditionalUI(UIComponentGroup group) {
+        group.child(
+                new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20), VoidingMode.values(), voidingMode, this::setVoidingMode)
+                        .positioning(Positioning.absolute(146, 20)));
 
-        this.stackSizeInput = new IntInputWidget(35, 20, 84, 20,
+        this.stackSizeInput = new IntInputComponent(Sizing.fixed(84), Sizing.fixed(20),
                 this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(1)
                 .setMax(Integer.MAX_VALUE);
+        this.stackSizeInput.positioning(Positioning.absolute(35, 20));
         configureStackSizeInput();
-        group.addWidget(this.stackSizeInput);
+        group.child(this.stackSizeInput);
 
-        this.stackSizeBucketModeInput = new EnumSelectorWidget<>(121, 20, 20, 20, BucketMode.values(),
-                transferBucketMode, this::setTransferBucketMode);
-        group.addWidget(this.stackSizeBucketModeInput);
+        this.stackSizeBucketModeInput = new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
+                BucketMode.values(), transferBucketMode, this::setTransferBucketMode);
+        this.stackSizeBucketModeInput.positioning(Positioning.absolute(121, 20));
+        group.child(this.stackSizeBucketModeInput);
     }
 
     private int getCurrentBucketModeTransferSize() {
@@ -160,8 +165,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         if (this.stackSizeInput == null || stackSizeBucketModeInput == null)
             return;
 
-        this.stackSizeInput.setVisible(shouldShowStackSize());
-        this.stackSizeBucketModeInput.setVisible(shouldShowStackSize());
+        this.stackSizeInput.enabled(shouldShowStackSize());
+        this.stackSizeBucketModeInput.enabled(shouldShowStackSize());
     }
 
     private boolean shouldShowStackSize() {

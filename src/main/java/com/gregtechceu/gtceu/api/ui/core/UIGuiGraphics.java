@@ -70,7 +70,7 @@ public class UIGuiGraphics extends GuiGraphics {
         return UtilityScreen.get();
     }
 
-    public void drawFluid(FluidStack stack, int capacity, int x, int y, int width, int height) {
+    public void drawFluid(FluidStack stack, int capacity, float x, float y, float width, float height) {
         var sprite = getStillTexture(stack);
         if (sprite == null) {
             sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
@@ -80,7 +80,7 @@ public class UIGuiGraphics extends GuiGraphics {
             }
         }
         Color fluidColor = Color.ofRgb(IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack));
-        int scaledAmount = stack.getAmount() * height / capacity;
+        float scaledAmount = stack.getAmount() * height / capacity;
         if (stack.getAmount() > 0 && scaledAmount < 1) {
             scaledAmount = 1;
         }
@@ -91,21 +91,21 @@ public class UIGuiGraphics extends GuiGraphics {
         RenderSystem.disableBlend();
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
-        final int xCount = width / 16;
-        final int xRemainder = width - xCount * 16;
-        final int yCount = scaledAmount / 16;
-        final int yRemainder = scaledAmount - yCount * 16;
+        final float xCount = width / 16;
+        final float xRemainder = width - xCount * 16;
+        final float yCount = scaledAmount / 16;
+        final float yRemainder = scaledAmount - yCount * 16;
 
-        final int yStart = y + height;
+        final float yStart = y + height;
         for (int xTile = 0; xTile <= xCount; xTile++) {
             for (int yTile = 0; yTile <= yCount; yTile++) {
-                int w = xTile == xCount ? xRemainder : 16;
-                int h = yTile == yCount ? yRemainder : 16;
-                int xCoord = x + xTile * 16;
-                int yCoord = yStart - (yTile + 1) * 16;
+                float w = xTile == xCount ? xRemainder : 16;
+                float h = yTile == yCount ? yRemainder : 16;
+                float xCoord = x + xTile * 16;
+                float yCoord = yStart - (yTile + 1) * 16;
                 if (width > 0 && height > 0) {
-                    int maskT = 16 - h;
-                    int maskR = 16 - w;
+                    float maskT = 16 - h;
+                    float maskR = 16 - w;
                     drawFluidTexture(xCoord, yCoord, sprite, maskT, maskR, 0, fluidColor);
                 }
             }
@@ -113,7 +113,7 @@ public class UIGuiGraphics extends GuiGraphics {
         RenderSystem.enableBlend();
     }
 
-    public void drawFluidTexture(int xCoord, int yCoord, TextureAtlasSprite sprite, int maskTop, int maskRight,
+    public void drawFluidTexture(float xCoord, float yCoord, TextureAtlasSprite sprite, float maskTop, float maskRight,
                                  int zLevel, Color fluidColor) {
         float uMin = sprite.getU0();
         float uMax = sprite.getU1();

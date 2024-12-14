@@ -27,9 +27,9 @@ import lombok.NoArgsConstructor;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @Author GlodBlock
+ * @author GlodBlock
  * @Description The Output Bus that can directly send its contents to ME storage network.
- * @Date 2023/4/19-20:37
+ * @date 2023/4/19-20:37
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

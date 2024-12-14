@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -231,7 +232,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         }
     }
 
-    public void handleDisplayClick(String componentData) {
+    public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             int result = componentData.equals("add") ? 5 : -5;
             this.throttle = Mth.clamp(throttle + result, 25, 100);

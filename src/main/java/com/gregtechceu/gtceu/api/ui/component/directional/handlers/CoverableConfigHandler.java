@@ -128,9 +128,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
 
     private void updateWidgetVisibility() {
         var sideSelected = this.side != null;
-        // TODO implement
-        //slotWidget.setVisible(sideSelected);
-        //slotWidget.setActive(sideSelected);
+        slotComponent.enabled(sideSelected);
     }
 
     public void checkCoverBehaviour() {

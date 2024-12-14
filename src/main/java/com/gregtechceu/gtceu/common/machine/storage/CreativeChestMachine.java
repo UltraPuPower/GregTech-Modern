@@ -2,12 +2,15 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -113,24 +116,25 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = new WidgetGroup(0, 0, 176, 131);
-        group.addWidget(new PhantomSlotWidget(cache, 0, 36, 6)
-                .setClearSlotOnRightClick(true)
-                .setMaxStackSize(1)
-                .setBackgroundTexture(GuiTextures.SLOT)
-                .setChangeListener(this::markDirty));
-        group.addWidget(new LabelWidget(7, 9, "gtceu.creative.chest.item"));
-        group.addWidget(new ImageWidget(7, 48, 154, 14, GuiTextures.DISPLAY));
-        group.addWidget(new TextFieldWidget(9, 50, 152, 10, () -> String.valueOf(itemsPerCycle), this::setItemsPerCycle)
+        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(131));
+        group.child(new PhantomSlotComponent(cache, 0)
+                .clearSlotOnRightClick(true)
+                .maxStackSize(1)
+                .backgroundTexture(GuiTextures.SLOT)
+                .changeListener(this::markDirty)
+                .positioning(Positioning.absolute(36, 6)));
+        group.child(new LabelWidget(7, 9, "gtceu.creative.chest.item"));
+        group.child(new ImageWidget(7, 48, 154, 14, GuiTextures.DISPLAY));
+        group.child(new TextFieldWidget(9, 50, 152, 10, () -> String.valueOf(itemsPerCycle), this::setItemsPerCycle)
                 .setMaxStringLength(11)
                 .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.addWidget(new LabelWidget(7, 28, "gtceu.creative.chest.ipc"));
-        group.addWidget(new ImageWidget(7, 85, 154, 14, GuiTextures.DISPLAY));
-        group.addWidget(new TextFieldWidget(9, 87, 152, 10, () -> String.valueOf(ticksPerCycle), this::setTicksPerCycle)
+        group.child(new LabelWidget(7, 28, "gtceu.creative.chest.ipc"));
+        group.child(new ImageWidget(7, 85, 154, 14, GuiTextures.DISPLAY));
+        group.child(new TextFieldWidget(9, 87, 152, 10, () -> String.valueOf(ticksPerCycle), this::setTicksPerCycle)
                 .setMaxStringLength(11)
                 .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.addWidget(new LabelWidget(7, 65, "gtceu.creative.chest.tpc"));
-        group.addWidget(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
+        group.child(new LabelWidget(7, 65, "gtceu.creative.chest.tpc"));
+        group.child(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
                 .setTexture(
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
                                 new TextTexture("gtceu.creative.activity.off")),

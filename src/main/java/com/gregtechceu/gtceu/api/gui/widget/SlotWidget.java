@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
-import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
 
+import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ConfiguratorGroup;
@@ -196,7 +197,7 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             if (handler instanceof WidgetSlotItemHandler slotHandler) {
                 if (slotHandler.itemHandler instanceof CycleItemStackHandler cycleHandler) {
                     return getXEIIngredientsFromCycleHandlerClickable(cycleHandler, slotHandler.index);
-                } else if (slotHandler.itemHandler instanceof TagOrCycleItemStackHandler tagHandler) {
+                } else if (slotHandler.itemHandler instanceof CycleItemEntryHandler tagHandler) {
                     return getXEIIngredientsFromTagOrCycleHandlerClickable(tagHandler, slotHandler.index);
                 }
             }

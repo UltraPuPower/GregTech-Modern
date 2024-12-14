@@ -16,10 +16,16 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
+import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeComponent;
 import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
 import com.gregtechceu.gtceu.utils.OverlayedTankHandler;
@@ -304,8 +310,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public Object createXEIContainer(List<?> contents) {
         // cast is safe if you don't pass the wrong thing.
         // noinspection unchecked
-        return new TagOrCycleFluidHandler(
-                (List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>>) contents);
+        return new CycleFluidEntryHandler((List<FluidEntryList>) contents);
     }
 
     @Override
@@ -322,18 +327,19 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public void applyWidgetInfo(@NotNull UIComponent widget,
-                                int index,
-                                boolean isXEI,
-                                IO io,
-                                GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
-                                @NotNull GTRecipeType recipeType,
-                                @UnknownNullability("null when content == null") GTRecipe recipe,
-                                @Nullable Content content,
-                                @Nullable Object storage, int recipeTier, int chanceTier) {
+    public void applyUIComponentInfo(@NotNull UIComponent widget,
+                                     UIAdapter<UIComponentGroup> adapter,
+                                     int index,
+                                     boolean isXEI,
+                                     IO io,
+                                     GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
+                                     @NotNull GTRecipeType recipeType,
+                                     @UnknownNullability("null when content == null") GTRecipe recipe,
+                                     @Nullable Content content,
+                                     @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof TankComponent tank) {
-            if (storage instanceof TagOrCycleFluidHandler fluidHandler) {
-                tank.setFluidTank(fluidHandler, index);
+            if (storage instanceof CycleFluidEntryHandler cycleHandler) {
+                tank.setFluidTank(cycleHandler, index);
             } else if (storage instanceof IFluidHandlerModifiable fluidHandler) {
                 tank.setFluidTank(new OverlayingFluidStorage(fluidHandler, index));
             }
@@ -353,7 +359,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 TooltipFlag.NORMAL);
                     }
 
-                    GTRecipeWidget.setConsumedChance(content,
+                    GTRecipeComponent.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
                             tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
                     if (isTickSlot(index, io, recipe)) {
@@ -367,24 +373,24 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         }
     }
 
-    // Maps fluids to Either<(tag with count), FluidStack>s
-    public static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
+    // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
+    public static FluidEntryList mapFluid(FluidIngredient ingredient) {
         int amount = ingredient.getAmount();
         CompoundTag tag = ingredient.getNbt();
 
-        List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
-        List<FluidStack> fluids = new ArrayList<>();
+        FluidTagList tags = new FluidTagList();
+        FluidStackList fluids = new FluidStackList();
         for (FluidIngredient.Value value : ingredient.values) {
             if (value instanceof FluidIngredient.TagValue tagValue) {
-                tags.add(Pair.of(tagValue.getTag(), amount));
+                tags.add(tagValue.getTag(), amount, ingredient.getNbt());
             } else {
                 fluids.addAll(value.getFluids().stream().map(fluid -> new FluidStack(fluid, amount, tag)).toList());
             }
         }
         if (!tags.isEmpty()) {
-            return Either.left(tags);
+            return tags;
         } else {
-            return Either.right(fluids);
+            return fluids;
         }
     }
 

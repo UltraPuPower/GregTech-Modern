@@ -2,21 +2,26 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -48,9 +53,9 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         return stack;
     }
 
-    public static void setCircuitConfiguration(HeldItemUIFactory.HeldItemHolder holder, int configuration) {
+    public static void setCircuitConfiguration(HeldItemUIHolder holder, int configuration) {
         setCircuitConfiguration(holder.getHeld(), configuration);
-        holder.markAsDirty();
+        holder.markDirty();
     }
 
     public static void setCircuitConfiguration(ItemStack itemStack, int configuration) {
@@ -81,9 +86,9 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
 
     // deprecated, not needed (for now)
     @Deprecated
-    public static void adjustConfiguration(HeldItemUIFactory.HeldItemHolder holder, int amount) {
+    public static void adjustConfiguration(HeldItemUIHolder holder, int amount) {
         adjustConfiguration(holder.getHeld(), amount);
-        holder.markAsDirty();
+        holder.markDirty();
     }
 
     // deprecated, not needed (for now)
@@ -104,41 +109,61 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     }
 
     @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        LabelWidget label = new LabelWidget(9, 8, "Programmed Circuit Configuration");
-        label.setDropShadow(false);
-        label.setTextColor(0x404040);
-        var modular = new ModularUI(184, 132, holder, entityPlayer)
-                .widget(label);
-        SlotWidget slotwidget = new SlotWidget(
-                new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld()))),
-                0, 82, 20, false, false);
-        slotwidget.setBackground(GuiTextures.SLOT);
-        modular.widget(slotwidget);
+    public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+        var generator = SlotGenerator.begin(menu::addSlot, 0, 0);
+        var handler = new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld())));
+        generator.slot(handler, 0, 0, 0);
+        var prop = menu.createProperty(int.class, "stack", getCircuitConfiguration(handler.getStackInSlot(0)));
+        handler.setOnContentsChanged(() -> {
+            prop.set(getCircuitConfiguration(handler.getStackInSlot(0)));
+        });
+    }
+
+    @Override
+    public void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
+        var group = UIContainers.group(Sizing.fixed(184), Sizing.fixed(132));
+        adapter.rootComponent.child(group);
+
+        var handler = new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld())));
+        var prop = adapter.menu().<Integer>getProperty("stack");
+
+        var slot = UIComponents.slot(handler, 0)
+                .backgroundTexture(GuiTextures.SLOT)
+                .<SlotComponent>configure(c -> {
+                    c.positioning(Positioning.absolute(82, 20));
+                });
+        group.child(slot);
+
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 9, 4)
+                .configure(layout -> layout.positioning(Positioning.absolute(5, 48)));
         int idx = 0;
         for (int x = 0; x <= 2; x++) {
             for (int y = 0; y <= 8; y++) {
                 int finalIdx = idx;
-                modular.widget(new ButtonWidget(10 + (18 * y), 48 + (18 * x), 18, 18,
-                        new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
-                        data -> {
-                            setCircuitConfiguration(holder, finalIdx);
-                            slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0);
-                        }));
+                grid.child(UIComponents.button(Component.empty(),
+                                clickData -> {
+                                    setCircuitConfiguration(holder, finalIdx);
+                                    prop.set(finalIdx);
+                                })
+                        .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
+                                UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
+                        .sizing(Sizing.fixed(18)), x, y);
                 idx++;
             }
         }
         for (int x = 0; x <= 5; x++) {
             int finalIdx = x + 27;
-            modular.widget(new ButtonWidget(10 + (18 * x), 102, 18, 18,
-                    new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
-                    data -> {
-                        setCircuitConfiguration(holder, finalIdx);
-                        slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0);
-                    }));
+            group.child(UIComponents.button(Component.empty(),
+                            clickData -> {
+                                setCircuitConfiguration(holder, finalIdx);
+                                prop.set(finalIdx);
+                            })
+                    .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
+                            UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
+                    .sizing(Sizing.fixed(18)));
         }
-        modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
-        return modular;
+        group.child(grid);
+        group.surface(Surface.UI_BACKGROUND);
     }
 
     @Override

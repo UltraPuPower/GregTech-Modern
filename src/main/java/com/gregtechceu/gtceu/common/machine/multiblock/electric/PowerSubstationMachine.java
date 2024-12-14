@@ -4,10 +4,11 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
@@ -26,8 +27,6 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
@@ -48,7 +47,7 @@ import java.time.Duration;
 import java.util.*;
 
 public class PowerSubstationMachine extends WorkableMultiblockMachine
-                                    implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
+        implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -340,25 +339,33 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        IDisplayUIMachine.super.loadServerUI(player, menu, holder);
+    }
+
+    @Override
     public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
-        IFancyUIMachine.super.loadClientUI(player, adapter);
+        adapter.rootComponent
+                .child(new FancyMachineUIComponent(this, Sizing.fixed(198), Sizing.fixed(208)));
     }
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-                .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                        .setMaxWidthLimit(150)
-                        .clickHandler((componentData, clickData) -> handleDisplayClick(componentData))));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
-    }
+        var group = UIContainers.group(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
+        group.padding(Insets.of(4));
+        group.child(UIContainers.verticalScroll(Sizing.fixed(182), Sizing.fixed(117),
+                        UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+                                .child(UIComponents.label(self().getBlockState().getBlock().getName())
+                                        .positioning(Positioning.absolute(4, 5)))
+                                .child(UIComponents.componentPanel(this::addDisplayText)
+                                        .maxWidthLimit(150)
+                                        .clickHandler(this::handleDisplayClick)
+                                        .positioning(Positioning.absolute(4, 17)))
 
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIComponent(this, 198, 208));
+                )
+                .surface(getScreenTexture()::draw));
+        group.surface(Surface.UI_BACKGROUND_INVERSE);
+        return group;
     }
 
     @Override
@@ -570,6 +577,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         public ManagedFieldHolder getFieldHolder() {
             return MANAGED_FIELD_HOLDER;
         }
+
     }
 
     public static class BatteryMatchWrapper {
@@ -585,5 +593,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             amount++;
             return this;
         }
+
     }
+
 }

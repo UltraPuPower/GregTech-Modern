@@ -7,25 +7,23 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -119,34 +117,39 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 170);
-        group.addWidget(new LabelWidget(10, 5, "cover.advanced_fluid_detector.label"));
+    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
+        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(170));
+        group.padding(Insets.both(10, 0));
+        group.child(UIComponents.label(Component.translatable("cover.advanced_fluid_detector.label"))
+                .positioning(Positioning.absolute(0, 5)));
 
-        group.addWidget(new TextBoxWidget(10, 55, 65,
-                List.of(LocalizationUtils.format("cover.advanced_fluid_detector.min"))));
+        group.child(UIComponents.label(Component.translatable("cover.advanced_fluid_detector.min"))
+                .positioning(Positioning.absolute(0, 55))
+                .horizontalSizing(Sizing.fixed(65)));
 
-        group.addWidget(new TextBoxWidget(10, 80, 65,
-                List.of(LocalizationUtils.format("cover.advanced_fluid_detector.max"))));
+        group.child(UIComponents.label(Component.translatable("cover.advanced_fluid_detector.max"))
+                .positioning(Positioning.absolute(0, 80))
+                .horizontalSizing(Sizing.fixed(65)));
 
-        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
-        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
+        group.child(new IntInputComponent(Sizing.fixed(176 - 80 - 10), Sizing.fixed(20), this::getMinValue, this::setMinValue)
+                .positioning(Positioning.absolute(70, 50)));
+        group.child(new IntInputComponent(Sizing.fixed(176 - 80 - 10), Sizing.fixed(20), this::getMaxValue, this::setMaxValue)
+                .positioning(Positioning.absolute(70, 75)));
 
         // Invert Redstone Output Toggle:
-        group.addWidget(new ToggleButtonComponent(
-                9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
+        group.child(new ToggleButtonComponent(GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
 
             @Override
-            public void updateScreen() {
-                super.updateScreen();
-                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_fluid_detector.invert." + (isPressed ? "enabled" : "disabled"))));
+            public void update(float delta, int mouseX, int mouseY) {
+                super.update(delta, mouseX, mouseY);
+                tooltip(LangHandler.getMultiLang(
+                        "cover.advanced_fluid_detector.invert." + (pressed ? "enabled" : "disabled")));
             }
-        });
+        }.positioning(Positioning.absolute(-1, 20))
+                .sizing(Sizing.fixed(20)));
 
-        group.addWidget(filterHandler.createFilterSlotUI(148, 100));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 100, 156, 60));
+        group.child(filterHandler.createFilterSlotUI(148, 100));
+        group.child(filterHandler.createFilterConfigUI(10, 100, 156, 60, adapter));
 
         return group;
     }

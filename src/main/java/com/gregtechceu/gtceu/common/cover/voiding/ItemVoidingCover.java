@@ -103,7 +103,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
 
         // group.child(filterHandler.createFilterSlotUI(36, 21));
         group.child(filterHandler.createFilterSlotUI(148, 91));
-        group.child(filterHandler.createFilterConfigUI(10, 50, 126, 60));
+        group.child(filterHandler.createFilterConfigUI(10, 50, 126, 60, adapter));
 
         buildAdditionalUI(group);
 

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author GlodBlock
+ * @author GlodBlock
  * @Description A display only widget for {@link KeyStorage}
- * @Date 2023/4/19-0:18
+ * @date 2023/4/19-0:18
  */
 public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
 

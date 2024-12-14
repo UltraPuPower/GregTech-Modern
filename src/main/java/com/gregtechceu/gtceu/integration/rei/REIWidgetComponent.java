@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.xei.widgets;
+package com.gregtechceu.gtceu.integration.rei;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
@@ -7,11 +7,11 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds;
 
-public class XEIWidgetComponent extends BaseUIComponent {
+public class REIWidgetComponent extends BaseUIComponent {
 
     private final WidgetWithBounds widget;
 
-    public XEIWidgetComponent(WidgetWithBounds widget) {
+    public REIWidgetComponent(WidgetWithBounds widget) {
         this.widget = widget;
 
         var bounds = widget.getBounds();
@@ -52,14 +52,14 @@ public class XEIWidgetComponent extends BaseUIComponent {
     }
 
     @Override
-    public XEIWidgetComponent x(int x) {
+    public REIWidgetComponent x(int x) {
         super.x(x);
         this.applyToWidget();
         return this;
     }
 
     @Override
-    public XEIWidgetComponent y(int y) {
+    public REIWidgetComponent y(int y) {
         super.y(y);
         this.applyToWidget();
         return this;

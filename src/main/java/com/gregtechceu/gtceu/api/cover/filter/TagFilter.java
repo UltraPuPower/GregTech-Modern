@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
@@ -118,7 +119,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         onUpdated.accept((S) this);
     }
 
-    public UIComponent openConfigurator(int x, int y) {
+    public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
         UIComponentGroup group = UIContainers.group(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3));
         group.positioning(Positioning.absolute(x, y));
 

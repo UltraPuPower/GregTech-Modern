@@ -29,7 +29,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -1801,7 +1800,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> SMD_DIODE = REGISTRATE.item("smd_diode", ComponentItem::create)
             .lang("SMD Diode")
             .tag(CustomTags.DIODES)
-            .onRegister(attach(new IItemUIBehaviour() {
+            .onRegister(attach(new IItemUIFactory() {
 
                 @Override
                 public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {

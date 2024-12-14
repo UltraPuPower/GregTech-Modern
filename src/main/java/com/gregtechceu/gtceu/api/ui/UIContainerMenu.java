@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.ui.factory.UIFactory;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
+import com.lowdragmc.lowdraglib.Platform;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -82,12 +83,21 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
         this.addClientboundMessage(ClientboundComponentUpdate.class, this.receivedComponentUpdates::offer);
 
         this.addServerboundMessage(ServerboundSetCarriedUpdate.class,msg -> this.setCarried(msg.newCarried()));
+        this.addServerboundMessage(ServerboundRemoveSyncPropertyMessage.class, msg -> super.removeProperty(msg.name()));
     }
 
     public void sendMessage(int id, Consumer<FriendlyByteBuf> payloadWriter) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         payloadWriter.accept(buf);
         super.sendMessage(isClient ? new ServerboundComponentUpdate(id, buf) : new ClientboundComponentUpdate(id, buf));
+    }
+
+    @Override
+    public void removeProperty(String name) {
+        super.removeProperty(name);
+        if (Platform.isClient()) {
+            this.sendMessage(new ServerboundRemoveSyncPropertyMessage(name));
+        }
     }
 
     /**
@@ -311,4 +321,5 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     public record ServerboundComponentUpdate(int updateId, FriendlyByteBuf updateData) implements IComponentUpdate {}
 
     public record ServerboundSetCarriedUpdate(ItemStack newCarried) {}
+    public record ServerboundRemoveSyncPropertyMessage(String name) {}
 }

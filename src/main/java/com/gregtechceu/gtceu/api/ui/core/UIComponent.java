@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 
+import com.gregtechceu.gtceu.api.ui.util.Observable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -89,15 +91,6 @@ public interface UIComponent extends PositionedRectangle {
     @Nullable
     ParentUIComponent parent();
 
-    /**
-     * @return A way to access the menu that holds this component
-     */
-    @Contract(pure = true)
-    UIComponentMenuAccess containerAccess();
-
-    @ApiStatus.Internal
-    void containerAccess(UIComponentMenuAccess access);
-
     default void sendMessage(int id, Consumer<FriendlyByteBuf> writer) {
         this.containerAccess().sendMessage(this, id, writer);
     }
@@ -112,6 +105,7 @@ public interface UIComponent extends PositionedRectangle {
      * @param id  the message id (for you to define)
      * @param buf the message data
      */
+    // FIXME remove, replace all uses with sending sync messages through the menu.
     default void receiveMessage(int id, FriendlyByteBuf buf) {}
 
     /**
@@ -120,6 +114,15 @@ public interface UIComponent extends PositionedRectangle {
     @Contract(pure = true)
     @Nullable
     FocusHandler focusHandler();
+
+    /**
+     * @return A way to access the menu that holds this component
+     */
+    @Contract(pure = true)
+    UIComponentMenuAccess containerAccess();
+
+    @ApiStatus.Internal
+    void containerAccess(UIComponentMenuAccess access);
 
     /**
      * Update this component's positioning and notify the parent
@@ -289,6 +292,17 @@ public interface UIComponent extends PositionedRectangle {
     UIComponent inflate(Size space);
 
     /**
+     * @return {@code true} if this component should be interactable & rendered
+     */
+    boolean enabled();
+
+    /**
+     * Modify the enabled state of this component
+     * @param enabled the new enabled state of this component
+     */
+    UIComponent enabled(boolean enabled);
+
+    /**
      * Calculate and apply the sizing of this component
      * according to the last known expansion space
      */
@@ -320,6 +334,8 @@ public interface UIComponent extends PositionedRectangle {
      *               as the component will be re-mounted right after
      */
     void dismount(DismountReason reason);
+
+    EventSource<Dismount> dismount();
 
     /**
      * Execute the given closure immediately with this
@@ -384,20 +400,6 @@ public interface UIComponent extends PositionedRectangle {
     }
 
     /**
-     * Called when the mouse has been moved inside the bounding box of this component
-     *
-     * @param mouseX The x coordinate at which the mouse was clicked, relative
-     *               to this component's bounding box root
-     * @param mouseY The y coordinate at which the mouse was moved to, relative
-     *               to this component's bounding box root
-     * @return {@code true} if this component handled the click and no more
-     *         components should be notified
-     */
-    boolean onMouseMoved(double mouseX, double mouseY);
-
-    EventSource<MouseMoved> mouseMoved();
-
-    /**
      * Called when the mouse has been clicked inside the bounding box of this component
      *
      * @param mouseX The x coordinate at which the mouse was clicked, relative
@@ -439,6 +441,20 @@ public interface UIComponent extends PositionedRectangle {
     boolean onMouseScroll(double mouseX, double mouseY, double amount);
 
     EventSource<MouseScroll> mouseScroll();
+
+    /**
+     * Called when the mouse has been moved inside the bounding box of this component
+     *
+     * @param mouseX The x coordinate at which the mouse was clicked, relative
+     *               to this component's bounding box root
+     * @param mouseY The y coordinate at which the mouse was moved to, relative
+     *               to this component's bounding box root
+     * @return {@code true} if this component handled the click and no more
+     *         components should be notified
+     */
+    boolean onMouseMoved(double mouseX, double mouseY);
+
+    EventSource<MouseMoved> mouseMoved();
 
     /**
      * Called when the mouse has been dragged while this component is focused

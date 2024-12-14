@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
@@ -212,6 +213,10 @@ public class UIComponents {
 
     public static ProgressComponent progress(DoubleSupplier progressSupplier) {
         return new ProgressComponent(progressSupplier);
+    }
+
+    public static ProgressComponent progress(DoubleSupplier progressSupplier, ResourceTexture fullTexture) {
+        return new ProgressComponent(progressSupplier, fullTexture);
     }
 
     public static DualProgressComponent dualProgress() {

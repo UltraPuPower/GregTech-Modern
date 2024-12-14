@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.component;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.lowdragmc.lowdraglib.LDLib.isRemote;
@@ -34,7 +36,7 @@ public class ComponentPanelComponent extends BaseUIComponent {
     @Nullable
     protected Consumer<List<Component>> textSupplier;
     @Setter
-    protected Consumer<String> clickHandler;
+    protected BiConsumer<String, ClickData> clickHandler;
     protected List<Component> lastText = new ArrayList<>();
     @Getter
     protected List<FormattedCharSequence> cacheLines = Collections.emptyList();
@@ -137,27 +139,21 @@ public class ComponentPanelComponent extends BaseUIComponent {
         } else {
             tooltip(List.<ClientTooltipComponent>of());
         }
-    }
 
-    /*
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
         if (textSupplier != null) {
             List<Component> textBuffer = new ArrayList<>();
             textSupplier.accept(textBuffer);
             if (!lastText.equals(textBuffer)) {
                 this.lastText = textBuffer;
-                writeUpdateInfo(1, buffer -> {
-                    buffer.m_130130_(lastText.size());
+                sendMessage(1, buffer -> {
+                    buffer.writeVarInt(lastText.size());
                     for (Component textComponent : lastText) {
-                        buffer.m_130083_(textComponent);
+                        buffer.writeComponent(textComponent);
                     }
                 });
             }
         }
     }
-     */
 
     @Override
     public void receiveMessage(int id, FriendlyByteBuf buf) {
@@ -170,9 +166,10 @@ public class ComponentPanelComponent extends BaseUIComponent {
             formatDisplayText();
             updateComponentTextSize();
         } else if (id == 2) {
+            ClickData clickData = ClickData.readFromBuf(buf);
             String componentData = buf.readUtf();
             if (clickHandler != null) {
-                clickHandler.accept(componentData);
+                clickHandler.accept(componentData, clickData);
             }
         } else {
             super.receiveMessage(id, buf);
@@ -242,7 +239,8 @@ public class ComponentPanelComponent extends BaseUIComponent {
                     if (componentText.startsWith("@!")) {
                         String rawText = componentText.substring(2);
                         if (clickHandler != null) {
-                            clickHandler.accept(rawText);
+                            ClickData clickData = new ClickData(button);
+                            clickHandler.accept(rawText, clickData);
                         }
                         sendMessage(2, buf -> {
                             buf.writeUtf(rawText);

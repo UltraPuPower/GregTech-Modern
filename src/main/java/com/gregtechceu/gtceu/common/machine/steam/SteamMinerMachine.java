@@ -5,15 +5,20 @@ import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.PredicatedTextureComponent;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -53,7 +58,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine,
-                               IUIMachine, IMachineLife, IDataInfoProvider {
+        IUIMachine, IMachineLife, IDataInfoProvider {
 
     @Getter
     @Setter
@@ -164,6 +169,17 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
+
+    @Override
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+
+    }
+
     @Override
     public ModularUI createUI(Player entityPlayer) {
         int rowSize = (int) Math.sqrt(inventorySize);
@@ -182,8 +198,9 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         }
 
         builder.widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()));
-        builder.widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                .setPredicate(recipeLogic::isWaiting));
+        builder.widget(new PredicatedTextureComponent(GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure), 18, 18)
+                .predicate(recipeLogic::isWaiting)
+                .positioning(Positioning.absolute(79, 42)));
         builder.widget(new ImageWidget(7, 16, 105, 75, GuiTextures.DISPLAY_STEAM.get(false)));
         builder.widget(new ComponentPanelWidget(10, 19, this::addDisplayText)
                 .setMaxWidthLimit(84));
@@ -254,4 +271,5 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         }
         return new ArrayList<>();
     }
+
 }

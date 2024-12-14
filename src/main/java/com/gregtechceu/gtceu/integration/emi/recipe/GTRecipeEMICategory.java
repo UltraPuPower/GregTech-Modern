@@ -37,7 +37,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
             if (category == type.getCategory()) type.buildRepresentativeRecipes();
             EmiRecipeCategory emiCategory = CATEGORIES.apply(category);
             type.getRecipesInCategory(category).stream()
-                    .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
+                    .map(recipe -> new GTEMIRecipe(recipe, emiCategory))
                     .forEach(registry::addRecipe);
         }
     }

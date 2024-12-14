@@ -4,13 +4,16 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ProspectingMapComponent;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -97,13 +100,24 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     }
 
     @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
+    public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+
+    }
+
+    @Override
+    public void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
+        FlowLayout flowLayout = UIContainers.horizontalFlow(Sizing.fixed(332), Sizing.fixed(200))
+                .configure(c -> {
+                    c.surface(Surface.UI_BACKGROUND)
+                            .padding(Insets.of(4));
+                });
+        adapter.rootComponent.child(flowLayout);
+
         var mode = getMode(entityPlayer.getItemInHand(InteractionHand.MAIN_HAND));
-        var map = new ProspectingMapComponent(4, 4, 332 - 8, 200 - 8, radius, mode, 1);
-        return new ModularUI(332, 200, holder, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(map)
-                .widget(UIComponents.switchComponent((cd, pressed) -> map.setDarkMode(pressed))
+        var map = new ProspectingMapComponent(Sizing.fill(), Sizing.fill(), radius, mode, 1);
+
+        flowLayout.child(map)
+                .child(UIComponents.switchComponent((cd, pressed) -> map.setDarkMode(pressed))
                         .supplier(map::isDarkMode)
                         .texture(
                                 UITextures.group(GuiTextures.BUTTON,

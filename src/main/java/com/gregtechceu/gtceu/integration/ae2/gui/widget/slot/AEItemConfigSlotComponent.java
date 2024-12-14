@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.IGhostItemTarget;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
@@ -25,13 +25,13 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawItemStack;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorner;
 
 /**
- * @Author GlodBlock
+ * @author GlodBlock
  * @Description A configurable slot for {@link ItemStack}
- * @Date 2023/4/22-0:48
+ * @date 2023/4/22-0:48
  */
-public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhostItemTarget {
+public class AEItemConfigSlotComponent extends AEConfigSlotComponent implements IGhostItemTarget {
 
-    public AEItemConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {
+    public AEItemConfigSlotComponent(int x, int y, ConfigComponent widget, int index) {
         super(new Position(x, y), new Size(18, 18 * 2), widget, index);
     }
 

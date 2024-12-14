@@ -3,10 +3,13 @@ package com.gregtechceu.gtceu.api.ui.component;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
+import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -27,16 +30,19 @@ import net.minecraft.world.item.TooltipFlag;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Matrix4f;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @Accessors(fluent = true, chain = true)
-public class ItemComponent extends BaseUIComponent {
+public class ItemComponent extends BaseUIComponent implements ClickableIngredientSlot<ItemStack> {
 
     protected static final Matrix4f ITEM_SCALING = new Matrix4f().scaling(16, -16, 16);
 
@@ -130,6 +136,16 @@ public class ItemComponent extends BaseUIComponent {
         return this;
     }
 
+    @Override
+    public @UnknownNullability("Nullability depends on the type of ingredient") EntryList<ItemStack> getIngredients() {
+        return ItemStackList.of(stack);
+    }
+
+    @Override
+    public @NotNull Class<ItemStack> ingredientClass() {
+        return ItemStack.class;
+    }
+
     /**
      * Obtain the full item stack tooltip, including custom components
      * provided via {@link net.minecraft.world.item.Item#getTooltipImage(ItemStack)}
@@ -177,4 +193,5 @@ public class ItemComponent extends BaseUIComponent {
             }
         });
     }
+
 }

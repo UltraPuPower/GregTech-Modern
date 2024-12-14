@@ -128,7 +128,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
         if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
             group.child(UIComponents.button(Component.empty(),
                             clickData -> {
-                                if (!clickData.isRemote) {
+                                if (!clickData.isClientSide) {
                                     circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
                                 }
                             })
@@ -144,7 +144,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
                 int finalIdx = idx;
                 grid.child(UIComponents.button(Component.empty(),
                         clickData -> {
-                            if (!clickData.isRemote) {
+                            if (!clickData.isClientSide) {
                                 ItemStack stack = circuitSlot.getStackInSlot(0).copy();
                                 if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
                                     IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
@@ -164,7 +164,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
             int finalIdx = x + 27;
             grid.child(UIComponents.button(Component.empty(),
                     clickData -> {
-                        if (!clickData.isRemote) {
+                        if (!clickData.isClientSide) {
                             ItemStack stack = circuitSlot.getStackInSlot(0).copy();
                             if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
                                 IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);

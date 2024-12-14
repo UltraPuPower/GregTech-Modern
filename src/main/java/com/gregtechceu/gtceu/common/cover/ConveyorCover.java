@@ -474,7 +474,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 .tooltip(List.of(Component.translatable("cover.universal.manual_import_export.mode.description"))));
 
         group.child(filterHandler.createFilterSlotUI(125, 108));
-        group.child(filterHandler.createFilterConfigUI(10, 72, 156, 60));
+        group.child(filterHandler.createFilterConfigUI(10, 72, 156, 60, adapter));
 
         buildAdditionalUI(group);
 

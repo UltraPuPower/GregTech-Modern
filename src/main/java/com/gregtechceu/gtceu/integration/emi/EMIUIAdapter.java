@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
-import com.gregtechceu.gtceu.integration.xei.widgets.XEIWidgetComponent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,11 +18,9 @@ import dev.emi.emi.api.widget.Widget;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
-import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
@@ -40,6 +37,8 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
     @Setter
     private GuiEventListener focused;
 
+    private Consumer<ScreenEvent.Closing> closeListener;
+
     public EMIUIAdapter(Bounds bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.x(), bounds.y(), bounds.width(), bounds.height(),
                 UIContainers::group);
@@ -47,7 +46,11 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
         this.bounds = bounds;
 
         if (Minecraft.getInstance().screen != null) {
-            MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Closing event) -> this.adapter.dispose());
+            this.closeListener = (ScreenEvent.Closing event) -> {
+                this.adapter.dispose();
+                MinecraftForge.EVENT_BUS.unregister(this.closeListener);
+            };
+            MinecraftForge.EVENT_BUS.register(this.closeListener);
         }
     }
 
@@ -57,17 +60,6 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
     public UIComponentGroup rootComponent() {
         return this.adapter.rootComponent;
-    }
-
-    public <W extends WidgetWithBounds> XEIWidgetComponent wrap(W widget) {
-        return new XEIWidgetComponent(widget);
-    }
-
-    public <W extends WidgetWithBounds> XEIWidgetComponent wrap(Function<ScreenPosition, W> widgetFactory,
-                                                                Consumer<W> widgetConfigurator) {
-        var widget = widgetFactory.apply(LAYOUT);
-        widgetConfigurator.accept(widget);
-        return new XEIWidgetComponent(widget);
     }
 
     @Override

@@ -157,7 +157,7 @@ public abstract class NumberInputComponent<T extends Number> extends FlowLayout 
     }
 
     private void changeValue(ClickData cd, T multiplier) {
-        if (!cd.isRemote) {
+        if (!cd.isClientSide) {
             T amount = cd.isCtrlClick ?
                     cd.isShiftClick ? CHANGE_VALUES.ctrlShift : CHANGE_VALUES.ctrl :
                     cd.isShiftClick ? CHANGE_VALUES.shift : CHANGE_VALUES.regular;

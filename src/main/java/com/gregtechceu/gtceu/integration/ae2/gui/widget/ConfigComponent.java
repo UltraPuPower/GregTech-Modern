@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEConfigSlotWidget;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEConfigSlotComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,68 +17,69 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 
-public abstract class ConfigWidget extends WidgetGroup {
+public abstract class ConfigComponent extends FlowLayout {
 
     protected final IConfigurableSlot[] config;
     protected IConfigurableSlot[] cached;
     protected Int2ObjectMap<IConfigurableSlot> changeMap = new Int2ObjectOpenHashMap<>();
     protected IConfigurableSlot[] displayList;
-    protected AmountSetWidget amountSetWidget;
+    protected AmountSetComponent amountSetComponent;
     protected final static int UPDATE_ID = 1000;
 
     @Getter
     protected final boolean isStocking;
 
-    public ConfigWidget(int x, int y, IConfigurableSlot[] config, boolean isStocking) {
-        super(new Position(x, y), new Size(config.length / 2 * 18, 18 * 4 + 2));
+    public ConfigComponent(int x, int y, IConfigurableSlot[] config, boolean isStocking) {
+        super(Sizing.fixed(config.length / 2 * 18), Sizing.fixed(18 * 4 + 2), Algorithm.HORIZONTAL);
         this.isStocking = isStocking;
         this.config = config;
         this.init();
-        this.amountSetWidget = new AmountSetWidget(31, -50, this);
-        this.addWidget(this.amountSetWidget);
-        this.addWidget(this.amountSetWidget.getAmountText());
-        this.amountSetWidget.setVisible(false);
-        this.amountSetWidget.getAmountText().setVisible(false);
+        this.amountSetComponent = new AmountSetComponent(31, -50, this);
+        this.child(this.amountSetComponent);
+        this.child(this.amountSetComponent.getAmountText());
+        this.amountSetComponent.enabled(false);
+        this.amountSetComponent.getAmountText().setVisible(false);
     }
 
     public void enableAmount(int slotIndex) {
-        this.amountSetWidget.setSlotIndex(slotIndex);
-        this.amountSetWidget.setVisible(true);
-        this.amountSetWidget.getAmountText().setVisible(true);
+        this.amountSetComponent.setSlotIndex(slotIndex);
+        this.amountSetComponent.enabled(true);
+        this.amountSetComponent.getAmountText().setVisible(true);
     }
 
     public void disableAmount() {
-        this.amountSetWidget.setSlotIndex(-1);
-        this.amountSetWidget.setVisible(false);
-        this.amountSetWidget.getAmountText().setVisible(false);
+        this.amountSetComponent.setSlotIndex(-1);
+        this.amountSetComponent.enabled(false);
+        this.amountSetComponent.getAmountText().setVisible(false);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.amountSetWidget.isVisible()) {
-            if (this.amountSetWidget.getAmountText().mouseClicked(mouseX, mouseY, button)) {
+    public boolean onMouseDown(double mouseX, double mouseY, int button) {
+        if (this.amountSetComponent.enabled()) {
+            if (this.amountSetComponent.getAmountText().mouseClicked(mouseX, mouseY, button)) {
                 return true;
             }
         }
-        for (Widget w : this.widgets) {
-            if (w instanceof AEConfigSlotWidget slot) {
+        for (UIComponent w : this.children()) {
+            if (w instanceof AEConfigSlotComponent slot) {
                 slot.setSelect(false);
             }
         }
         this.disableAmount();
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.onMouseDown(mouseX, mouseY, button);
     }
 
-    abstract void init();
+    @Override
+    public abstract void init();
 
     public abstract boolean hasStackInConfig(GenericStack stack);
 
     public abstract boolean isAutoPull();
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    protected void parentUpdate(float delta, int mouseX, int mouseY) {
+        super.parentUpdate(delta, mouseX, mouseY);
         this.changeMap.clear();
         for (int index = 0; index < this.config.length; index++) {
             IConfigurableSlot newSlot = this.config[index];
@@ -90,11 +91,12 @@ public abstract class ConfigWidget extends WidgetGroup {
             if (!areAEStackCountsEqual(nConfig, oConfig) || !areAEStackCountsEqual(nStock, oStock)) {
                 this.changeMap.put(index, newSlot.copy());
                 this.cached[index] = this.config[index].copy();
-                this.gui.holder.markAsDirty();
+                // lmao??
+                this.containerAccess().screen().getMenu().broadcastChanges();
             }
         }
         if (!this.changeMap.isEmpty()) {
-            this.writeUpdateInfo(UPDATE_ID, buf -> {
+            this.sendMessage(UPDATE_ID, buf -> {
                 buf.writeVarInt(this.changeMap.size());
                 for (int index : this.changeMap.keySet()) {
                     GenericStack sConfig = this.changeMap.get(index).getConfig();
@@ -119,8 +121,8 @@ public abstract class ConfigWidget extends WidgetGroup {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
-        super.readUpdateInfo(id, buffer);
+    public void receiveMessage(int id, FriendlyByteBuf buffer) {
+        super.receiveMessage(id, buffer);
         if (id == UPDATE_ID) {
             int size = buffer.readVarInt();
             for (int i = 0; i < size; i++) {

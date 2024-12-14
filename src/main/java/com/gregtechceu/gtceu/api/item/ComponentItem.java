@@ -9,12 +9,10 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
-import com.gregtechceu.gtceu.common.item.IItemUIBehaviour;
+import com.gregtechceu.gtceu.common.item.IItemUIFactory;
 
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -301,7 +299,7 @@ public class ComponentItem extends Item
     @Override
     public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
         for (IItemComponent component : components) {
-            if (component instanceof IItemUIBehaviour uiBehaviour) {
+            if (component instanceof IItemUIFactory uiBehaviour) {
                 uiBehaviour.loadServerUI(player, menu, holder);
                 return;
             }
@@ -312,7 +310,7 @@ public class ComponentItem extends Item
     @Override
     public void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
         for (IItemComponent component : components) {
-            if (component instanceof IItemUIBehaviour uiBehaviour) {
+            if (component instanceof IItemUIFactory uiBehaviour) {
                 uiBehaviour.loadClientUI(entityPlayer, adapter, holder);
                 return;
             }

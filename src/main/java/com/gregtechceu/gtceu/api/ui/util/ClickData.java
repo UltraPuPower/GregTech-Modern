@@ -9,13 +9,13 @@ public class ClickData {
     public final int button;
     public final boolean isShiftClick;
     public final boolean isCtrlClick;
-    public final boolean isRemote;
+    public final boolean isClientSide;
 
-    private ClickData(int button, boolean isShiftClick, boolean isCtrlClick, boolean isRemote) {
+    private ClickData(int button, boolean isShiftClick, boolean isCtrlClick, boolean isClientSide) {
         this.button = button;
         this.isShiftClick = isShiftClick;
         this.isCtrlClick = isCtrlClick;
-        this.isRemote = isRemote;
+        this.isClientSide = isClientSide;
     }
 
     public ClickData(int button) {
@@ -23,7 +23,7 @@ public class ClickData {
         this.button = button;
         this.isShiftClick = InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_SHIFT);
         this.isCtrlClick = InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
-        this.isRemote = true;
+        this.isClientSide = true;
     }
 
     public void writeToBuf(FriendlyByteBuf buf) {

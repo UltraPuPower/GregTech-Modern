@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
+import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
 import com.gregtechceu.gtceu.api.ui.inject.GreedyInputUIComponent;
 import com.gregtechceu.gtceu.api.ui.util.DisposableScreen;
 import com.gregtechceu.gtceu.api.ui.util.UIErrorToast;
@@ -124,12 +126,6 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
                 this.uiAdapter.topPos(topPos);
 
                 this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
-
-                this.uiAdapter.rootComponent.forEachDescendant(child -> {
-                    if (child instanceof SlotComponent slot) {
-                        slot.finalizeSlot(this);
-                    }
-                });
             } catch (Exception error) {
                 GTCEu.LOGGER.warn("Could not initialize gtceu screen", error);
                 UIErrorToast.report(error);
@@ -203,7 +199,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
     /**
      * Compute a stream of all components for which to
      * generate exclusion areas in a recipe viewer overlay.
-     * Called by the REI and EMI plugins
+     * Called by the JEI, REI and EMI plugins
      */
     @ApiStatus.OverrideOnly
     public Stream<UIComponent> componentsForExclusionAreas() {
@@ -218,6 +214,50 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
         return children.stream()
                 .filter(component -> !(component instanceof ParentUIComponent parent) ||
                         parent.surface() != Surface.BLANK);
+    }
+
+    /**
+     * Compute a stream of all components for which to
+     * generate exclusion areas in a recipe viewer overlay.
+     * Called by the JEI, REI and EMI plugins
+     */
+    @ApiStatus.OverrideOnly
+    public Stream<GhostIngredientSlot<?>> componentsForGhostIngredients() {
+        if (this.children().isEmpty()) return Stream.of();
+
+        var rootComponent = uiAdapter.rootComponent;
+        var children = new ArrayList<UIComponent>();
+
+        rootComponent.collectDescendants(children);
+        children.remove(rootComponent);
+
+        return children.stream()
+                .filter(component -> !(component instanceof ParentUIComponent parent) ||
+                        parent.surface() != Surface.BLANK)
+                .filter(component -> component instanceof GhostIngredientSlot<?>)
+                .map(component -> (GhostIngredientSlot<?>) component);
+    }
+
+    /**
+     * Compute a stream of all components for which to
+     * generate exclusion areas in a recipe viewer overlay.
+     * Called by the JEI, REI and EMI plugins
+     */
+    @ApiStatus.OverrideOnly
+    public Stream<ClickableIngredientSlot<?>> componentsForClickableIngredients() {
+        if (this.children().isEmpty()) return Stream.of();
+
+        var rootComponent = uiAdapter.rootComponent;
+        var children = new ArrayList<UIComponent>();
+
+        rootComponent.collectDescendants(children);
+        children.remove(rootComponent);
+
+        return children.stream()
+                .filter(component -> !(component instanceof ParentUIComponent parent) ||
+                        parent.surface() != Surface.BLANK)
+                .filter(component -> component instanceof ClickableIngredientSlot<?>)
+                .map(component -> (ClickableIngredientSlot<?>) component);
     }
 
     @Override
@@ -310,7 +350,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
     @Override
     public void onClose() {
         super.onClose();
-        this.uiAdapter.rootComponent.dispose();
+        if (this.uiAdapter != null) this.uiAdapter.dispose();
     }
 
 }

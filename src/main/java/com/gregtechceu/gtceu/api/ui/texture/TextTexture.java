@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import org.joml.Vector4f;
 import org.w3c.dom.Element;
 
@@ -47,13 +48,13 @@ public class TextTexture extends TransformTexture {
     @Setter
     public TextType textType;
 
-    private List<String> texts;
+    private List<FormattedCharSequence> texts;
 
     public TextTexture(Component text, int color) {
         this.color = color;
         this.textType = TextType.NORMAL;
         this.text = text;
-        texts = Collections.singletonList(this.text.getString());
+        texts = Collections.singletonList(this.text.getVisualOrderText());
     }
 
     public TextTexture(Component text) {
@@ -64,17 +65,12 @@ public class TextTexture extends TransformTexture {
         this.width = width;
         if (LDLib.isClient()) {
             if (this.width > 0) {
-                texts = Minecraft.getInstance()
-                        .font.getSplitter()
-                        .splitLines(text, width, Style.EMPTY)
-                        .stream()
-                        .map(FormattedText::getString)
-                        .toList();
+                texts = Minecraft.getInstance().font.split(text, width);
                 if (texts.isEmpty()) {
-                    texts = Collections.singletonList(text.getString());
+                    texts = Collections.singletonList(text.getVisualOrderText());
                 }
             } else {
-                texts = Collections.singletonList(text.getString());
+                texts = Collections.singletonList(text.getVisualOrderText());
             }
         }
         return this;
@@ -101,7 +97,7 @@ public class TextTexture extends TransformTexture {
         if (textType == TextType.NORMAL) {
             textH *= texts.size();
             for (int i = 0; i < texts.size(); i++) {
-                String line = texts.get(i);
+                FormattedCharSequence line = texts.get(i);
                 int lineWidth = font.width(line);
                 int _x = x + (width - lineWidth) / 2;
                 int _y = y + (height - textH) / 2 + i * font.lineHeight;
@@ -110,14 +106,14 @@ public class TextTexture extends TransformTexture {
         } else if (textType == TextType.LEFT) {
             textH *= texts.size();
             for (int i = 0; i < texts.size(); i++) {
-                String line = texts.get(i);
+                FormattedCharSequence line = texts.get(i);
                 int _y = y + (height - textH) / 2 + i * font.lineHeight;
                 graphics.drawString(font, line, x, _y, color, dropShadow);
             }
         } else if (textType == TextType.RIGHT) {
             textH *= texts.size();
             for (int i = 0; i < texts.size(); i++) {
-                String line = texts.get(i);
+                FormattedCharSequence line = texts.get(i);
                 int lineWidth = font.width(line);
                 int _y = y + (height - textH) / 2 + i * font.lineHeight;
                 graphics.drawString(font, line, (x + width - lineWidth), _y, color, dropShadow);
@@ -126,7 +122,9 @@ public class TextTexture extends TransformTexture {
             if (Widget.isMouseOver(x, y, width, height, mouseX, mouseY) && texts.size() > 1) {
                 drawRollTextLine(graphics, x, y, width, height, font, textH, text);
             } else {
-                String line = texts.get(0) + (texts.size() > 1 ? ".." : "");
+                FormattedCharSequence line = texts.size() > 1 ?
+                        FormattedCharSequence.composite(texts.get(0), Component.literal("..").getVisualOrderText()) :
+                        texts.get(0);
                 drawTextLine(graphics, x, y, width, height, font, textH, line);
             }
         } else if (textType == TextType.ROLL || textType == TextType.ROLL_ALWAYS) {
@@ -170,7 +168,7 @@ public class TextTexture extends TransformTexture {
         graphics.disableScissor();
     }
 
-    private void drawTextLine(GuiGraphics graphics, float x, float y, int width, int height, Font fontRenderer, int textH, String line) {
+    private void drawTextLine(GuiGraphics graphics, float x, float y, int width, int height, Font fontRenderer, int textH, FormattedCharSequence line) {
         int textW = fontRenderer.width(line);
         float _x = x + (width - textW) / 2f;
         float _y = y + (height - textH) / 2f;
@@ -185,9 +183,9 @@ public class TextTexture extends TransformTexture {
 
         UIParsing.apply(children, "color", Color::parseAndPack, this::color);
         UIParsing.apply(children, "background-color", Color::parseAndPack, this::backgroundColor);
-        UIParsing.apply(children, "width", UIParsing::parseUnsignedInt, this::width);
+        UIParsing.apply(children, "max-width", UIParsing::parseUnsignedInt, this::width);
         UIParsing.apply(children, "roll-speed", UIParsing::parseFloat, this::rollSpeed);
-        UIParsing.apply(children, "drop-shadow", UIParsing::parseBool, this::dropShadow);
+        UIParsing.apply(children, "shadow", UIParsing::parseBool, this::dropShadow);
         UIParsing.apply(children, "text-type", UIParsing.parseEnum(TextType.class), this::textType);
     }
 

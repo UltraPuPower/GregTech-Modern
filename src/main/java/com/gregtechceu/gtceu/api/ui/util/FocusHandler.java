@@ -130,8 +130,9 @@ public class FocusHandler {
                 this.focused.onFocusLost();
             }
 
+            UIComponent lastFocused = this.focused;
             if ((this.focused = component) != null) {
-                this.focused.onFocusGained(source, this.focused);
+                this.focused.onFocusGained(source, lastFocused);
                 this.lastFocusSource = source;
             } else {
                 this.lastFocusSource = null;

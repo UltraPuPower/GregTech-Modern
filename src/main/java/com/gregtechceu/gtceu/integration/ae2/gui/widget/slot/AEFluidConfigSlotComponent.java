@@ -1,21 +1,22 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.misc.IGhostFluidTarget;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,31 +40,28 @@ import org.jetbrains.annotations.NotNull;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorner;
 
 /**
- * @Author GlodBlock
+ * @author GlodBlock
  * @Description A configurable slot for {@link FluidStack}
- * @Date 2023/4/21-0:50
+ * @date 2023/4/21-0:50
  */
-public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhostFluidTarget {
+public class AEFluidConfigSlotComponent extends AEConfigSlotComponent implements GhostIngredientSlot<FluidStack> {
 
-    public AEFluidConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {
+    public AEFluidConfigSlotComponent(int x, int y, ConfigComponent widget, int index) {
         super(new Position(x, y), new Size(18, 18 * 2), widget, index);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
-        Position position = getPosition();
+    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
         GenericStack config = slot.getConfig();
         GenericStack stock = slot.getStock();
-        drawSlots(graphics, mouseX, mouseY, position.x, position.y, parentWidget.isAutoPull());
+        drawSlots(graphics, mouseX, mouseY, x(), y(), parentWidget.isAutoPull());
         if (this.select) {
-            GuiTextures.SELECT_BOX.draw(graphics, mouseX, mouseY, position.x, position.y, 18, 18);
+            GuiTextures.SELECT_BOX.draw(graphics, mouseX, mouseY, x(), y(), 18, 18);
         }
 
-        int stackX = position.x + 1;
-        int stackY = position.y + 1;
+        int stackX = x() + 1;
+        int stackY = y() + 1;
         if (config != null) {
             var stack = AEUtil.toFluidStack(config);
             if (!stack.isEmpty()) {
@@ -91,10 +89,12 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         } else if (mouseOverStock(mouseX, mouseY)) {
             drawSelectionOverlay(graphics, stackX, stackY + 18, 16, 16);
         }
+
+        super.draw(graphics, mouseX, mouseY, partialTicks, delta);
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void drawSlots(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean autoPull) {
+    private void drawSlots(UIGuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean autoPull) {
         if (autoPull) {
             GuiTextures.SLOT_DARK.draw(graphics, mouseX, mouseY, x, y, 18, 18);
             GuiTextures.CONFIG_ARROW_DARK.draw(graphics, mouseX, mouseY, x, y, 18, 18);
@@ -107,7 +107,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean onMouseDown(double mouseX, double mouseY, int button) {
         if (mouseOverConfig(mouseX, mouseY)) {
             // don't allow manual interaction with config slots when auto pull is enabled
             if (parentWidget.isAutoPull()) {
@@ -116,15 +116,15 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
 
             if (button == 1) {
                 // Right click to clear
-                writeClientAction(REMOVE_ID, buf -> {});
+                sendMessage(REMOVE_ID, buf -> {});
 
                 if (!parentWidget.isStocking()) {
                     this.parentWidget.disableAmount();
                 }
             } else if (button == 0) {
                 // Left click to set/select
-                ItemStack hold = this.gui.getModularUIContainer().getCarried();
-                FluidUtil.getFluidContained(hold).ifPresent(f -> writeClientAction(UPDATE_ID, f::writeToPacket));
+                ItemStack hold = getCarried();
+                FluidUtil.getFluidContained(hold).ifPresent(f -> sendMessage(UPDATE_ID, f::writeToPacket));
 
                 if (!parentWidget.isStocking()) {
                     this.parentWidget.enableAmount(this.index);
@@ -140,7 +140,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 }
                 GenericStack stack = this.parentWidget.getDisplay(this.index).getStock();
                 if (stack != null) {
-                    writeClientAction(PICK_UP_ID, buf -> buf.writeBoolean(isShiftDown()));
+                    sendMessage(PICK_UP_ID, buf -> buf.writeBoolean(GTUtil.isShiftDown()));
                 }
                 return true;
             }
@@ -148,6 +148,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         return false;
     }
 
+    /*
     @Override
     public void handleClientAction(int id, FriendlyByteBuf buffer) {
         super.handleClientAction(id, buffer);
@@ -155,7 +156,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (id == REMOVE_ID) {
             slot.setConfig(null);
             this.parentWidget.disableAmount();
-            writeUpdateInfo(REMOVE_ID, buf -> {});
+            sendMessage(REMOVE_ID, buf -> {});
         }
         if (id == UPDATE_ID) {
             FluidStack fluid = FluidStack.readFromPacket(buffer);
@@ -164,14 +165,14 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
             slot.setConfig(stack);
             this.parentWidget.enableAmount(this.index);
             if (fluid != FluidStack.EMPTY) {
-                writeUpdateInfo(UPDATE_ID, fluid::writeToPacket);
+                sendMessage(UPDATE_ID, fluid::writeToPacket);
             }
         }
         if (id == AMOUNT_CHANGE_ID) {
             if (slot.getConfig() != null) {
                 int amt = buffer.readInt();
                 slot.setConfig(ExportOnlyAESlot.copy(slot.getConfig(), amt));
-                writeUpdateInfo(AMOUNT_CHANGE_ID, buf -> buf.writeInt(amt));
+                sendMessage(AMOUNT_CHANGE_ID, buf -> buf.writeInt(amt));
             }
         }
         if (id == PICK_UP_ID) {
@@ -179,16 +180,17 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 boolean isShiftKeyDown = buffer.readBoolean();
                 int clickResult = tryClickContainer(isShiftKeyDown);
                 if (clickResult >= 0) {
-                    writeUpdateInfo(PICK_UP_ID, buf -> buf.writeVarInt(clickResult));
+                    sendMessage(PICK_UP_ID, buf -> buf.writeVarInt(clickResult));
                 }
             }
         }
     }
+    */
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
-        super.readUpdateInfo(id, buffer);
+    public void receiveMessage(int id, FriendlyByteBuf buffer) {
+        super.receiveMessage(id, buffer);
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
         if (id == REMOVE_ID) {
             slot.setConfig(null);
@@ -206,10 +208,10 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         }
         if (id == PICK_UP_ID) {
             if (slot.getStock() != null && slot.getStock().what() instanceof AEFluidKey key) {
-                ItemStack currentStack = gui.getModularUIContainer().getCarried();
+                ItemStack currentStack = getCarried();
                 int newStackSize = buffer.readVarInt();
                 currentStack.setCount(newStackSize);
-                gui.getModularUIContainer().setCarried(currentStack);
+                setCarried(currentStack);
 
                 FluidStack stack = new FluidStack(key.getFluid(), GTMath.saturatedCast(slot.getStock().amount()));
                 if (key.hasTag()) {
@@ -224,31 +226,36 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public Rect2i getRectangleBox() {
-        Rect2i rectangle = toRectangleBox();
+    public Rect2i area() {
+        Rect2i rectangle = super.area();
         rectangle.setHeight(rectangle.getHeight() / 2);
         return rectangle;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void acceptFluid(FluidStack fluidStack) {
-        if (fluidStack.getRawFluid() != Fluids.EMPTY && fluidStack.getAmount() <= 0L) {
-            fluidStack.setAmount(1000);
+    public void setGhostIngredient(@NotNull FluidStack ingredient) {
+        if (ingredient.getRawFluid() != Fluids.EMPTY && ingredient.getAmount() <= 0L) {
+            ingredient.setAmount(1000);
         }
 
-        if (!fluidStack.isEmpty()) {
-            writeClientAction(UPDATE_ID, fluidStack::writeToPacket);
+        if (!ingredient.isEmpty()) {
+            sendMessage(UPDATE_ID, ingredient::writeToPacket);
         }
+
+    }
+
+    @Override
+    public Class<FluidStack> ghostIngredientClass() {
+        return FluidStack.class;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+    public boolean onMouseScroll(double mouseX, double mouseY, double wheelDelta) {
         // Only allow the amount scrolling if not stocking, as amount is useless for stocking
         if (parentWidget.isStocking()) return false;
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
-        Rect2i rectangle = toRectangleBox();
+        Rect2i rectangle = area();
         rectangle.setHeight(rectangle.getHeight() / 2);
         if (slot.getConfig() == null || wheelDelta == 0 || !rectangle.contains((int) mouseX, (int) mouseY)) {
             return false;
@@ -258,7 +265,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                         fluidKey.getTag()) :
                 FluidStack.EMPTY;
         long amt;
-        if (isCtrlDown()) {
+        if (GTUtil.isCtrlDown()) {
             amt = wheelDelta > 0 ? fluid.getAmount() * 2L : fluid.getAmount() / 2L;
         } else {
             amt = wheelDelta > 0 ? fluid.getAmount() + 1L : fluid.getAmount() - 1L;
@@ -266,7 +273,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
 
         if (amt > 0 && amt < Integer.MAX_VALUE + 1L) {
             int finalAmt = (int) amt;
-            writeClientAction(AMOUNT_CHANGE_ID, buf -> buf.writeInt(finalAmt));
+            sendMessage(AMOUNT_CHANGE_ID, buf -> buf.writeInt(finalAmt));
             return true;
         }
         return false;
@@ -276,8 +283,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         ExportOnlyAEFluidSlot fluidTank = this.parentWidget
                 .getConfig(this.index) instanceof ExportOnlyAEFluidSlot fluid ? fluid : null;
         if (fluidTank == null) return -1;
-        Player player = gui.entityPlayer;
-        ItemStack currentStack = gui.getModularUIContainer().getCarried();
+        Player player = player();
+        ItemStack currentStack = getCarried();
         var handler = FluidUtil.getFluidHandler(currentStack).resolve().orElse(null);
         if (handler == null) return -1;
         int maxAttempts = isShiftKeyDown ? currentStack.getCount() : 1;
@@ -305,11 +312,12 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                     player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
                             soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
-                gui.getModularUIContainer().setCarried(currentStack);
+                setCarried(currentStack);
                 return currentStack.getCount();
             }
         }
 
         return -1;
     }
+
 }

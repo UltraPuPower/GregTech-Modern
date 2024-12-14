@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
@@ -242,7 +243,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void handleDisplayClick(String componentData) {
+    public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             if (componentData.equals("chunk_mode")) {
                 getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());

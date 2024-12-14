@@ -6,8 +6,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.api.ui.util.TimedProgressSupplier;
-import com.gregtechceu.gtceu.api.gui.widget.ExtendedProgressWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -27,11 +34,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -67,7 +69,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class HPCAMachine extends WorkableElectricMultiblockMachine
-                         implements IOpticalComputationProvider, IControllable {
+        implements IOpticalComputationProvider, IControllable {
 
     private static final double IDLE_TEMPERATURE = 200;
     private static final double DAMAGE_TEMPERATURE = 1000;
@@ -120,8 +122,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     energyContainers.add(container);
                 } else if (handler.getCapability() == FluidRecipeCapability.CAP &&
                         handler instanceof IFluidHandler fluidHandler) {
-                            coolantContainers.add(fluidHandler);
-                        }
+                    coolantContainers.add(fluidHandler);
+                }
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
@@ -238,13 +240,14 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        WidgetGroup builder = (WidgetGroup) super.createBaseUIComponent(component);
+        FlowLayout builder = (FlowLayout) super.createBaseUIComponent(component);
         // Create the hover grid
-        builder.addWidget(new ExtendedProgressWidget(
-                () -> hpcaHandler.getAllocatedCWUt() > 0 ? progressSupplier.getAsDouble() : 0,
-                74, 57, 47, 47, GuiTextures.HPCA_COMPONENT_OUTLINE)
-                .setServerTooltipSupplier(hpcaHandler::addInfo)
-                .setFillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT));
+        builder.child(UIComponents.progress(() -> hpcaHandler.getAllocatedCWUt() > 0 ? progressSupplier.getAsDouble() : 0,
+                        GuiTextures.HPCA_COMPONENT_OUTLINE)
+                .serverTooltipSupplier(hpcaHandler::addInfo)
+                .fillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT)
+                .positioning(Positioning.absolute(74, 57))
+                .sizing(Sizing.fixed(47)));
         int startX = 76;
         int startY = 59;
 
@@ -260,8 +263,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
-                Supplier<IGuiTexture> textureSupplier = () -> hpcaHandler.getComponentTexture(index);
-                builder.addWidget(new ImageWidget(startX + (15 * j), startY + (15 * i), 13, 13, textureSupplier));
+                Supplier<UITexture> textureSupplier = () -> hpcaHandler.getComponentTexture(index);
+                builder.child(UIComponents.texture(UITextures.dynamic(textureSupplier), 13, 13)
+                        .positioning(Positioning.absolute(startX + (15 * j), startY + (15 * i))));
             }
         }
         return builder;
@@ -271,7 +275,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     public void addDisplayText(List<Component> textList) {
         MultiblockDisplayText.builder(textList, isFormed())
                 .setWorkingStatus(true, hpcaHandler.getAllocatedCWUt() > 0) // transform into two-state system for
-                                                                            // display
+                // display
                 .setWorkingStatusKeys(
                         "gtceu.multiblock.idling",
                         "gtceu.multiblock.idling",
@@ -280,15 +284,15 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     if (isFormed()) {
                         // Energy Usage
                         tl.add(Component.translatable(
-                                "gtceu.multiblock.hpca.energy",
-                                FormattingUtil.formatNumbers(hpcaHandler.cachedEUt),
-                                FormattingUtil.formatNumbers(hpcaHandler.getMaxEUt()),
-                                GTValues.VNF[GTUtil.getTierByVoltage(hpcaHandler.getMaxEUt())])
+                                        "gtceu.multiblock.hpca.energy",
+                                        FormattingUtil.formatNumbers(hpcaHandler.cachedEUt),
+                                        FormattingUtil.formatNumbers(hpcaHandler.getMaxEUt()),
+                                        GTValues.VNF[GTUtil.getTierByVoltage(hpcaHandler.getMaxEUt())])
                                 .withStyle(ChatFormatting.GRAY));
 
                         // Provided Computation
                         Component cwutInfo = Component.literal(
-                                hpcaHandler.cachedCWUt + " / " + hpcaHandler.getMaxCWUt() + " CWU/t")
+                                        hpcaHandler.cachedCWUt + " / " + hpcaHandler.getMaxCWUt() + " CWU/t")
                                 .withStyle(ChatFormatting.AQUA);
                         tl.add(Component.translatable(
                                 "gtceu.multiblock.hpca.computation",
@@ -749,5 +753,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         public void onChanged() {
             controller.onChanged();
         }
+
     }
+
 }

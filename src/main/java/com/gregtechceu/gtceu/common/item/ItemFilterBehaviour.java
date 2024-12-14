@@ -2,12 +2,17 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
+import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -29,12 +34,21 @@ public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
     }
 
     @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        var held = holder.getHeld();
-        return new ModularUI(176, 157, holder, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(5, 5, held.getDescriptionId()))
-                .widget(ItemFilter.loadFilter(held).openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 75, true));
+    public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+        ItemFilter.loadFilter(holder.getHeld()).loadServerUI(player, menu, holder);
+        var generator = SlotGenerator.begin(menu::addSlot, 0, 0);
+        generator.playerInventory(player.getInventory());
     }
+
+    @Override
+    public void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
+        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(157));
+        group.surface(Surface.UI_BACKGROUND);
+
+        group.child(UIComponents.label(holder.getHeld().getHoverName()))
+                .child(ItemFilter.loadFilter(holder.getHeld()).openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15, adapter))
+                .child(UIComponents.playerInventory(entityPlayer.getInventory(), GuiTextures.SLOT)
+                        .positioning(Positioning.absolute(7,  75)));
+    }
+
 }

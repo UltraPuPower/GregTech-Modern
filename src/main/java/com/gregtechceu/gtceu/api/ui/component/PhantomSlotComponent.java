@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.google.common.collect.Lists;
+import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.ConfigSetter;
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @Accessors(fluent = true, chain = true)
-public class PhantomSlotComponent extends SlotComponent implements IGhostIngredientTarget {
+public class PhantomSlotComponent extends SlotComponent implements GhostIngredientSlot<ItemStack> {
 
     @Setter
     private boolean clearSlotOnRightClick;
@@ -93,54 +95,22 @@ public class PhantomSlotComponent extends SlotComponent implements IGhostIngredi
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<Target> getPhantomTargets(Object ingredient) {
-        if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
-            Item item = emiStack.getKeyOfType(Item.class);
-            if (item != null) {
-                ingredient = new ItemStack(item, (int) emiStack.getAmount());
-                ((ItemStack) ingredient).setTag(emiStack.getNbt());
-            }
-        } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-            ingredient = jeiStack.getItemStack().orElse(null);
-        }
-        if (!(ingredient instanceof ItemStack)) {
-            return Collections.emptyList();
-        }
-
-        Rect2i rectangle = new Rect2i(x(), y(), width(), height());
-        return Lists.newArrayList(new Target() {
-
-            @Nonnull
-            @Override
-            public Rect2i getArea() {
-                return rectangle;
-            }
-
-            @Override
-            public void accept(@Nonnull Object ingredient) {
-                if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
-                    Item item = emiStack.getKeyOfType(Item.class);
-                    if (item != null) {
-                        ingredient = new ItemStack(item, (int) emiStack.getAmount());
-                        ((ItemStack) ingredient).setTag(emiStack.getNbt());
-                    }
-                } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-                    ingredient = jeiStack.getItemStack().orElse(null);
-                }
-                if (slot != null && ingredient instanceof ItemStack stack) {
-                    long id = Minecraft.getInstance().getWindow().getWindow();
-                    boolean shiftDown = InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
-                    ClickType clickType = shiftDown ? ClickType.QUICK_MOVE : ClickType.PICKUP;
-                    slotClickPhantom(slot, 0, clickType, stack);
-                    sendMessage(1, buffer -> {
-                        buffer.writeItem(stack);
-                        buffer.writeVarInt(0);
-                        buffer.writeBoolean(shiftDown);
-                    });
-                }
-            }
+    public void setGhostIngredient(@NotNull ItemStack ingredient) {
+        long id = Minecraft.getInstance().getWindow().getWindow();
+        boolean shiftDown = InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
+        ClickType clickType = shiftDown ? ClickType.QUICK_MOVE : ClickType.PICKUP;
+        slotClickPhantom(slot, 0, clickType, ingredient);
+        sendMessage(1, buffer -> {
+            buffer.writeItem(ingredient);
+            buffer.writeVarInt(0);
+            buffer.writeBoolean(shiftDown);
         });
+
+    }
+
+    @Override
+    public Class<ItemStack> ghostIngredientClass() {
+        return ItemStack.class;
     }
 
     @Override
@@ -224,4 +194,5 @@ public class PhantomSlotComponent extends SlotComponent implements IGhostIngredi
     public boolean areItemsEqual(ItemStack itemStack1, ItemStack itemStack2) {
         return ItemStack.matches(itemStack1, itemStack2);
     }
+
 }

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
-import com.gregtechceu.gtceu.integration.xei.widgets.XEIWidgetComponent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,7 +15,6 @@ import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -26,7 +24,7 @@ public class REIUIAdapter extends Widget {
 
     public static final Point LAYOUT = new Point(-69, -69);
 
-    private final CloseListener closeListener;
+    private Consumer<ScreenEvent.Closing> closeListener;
     public final UIAdapter<UIComponentGroup> adapter;
 
     public REIUIAdapter(Rectangle bounds) {
@@ -35,18 +33,11 @@ public class REIUIAdapter extends Widget {
         this.adapter.inspectorZOffset = 900;
 
         if (Minecraft.getInstance().screen != null) {
-            MinecraftForge.EVENT_BUS.register(this.closeListener = new CloseListener());
-        } else {
-            this.closeListener = null;
-        }
-    }
-
-    private class CloseListener {
-
-        @SubscribeEvent
-        public void listen(ScreenEvent.Closing event) {
-            MinecraftForge.EVENT_BUS.unregister(REIUIAdapter.this.closeListener);
-            REIUIAdapter.this.adapter.dispose();
+            this.closeListener = (ScreenEvent.Closing event) -> {
+                this.adapter.dispose();
+                MinecraftForge.EVENT_BUS.unregister(this.closeListener);
+            };
+            MinecraftForge.EVENT_BUS.register(this.closeListener);
         }
     }
 
@@ -58,15 +49,15 @@ public class REIUIAdapter extends Widget {
         return this.adapter.rootComponent;
     }
 
-    public <W extends WidgetWithBounds> XEIWidgetComponent wrap(W widget) {
-        return new XEIWidgetComponent(widget);
+    public <W extends WidgetWithBounds> REIWidgetComponent wrap(W widget) {
+        return new REIWidgetComponent(widget);
     }
 
-    public <W extends WidgetWithBounds> XEIWidgetComponent wrap(Function<Point, W> widgetFactory,
+    public <W extends WidgetWithBounds> REIWidgetComponent wrap(Function<Point, W> widgetFactory,
                                                                 Consumer<W> widgetConfigurator) {
         var widget = widgetFactory.apply(LAYOUT);
         widgetConfigurator.accept(widget);
-        return new XEIWidgetComponent(widget);
+        return new REIWidgetComponent(widget);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.ui.core.Color;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -38,6 +39,10 @@ public class UITextures {
 
     public static ItemStackTexture item(ItemStack stack) {
         return new ItemStackTexture(stack);
+    }
+
+    public static FluidStackTexture fluid(FluidStack stack) {
+        return new FluidStackTexture(stack);
     }
 
     public static DynamicTexture dynamic(Supplier<UITexture> texture) {

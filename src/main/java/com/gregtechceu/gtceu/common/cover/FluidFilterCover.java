@@ -5,17 +5,19 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -88,12 +90,16 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        final var group = new WidgetGroup(0, 0, 178, 85);
-        group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
-                FilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getFluidFilter().openConfigurator(62, 25));
+        final var group = UIContainers.group(Sizing.fixed(178), Sizing.fixed(85));
+        group.child(UIComponents.label(attachItem.getHoverName())
+                .positioning(Positioning.absolute(60, 5)));
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(18), Sizing.fixed(18),
+                FilterMode.VALUES, filterMode, this::setFilterMode)
+                .positioning(Positioning.absolute(35, 25)));
+        group.child(new EnumSelectorComponent<>(Sizing.fixed(18), Sizing.fixed(18),
+                ManualIOMode.VALUES, allowFlow, this::setAllowFlow)
+                .positioning(Positioning.absolute(35, 45)));
+        group.child(getFluidFilter().openConfigurator(62, 25, adapter));
         return group;
     }
 

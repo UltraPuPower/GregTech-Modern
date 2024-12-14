@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
@@ -408,9 +407,10 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
         }
 
         var focusHandler = this.focusHandler();
-        // noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < children.size(); i++) {
-            final var child = children.get(i);
+        for (final UIComponent child : children) {
+            if (!child.enabled()) {
+                continue;
+            }
 
             if (!ScissorStack.isVisible(child, graphics.pose())) continue;
             graphics.pose().translate(0, 0, child.zIndex() + 1);

@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public interface IItemUIBehaviour extends IInteractionItem {
+public interface IItemUIFactory extends IInteractionItem {
 
     @Override
     default InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {

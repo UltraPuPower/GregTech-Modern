@@ -62,6 +62,11 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
         this.gtceu$getWrapper().dismount(reason);
     }
 
+    @Override
+    public EventSource<Dismount> dismount() {
+        return this.gtceu$getWrapper().dismount();
+    }
+
     @Nullable
     @Override
     public ParentUIComponent parent() {

@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.api.ui.inject;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import net.minecraft.world.entity.player.Player;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public interface UIAbstractContainerMenu {
@@ -17,7 +17,7 @@ public interface UIAbstractContainerMenu {
      * @return All registered synced properties.
      */
     default List<SyncedProperty<?>> getProperties() {
-        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
+        throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
@@ -31,7 +31,7 @@ public interface UIAbstractContainerMenu {
      * @return The created property
      */
     default <T> SyncedProperty<T> createProperty(Class<T> klass, String name, T initial) {
-        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
+        throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
     }
     /**
      * Get a synced property by name
@@ -40,7 +40,16 @@ public interface UIAbstractContainerMenu {
      * @return The property with the given name
      */
     default <R> SyncedProperty<R> getProperty(String name) {
-        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
+        throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
+    }
+
+    /**
+     * Remove a synced property
+     *
+     * @param name The name the property can be found with
+     */
+    default void removeProperty(String name) {
+        throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
@@ -55,7 +64,7 @@ public interface UIAbstractContainerMenu {
      *                     received on the server
      */
     default <R extends Record> void addServerboundMessage(Class<R> messageClass, Consumer<R> handler) {
-        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
+        throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
@@ -70,7 +79,7 @@ public interface UIAbstractContainerMenu {
      *                     received on the client
      */
     default <R extends Record> void addClientboundMessage(Class<R> messageClass, Consumer<R> handler) {
-        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
+        throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
@@ -80,13 +89,13 @@ public interface UIAbstractContainerMenu {
      * the message will be sent to
      */
     default <R extends Record> void sendMessage(@NotNull R message) {
-        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
+        throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
     }
 
     /**
      * @return The player this container is attached to
      */
     default Player player() {
-        throw new UnsupportedOperationException("Implemented in AbstractContainerMenuMixin");
+        throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
     }
 }

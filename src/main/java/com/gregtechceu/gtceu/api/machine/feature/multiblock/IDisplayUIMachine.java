@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 
 import net.minecraft.network.chat.Component;
@@ -33,7 +34,7 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
         }
     }
 
-    default void handleDisplayClick(String componentData) {}
+    default void handleDisplayClick(String componentData, ClickData clickData) {}
 
     default UITexture getScreenTexture() {
         return GuiTextures.DISPLAY;

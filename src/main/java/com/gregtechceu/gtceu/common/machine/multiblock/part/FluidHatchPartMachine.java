@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.PhantomFluidComponent;
 import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
@@ -224,22 +224,22 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         // Add input/output-specific widgets
         if (this.io == IO.OUT) {
             // if this is an output hatch, assign tankWidget to the phantom widget displaying the locked fluid...
-            group.child(tankWidget = new PhantomFluidWidget(this.tank.getLockedFluid(), 0, 67, 40, 18, 18,
-                            () -> this.tank.getLockedFluid().getFluid(), f -> {
-                        if (!this.tank.getFluidInTank(0).isEmpty()) {
-                            return;
-                        }
-                        if (f == null || f.isEmpty()) {
-                            this.tank.setLocked(false);
-                        } else {
-                            FluidStack newFluid = f.copy();
-                            newFluid.setAmount(1);
-                            this.tank.setLocked(true, newFluid);
-                        }
-                    }).setShowAmount(false))
-                    .child(UIComponents.texture(GuiTextures.FLUID_SLOT, 18, 18)
-                            .positioning(Positioning.absolute(67, 40))
-                            .sizing(Sizing.fixed(18)));
+            group.child(tankWidget = new PhantomFluidComponent(this.tank.getLockedFluid(), 0,
+                    () -> this.tank.getLockedFluid().getFluid(), f -> {
+                if (!this.tank.getFluidInTank(0).isEmpty()) {
+                    return;
+                }
+                if (f == null || f.isEmpty()) {
+                    this.tank.setLocked(false);
+                } else {
+                    FluidStack newFluid = f.copy();
+                    newFluid.setAmount(1);
+                    this.tank.setLocked(true, newFluid);
+                }
+            }).showAmount(false)
+                    .configure(c -> {
+                        c.positioning(Positioning.absolute(67, 40));
+                    }));
             ;
 
             group.child(UIComponents.toggleButton(GuiTextures.BUTTON_LOCK, this.tank::isLocked, this.tank::setLocked)
@@ -259,12 +259,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                             .sizing(Sizing.fixed(18)));
         } else {
             group.child(tankWidget = (TankComponent) UIComponents.tank(tank.getStorages()[0])
-                            .showAmount(true)
-                            .canExtract(true)
-                            .canInsert(io.support(IO.IN))
-                            .backgroundTexture(GuiTextures.FLUID_SLOT)
-                            .positioning(Positioning.absolute(67, 22))
-                            .sizing(Sizing.fixed(18)));
+                    .showAmount(true)
+                    .canExtract(true)
+                    .canInsert(io.support(IO.IN))
+                    .positioning(Positioning.absolute(67, 22))
+                    .sizing(Sizing.fixed(18)));
         }
 
         group.child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount"))

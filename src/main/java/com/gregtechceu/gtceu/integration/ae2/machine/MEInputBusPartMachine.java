@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -136,7 +136,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
                 "gtceu.gui.me_network.offline"));
 
         // Config slots
-        group.addWidget(new AEItemConfigWidget(3, 10, this.aeItemHandler));
+        group.addWidget(new AEItemConfigComponent(3, 10, this.aeItemHandler));
 
         return group;
     }

@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ItemLike;
 
@@ -95,11 +96,12 @@ public class GTREIPlugin implements REIClientPlugin {
 
     @Override
     public void registerExclusionZones(ExclusionZones zones) {
-        zones.register(BaseContainerScreen.class, screen -> {
-            return ((BaseContainerScreen<?, ?>) screen).componentsForExclusionAreas()
-                    .map(rect -> new Rectangle(rect.x(), rect.y(), rect.width(), rect.height()))
-                    .toList();
-        });
+        zones.register(BaseContainerScreen.class, UIREIHandler.INSTANCE);
+    }
+
+    @Override
+    public void registerScreens(ScreenRegistry registry) {
+        registry.registerDraggableStackVisitor(UIREIHandler.INSTANCE);
     }
 
     @Override

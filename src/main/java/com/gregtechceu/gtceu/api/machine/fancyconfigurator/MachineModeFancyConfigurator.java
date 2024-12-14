@@ -86,7 +86,6 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
         @Override
         public void init() {
             super.init();
-
         }
 
         /*
@@ -106,6 +105,12 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
             this.sendMessage(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
         }
         */
+
+        @Override
+        protected void parentUpdate(float delta, int mouseX, int mouseY) {
+            super.parentUpdate(delta, mouseX, mouseY);
+            this.sendMessage(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
+        }
 
         @Override
         public void receiveMessage(int id, FriendlyByteBuf buf) {

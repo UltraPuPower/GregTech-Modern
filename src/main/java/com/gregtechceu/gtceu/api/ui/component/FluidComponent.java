@@ -4,11 +4,16 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Color;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.commands.arguments.FluidParser;
+import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -28,19 +33,29 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @Accessors(fluent = true, chain = true)
-public class FluidComponent extends BaseUIComponent {
+public class FluidComponent extends BaseUIComponent implements ClickableIngredientSlot<FluidStack> {
 
     protected final MultiBufferSource.BufferSource bufferBuilder;
     @Getter
     protected FluidStack stack;
+    @Getter
+    @Setter
+    protected int capacity = 16000;
+    @Getter
+    @Setter
+    protected ProgressTexture.FillDirection fillDirection;
+
     protected boolean setTooltipFromStack = false;
     @Setter
     protected boolean showAmount = false;
@@ -71,9 +86,19 @@ public class FluidComponent extends BaseUIComponent {
             RenderSystem.disableBlend();
             if (!stack.isEmpty()) {
                 double progress = stack.getAmount() * 1.0 /
-                        Math.max(Math.max(stack.getAmount(), 16000), 1);
+                        Math.max(Math.max(stack.getAmount(), capacity), 1);
+                float drawnU = (float) fillDirection.getDrawnU(progress);
+                float drawnV = (float) fillDirection.getDrawnV(progress);
+                float drawnWidth = (float) fillDirection.getDrawnWidth(progress);
+                float drawnHeight = (float) fillDirection.getDrawnHeight(progress);
 
-                graphics.drawFluid(stack, 16000, this.x, this.y, 16, 16);
+                int width = width() - 2;
+                int height = height() - 2;
+                int x = x() + 1;
+                int y = y() + 1;
+                graphics.drawFluid(stack, capacity,
+                        (int) (x + drawnU * width), (int) (y + drawnV * height),
+                        ((int) (width * drawnWidth)), ((int) (height * drawnHeight)));
             }
 
         }
@@ -151,8 +176,21 @@ public class FluidComponent extends BaseUIComponent {
     }
 
     @Override
+    public @UnknownNullability("Nullability depends on the type of ingredient") EntryList<FluidStack> getIngredients() {
+        return FluidStackList.of(this.stack);
+    }
+
+    @Override
+    public @NotNull Class<FluidStack> ingredientClass() {
+        return FluidStack.class;
+    }
+
+    @Override
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
+        UIParsing.apply(children, "capacity", UIParsing::parseUnsignedInt, this::capacity);
+        UIParsing.apply(children, "fill-direction", UIParsing.parseEnum(ProgressTexture.FillDirection.class), this::fillDirection);
+        UIParsing.apply(children, "show-amount", UIParsing::parseBool, this::showAmount);
         UIParsing.apply(children, "show-overlay", UIParsing::parseBool, this::showOverlay);
         UIParsing.apply(children, "set-tooltip-from-stack", UIParsing::parseBool, this::setTooltipFromStack);
 

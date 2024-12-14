@@ -65,7 +65,7 @@ public class TextBoxComponent extends EditBox {
     @Override
     public void update(float delta, int mouseX, int mouseY) {
         super.update(delta, mouseX, mouseY);
-        if (this.isVisible() && this.isActive() && textSupplier != null && !textSupplier.get().equals(textValue.get())) {
+        if (this.isVisible() && this.isActive() && textSupplier != null && !textSupplier.get().equals(getValue())) {
             text(textSupplier.get());
         }
     }
@@ -96,7 +96,7 @@ public class TextBoxComponent extends EditBox {
     public boolean mouseScrolled(double mouseX, double mouseY, double wheelDelta) {
         if (wheelDur > 0 && numberInstance != null && isMouseOverElement(mouseX, mouseY) && isFocused()) {
             try {
-                text(numberInstance.format(Float.parseFloat(textValue.get()) + (wheelDelta > 0 ? 1 : -1) * wheelDur));
+                text(numberInstance.format(Float.parseFloat(getValue()) + (wheelDelta > 0 ? 1 : -1) * wheelDur));
             } catch (Exception ignored) {
             }
             setFocused(true);
@@ -109,7 +109,7 @@ public class TextBoxComponent extends EditBox {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (isDragging && numberInstance != null && isFocused()) {
             try {
-                text(numberInstance.format(Float.parseFloat(textValue.get()) + dragX * wheelDur));
+                text(numberInstance.format(Float.parseFloat(getValue()) + dragX * wheelDur));
             } catch (Exception ignored) {
             }
             setFocused(true);
@@ -152,7 +152,6 @@ public class TextBoxComponent extends EditBox {
 
     public TextBoxComponent setResourceLocationOnly() {
         setFilter(s -> {
-
             s = s.toLowerCase();
             s = s.replace(' ', '_');
             return ResourceLocation.isValidResourceLocation(s);
@@ -164,8 +163,9 @@ public class TextBoxComponent extends EditBox {
     public TextBoxComponent setNumbersOnly(long minValue, long maxValue) {
         setFilter(s -> {
             try {
-                if (s == null || s.isEmpty()) return false;
-                float value = Float.parseFloat(s);
+                if (s == null) return false;
+                if (s.isEmpty()) return true;
+                float value = Long.parseLong(s);
                 if (minValue <= value && value <= maxValue) return true;
                 if (value < minValue) return false;
                 return true;
@@ -187,8 +187,9 @@ public class TextBoxComponent extends EditBox {
     public TextBoxComponent setNumbersOnly(int minValue, int maxValue) {
         setFilter(s -> {
             try {
-                if (s == null || s.isEmpty()) return false;
-                float value = Float.parseFloat(s);
+                if (s == null) return false;
+                if (s.isEmpty()) return true;
+                float value = Integer.parseInt(s);
                 if (minValue <= value && value <= maxValue) return true;
                 if (value < minValue) return false;
                 return true;
@@ -210,7 +211,8 @@ public class TextBoxComponent extends EditBox {
     public TextBoxComponent setNumbersOnly(float minValue, float maxValue) {
         setFilter(s -> {
             try {
-                if (s == null || s.isEmpty()) return false;
+                if (s == null) return false;
+                if (s.isEmpty()) return true;
                 float value = Float.parseFloat(s);
                 if (minValue <= value && value <= maxValue) return true;
                 if (value < minValue) return false;

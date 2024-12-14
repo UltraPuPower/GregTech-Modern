@@ -1511,7 +1511,7 @@ public class LangHandler {
      * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
      * @return Returns all translation components from a multi lang's sub-keys.
      */
-    public static List<MutableComponent> getMultiLang(String key, Object... args) {
+    public static List<Component> getMultiLang(String key, Object... args) {
         var outputKeys = new ArrayList<String>();
         var i = 0;
         var next = getSubKey(key, i);

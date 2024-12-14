@@ -4,8 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

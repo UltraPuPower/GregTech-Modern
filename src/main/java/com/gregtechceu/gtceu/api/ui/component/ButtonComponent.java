@@ -27,7 +27,6 @@ import org.w3c.dom.Node;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@SuppressWarnings("LombokSetterMayBeUsed")
 @Accessors(fluent = true, chain = true)
 public class ButtonComponent extends Button {
 
@@ -45,7 +44,8 @@ public class ButtonComponent extends Button {
     protected Consumer<ClickData> onPress;
 
     protected ButtonComponent(Component message, Consumer<ClickData> onPress) {
-        super(0, 0, 0, 0, message, button -> {}, Button.DEFAULT_NARRATION);
+        super(0, 0, 0, 0, message, button -> {
+        }, Button.DEFAULT_NARRATION);
         this.onPress = onPress;
         this.sizing(Sizing.content());
     }
@@ -86,13 +86,20 @@ public class ButtonComponent extends Button {
         return this;
     }
 
+    @Override
+    public ButtonComponent enabled(boolean enabled) {
+        super.enabled(enabled);
+        this.visible(enabled);
+        return this;
+    }
+
     public boolean visible() {
         return this.visible;
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.active() && this.visible() && isMouseOverElement(mouseX, mouseY)) {
+        if (this.enabled() && this.visible() && isMouseOverElement(mouseX, mouseY)) {
             ClickData clickData = new ClickData(button);
             sendMessage(1, clickData::writeToBuf);
             if (onPress != null) {
@@ -119,7 +126,8 @@ public class ButtonComponent extends Button {
     @FunctionalInterface
     public interface Renderer {
 
-        Renderer EMPTY = (graphics, button, delta) -> {};
+        Renderer EMPTY = (graphics, button, delta) -> {
+        };
 
         Renderer VANILLA = (graphics, button, delta) -> {
             RenderSystem.enableDepthTest();
@@ -167,6 +175,20 @@ public class ButtonComponent extends Button {
             };
         }
 
+        static Renderer texture(UITexture base, UITexture hovered, UITexture disabled) {
+            return (graphics, button, delta) -> {
+                if (button.active) {
+                    if (button.isHovered) {
+                        hovered.draw(graphics, 0, 0, button.getX(), button.getY(), button.width, button.height);
+                    } else {
+                        base.draw(graphics, 0, 0, button.getX(), button.getY(), button.width, button.height);
+                    }
+                } else {
+                    disabled.draw(graphics, 0, 0, button.getX(), button.getY(), button.width, button.height);
+                }
+            };
+        }
+
         void draw(UIGuiGraphics context, ButtonComponent button, float delta);
 
         static Renderer parse(Element element) {
@@ -197,5 +219,7 @@ public class ButtonComponent extends Button {
                         "Unknown button renderer '" + rendererElement.getNodeName() + "'");
             };
         }
+
     }
+
 }

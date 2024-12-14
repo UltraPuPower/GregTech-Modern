@@ -54,6 +54,10 @@ public abstract class BaseUIComponent implements UIComponent {
     @Getter
     protected final AnimatableProperty<Sizing> verticalSizing = AnimatableProperty.of(Sizing.content());
 
+    @Getter
+    @Setter
+    protected boolean enabled = true;
+
     protected final EventStream<MouseDown> mouseDownEvents = MouseDown.newStream();
     protected final EventStream<MouseUp> mouseUpEvents = MouseUp.newStream();
     protected final EventStream<MouseScroll> mouseScrollEvents = MouseScroll.newStream();
@@ -66,6 +70,9 @@ public abstract class BaseUIComponent implements UIComponent {
 
     protected final EventStream<MouseEnter> mouseEnterEvents = MouseEnter.newStream();
     protected final EventStream<MouseLeave> mouseLeaveEvents = MouseLeave.newStream();
+
+
+    protected final EventStream<Dismount> dismountEvents = Dismount.newStream();
 
     protected boolean hovered = false;
     protected boolean dirty = false;
@@ -143,10 +150,10 @@ public abstract class BaseUIComponent implements UIComponent {
     public <C extends UIComponent> C configure(Consumer<C> closure) {
         try {
             this.runAndDeferEvents(() -> closure.accept((C) this));
-        } catch (ClassCastException theUserDidBadItWasNotMyFault) {
+        } catch (ClassCastException e) {
             throw new IllegalArgumentException(
                     "Invalid target class passed when configuring component of type " + this.getClass().getSimpleName(),
-                    theUserDidBadItWasNotMyFault);
+                    e);
         }
 
         return (C) this;
@@ -222,16 +229,6 @@ public abstract class BaseUIComponent implements UIComponent {
     }
 
     @Override
-    public boolean onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY, int button) {
-        return this.mouseDragEvents.sink().onMouseDrag(mouseX, mouseY, deltaX, deltaY, button);
-    }
-
-    @Override
-    public EventSource<MouseDrag> mouseDrag() {
-        return this.mouseDragEvents.source();
-    }
-
-    @Override
     public boolean onMouseMoved(double mouseX, double mouseY) {
         return this.mouseMovedEvents.sink().onMouseMoved(mouseX, mouseY);
     }
@@ -239,6 +236,16 @@ public abstract class BaseUIComponent implements UIComponent {
     @Override
     public EventSource<MouseMoved> mouseMoved() {
         return this.mouseMovedEvents.source();
+    }
+
+    @Override
+    public boolean onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY, int button) {
+        return this.mouseDragEvents.sink().onMouseDrag(mouseX, mouseY, deltaX, deltaY, button);
+    }
+
+    @Override
+    public EventSource<MouseDrag> mouseDrag() {
+        return this.mouseDragEvents.source();
     }
 
     @Override
@@ -332,8 +339,14 @@ public abstract class BaseUIComponent implements UIComponent {
 
     @Override
     public void dismount(DismountReason reason) {
+        dismountEvents.sink().onDismount(this, reason);
         this.parent = null;
         this.mounted = false;
+    }
+
+    @Override
+    public EventSource<Dismount> dismount() {
+        return dismountEvents.source();
     }
 
     @Override

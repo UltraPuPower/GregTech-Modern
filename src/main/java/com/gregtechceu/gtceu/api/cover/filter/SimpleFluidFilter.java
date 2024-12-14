@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ScrollablePhantomFluidComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
@@ -11,13 +11,16 @@ import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
+import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -103,7 +106,29 @@ public class SimpleFluidFilter implements FluidFilter {
         onUpdated.accept(this);
     }
 
-    public UIComponent openConfigurator(int x, int y) {
+    @Override
+    public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
+        @SuppressWarnings("unchecked")
+        SyncedProperty<FluidStack>[] syncedProperties = new SyncedProperty[9];
+        for (int i = 0; i < 9; i++) {
+            syncedProperties[i] = menu.createProperty(FluidStack.class, "tank." + i, FluidStack.EMPTY);
+            final int finalI = i;
+            syncedProperties[i].observe(stack -> {
+                matches[finalI] = stack;
+                onUpdated.accept(this);
+            });
+        }
+
+        menu.setCloseCallback(p -> {
+            for (int i = 0; i < 9; i++) {
+                menu.removeProperty("tank." + i);
+            }
+        });
+    }
+
+    public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
+        var menu = adapter.menu();
+
         UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
         GridLayout grid = UIContainers.grid(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3), 3, 3); // 80 55
         grid.positioning(Positioning.absolute(x, y));
@@ -112,6 +137,7 @@ public class SimpleFluidFilter implements FluidFilter {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
 
+                SyncedProperty<FluidStack> prop = menu.getProperty("tank." + index);
                 fluidStorageSlots[index] = new CustomFluidTank(maxStackSize);
                 fluidStorageSlots[index].setFluid(matches[index]);
 
@@ -125,6 +151,7 @@ public class SimpleFluidFilter implements FluidFilter {
                         showAmount(maxStackSize > 1);
                     }
                 };
+                tank.id("tank." + index);
 
                 tank.changeListener(() -> {
                     matches[index] = fluidStorageSlots[index].getFluidInTank(0);

@@ -6,10 +6,14 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -130,14 +134,15 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        WidgetGroup group = new WidgetGroup(new Position(0, 0));
+        var group = UIContainers.group(Sizing.content(), Sizing.content());
         // ME Network status
-        group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
+        group.child(UIComponents.label(() -> this.isOnline ?
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .positioning(Positioning.absolute(3, 0)));
 
         // Config slots
-        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidHandler));
+        group.child(new AEFluidConfigComponent(3, 10, this.aeFluidHandler));
 
         return group;
     }

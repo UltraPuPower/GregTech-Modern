@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.utils.GTMath;
-import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

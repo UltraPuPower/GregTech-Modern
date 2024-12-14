@@ -249,7 +249,7 @@ public class GTRecipeTypeUI {
                         UIComponentUtils.componentByIdForEach(template, "^%s.[0-9]+$".formatted(cap.slotName(io)), widgetClass,
                                 widget -> {
                                     var index = UIComponentUtils.componentIdIndex(widget);
-                                    cap.applyWidgetInfo(widget, index, isJEI, io, recipeHolder, recipeType, null, null,
+                                    cap.applyUIComponentInfo(widget, adapter, index, isJEI, io, recipeHolder, recipeType, null, null,
                                             storage, 0, 0);
                                 });
                     }
@@ -354,7 +354,7 @@ public class GTRecipeTypeUI {
      */
     public int getPropertyHeightShift() {
         int maxPropertyCount = maxTooltips + recipeType.getDataInfos().size();
-        return maxPropertyCount * 10; // GTRecipeWidget#LINE_HEIGHT
+        return maxPropertyCount * 10; // GTRecipeComponent#LINE_HEIGHT
     }
 
     public void appendJEIUI(GTRecipe recipe, UIComponentGroup widgetGroup) {

@@ -136,7 +136,7 @@ public interface ParentUIComponent extends UIComponent {
         }
 
         for (var child : this.children()) {
-            if (!ScissorStack.isVisible(mouseX, mouseY, g.pose())) continue;
+            if (!child.enabled() || !ScissorStack.isVisible(mouseX, mouseY, g.pose())) continue;
 
             g.pose().translate(0, 0, child.zIndex());
             child.drawTooltip(g, mouseX, mouseY, partialTicks, delta);
@@ -154,7 +154,7 @@ public interface ParentUIComponent extends UIComponent {
 
         while (iter.hasPrevious()) {
             var child = iter.previous();
-            if (!child.isInBoundingBox(this.x() + mouseX, this.y() + mouseY)) continue;
+            if (!child.enabled() || !child.isInBoundingBox(this.x() + mouseX, this.y() + mouseY)) continue;
             if (child.onMouseMoved(this.x() + mouseX - child.x(), this.y() + mouseY - child.y())) {
                 return true;
             }
@@ -169,7 +169,7 @@ public interface ParentUIComponent extends UIComponent {
 
         while (iter.hasPrevious()) {
             var child = iter.previous();
-            if (!child.isInBoundingBox(this.x() + mouseX, this.y() + mouseY)) continue;
+            if (!child.enabled() || !child.isInBoundingBox(this.x() + mouseX, this.y() + mouseY)) continue;
             if (child.onMouseDown(this.x() + mouseX - child.x(), this.y() + mouseY - child.y(), button)) {
                 return true;
             }
@@ -184,7 +184,7 @@ public interface ParentUIComponent extends UIComponent {
 
         while (iter.hasPrevious()) {
             var child = iter.previous();
-            if (!child.isInBoundingBox(this.x() + mouseX, this.y() + mouseY)) continue;
+            if (!child.enabled() || !child.isInBoundingBox(this.x() + mouseX, this.y() + mouseY)) continue;
             if (child.onMouseScroll(this.x() + mouseX - child.x(), this.y() + mouseY - child.y(), amount)) {
                 return true;
             }
@@ -202,6 +202,7 @@ public interface ParentUIComponent extends UIComponent {
         this.padding().update(delta);
 
         for (int i = 0; i < this.children().size(); i++) {
+            if (!this.children().get(i).enabled()) continue;
             this.children().get(i).update(delta, mouseX, mouseY);
         }
     }
@@ -210,6 +211,7 @@ public interface ParentUIComponent extends UIComponent {
     default void tick() {
         UIComponent.super.tick();
         for (UIComponent child : children()) {
+            if (!child.enabled()) continue;
             child.tick();
         }
     }
@@ -327,12 +329,11 @@ public interface ParentUIComponent extends UIComponent {
     @Override
     default UIComponent getHoveredComponent(int mouseX, int mouseY) {
         for (int i = children().size() - 1; i >= 0; i--) {
-            UIComponent widget = children().get(i);
-            // TODO
-            if(true /*widget.isVisible()*/) {
-                widget = widget.getHoveredComponent(mouseX, mouseY);
-                if (widget != null) {
-                    return widget;
+            UIComponent child = children().get(i);
+            if(child.enabled()) {
+                child = child.getHoveredComponent(mouseX, mouseY);
+                if (child != null) {
+                    return child;
                 }
             }
         }
@@ -345,7 +346,7 @@ public interface ParentUIComponent extends UIComponent {
      *
      * @param into The list into which to collect the hierarchy
      */
-    default void collectDescendants(ArrayList<UIComponent> into) {
+    default void collectDescendants(List<UIComponent> into) {
         this.forEachDescendant(into::add);
     }
 

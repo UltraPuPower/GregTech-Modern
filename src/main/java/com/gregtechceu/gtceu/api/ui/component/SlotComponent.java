@@ -1,17 +1,25 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
+import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
 
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
+import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 import com.mojang.datafixers.util.Pair;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -28,14 +36,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Element;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 @Accessors(fluent = true, chain = true)
-public class SlotComponent extends BaseUIComponent {
+public class SlotComponent extends BaseUIComponent implements ClickableIngredientSlot<ItemStack> {
 
     @Getter
     @Setter
@@ -68,7 +79,7 @@ public class SlotComponent extends BaseUIComponent {
     protected IO ingredientIO;
     @Getter
     @Setter
-    protected UITexture backgroundTexture;
+    protected UITexture backgroundTexture = GuiTextures.SLOT;
     @Getter
     @Setter
     protected UITexture overlayTexture;
@@ -76,7 +87,10 @@ public class SlotComponent extends BaseUIComponent {
     @Getter
     protected float recipeViewerChance = 1f;
 
-    protected boolean didDraw = false;
+    @Setter
+    protected boolean drawContents = true;
+    @Setter
+    protected boolean drawTooltip = true;
 
     protected SlotComponent(int index) {
         this.index = index;
@@ -137,8 +151,6 @@ public class SlotComponent extends BaseUIComponent {
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
-        this.didDraw = true;
-
         if (backgroundTexture != null) {
             backgroundTexture.draw(graphics, mouseX, mouseY, x(), y(), width(), height());
         }
@@ -154,14 +166,12 @@ public class SlotComponent extends BaseUIComponent {
     public void update(float delta, int mouseX, int mouseY) {
         super.update(delta, mouseX, mouseY);
 
-        ((UISlotExtension) this.slot).gtceu$setDisabledOverride(!this.didDraw);
-
-        this.didDraw = false;
+        ((UISlotExtension) this.slot).gtceu$setDisabledOverride(!this.drawContents);
     }
 
     @Override
     public boolean shouldDrawTooltip(double mouseX, double mouseY) {
-        return !this.slot.hasItem() && super.shouldDrawTooltip(mouseX, mouseY);
+        return drawTooltip && this.slot.hasItem() && super.shouldDrawTooltip(mouseX, mouseY);
     }
 
     @Override
@@ -172,6 +182,38 @@ public class SlotComponent extends BaseUIComponent {
     @Override
     protected int determineVerticalContentSize(Sizing sizing) {
         return 18;
+    }
+
+    @Override
+    public void mount(ParentUIComponent parent, int x, int y) {
+        super.mount(parent, x, y);
+        finalizeSlot(containerAccess().screen());
+    }
+
+    @Override
+    public void dismount(DismountReason reason) {
+        if (reason == DismountReason.REMOVED) {
+            var menu = containerAccess().screen().getMenu();
+
+            UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
+            menu.slots.set(this.slot.index, placeholder);
+            placeholder.index = this.slot.index;
+            ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
+            ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
+        }
+        super.dismount(reason);
+    }
+
+    @Override
+    public void dispose() {
+        var menu = containerAccess().screen().getMenu();
+
+        UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
+        menu.slots.set(this.slot.index, placeholder);
+        placeholder.index = this.slot.index;
+        ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
+        ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
+        super.dispose();
     }
 
     public void finalizeSlot(AbstractContainerScreen<?> screen) {
@@ -222,6 +264,52 @@ public class SlotComponent extends BaseUIComponent {
         return itemStack;
     }
 
+    @Override
+    public @UnknownNullability("Nullability depends on the type of ingredient") EntryList<ItemStack> getIngredients() {
+        if (slot.getInner() instanceof SlotItemHandler slotHandler) {
+            if (slotHandler.getItemHandler() instanceof CycleItemStackHandler stackHandler) {
+                return stackHandler.getStackList(slot.getContainerSlot());
+            } else if (slotHandler.getItemHandler() instanceof CycleItemEntryHandler entryHandler) {
+                return entryHandler.getEntry(slot.getContainerSlot());
+            }
+        }
+
+        return ItemStackList.of(getRealStack(this.slot.getItem()));
+    }
+
+    @Override
+    public UnaryOperator<ItemStack> renderMappingFunction() {
+        return this::getRealStack;
+    }
+
+    @Override
+    public @NotNull Class<ItemStack> ingredientClass() {
+        return ItemStack.class;
+    }
+
+    @Override
+    public float chance() {
+        return recipeViewerChance;
+    }
+
+    @Override
+    public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
+        super.parseProperties(model, element, children);
+        UIParsing.apply(children, "can-insert", UIParsing::parseBool, this::canInsert);
+        UIParsing.apply(children, "can-extract", UIParsing::parseBool, this::canExtract);
+        UIParsing.apply(children, "ingredient-io", UIParsing.parseEnum(IO.class), this::ingredientIO);
+
+        if (children.containsKey("background-texture")) {
+            this.backgroundTexture = model.parseTexture(UITexture.class, children.get("background-texture"));
+        }
+        if (children.containsKey("overlay-texture")) {
+            this.overlayTexture = model.parseTexture(UITexture.class, children.get("overlay-texture"));
+        }
+        UIParsing.apply(children, "chance", UIParsing::parseFloat, this::recipeViewerChance);
+        UIParsing.apply(children, "draw-contents", UIParsing::parseBool, this::drawContents);
+        UIParsing.apply(children, "draw-tooltip", UIParsing::parseBool, this::drawTooltip);
+    }
+
     public static SlotComponent parse(Element element) {
         UIParsing.expectAttributes(element, "index");
         int index = UIParsing.parseUnsignedInt(element.getAttributeNode("index"));
@@ -259,6 +347,11 @@ public class SlotComponent extends BaseUIComponent {
         @Override
         public int getSlotIndex() {
             return inner.getSlotIndex();
+        }
+
+        @Override
+        public int getContainerSlot() {
+            return inner.getContainerSlot();
         }
 
         /**

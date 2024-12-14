@@ -49,9 +49,9 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 /**
  * @author KilaBash
  * @date 2023/2/25
- * @implNote GTRecipeWidget
+ * @implNote GTRecipeComponent
  */
-public class GTRecipeWidget extends UIComponentGroup {
+public class GTRecipeComponent extends UIComponentGroup {
 
     public static final String RECIPE_CONTENT_GROUP_ID = "recipe_content_group";
     public static final Pattern RECIPE_CONTENT_GROUP_ID_REGEX = Pattern.compile("^recipe_content_group$");
@@ -64,7 +64,7 @@ public class GTRecipeWidget extends UIComponentGroup {
     private int tier;
     private LabelComponent voltageTextWidget;
 
-    public GTRecipeWidget(GTRecipe recipe) {
+    public GTRecipeComponent(GTRecipe recipe) {
         super(Sizing.fixed(recipe.recipeType.getRecipeUI().getJEISize().width()),
                 Sizing.fixed(recipe.recipeType.getRecipeUI().getJEISize().height()));
         positioning(Positioning.absolute(getXOffset(recipe), 0));
@@ -97,7 +97,7 @@ public class GTRecipeWidget extends UIComponentGroup {
                 (UIAdapter<UIComponentGroup>) this.containerAccess().adapter(),
                 storages,
                 recipe.data.copy(), recipe.conditions);
-        addSlots(contents, group, recipe);
+        addSlots(contents, group, (UIAdapter<UIComponentGroup>) this.containerAccess().adapter(), recipe);
 
         var size = group.fullSize();
 
@@ -371,7 +371,9 @@ public class GTRecipeWidget extends UIComponentGroup {
         }
     }
 
-    public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable, UIComponentGroup group,
+    public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable,
+                         UIComponentGroup group,
+                         UIAdapter<UIComponentGroup> adapter,
                          GTRecipe recipe) {
         for (var capabilityEntry : contentTable.rowMap().entrySet()) {
             IO io = capabilityEntry.getKey();
@@ -385,7 +387,7 @@ public class GTRecipeWidget extends UIComponentGroup {
                             var index = UIComponentUtils.componentIdIndex(component);
                             if (index >= 0 && index < contents.size()) {
                                 var content = contents.get(index);
-                                cap.applyWidgetInfo(component, index, true, io, null, recipe.getType(), recipe, content,
+                                cap.applyUIComponentInfo(component, adapter, index, true, io, null, recipe.getType(), recipe, content,
                                         null, minTier, tier);
                                 group.child(UIComponents.texture(content.createOverlay(index >= nonTickCount, minTier, tier,
                                                 recipe.getType().getChanceFunction()), component.width(), component.height())

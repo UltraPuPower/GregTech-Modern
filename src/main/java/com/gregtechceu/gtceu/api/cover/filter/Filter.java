@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -16,7 +19,9 @@ import java.util.function.Predicate;
  */
 public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
 
-    UIComponent openConfigurator(int x, int y);
+    void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder);
+
+    UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter);
 
     CompoundTag saveFilter();
 

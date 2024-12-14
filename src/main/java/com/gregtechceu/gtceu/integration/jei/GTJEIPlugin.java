@@ -20,6 +20,8 @@ import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
+import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
@@ -43,9 +45,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @JeiPlugin
 public class GTJEIPlugin implements IModPlugin {
 
+    public static IJeiRuntime JEI_RUNTIME;
+
     @Override
     public ResourceLocation getPluginUid() {
         return GTCEu.id("jei_plugin");
+    }
+
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+        JEI_RUNTIME = jeiRuntime;
     }
 
     @Override
@@ -70,7 +79,11 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addGenericGuiContainerHandler(BaseContainerScreen.class, new UIJEIHandler());
+        registration.addGenericGuiContainerHandler(BaseContainerScreen.class, UIJEIHandler.INSTANCE);
+        // why is there no generic version for this.>
+        //noinspection unchecked,rawtypes
+        registration.addGhostIngredientHandler(BaseContainerScreen.class,
+                (IGhostIngredientHandler<BaseContainerScreen>) (IGhostIngredientHandler<?>) UIJEIHandler.INSTANCE);
     }
 
     @Override

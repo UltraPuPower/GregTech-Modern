@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 
+import com.gregtechceu.gtceu.api.ui.texture.ColorBorderTexture;
 import com.gregtechceu.gtceu.api.ui.texture.ColorRectTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import net.minecraft.ChatFormatting;
@@ -15,6 +16,7 @@ import org.w3c.dom.Node;
 import java.util.Map;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unused")
 public record Color(float red, float green, float blue, float alpha) implements Animatable<Color> {
 
     public static final Color BLACK = Color.ofRgb(0);
@@ -118,6 +120,10 @@ public record Color(float red, float green, float blue, float alpha) implements 
 
     public ColorRectTexture rectTexture() {
         return UITextures.colorRect(this);
+    }
+
+    public ColorBorderTexture borderTexture(int border) {
+        return UITextures.colorBorder(this, border);
     }
 
     public float[] hsv() {

@@ -9,13 +9,13 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.ui.texture.ProspectingTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
@@ -26,6 +26,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +57,7 @@ public abstract class ProspectorMode<T> {
     public static ProspectorMode<String> ORE = new ProspectorMode<>("metaitem.prospector.mode.ores", 16) {
 
         private final Map<BlockState, String> BLOCK_CACHE = new HashMap<>();
-        private final Map<String, IGuiTexture> ICON_CACHE = new HashMap<>();
+        private final Map<String, UITexture> ICON_CACHE = new HashMap<>();
 
         @Override
         public void scan(String[][][] storage, LevelChunk chunk) {
@@ -72,7 +73,7 @@ public abstract class ProspectorMode<T> {
                                 var name = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
                                 var entry = ChemicalHelper.getUnificationEntry(blockState.getBlock());
                                 if (entry != null && entry.material != null) {
-                                    name = "material_" + entry.material.toString();
+                                    name = "material_" + entry.material.getResourceLocation();
                                 }
                                 return name;
                             });
@@ -95,7 +96,7 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(String item) {
+        public UITexture getItemIcon(String item) {
             return ICON_CACHE.computeIfAbsent(item, name -> {
                 if (name.startsWith("material_")) {
                     var mat = GTMaterials.get(name.substring(9));
@@ -106,23 +107,27 @@ public abstract class ProspectorMode<T> {
                                 list.add(new ItemStack(block));
                             }
                         }
-                        return new ItemStackTexture(list.toArray(ItemStack[]::new)).scale(0.8f);
+                        // TODO allow item textures to have multiple items
+                        // list.toArray(ItemStack[]::new)
+                        return UITextures.item(list.get(0)).scale(0.8f);
                     }
                 }
-                return new ItemStackTexture(new ItemStack(BuiltInRegistries.BLOCK.get(new ResourceLocation(name))))
+                return UITextures.item(BuiltInRegistries.BLOCK.get(new ResourceLocation(name))
+                                .asItem()
+                                .getDefaultInstance())
                         .scale(0.8f);
             });
         }
 
         @Override
-        public String getDescriptionId(String item) {
+        public MutableComponent getDescription(String item) {
             if (item.startsWith("material_")) {
                 var mat = GTMaterials.get(item.substring(9));
                 if (mat != null) {
-                    return mat.getUnlocalizedName();
+                    return mat.getLocalizedName();
                 }
             }
-            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).getDescriptionId();
+            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).getName();
         }
 
         @Override
@@ -156,7 +161,7 @@ public abstract class ProspectorMode<T> {
                 }
             }
             counter.forEach((item, count) -> tooltips
-                    .add(Component.translatable(getDescriptionId(item)).append(" --- " + count)));
+                    .add(getDescription(item).append(" --- " + count)));
         }
     };
 
@@ -216,13 +221,13 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(FluidInfo item) {
-            return new ItemStackTexture(item.fluid.getBucket());
+        public UITexture getItemIcon(FluidInfo item) {
+            return UITextures.fluid(new FluidStack(item.fluid, item.left));
         }
 
         @Override
-        public String getDescriptionId(FluidInfo item) {
-            return new FluidStack(item.fluid, item.yield).getDisplayName().getString();
+        public MutableComponent getDescription(FluidInfo item) {
+            return new FluidStack(item.fluid, item.yield).getDisplayName().copy();
         }
 
         @Override
@@ -252,7 +257,7 @@ public abstract class ProspectorMode<T> {
         public void appendTooltips(List<FluidInfo[]> items, List<Component> tooltips, String selected) {
             for (var array : items) {
                 for (FluidInfo item : array) {
-                    tooltips.add(Component.translatable(getDescriptionId(item))
+                    tooltips.add(getDescription(item)
                             .append(" --- %s (%s%%)".formatted(item.yield, item.left)));
                 }
             }
@@ -304,7 +309,7 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public IGuiTexture getItemIcon(OreInfo item) {
+        public UITexture getItemIcon(OreInfo item) {
             Material material = item.material;
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
                     material);
@@ -316,12 +321,12 @@ public abstract class ProspectorMode<T> {
                                                                                       // exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material); // backup 4: just fallback to
                                                                                        // dust...
-            return new ItemStackTexture(stack).scale(0.8f);
+            return UITextures.item(stack).scale(0.8f);
         }
 
         @Override
-        public String getDescriptionId(OreInfo item) {
-            return item.material.getUnlocalizedName();
+        public MutableComponent getDescription(OreInfo item) {
+            return item.material.getLocalizedName();
         }
 
         @Override
@@ -356,7 +361,7 @@ public abstract class ProspectorMode<T> {
                 int totalWeight = Arrays.stream(array).mapToInt(OreInfo::weight).sum();
                 for (OreInfo item : array) {
                     float chance = (float) item.weight / totalWeight * 100;
-                    tooltips.add(Component.translatable(getDescriptionId(item)).append(" (")
+                    tooltips.add(getDescription(item).append(" (")
                             .append(Component.translatable("gtceu.gui.content.chance_base",
                                     FormattingUtil.formatNumber2Places(chance)))
                             .append(") --- %s (%s%%)".formatted(item.yield, item.left)));
@@ -377,9 +382,9 @@ public abstract class ProspectorMode<T> {
 
     public abstract int getItemColor(T item);
 
-    public abstract IGuiTexture getItemIcon(T item);
+    public abstract UITexture getItemIcon(T item);
 
-    public abstract String getDescriptionId(T item);
+    public abstract MutableComponent getDescription(T item);
 
     public abstract String getUniqueID(T item);
 

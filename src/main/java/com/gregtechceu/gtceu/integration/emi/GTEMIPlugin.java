@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Surface;
-import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
+import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -32,10 +31,10 @@ import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.Comparison;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.stack.EmiStackInteraction;
 import dev.emi.emi.api.widget.Bounds;
-
-import java.util.ArrayList;
 
 /**
  * @author KilaBash
@@ -96,12 +95,66 @@ public class GTEMIPlugin implements EmiPlugin {
         // Comparators
         registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT.asItem(), Comparison.compareNbt());
 
-        registry.addGenericExclusionArea((screen, consumer) -> {
-            if (!(screen instanceof BaseContainerScreen<?, ?> owoHandledScreen)) return;
 
-            owoHandledScreen.componentsForExclusionAreas()
+        registry.addGenericExclusionArea((screen, consumer) -> {
+            if (!(screen instanceof BaseContainerScreen<?, ?> containerScreen)) return;
+
+            containerScreen.componentsForExclusionAreas()
                     .map(component -> new Bounds(component.x(), component.y(), component.width(), component.height()))
                     .forEach(consumer);
+        });
+        registry.addGenericDragDropHandler((screen, stack, x, y) -> {
+            if (!(screen instanceof BaseContainerScreen<?, ?> containerScreen)) return false;
+
+            var list = containerScreen.componentsForGhostIngredients().toList();
+
+            var stacks = stack.getEmiStacks();
+            if (stacks.isEmpty()) return false;
+            for (EmiStack emiStack : stacks) {
+                for (GhostIngredientSlot<?> slot : list) {
+                    if (!slot.enabled() || !slot.isInBoundingBox(x, y)) {
+                        continue;
+                    }
+                    if (slot.ingredientHandlingOverride(emiStack)) {
+                        return true;
+                    }
+                    EmiStackConverter.Converter<?> converter = EmiStackConverter.getForNullable(slot.ghostIngredientClass());
+                    if (converter == null) {
+                        continue;
+                    }
+                    var converted = converter.convertFrom(emiStack);
+                    if (converted != null) {
+                        //noinspection unchecked,rawtypes
+                        ((GhostIngredientSlot) slot).setGhostIngredient(converted);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+        registry.addGenericStackProvider((screen, x, y) -> {
+            if (!(screen instanceof BaseContainerScreen<?, ?> containerScreen)) return EmiStackInteraction.EMPTY;
+
+            var list = containerScreen.componentsForClickableIngredients().toList();
+
+            for (ClickableIngredientSlot<?> slot : list) {
+                if (!slot.enabled() || !slot.isInBoundingBox(x, y)) {
+                    continue;
+                }
+                var override = slot.ingredientOverride();
+                if (override != null) {
+                    return new EmiStackInteraction((EmiIngredient) override);
+                }
+
+                EmiStackConverter.Converter<?> converter = EmiStackConverter.getForNullable(slot.ingredientClass());
+                if (converter == null) {
+                    continue;
+                }
+                @SuppressWarnings({ "rawtypes", "unchecked" })
+                var converted = ((EmiStackConverter.Converter) converter).convertTo(slot);
+                return new EmiStackInteraction(converted);
+            }
+            return EmiStackInteraction.EMPTY;
         });
     }
 }
