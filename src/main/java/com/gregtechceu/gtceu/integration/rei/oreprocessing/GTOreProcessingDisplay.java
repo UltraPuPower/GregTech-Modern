@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.integration.rei.oreprocessing;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProductWidget;
+import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProductComponent;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
@@ -10,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
 
-public class GTOreProcessingDisplay extends ModularDisplay<WidgetGroup> {
+public class GTOreProcessingDisplay extends UIREIDisplay<GTOreByProductComponent> {
 
     private final Material material;
 
     public GTOreProcessingDisplay(Material material) {
-        super(() -> new GTOreByProductWidget(material), GTOreProcessingDisplayCategory.CATEGORY);
+        super(() -> new GTOreByProductComponent(material), GTOreProcessingDisplayCategory.CATEGORY);
         this.material = material;
     }
 

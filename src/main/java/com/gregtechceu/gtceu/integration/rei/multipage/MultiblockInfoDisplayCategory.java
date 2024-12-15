@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 
+import com.gregtechceu.gtceu.integration.rei.handler.UIDisplayCategory;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
@@ -15,7 +16,7 @@ import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 
-public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<MultiblockInfoDisplay> {
+public class MultiblockInfoDisplayCategory extends UIDisplayCategory<MultiblockInfoDisplay> {
 
     public static final CategoryIdentifier<MultiblockInfoDisplay> CATEGORY = CategoryIdentifier
             .of(GTCEu.id("multiblock_info"));

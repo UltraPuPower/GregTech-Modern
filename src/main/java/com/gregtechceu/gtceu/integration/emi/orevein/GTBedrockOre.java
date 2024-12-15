@@ -2,22 +2,20 @@ package com.gregtechceu.gtceu.integration.emi.orevein;
 
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
-
-import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.integration.emi.handler.UIEMIRecipe;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import net.minecraft.resources.ResourceLocation;
 
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import org.jetbrains.annotations.Nullable;
 
-public class GTBedrockOre extends ModularEmiRecipe<WidgetGroup> {
+public class GTBedrockOre extends UIEMIRecipe<GTOreVeinComponent> {
 
     private final BedrockOreDefinition bedrockOre;
 
     public GTBedrockOre(BedrockOreDefinition bedrockOre) {
-        super(() -> new GTOreVeinWidget(bedrockOre));
+        super(() -> new GTOreVeinComponent(bedrockOre));
         this.bedrockOre = bedrockOre;
     }
 

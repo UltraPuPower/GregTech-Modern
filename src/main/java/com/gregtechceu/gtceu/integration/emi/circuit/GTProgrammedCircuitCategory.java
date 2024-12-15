@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.integration.emi.circuit;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitWidget;
+import com.gregtechceu.gtceu.integration.emi.handler.UIEMIRecipe;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitComponent;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 
@@ -35,20 +36,15 @@ public class GTProgrammedCircuitCategory extends EmiRecipeCategory {
         return Component.translatable("gtceu.jei.programmed_circuit_page");
     }
 
-    public static class GTProgrammedCircuitWrapper extends ModularEmiRecipe<GTProgrammedCircuitWidget> {
+    public static class GTProgrammedCircuitWrapper extends UIEMIRecipe<GTProgrammedCircuitComponent> {
 
         public GTProgrammedCircuitWrapper() {
-            super(GTProgrammedCircuitWidget::new);
+            super(GTProgrammedCircuitComponent::new);
         }
 
         @Override
         public EmiRecipeCategory getCategory() {
             return CATEGORY;
-        }
-
-        @Override
-        public int getDisplayWidth() {
-            return super.getDisplayWidth();
         }
 
         @Override

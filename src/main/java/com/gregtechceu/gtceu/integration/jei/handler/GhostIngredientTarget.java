@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.jei;
+package com.gregtechceu.gtceu.integration.jei.handler;
 
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;

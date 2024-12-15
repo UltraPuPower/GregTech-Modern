@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.integration.rei.circuit;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitWidget;
+import com.gregtechceu.gtceu.integration.rei.handler.UIDisplayCategory;
+import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitComponent;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -20,8 +22,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 
 import java.util.Optional;
 
-public class GTProgrammedCircuitCategory extends
-                                         ModularUIDisplayCategory<GTProgrammedCircuitCategory.GTProgrammedCircuitDisplay> {
+public class GTProgrammedCircuitCategory extends UIDisplayCategory<GTProgrammedCircuitCategory.GTProgrammedCircuitDisplay> {
 
     public static CategoryIdentifier<GTProgrammedCircuitDisplay> CATEGORY = CategoryIdentifier
             .of(GTCEu.id("programmed_circuit"));
@@ -56,10 +57,10 @@ public class GTProgrammedCircuitCategory extends
         return getSize().width;
     }
 
-    public static class GTProgrammedCircuitDisplay extends ModularDisplay<WidgetGroup> {
+    public static class GTProgrammedCircuitDisplay extends UIREIDisplay<GTProgrammedCircuitComponent> {
 
         public GTProgrammedCircuitDisplay() {
-            super(GTProgrammedCircuitWidget::new, GTProgrammedCircuitCategory.CATEGORY);
+            super(GTProgrammedCircuitComponent::new, GTProgrammedCircuitCategory.CATEGORY);
         }
 
         @Override

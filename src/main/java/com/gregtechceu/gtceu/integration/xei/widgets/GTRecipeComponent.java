@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
 
+import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -58,6 +59,7 @@ public class GTRecipeComponent extends UIComponentGroup {
 
     public static final int LINE_HEIGHT = 10;
 
+    @Getter
     private final GTRecipe recipe;
     private final List<LabelComponent> recipeParaTexts = new ArrayList<>();
     private final int minTier;
@@ -65,8 +67,8 @@ public class GTRecipeComponent extends UIComponentGroup {
     private LabelComponent voltageTextWidget;
 
     public GTRecipeComponent(GTRecipe recipe) {
-        super(Sizing.fixed(recipe.recipeType.getRecipeUI().getJEISize().width()),
-                Sizing.fixed(recipe.recipeType.getRecipeUI().getJEISize().height()));
+        super(Sizing.fixed(recipe.recipeType.getRecipeUI().getRecipeViewerSize().width()),
+                Sizing.fixed(recipe.recipeType.getRecipeUI().getRecipeViewerSize().height()));
         positioning(Positioning.absolute(getXOffset(recipe), 0));
         this.recipe = recipe;
         this.padding(Insets.of(0, 0, -getXOffset(recipe) + 3, 0));
@@ -78,8 +80,8 @@ public class GTRecipeComponent extends UIComponentGroup {
     }
 
     private static int getXOffset(GTRecipe recipe) {
-        if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getJEISize().width()) {
-            return (recipe.recipeType.getRecipeUI().getJEISize().width() -
+        if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getRecipeViewerSize().width()) {
+            return (recipe.recipeType.getRecipeUI().getRecipeViewerSize().width() -
                     recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
         }
         return 0;
@@ -136,8 +138,8 @@ public class GTRecipeComponent extends UIComponentGroup {
             if (condition.getTooltips() == null) continue;
             if (condition instanceof DimensionCondition dimCondition) {
                 child(dimCondition
-                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width() - 44,
-                                recipe.recipeType.getRecipeUI().getJEISize().height() - 32));
+                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getRecipeViewerSize().width() - 44,
+                                recipe.recipeType.getRecipeUI().getRecipeViewerSize().height() - 32));
             } else child(UIComponents.label(condition.getTooltips()));
         }
         for (Function<CompoundTag, Component> dataInfo : recipe.recipeType.getDataInfos()) {
@@ -390,7 +392,7 @@ public class GTRecipeComponent extends UIComponentGroup {
                                 cap.applyUIComponentInfo(component, adapter, index, true, io, null, recipe.getType(), recipe, content,
                                         null, minTier, tier);
                                 group.child(UIComponents.texture(content.createOverlay(index >= nonTickCount, minTier, tier,
-                                                recipe.getType().getChanceFunction()), component.width(), component.height())
+                                                recipe.getType().getChanceFunction()))
                                         .sizing(component.horizontalSizing().get(), component.verticalSizing().get())
                                         .positioning(component.positioning().get()));
                             }

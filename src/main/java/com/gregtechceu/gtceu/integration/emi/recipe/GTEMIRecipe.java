@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.integration.emi.UIEMIRecipe;
+import com.gregtechceu.gtceu.integration.emi.handler.UIEMIRecipe;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeComponent;
 
 import net.minecraft.resources.ResourceLocation;

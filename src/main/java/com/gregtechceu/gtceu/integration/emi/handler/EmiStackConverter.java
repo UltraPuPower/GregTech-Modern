@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.emi;
+package com.gregtechceu.gtceu.integration.emi.handler;
 
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
@@ -18,7 +18,6 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;

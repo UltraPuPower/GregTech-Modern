@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 
+import com.gregtechceu.gtceu.integration.rei.handler.UIDisplayCategory;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.ORE;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 
-public class GTOreProcessingDisplayCategory extends ModularUIDisplayCategory<GTOreProcessingDisplay> {
+public class GTOreProcessingDisplayCategory extends UIDisplayCategory<GTOreProcessingDisplay> {
 
     public static final CategoryIdentifier<GTOreProcessingDisplay> CATEGORY = CategoryIdentifier
             .of(GTCEu.id("ore_processing_diagram"));

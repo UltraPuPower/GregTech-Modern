@@ -7,7 +7,8 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 
-import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
+import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProductComponent;
 
 import net.minecraft.network.chat.Component;
 
@@ -23,10 +24,10 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.rawOre;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 
-public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOreProcessingInfoWrapper> {
+public class GTOreProcessingInfoCategory extends UIRecipeCategory<GTOreByProductComponent> {
 
-    public final static RecipeType<GTOreProcessingInfoWrapper> RECIPE_TYPE = new RecipeType<>(
-            GTCEu.id("ore_processing_diagram"), GTOreProcessingInfoWrapper.class);
+    public final static RecipeType<GTOreByProductComponent> RECIPE_TYPE = new RecipeType<>(
+            GTCEu.id("ore_processing_diagram"), GTOreByProductComponent.class);
     private final IDrawable background;
     private final IDrawable icon;
 
@@ -40,7 +41,7 @@ public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOrePr
         registry.addRecipes(RECIPE_TYPE, GTCEuAPI.materialManager.getRegisteredMaterials().stream()
                 .filter((material) -> material.hasProperty(PropertyKey.ORE) &&
                         !material.hasFlag(MaterialFlags.NO_ORE_PROCESSING_TAB))
-                .map(GTOreProcessingInfoWrapper::new)
+                .map(GTOreByProductComponent::new)
                 .toList());
     }
 
@@ -56,7 +57,7 @@ public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOrePr
 
     @Override
     @NotNull
-    public RecipeType<GTOreProcessingInfoWrapper> getRecipeType() {
+    public RecipeType<GTOreByProductComponent> getRecipeType() {
         return RECIPE_TYPE;
     }
 

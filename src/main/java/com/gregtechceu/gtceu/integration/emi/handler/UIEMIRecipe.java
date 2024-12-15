@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.emi;
+package com.gregtechceu.gtceu.integration.emi.handler;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
@@ -56,7 +56,7 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
 
         for (UIComponent w : getFlatWidgetCollection(component)) {
             if (w instanceof ClickableIngredientSlot<?> slot) {
-                /*
+                /* do we still want this?
                 if (w.parent() instanceof DraggableScrollableWidgetGroup draggable && draggable.isUseScissor()) {
                     // don't add the EMI widget at all if we have a draggable group, let the draggable widget handle it instead.
                     continue;
@@ -64,13 +64,20 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
                 */
                 var io = slot.ingredientIO();
                 if (io != null) {
-                    var converter = EmiStackConverter.getForNullable(slot.ingredientClass());
-                    if (converter == null) {
-                        continue;
+                    EmiIngredient ingredients;
+
+                    var override = slot.ingredientOverride();
+                    if (override != null) {
+                        ingredients = (EmiIngredient) override;
+                    } else {
+                        var converter = EmiStackConverter.getForNullable(slot.ingredientClass());
+                        if (converter == null) {
+                            continue;
+                        }
+                        //noinspection unchecked,rawtypes
+                        ingredients = ((EmiStackConverter.Converter) converter).convertTo(slot);
                     }
-                    //noinspection unchecked,rawtypes
-                    var ingredients = ((EmiStackConverter.Converter) converter).convertTo(slot);
-                    slot.getIngredients();
+
                     SlotWidget slotWidget = null;
                     // Clear the LDLib slots & add EMI slots based on them.
                     if (slot instanceof SlotComponent slotW) {

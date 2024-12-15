@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.rei.handler.UIDisplayCategory;
+import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
@@ -23,7 +25,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBedrockFluidDisplay> {
+public class GTBedrockFluidDisplayCategory extends UIDisplayCategory<GTBedrockFluidDisplay> {
 
     public static final CategoryIdentifier<GTBedrockFluidDisplay> CATEGORY = CategoryIdentifier
             .of(GTCEu.id("bedrock_fluid_diagram"));
@@ -33,12 +35,13 @@ public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBe
     private final Size size;
 
     public GTBedrockFluidDisplayCategory() {
+        super();
         this.icon = IGui2Renderer.toDrawable(new ItemStackTexture(GTMaterials.Oil.getFluid().getBucket().asItem()));
-        this.size = new Size(10 + GTOreVeinWidget.width, 140);
+        this.size = new Size(10 + GTOreVeinComponent.width, 140);
     }
 
     @Override
-    public CategoryIdentifier<? extends GTBedrockFluidDisplay> getCategoryIdentifier() {
+    public CategoryIdentifier<GTBedrockFluidDisplay> getCategoryIdentifier() {
         return CATEGORY;
     }
 

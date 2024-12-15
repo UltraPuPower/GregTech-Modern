@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.jei;
+package com.gregtechceu.gtceu.integration.emi.handler;
 
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -7,37 +7,43 @@ import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.ScreenPosition;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
+import dev.emi.emi.api.widget.Bounds;
+import dev.emi.emi.api.widget.Widget;
 import lombok.Getter;
-import mezz.jei.api.gui.widgets.IRecipeWidget;
+import lombok.Setter;
+import lombok.experimental.Tolerate;
 
+import java.util.List;
 import java.util.function.Consumer;
 
-public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
+public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
     public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
 
     public final UIAdapter<UIComponentGroup> adapter;
 
     @Getter
-    private final ScreenPosition position;
+    private final Bounds bounds;
     @Getter
-    private final ScreenRectangle area;
+    @Setter
+    private boolean isDragging;
+    @Getter
+    @Setter
+    private GuiEventListener focused;
 
     private Consumer<ScreenEvent.Closing> closeListener;
 
-    public JEIUIAdapter(Rect2i bounds) {
-        this.adapter = UIAdapter.createWithoutScreen(bounds.getX(), bounds.getY(), bounds.getWidth(),
-                bounds.getHeight(), UIContainers::group);
+    public EMIUIAdapter(Bounds bounds) {
+        this.adapter = UIAdapter.createWithoutScreen(bounds.x(), bounds.y(), bounds.width(), bounds.height(),
+                UIContainers::group);
         this.adapter.inspectorZOffset = 900;
-        this.position = new ScreenPosition(bounds.getX(), bounds.getY());
-        this.area = new ScreenRectangle(position, bounds.getWidth(), bounds.getHeight());
+        this.bounds = bounds;
 
         if (Minecraft.getInstance().screen != null) {
             this.closeListener = (ScreenEvent.Closing event) -> {
@@ -62,6 +68,11 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
     }
 
     @Override
+    public List<? extends GuiEventListener> children() {
+        return List.of();
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return this.adapter.mouseClicked(mouseX - this.adapter.x(), mouseY - this.adapter.y(), button);
     }
@@ -82,6 +93,16 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
     }
 
     @Override
+    public void render(GuiGraphics context, int mouseX, int mouseY, float partialTick) {
+        ScissorStack.push(this.adapter.x(), this.adapter.y(), this.adapter.width(), this.adapter.height(),
+                context.pose());
+        this.adapter.render(context, mouseX, mouseY, partialTick);
+        ScissorStack.pop();
+
+        context.flush();
+    }
+
+    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return this.adapter.keyPressed(keyCode, scanCode, modifiers);
     }
@@ -97,6 +118,7 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
     }
 
     @Override
+    @Tolerate
     public void setFocused(boolean focused) {
         adapter.setFocused(focused);
     }
@@ -104,15 +126,5 @@ public class JEIUIAdapter implements IRecipeWidget, GuiEventListener {
     @Override
     public boolean isFocused() {
         return adapter.isFocused();
-    }
-
-    @Override
-    public void drawWidget(GuiGraphics context, double mouseX, double mouseY) {
-        ScissorStack.push(this.adapter.x(), this.adapter.y(), this.adapter.width(), this.adapter.height(),
-                context.pose());
-        this.adapter.render(context, (int) mouseX, (int) mouseY, Minecraft.getInstance().getPartialTick());
-        ScissorStack.pop();
-
-        context.flush();
     }
 }

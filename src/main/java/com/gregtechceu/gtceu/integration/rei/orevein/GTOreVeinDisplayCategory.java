@@ -4,7 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.rei.handler.UIDisplayCategory;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
@@ -23,7 +24,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVeinDisplay> {
+public class GTOreVeinDisplayCategory extends UIDisplayCategory<GTOreVeinDisplay> {
 
     public static final CategoryIdentifier<GTOreVeinDisplay> CATEGORY = CategoryIdentifier
             .of(GTCEu.id("ore_vein_diagram"));
@@ -34,7 +35,7 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
 
     public GTOreVeinDisplayCategory() {
         this.icon = IGui2Renderer.toDrawable(new ItemStackTexture(Items.IRON_INGOT.asItem()));
-        this.size = new Size(10 + GTOreVeinWidget.width, 140);
+        this.size = new Size(10 + GTOreVeinComponent.width, 140);
     }
 
     @Override

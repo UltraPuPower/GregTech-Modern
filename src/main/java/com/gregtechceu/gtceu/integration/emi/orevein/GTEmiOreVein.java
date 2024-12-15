@@ -2,10 +2,8 @@ package com.gregtechceu.gtceu.integration.emi.orevein;
 
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
-
-import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.integration.emi.handler.UIEMIRecipe;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -15,12 +13,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class GTEmiOreVein extends ModularEmiRecipe<WidgetGroup> {
+public class GTEmiOreVein extends UIEMIRecipe<GTOreVeinComponent> {
 
     private final GTOreDefinition oreDefinition;
 
     public GTEmiOreVein(GTOreDefinition oreDefinition) {
-        super(() -> new GTOreVeinWidget(oreDefinition));
+        super(() -> new GTOreVeinComponent(oreDefinition));
         this.oreDefinition = oreDefinition;
     }
 
@@ -36,7 +34,7 @@ public class GTEmiOreVein extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public List<EmiStack> getOutputs() {
-        return GTOreVeinWidget.getContainedOresAndBlocks(oreDefinition)
+        return GTOreVeinComponent.getContainedOresAndBlocks(oreDefinition)
                 .stream()
                 .map(EmiStack::of)
                 .toList();

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.rei;
+package com.gregtechceu.gtceu.integration.rei.handler;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.emi;
+package com.gregtechceu.gtceu.integration.rei.handler;
 
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -7,43 +7,30 @@ import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-import dev.emi.emi.api.widget.Bounds;
-import dev.emi.emi.api.widget.Widget;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Tolerate;
+import me.shedaniel.math.Point;
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class EMIUIAdapter extends Widget implements ContainerEventHandler {
+public class REIUIAdapter extends Widget {
 
-    public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
-
-    public final UIAdapter<UIComponentGroup> adapter;
-
-    @Getter
-    private final Bounds bounds;
-    @Getter
-    @Setter
-    private boolean isDragging;
-    @Getter
-    @Setter
-    private GuiEventListener focused;
+    public static final Point LAYOUT = new Point(-69, -69);
 
     private Consumer<ScreenEvent.Closing> closeListener;
+    public final UIAdapter<UIComponentGroup> adapter;
 
-    public EMIUIAdapter(Bounds bounds) {
-        this.adapter = UIAdapter.createWithoutScreen(bounds.x(), bounds.y(), bounds.width(), bounds.height(),
+    public REIUIAdapter(Rectangle bounds) {
+        this.adapter = UIAdapter.createWithoutScreen(bounds.x, bounds.y, bounds.width, bounds.height,
                 UIContainers::group);
         this.adapter.inspectorZOffset = 900;
-        this.bounds = bounds;
 
         if (Minecraft.getInstance().screen != null) {
             this.closeListener = (ScreenEvent.Closing event) -> {
@@ -62,14 +49,20 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
         return this.adapter.rootComponent;
     }
 
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return this.adapter.isMouseOver(mouseX, mouseY);
+    public <W extends WidgetWithBounds> REIWidgetComponent wrap(W widget) {
+        return new REIWidgetComponent(widget);
+    }
+
+    public <W extends WidgetWithBounds> REIWidgetComponent wrap(Function<Point, W> widgetFactory,
+                                                                Consumer<W> widgetConfigurator) {
+        var widget = widgetFactory.apply(LAYOUT);
+        widgetConfigurator.accept(widget);
+        return new REIWidgetComponent(widget);
     }
 
     @Override
-    public List<? extends GuiEventListener> children() {
-        return List.of();
+    public boolean containsMouse(double mouseX, double mouseY) {
+        return this.adapter.isMouseOver(mouseX, mouseY);
     }
 
     @Override
@@ -93,16 +86,6 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float partialTick) {
-        ScissorStack.push(this.adapter.x(), this.adapter.y(), this.adapter.width(), this.adapter.height(),
-                context.pose());
-        this.adapter.render(context, mouseX, mouseY, partialTick);
-        ScissorStack.pop();
-
-        context.flush();
-    }
-
-    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return this.adapter.keyPressed(keyCode, scanCode, modifiers);
     }
@@ -118,13 +101,17 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
     }
 
     @Override
-    @Tolerate
-    public void setFocused(boolean focused) {
-        adapter.setFocused(focused);
+    public void render(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
+        ScissorStack.push(this.adapter.x(), this.adapter.y(), this.adapter.width(), this.adapter.height(),
+                context.pose());
+        this.adapter.render(context, mouseX, mouseY, partialTicks);
+        ScissorStack.pop();
+
+        context.flush();
     }
 
     @Override
-    public boolean isFocused() {
-        return adapter.isFocused();
+    public List<? extends GuiEventListener> children() {
+        return List.of();
     }
 }

@@ -1,26 +1,26 @@
 package com.gregtechceu.gtceu.integration.xei.widgets;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.TankComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -35,6 +35,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -44,46 +46,61 @@ import java.util.stream.Stream;
 
 /**
  * @author Arbor
- * @implNote GTOreVeinWidget
+ * @implNote GTOreVeinComponent
  */
 @Getter
-public class GTOreVeinWidget extends WidgetGroup {
+public class GTOreVeinComponent extends FlowLayout {
 
+    @Nullable
+    @Getter
+    private GTOreDefinition ore;
+    @Nullable
+    @Getter
+    private BedrockFluidDefinition fluid;
+    @Nullable
+    @Getter
+    private BedrockOreDefinition bedrockOre;
     private final String name;
     private final int weight;
     private final String range;
     private final Set<ResourceKey<Level>> dimensionFilter;
     public final static int width = 120;
 
-    public GTOreVeinWidget(GTOreDefinition oreDefinition) {
-        super(0, 0, width, 160);
-        this.name = getOreName(oreDefinition);
-        this.weight = oreDefinition.weight();
-        this.dimensionFilter = oreDefinition.dimensionFilter();
-        this.range = range(oreDefinition);
-        setClientSideWidget();
-        setupBaseGui(oreDefinition);
-        setupText(oreDefinition);
+    public GTOreVeinComponent(@NotNull GTOreDefinition ore) {
+        super(Sizing.fixed(width), Sizing.fixed(160), Algorithm.VERTICAL);
+        padding(Insets.both(5, 0));
+
+        this.ore = ore;
+        this.name = getOreName(ore);
+        this.weight = ore.weight();
+        this.dimensionFilter = ore.dimensionFilter();
+        this.range = range(ore);
+        setupBaseGui(ore);
+        setupText(ore);
     }
 
-    public GTOreVeinWidget(BedrockFluidDefinition fluid) {
-        super(0, 0, width, 140);
+    public GTOreVeinComponent(@NotNull BedrockFluidDefinition fluid) {
+        super(Sizing.fixed(width), Sizing.fixed(140), Algorithm.VERTICAL);
+        padding(Insets.both(5, 0));
+
+        this.fluid = fluid;
         this.name = getFluidName(fluid);
         this.weight = fluid.getWeight();
         this.dimensionFilter = fluid.getDimensionFilter();
         this.range = "NULL";
-        setClientSideWidget();
         setupBaseGui(fluid);
         setupText(fluid);
     }
 
-    public GTOreVeinWidget(BedrockOreDefinition bedrockOre) {
-        super(0, 0, width, 140);
+    public GTOreVeinComponent(@NotNull BedrockOreDefinition bedrockOre) {
+        super(Sizing.fixed(width), Sizing.fixed(140), Algorithm.VERTICAL);
+        padding(Insets.both(5, 0));
+
+        this.bedrockOre = bedrockOre;
         this.name = getBedrockOreName(bedrockOre);
         this.weight = bedrockOre.weight();
         this.dimensionFilter = bedrockOre.dimensionFilter();
         this.range = "NULL";
-        setClientSideWidget();
         setupBaseGui(bedrockOre);
         setupText(bedrockOre);
     }
@@ -103,82 +120,95 @@ public class GTOreVeinWidget extends WidgetGroup {
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
         List<Integer> chances = oreDefinition.veinGenerator().getAllChances();
         containedOresAsItemStacks.addAll(getRawMaterialList(oreDefinition));
+        var handler = new CustomItemStackHandler(containedOresAsItemStacks);
+
         int n = containedOresAsItemStacks.size();
-        int x = (width - 18 * n) / 2;
+        int x = (width - 18 * n) / 2 - 5;
         for (int i = 0; i < n; i++) {
-            SlotWidget oreSlot = new SlotWidget(new CustomItemStackHandler(containedOresAsItemStacks), i, x, 18, false,
-                    false);
+            SlotComponent oreSlot = (SlotComponent) UIComponents.slot(handler, i)
+                    .canInsert(false)
+                    .canExtract(false)
+                    .positioning(Positioning.absolute(x, 18));
             int finalIndex = i;
-            oreSlot.setOnAddedTooltips((stack, tooltips) -> tooltips.add(Component
-                    .nullToEmpty(
-                            LocalizationUtils.format("gtceu.jei.ore_vein_diagram.chance", chances.get(finalIndex)))));
-            oreSlot.setIngredientIO(IngredientIO.OUTPUT);
-            addWidget(oreSlot);
+            oreSlot.tooltip((stack, tooltips) -> tooltips.add(
+                    Component.translatable("gtceu.jei.ore_vein_diagram.chance", chances.get(finalIndex))));
+            oreSlot.ingredientIO(IO.OUT);
+            child(oreSlot);
             x += 18;
         }
     }
 
     private void setupBaseGui(BedrockFluidDefinition fluid) {
         Fluid storedFluid = fluid.getStoredFluid().get();
-        TankWidget fluidSlot = new TankWidget(
-                new CustomFluidTank(new FluidStack(storedFluid, 1000)), 51, 18, false, false);
-        fluidSlot.setIngredientIO(IngredientIO.OUTPUT);
-        addWidget(fluidSlot);
+        TankComponent fluidSlot = (TankComponent) UIComponents.tank(
+                        new CustomFluidTank(new FluidStack(storedFluid, 1000)))
+                .canInsert(false)
+                .canExtract(false)
+                .positioning(Positioning.absolute(46, 18));
+        fluidSlot.ingredientIO(IO.OUT);
+        child(fluidSlot);
     }
 
     private void setupBaseGui(BedrockOreDefinition bedrockOreDefinition) {
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
         List<Integer> chances = bedrockOreDefinition.getAllChances();
         containedOresAsItemStacks.addAll(getRawMaterialList(bedrockOreDefinition));
+        var handler = new CustomItemStackHandler(containedOresAsItemStacks);
+
         int n = containedOresAsItemStacks.size();
-        int x = (width - 18 * n) / 2;
+        int x = (width - 18 * n) / 2 - 5;
         for (int i = 0; i < n; i++) {
-            SlotWidget oreSlot = new SlotWidget(new CustomItemStackHandler(containedOresAsItemStacks), i, x, 18, false,
-                    false);
+            SlotComponent oreSlot = (SlotComponent) UIComponents.slot(handler, i)
+                    .canInsert(false)
+                    .canExtract(false)
+                    .positioning(Positioning.absolute(x, 18));
             int finalIndex = i;
-            oreSlot.setOnAddedTooltips((stack, tooltips) -> tooltips.add(Component
-                    .nullToEmpty(
-                            LocalizationUtils.format("gtceu.jei.ore_vein_diagram.chance", chances.get(finalIndex)))));
-            oreSlot.setIngredientIO(IngredientIO.OUTPUT);
-            addWidget(oreSlot);
+            oreSlot.tooltip((stack, tooltips) ->
+                    tooltips.add(Component.translatable("gtceu.jei.ore_vein_diagram.chance", chances.get(finalIndex))));
+            oreSlot.ingredientIO(IO.OUT);
+            child(oreSlot);
             x += 18;
         }
     }
 
     private void setupText(GTOreDefinition ignored) {
-        addWidget(new ImageWidget(5, 0, width - 10, 16,
-                new TextTexture("gtceu.jei.ore_vein." + name).setType(TextTexture.TextType.LEFT_ROLL)
-                        .setWidth(width - 10)));
-        addWidget(new LabelWidget(5, 40,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.spawn_range")));
-        addWidget(new LabelWidget(5, 50, range));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein." + name))
+                .textType(com.gregtechceu.gtceu.api.ui.texture.TextTexture.TextType.LEFT_ROLL)
+                .maxWidth(width - 10)
+                .positioning(Positioning.absolute(width - 10, 16)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.spawn_range"))
+                .verticalSizing(Sizing.fixed(10)));
+        child(UIComponents.label(Component.literal(range))
+                .verticalSizing(Sizing.fixed(10)));
 
-        addWidget(new LabelWidget(5, 60,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
-        addWidget(new LabelWidget(5, 70,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight))
+                .verticalSizing(Sizing.fixed(10)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions"))
+                .verticalSizing(Sizing.fixed(10)));
         setupDimensionMarker(80);
     }
 
     private void setupText(BedrockFluidDefinition ignored) {
-        addWidget(new ImageWidget(5, 0, width - 10, 16,
-                new TextTexture("gtceu.jei.bedrock_fluid." + name).setType(TextTexture.TextType.LEFT_ROLL)
-                        .setWidth(width - 10)));
-        addWidget(new LabelWidget(5, 40,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
-        addWidget(new LabelWidget(5, 50,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
+        child(UIComponents.label(Component.translatable("gtceu.jei.bedrock_fluid." + name))
+                .textType(com.gregtechceu.gtceu.api.ui.texture.TextTexture.TextType.LEFT_ROLL)
+                .maxWidth(width - 10)
+                .positioning(Positioning.absolute(width - 10, 16)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight))
+                .verticalSizing(Sizing.fixed(10)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions"))
+                .verticalSizing(Sizing.fixed(10)));
         setupDimensionMarker(60);
     }
 
     private void setupText(BedrockOreDefinition ignored) {
-        addWidget(new ImageWidget(5, 0, width - 10, 16,
-                new TextTexture("gtceu.jei.bedrock_ore." + name).setType(TextTexture.TextType.LEFT_ROLL)
-                        .setWidth(width - 10)));
-        addWidget(new LabelWidget(5, 40,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
-        addWidget(new LabelWidget(5, 50,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
+        child(UIComponents.label(Component.translatable("gtceu.jei.bedrock_ore." + name))
+                .textType(com.gregtechceu.gtceu.api.ui.texture.TextTexture.TextType.LEFT_ROLL)
+                .maxWidth(width - 10)
+                .positioning(Positioning.absolute(width - 10, 16)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight))
+                .verticalSizing(Sizing.fixed(10)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions"))
+                .verticalSizing(Sizing.fixed(10)));
         setupDimensionMarker(60);
     }
 
@@ -198,21 +228,25 @@ public class GTOreVeinWidget extends WidgetGroup {
                 var dimMarker = dimMarkers[i];
                 var icon = dimMarker.getIcon();
                 int row = Math.floorDiv(i, rowSlots);
-                SlotWidget dimSlot = new SlotWidget(handler, i,
-                        5 + (16 + interval) * (i - row * rowSlots),
-                        yPosition + 18 * row,
-                        false, false).setIngredientIO(IngredientIO.CATALYST);
+                SlotComponent dimSlot = (SlotComponent) UIComponents.slot(handler, i)
+                        .canInsert(false)
+                        .canExtract(false)
+                        .ingredientIO(IO.NONE)
+                        .positioning(Positioning.absolute(5 + (16 + interval) * (i - row * rowSlots),
+                                yPosition + 18 * row));
                 handler.setStackInSlot(i, icon);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
-                    dimSlot.setOverlay(
-                            new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))
+                    dimSlot.overlayTexture(
+                            UITextures.text(Component.literal("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)))
                                     .scale(0.75F)
                                     .transform(-3F, 5F));
                 }
-                addWidget(dimSlot.setBackgroundTexture(IGuiTexture.EMPTY));
+                child(dimSlot.backgroundTexture(UITexture.EMPTY));
             }
         } else {
-            addWidget(new LabelWidget(5, yPosition, "Any"));
+            // FIXME MAKE TRANSLATABLE
+            child(UIComponents.label(Component.translatable("Any"))
+                    .positioning(Positioning.absolute(5, yPosition)));
         }
     }
 
@@ -257,4 +291,5 @@ public class GTOreVeinWidget extends WidgetGroup {
         ResourceLocation id = ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(oreDefinition);
         return id.getPath();
     }
+
 }

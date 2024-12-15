@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.integration.jei.circuit;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitWidget;
+import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitComponent;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;
@@ -14,11 +15,10 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.RecipeType;
 import org.jetbrains.annotations.Nullable;
 
-public class GTProgrammedCircuitCategory extends
-                                         ModularUIRecipeCategory<GTProgrammedCircuitCategory.GTProgrammedCircuitWrapper> {
+public class GTProgrammedCircuitCategory extends UIRecipeCategory<GTProgrammedCircuitComponent> {
 
-    public final static RecipeType<GTProgrammedCircuitWrapper> RECIPE_TYPE = new RecipeType<>(
-            GTCEu.id("programmed_circuit"), GTProgrammedCircuitWrapper.class);
+    public final static RecipeType<GTProgrammedCircuitComponent> RECIPE_TYPE = new RecipeType<>(
+            GTCEu.id("programmed_circuit"), GTProgrammedCircuitComponent.class);
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -29,7 +29,7 @@ public class GTProgrammedCircuitCategory extends
     }
 
     @Override
-    public RecipeType<GTProgrammedCircuitWrapper> getRecipeType() {
+    public RecipeType<GTProgrammedCircuitComponent> getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -46,12 +46,5 @@ public class GTProgrammedCircuitCategory extends
     @Override
     public @Nullable IDrawable getIcon() {
         return icon;
-    }
-
-    public static class GTProgrammedCircuitWrapper extends ModularWrapper<GTProgrammedCircuitWidget> {
-
-        public GTProgrammedCircuitWrapper() {
-            super(new GTProgrammedCircuitWidget());
-        }
     }
 }

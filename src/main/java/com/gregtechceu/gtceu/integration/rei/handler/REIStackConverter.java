@@ -1,18 +1,13 @@
-package com.gregtechceu.gtceu.integration.rei;
+package com.gregtechceu.gtceu.integration.rei.handler;
 
 import com.gregtechceu.gtceu.utils.GTMath;
-import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.BuiltinEntryTypes;
 import me.shedaniel.rei.api.common.entry.type.EntryType;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
-import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

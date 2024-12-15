@@ -1,19 +1,20 @@
 package com.gregtechceu.gtceu.integration.xei.widgets;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.tags.TagKey;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class GTOreByProductWidget extends WidgetGroup {
+public class GTOreByProductComponent extends UIComponentGroup {
 
     // XY positions of every item and fluid, in three enormous lists
     protected final static ImmutableList<Integer> ITEM_INPUT_LOCATIONS = ImmutableList.of(
@@ -93,9 +94,8 @@ public class GTOreByProductWidget extends WidgetGroup {
             42, 48  // chem bath in
     );
 
-    public GTOreByProductWidget(Material material) {
-        super(0, 0, 176, 166);
-        setClientSideWidget();
+    public GTOreByProductComponent(Material material) {
+        super(Sizing.fixed(176), Sizing.fixed(166));
         setRecipe(new GTOreByProduct(material));
     }
 
@@ -103,35 +103,47 @@ public class GTOreByProductWidget extends WidgetGroup {
         List<Boolean> itemOutputExists = new ArrayList<>();
 
         // only draw slot on inputs if it is the ore
-        addWidget(new ImageWidget(ITEM_INPUT_LOCATIONS.get(0), ITEM_INPUT_LOCATIONS.get(1), 18, 18, GuiTextures.SLOT));
+        child(UIComponents.texture(GuiTextures.SLOT)
+                .positioning(Positioning.absolute(ITEM_INPUT_LOCATIONS.get(0), ITEM_INPUT_LOCATIONS.get(1)))
+                .sizing(Sizing.fixed(18)));
         boolean hasSifter = recipeWrapper.hasSifter();
 
-        addWidget(new ImageWidget(0, 0, 176, 166, GuiTextures.OREBY_BASE));
+        child(UIComponents.texture(GuiTextures.OREBY_BASE)
+                .positioning(Positioning.absolute(0, 0))
+                .sizing(Sizing.fixed(176), Sizing.fixed(166)));
         if (recipeWrapper.hasDirectSmelt()) {
-            addWidget(new ImageWidget(0, 0, 176, 166, GuiTextures.OREBY_SMELT));
+            child(UIComponents.texture(GuiTextures.OREBY_SMELT)
+                    .positioning(Positioning.absolute(0, 0))
+                    .sizing(Sizing.fixed(176), Sizing.fixed(166)));
         }
         if (recipeWrapper.hasChemBath()) {
-            addWidget(new ImageWidget(0, 0, 176, 166, GuiTextures.OREBY_CHEM));
+            child(UIComponents.texture(GuiTextures.OREBY_CHEM)
+                    .positioning(Positioning.absolute(0, 0))
+                    .sizing(Sizing.fixed(176), Sizing.fixed(166)));
         }
         if (recipeWrapper.hasSeparator()) {
-            addWidget(new ImageWidget(0, 0, 176, 166, GuiTextures.OREBY_SEP));
+            child(UIComponents.texture(GuiTextures.OREBY_SEP)
+                    .positioning(Positioning.absolute(0, 0))
+                    .sizing(Sizing.fixed(176), Sizing.fixed(166)));
         }
         if (hasSifter) {
-            addWidget(new ImageWidget(0, 0, 176, 166, GuiTextures.OREBY_SIFT));
+            child(UIComponents.texture(GuiTextures.OREBY_SIFT)
+                    .positioning(Positioning.absolute(0, 0))
+                    .sizing(Sizing.fixed(176), Sizing.fixed(166)));
         }
 
         List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> itemInputs = recipeWrapper.itemInputs;
         TagOrCycleItemStackHandler itemInputsHandler = new TagOrCycleItemStackHandler(itemInputs);
-        WidgetGroup itemStackGroup = new WidgetGroup();
+        UIComponentGroup itemStackGroup = UIContainers.group(Sizing.fill(), Sizing.fill());
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
             final int finalI = i;
-            itemStackGroup.addWidget(new SlotWidget(itemInputsHandler, i / 2, ITEM_INPUT_LOCATIONS.get(i),
-                    ITEM_INPUT_LOCATIONS.get(i + 1))
-                    .setCanTakeItems(false)
-                    .setCanPutItems(false)
-                    .setIngredientIO(IngredientIO.INPUT)
-                    .setOnAddedTooltips((slot, tooltips) -> recipeWrapper.getTooltip(finalI / 2, tooltips))
-                    .setBackground((IGuiTexture) null));
+            itemStackGroup.child(UIComponents.slot(itemInputsHandler, i / 2)
+                    .canInsert(false)
+                    .canExtract(false)
+                    .ingredientIO(IO.IN)
+                    .backgroundTexture(null)
+                    .tooltip((slot, tooltips) -> recipeWrapper.getTooltip(finalI / 2, tooltips))
+                    .positioning(Positioning.absolute(ITEM_INPUT_LOCATIONS.get(i), ITEM_INPUT_LOCATIONS.get(i + 1))));
         }
 
         NonNullList<ItemStack> itemOutputs = recipeWrapper.itemOutputs;
@@ -140,7 +152,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             int slotIndex = i / 2;
             float xeiChance = 1.0f;
             Content chance = recipeWrapper.getChance(i / 2 + itemInputs.size());
-            IGuiTexture overlay = null;
+            UITexture overlay = null;
             if (chance != null) {
                 xeiChance = (float) chance.chance / chance.maxChance;
                 overlay = chance.createOverlay(false, 0, 0, null);
@@ -150,42 +162,47 @@ public class GTOreByProductWidget extends WidgetGroup {
                 continue;
             }
 
-            itemStackGroup.addWidget(new SlotWidget(itemOutputsHandler, slotIndex, ITEM_OUTPUT_LOCATIONS.get(i),
-                    ITEM_OUTPUT_LOCATIONS.get(i + 1))
-                    .setCanTakeItems(false)
-                    .setCanPutItems(false)
-                    .setIngredientIO(IngredientIO.OUTPUT)
-                    .setXEIChance(xeiChance)
-                    .setOnAddedTooltips(
+            itemStackGroup.child(UIComponents.slot(itemOutputsHandler, slotIndex)
+                    .canInsert(false)
+                    .canExtract(false)
+                    .ingredientIO(IO.OUT)
+                    .recipeViewerChance(xeiChance)
+                    .backgroundTexture(null)
+                    .overlayTexture(overlay)
+                    .tooltip(
                             (slot, tooltips) -> recipeWrapper.getTooltip(slotIndex + itemInputs.size(), tooltips))
-                    .setBackground((IGuiTexture) null).setOverlay(overlay));
+                    .positioning(Positioning.absolute(ITEM_OUTPUT_LOCATIONS.get(i), ITEM_OUTPUT_LOCATIONS.get(i + 1))));
             itemOutputExists.add(true);
         }
 
         List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
         TagOrCycleFluidHandler fluidInputsHandler = new TagOrCycleFluidHandler(fluidInputs);
-        WidgetGroup fluidStackGroup = new WidgetGroup();
+        UIComponentGroup fluidStackGroup = UIContainers.group(Sizing.fill(), Sizing.fill());
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
             if (!fluidInputs.get(slotIndex).map(Function.identity(), Function.identity()).isEmpty()) {
-                var tank = new TankWidget(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)),
-                        FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
-                        .setIngredientIO(IngredientIO.INPUT)
-                        .setBackground(GuiTextures.FLUID_SLOT)
-                        .setShowAmount(false);
-                fluidStackGroup.addWidget(tank);
+                var tank = UIComponents.tank(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)))
+                        .canInsert(false)
+                        .canExtract(false)
+                        .ingredientIO(IO.IN)
+                        .backgroundTexture(GuiTextures.FLUID_SLOT)
+                        .showAmount(false)
+                        .positioning(Positioning.absolute(FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1)));
+                fluidStackGroup.child(tank);
             }
         }
 
-        this.addWidget(itemStackGroup);
-        this.addWidget(fluidStackGroup);
+        this.child(itemStackGroup);
+        this.child(fluidStackGroup);
 
         for (int i = 0; i < ITEM_OUTPUT_LOCATIONS.size(); i += 2) {
             // stupid hack to show all sifter slots if the first one exists
             if (itemOutputExists.get(i / 2) || (i > 28 * 2 && itemOutputExists.get(28) && hasSifter)) {
-                addWidget(this.widgets.size() - 3, new ImageWidget(ITEM_OUTPUT_LOCATIONS.get(i),
-                        ITEM_OUTPUT_LOCATIONS.get(i + 1), 18, 18, GuiTextures.SLOT));
+                child(this.children().size() - 3, UIComponents.texture(GuiTextures.SLOT)
+                        .positioning(Positioning.absolute(ITEM_OUTPUT_LOCATIONS.get(i), ITEM_OUTPUT_LOCATIONS.get(i + 1)))
+                        .sizing(Sizing.fixed(18)));
             }
         }
     }
+
 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.rei.multipage;
 import com.gregtechceu.gtceu.api.ui.component.PatternPreviewComponent;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 
+import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
 
@@ -10,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
 
-public class MultiblockInfoDisplay extends ModularDisplay<WidgetGroup> {
+public class MultiblockInfoDisplay extends UIREIDisplay<PatternPreviewComponent> {
 
     public final MultiblockMachineDefinition definition;
 

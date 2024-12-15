@@ -1,10 +1,11 @@
-package com.gregtechceu.gtceu.integration.jei;
+package com.gregtechceu.gtceu.integration.jei.handler;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
+import com.gregtechceu.gtceu.integration.jei.GTJEIPlugin;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;

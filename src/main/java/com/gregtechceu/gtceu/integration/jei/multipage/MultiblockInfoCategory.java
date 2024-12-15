@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.integration.jei.multipage;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.ui.component.PatternPreviewComponent;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 
+import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
 import net.minecraft.network.chat.Component;
@@ -16,10 +18,10 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 
-public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockInfoWrapper> {
+public class MultiblockInfoCategory extends UIRecipeCategory<PatternPreviewComponent> {
 
-    public final static RecipeType<MultiblockInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("multiblock_info"),
-            MultiblockInfoWrapper.class);
+    public final static RecipeType<PatternPreviewComponent> RECIPE_TYPE = new RecipeType<>(GTCEu.id("multiblock_info"),
+            PatternPreviewComponent.class);
     private final IDrawable background;
     private final IDrawable icon;
 
@@ -34,13 +36,13 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
                 .filter(MultiblockMachineDefinition::isRenderXEIPreview)
-                .map(MultiblockInfoWrapper::new)
+                .map(PatternPreviewComponent::getPatternWidget)
                 .toList());
     }
 
     @Override
     @NotNull
-    public RecipeType<MultiblockInfoWrapper> getRecipeType() {
+    public RecipeType<PatternPreviewComponent> getRecipeType() {
         return RECIPE_TYPE;
     }
 

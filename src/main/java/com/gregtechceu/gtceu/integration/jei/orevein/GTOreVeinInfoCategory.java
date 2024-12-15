@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
-
-import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
+import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import net.minecraft.network.chat.Component;
 
@@ -23,31 +22,31 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 
-public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfoWrapper> {
+public class GTOreVeinInfoCategory extends UIRecipeCategory<GTOreVeinComponent> {
 
-    public final static RecipeType<GTOreVeinInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_vein_diagram"),
-            GTOreVeinInfoWrapper.class);
+    public final static RecipeType<GTOreVeinComponent> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_vein_diagram"),
+            GTOreVeinComponent.class);
     private final IDrawable background;
     private final IDrawable icon;
 
     public GTOreVeinInfoCategory(IJeiHelpers helpers) {
         IGuiHelper guiHelper = helpers.getGuiHelper();
-        this.background = guiHelper.createBlankDrawable(GTOreVeinWidget.width, 120);
+        this.background = guiHelper.createBlankDrawable(GTOreVeinComponent.width, 120);
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Iron));
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
         registry.addRecipes(RECIPE_TYPE, ClientProxy.CLIENT_ORE_VEINS.values().stream()
-                .map(GTOreVeinInfoWrapper::new)
+                .map(GTOreVeinComponent::new)
                 .toList());
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, GTOreVeinInfoWrapper wrapper, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, GTOreVeinComponent wrapper, IFocusGroup focuses) {
         super.setRecipe(builder, wrapper, focuses);
         builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
-                .addItemStacks(GTOreVeinWidget.getContainedOresAndBlocks(wrapper.oreDefinition));
+                .addItemStacks(GTOreVeinComponent.getContainedOresAndBlocks(wrapper.oreDefinition));
     }
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
@@ -58,7 +57,7 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
 
     @NotNull
     @Override
-    public RecipeType<GTOreVeinInfoWrapper> getRecipeType() {
+    public RecipeType<GTOreVeinComponent> getRecipeType() {
         return RECIPE_TYPE;
     }
 

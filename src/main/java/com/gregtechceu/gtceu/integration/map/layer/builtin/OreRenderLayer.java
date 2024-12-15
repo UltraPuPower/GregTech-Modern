@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.MapRenderLayer;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -32,7 +32,7 @@ public class OreRenderLayer extends MapRenderLayer {
             return Component.translatable("gtceu.minimap.ore_vein.depleted");
         }
         return Component.translatable("gtceu.jei.ore_vein." +
-                GTOreVeinWidget.getOreName(vein.definition()));
+                GTOreVeinComponent.getOreName(vein.definition()));
     }
 
     public static List<Component> getTooltip(String name, GeneratedVeinMetadata vein) {

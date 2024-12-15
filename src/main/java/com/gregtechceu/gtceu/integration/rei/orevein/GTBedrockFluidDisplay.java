@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.integration.rei.orevein;
 
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
@@ -12,12 +13,12 @@ import me.shedaniel.rei.api.common.util.EntryIngredients;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GTBedrockFluidDisplay extends ModularDisplay<WidgetGroup> {
+public class GTBedrockFluidDisplay extends UIREIDisplay<GTOreVeinComponent> {
 
     private final BedrockFluidDefinition fluid;
 
     public GTBedrockFluidDisplay(BedrockFluidDefinition fluid) {
-        super(() -> new GTOreVeinWidget(fluid), GTBedrockFluidDisplayCategory.CATEGORY);
+        super(() -> new GTOreVeinComponent(fluid), GTBedrockFluidDisplayCategory.CATEGORY);
         this.fluid = fluid;
     }
 

@@ -1,18 +1,12 @@
-package com.gregtechceu.gtceu.integration.rei;
+package com.gregtechceu.gtceu.integration.rei.handler;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
 import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
-import com.gregtechceu.gtceu.integration.emi.EmiStackConverter;
-import com.gregtechceu.gtceu.integration.jei.GhostIngredientTarget;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStackInteraction;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.drag.*;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZonesProvider;
-import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import net.minecraft.client.gui.screens.Screen;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
