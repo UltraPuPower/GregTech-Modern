@@ -19,7 +19,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
@@ -183,8 +182,8 @@ public class UIComponents {
         return new SpriteComponent(sprite);
     }
 
-    public static TextureComponent texture(UITexture texture, int regionWidth, int regionHeight) {
-        return new TextureComponent(texture, regionWidth, regionHeight);
+    public static TextureComponent texture(UITexture texture) {
+        return new TextureComponent(texture);
     }
 
     public static BoxComponent box(Sizing horizontalSizing, Sizing verticalSizing) {
