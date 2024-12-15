@@ -116,7 +116,7 @@ public interface GTRecipeSchema {
                                 "Trying to add more inputs than RecipeType can support, id: %s, Max %s%sInputs: %s",
                                 id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability)));
                     }
-                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
                 }
             }
             save();
@@ -141,7 +141,7 @@ public interface GTRecipeSchema {
                                 "Trying to add more outputs than RecipeType can support, id: %s, Max %s%sOutputs: %s",
                                 id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability)));
                     }
-                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
                 }
             }
             save();
