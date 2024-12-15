@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
@@ -25,12 +25,12 @@ public class ToggleButtonComponent extends SwitchComponent {
     @Setter
     private String tooltipText;
 
-    public ToggleButtonComponent(BooleanSupplier isPressedCondition,
+    protected ToggleButtonComponent(BooleanSupplier isPressedCondition,
                                  BooleanConsumer setPressedExecutor) {
         this(GuiTextures.VANILLA_BUTTON, isPressedCondition, setPressedExecutor);
     }
 
-    public ToggleButtonComponent(UITexture buttonTexture,
+    protected ToggleButtonComponent(UITexture buttonTexture,
                                  BooleanSupplier isPressedCondition, BooleanConsumer setPressedExecutor) {
         super((clickData, aBoolean) -> setPressedExecutor.accept(aBoolean.booleanValue()));
         texture = buttonTexture;
@@ -44,7 +44,7 @@ public class ToggleButtonComponent extends SwitchComponent {
         supplier(isPressedCondition);
     }
 
-    public ToggleButtonComponent setShouldUseBaseBackground() {
+    public ToggleButtonComponent shouldUseBaseBackground() {
         if (texture != null) {
             texture(
                     UITextures.group(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5), texture),

@@ -15,8 +15,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.ui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
@@ -26,17 +25,6 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.*;
-import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
-import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
-import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
@@ -62,7 +50,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
@@ -1797,77 +1784,8 @@ public class GTItems {
             .tag(CustomTags.RESISTORS).register();
     public static ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("smd_capacitor", Item::new).lang("SMD Capacitor")
             .tag(CustomTags.CAPACITORS).register();
-    public static ItemEntry<ComponentItem> SMD_DIODE = REGISTRATE.item("smd_diode", ComponentItem::create)
-            .lang("SMD Diode")
-            .tag(CustomTags.DIODES)
-            .onRegister(attach(new IItemUIFactory() {
-
-                @Override
-                public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
-                    CustomFluidTank tank = new CustomFluidTank(new FluidStack(Fluids.LAVA, 8000));
-                    menu.createProperty(FluidStack.class, "fluid.0", tank.getFluid());
-
-                    CustomItemStackHandler slot0 = new CustomItemStackHandler(new ItemStack(Items.ITEM_FRAME));
-                    menu.createProperty(ItemStack.class, "item.0", slot0.getStackInSlot(0));
-
-                    SlotGenerator.begin(menu::addSlot, 0, 0)
-                            .slot(slot0, 0, -32, -32)
-                            .moveTo(9, 79)
-                            .playerInventory(menu.getPlayerInventory());
-                }
-
-                @OnlyIn(Dist.CLIENT)
-                @Override
-                public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
-                    UIComponentGroup rootComponent = adapter.rootComponent;
-                    rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
-
-                    FlowLayout layout;
-                    SyncedProperty<FluidStack> containedFluid = adapter.getMenuProperty("fluid.0");
-
-                    CustomFluidTank tank = new CustomFluidTank(containedFluid.get());
-                    containedFluid.observe(tank::setFluid);
-
-                    rootComponent.child(layout = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166))
-                            .child(UIComponents.texture(GuiTextures.BACKGROUND, 176, 166)
-                                    .visibleArea(PositionedRectangle.of(0, 0, 176, 166))
-                                    .sizing(Sizing.fill(), Sizing.fill()))
-                            /*.child(UIComponents.box(Sizing.fixed(130), Sizing.fixed(100))
-                                    .startColor(Color.BLACK)
-                                    .endColor(Color.GREEN)
-                                    .direction(BoxComponent.GradientDirection.LEFT_TO_RIGHT)
-                                    .positioning(Positioning.relative(50, 20))
-                                    .cursorStyle(CursorStyle.HAND))*/
-                            .child(UIComponents.item(new ItemStack(Items.ROTTEN_FLESH, 3))
-                                    .positioning(Positioning.absolute(80, 50))
-                                    .tooltip(Component.translatable("gtceu.alloy_smelter")))
-                            .child(UIComponents.button(Component.literal("✔"), (cd) -> {
-                                        player.sendSystemMessage(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"));
-                                    }).tooltip(Component.literal("AAAAAAAAAAAAAAAAAAAAAAAA"))
-                                    .positioning(Positioning.relative(75, 10)))
-                            .child(UIComponents.tank(tank)
-                                    .id("fluid_tank")
-                                    .positioning(Positioning.relative(5, 5)))
-                            .positioning(Positioning.relative(50, 50)
-                            ));
-
-                    /*
-                    SyncedProperty<ItemStack> item0 = adapter.menu().getProperty("item.0");
-                    CustomItemStackHandler slot0 = new CustomItemStackHandler(item0.get());
-                    item0.observe(stack -> slot0.setStackInSlot(0, stack));
-                    */
-
-                    layout.child(
-                            UIContainers.stack(Sizing.content(), Sizing.content())
-                                    .child(UIComponents.texture(GuiTextures.SLOT, 18, 18))
-                                    .child(UIComponents.slot(adapter.screen().getMenu().getSlot(0)).id("item-in.0"))
-                                    .positioning(Positioning.relative(25, 25)));
-                    layout.child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT)
-                            .positioning(Positioning.absolute(10, 84)));
-
-                }
-            }))
-            .register();
+    public static ItemEntry<Item> SMD_DIODE = REGISTRATE.item("smd_diode", Item::new).lang("SMD Diode")
+            .tag(CustomTags.DIODES).register();
     public static ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("smd_inductor", Item::new).lang("SMD Inductor")
             .tag(CustomTags.INDUCTORS).register();
     public static ItemEntry<Item> ADVANCED_SMD_TRANSISTOR = REGISTRATE.item("advanced_smd_transistor", Item::new)

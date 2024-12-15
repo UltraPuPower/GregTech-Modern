@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
@@ -20,6 +19,8 @@ import org.w3c.dom.Node;
 public interface Surface {
 
     Surface UI_BACKGROUND = GuiTextures.BACKGROUND::draw;
+
+    Surface UI_DISPLAY = GuiTextures.DISPLAY::draw;
 
     Surface UI_BACKGROUND_BRONZE = (graphics, component) -> {
         graphics.drawPanel(component.x(), component.y(), component.width(), component.height(), false);

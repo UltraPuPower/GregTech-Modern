@@ -50,7 +50,7 @@ public class EmiStackConverter {
         @Override
         public @NotNull EmiIngredient convertTo(EntryList<ItemStack> stack, float chance,
                                                 UnaryOperator<ItemStack> mapper) {
-            if (stack.isEmpty()) {
+            if (stack == null || stack.isEmpty()) {
                 return EmiStack.EMPTY;
             }
             if (stack instanceof ItemStackList stackList) {
@@ -81,11 +81,11 @@ public class EmiStackConverter {
         @Override
         public @NotNull EmiIngredient convertTo(EntryList<FluidStack> stack, float chance,
                                                 UnaryOperator<FluidStack> mapper) {
-            if (stack.isEmpty()) {
+            if (stack == null || stack.isEmpty()) {
                 return EmiStack.EMPTY;
             }
             if (stack instanceof FluidStackList stackList) {
-                return toEMIIngredient(stackList.stream()).setChance(chance);
+                return toEMIIngredient(stackList.stream().map(mapper)).setChance(chance);
             } else if (stack instanceof FluidTagList tagList) {
                 return EmiIngredient.of(tagList.getEntries().stream()
                         .map(FluidTagList.FluidTagEntry::stacks)

@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
@@ -34,10 +33,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
@@ -889,7 +884,8 @@ public interface IGTTool extends HeldItemUIHolder.IHeldItemUIConstructor, ItemLi
                 .child(UIComponents.button(Component.literal("+"), (data) -> {
                     AoESymmetrical.decreaseColumn(tag, defaultDefinition);
                     menu.sendMessage(new SyncColumn(true));
-                }).sizing(Sizing.fixed(20)), 0, 1)
+                }).sizing(Sizing.fixed(20)),
+                        0, 1)
                 .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
                         0, 2)
                 .child(UIComponents.button(Component.literal("-"), (data) -> {
@@ -903,7 +899,8 @@ public interface IGTTool extends HeldItemUIHolder.IHeldItemUIConstructor, ItemLi
                 .child(UIComponents.button(Component.literal("+"), (data) -> {
                     AoESymmetrical.increaseRow(tag, defaultDefinition);
                     menu.sendMessage(new SyncRow(true));
-                }).sizing(Sizing.fixed(20)), 1, 1)
+                }).sizing(Sizing.fixed(20)),
+                        1, 1)
                 .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
                         1, 2)
                 .child(UIComponents.button(Component.literal("-"), (data) -> {
@@ -917,7 +914,8 @@ public interface IGTTool extends HeldItemUIHolder.IHeldItemUIConstructor, ItemLi
                 .child(UIComponents.button(Component.literal("+"), (data) -> {
                     AoESymmetrical.increaseLayer(tag, defaultDefinition);
                     menu.sendMessage(new SyncLayer(true));
-                }).sizing(Sizing.fixed(20)), 2, 1)
+                }).sizing(Sizing.fixed(20)),
+                        2, 1)
                 .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
                         2, 2)
                 .child(UIComponents.button(Component.literal("-"), (data) -> {

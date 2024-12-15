@@ -48,7 +48,7 @@ public class LabelComponent extends BaseUIComponent {
 
     @Getter
     protected final AnimatableProperty<Color> color = AnimatableProperty.of(Color.WHITE);
-    protected final Observable<Integer> lineHeight = Observable.of(this.font.lineHeight);
+    protected final Observable<Integer> lineHeight = Observable.of(this.font.lineHeight + 1);
     @Getter
     @Setter
     protected boolean shadow;
@@ -64,6 +64,7 @@ public class LabelComponent extends BaseUIComponent {
     protected Function<Style, Boolean> textClickHandler = UIGuiGraphics.utilityScreen()::handleComponentClicked;
 
     protected LabelComponent(Component text) {
+        zIndex(100);
         this.text = text;
         this.wrappedText = new ArrayList<>();
 
@@ -205,7 +206,7 @@ public class LabelComponent extends BaseUIComponent {
         graphics.drawManaged(() -> {
             int renderX = lambdaX;
 
-            int lineHeight = this.font.lineHeight;
+            int lineHeight = this.lineHeight();
 
             if (textType == TextTexture.TextType.NORMAL) {
                 lineHeight *= this.wrappedText.size();

@@ -1,19 +1,20 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-
 import net.minecraft.world.entity.player.Player;
-
-import org.jetbrains.annotations.NotNull;
 
 public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
@@ -21,33 +22,38 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         super(holder, 1, io, args);
     }
 
-    @NotNull
     @Override
-    public ModularUI createUI(@NotNull Player entityPlayer) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         int rowSize = (int) Math.sqrt(getInventorySize());
         int xOffset = rowSize == 10 ? 9 : 0;
-        var modular = new ModularUI(176 + xOffset * 2,
-                18 + 18 * rowSize + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
-                .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new ToggleButtonComponent(2, 18 + 18 * rowSize + 12 - 20, 18, 18,
-                        GuiTextures.BUTTON_ITEM_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled) // todo
-                                                                                                         // steamify?
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.item_auto_input.tooltip"))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                        GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks),
-                        7 + xOffset, 18 + 18 * rowSize + 12, true));
 
+        FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset * 2), Sizing.fixed(18 + 18 * rowSize + 94));
+        group.surface(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks)::draw);
+
+        group.child(UIComponents.label(getBlockState().getBlock().getName())
+                        .positioning(Positioning.absolute(10, 5)))
+                .child(UIComponents.toggleButton(GuiTextures.BUTTON_ITEM_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
+                        .shouldUseBaseBackground()
+                        .setTooltipText("gtceu.gui.item_auto_input.tooltip")
+                        .positioning(Positioning.absolute(2, 18 + 18 * rowSize + 12 - 20)))
+                .child(UIComponents.playerInventory(player.getInventory(),
+                        GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
+                        .positioning(Positioning.absolute(7 + xOffset, 18 + 18 * rowSize + 12)));
+
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), rowSize, rowSize);
+        grid.positioning(Positioning.absolute(88 - rowSize * 9, 18));
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
-                modular.widget(new SlotWidget(getInventory().storage, index,
-                        (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, io.support(IO.IN))
-                        .setBackgroundTexture(GuiTextures.SLOT));
+                grid.child(UIComponents.slot(getInventory().storage, index)
+                                .canInsert(io.support(IO.IN))
+                                .canExtract(true)
+                                .backgroundTexture(GuiTextures.SLOT_STEAM
+                                        .get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks)),
+                        x, y);
             }
         }
 
-        return modular;
+        adapter.rootComponent.child(group);
     }
 }

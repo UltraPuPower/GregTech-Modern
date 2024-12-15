@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.ui.component;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -103,7 +103,7 @@ public class PatternPreviewComponent extends FlowLayout {
         child(UIComponents.texture(UITextures.text(Component.translatable(controllerDefinition.getDescriptionId()))
                         .textType(TextTexture.TextType.ROLL)
                         .width(170)
-                        .dropShadow(true), 160, 10)
+                        .dropShadow(true))
                 .positioning(Positioning.absolute(1, 1))
                 .sizing(Sizing.fill(), Sizing.fixed(10)));
 
@@ -395,7 +395,7 @@ public class PatternPreviewComponent extends FlowLayout {
 
     }
 
-    private static class MBPattern {
+    public static class MBPattern {
 
         @NotNull
         final List<List<ItemStack>> parts;

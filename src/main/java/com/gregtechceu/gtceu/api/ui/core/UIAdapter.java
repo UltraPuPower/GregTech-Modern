@@ -74,7 +74,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     public boolean globalInspector = false;
     public int inspectorZOffset = 1000;
 
-    protected UIAdapter(int x, int y, int width, int height, R rootComponent) {
+    protected UIAdapter(int x, int y, int width, int height, R rootComponent, boolean isScreen) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -83,7 +83,9 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
         this.cursorAdapter = CursorAdapter.ofClientWindow();
         this.rootComponent = rootComponent;
         this.rootComponent.containerAccess(this);
-        this.rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
+        if (isScreen) {
+            this.rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
+        }
     }
 
     /**
@@ -100,7 +102,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
                                                                     BiFunction<Sizing, Sizing, R> rootComponentMaker) {
         var rootComponent = rootComponentMaker.apply(Sizing.fill(100), Sizing.fill(100));
 
-        var adapter = new UIAdapter<>(0, 0, screen.width, screen.height, rootComponent);
+        var adapter = new UIAdapter<>(0, 0, screen.width, screen.height, rootComponent, true);
         screen.addRenderableWidget(adapter);
         screen.setFocused(adapter);
 
@@ -122,7 +124,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     public static <R extends ParentUIComponent> UIAdapter<R> createWithoutScreen(int x, int y, int width, int height,
                                                                           BiFunction<Sizing, Sizing, R> rootComponentMaker) {
         var rootComponent = rootComponentMaker.apply(Sizing.fill(100), Sizing.fill(100));
-        return new UIAdapter<>(x, y, width, height, rootComponent);
+        return new UIAdapter<>(x, y, width, height, rootComponent, false);
     }
 
     /**
@@ -196,7 +198,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (!(graphics instanceof UIGuiGraphics)) graphics = UIGuiGraphics.of(graphics);
-        var guiContext = (UIGuiGraphics) graphics;
+        var uiGraphics = (UIGuiGraphics) graphics;
 
         try {
             isRendering = true;
@@ -211,7 +213,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             RenderSystem.enableDepthTest();
             RenderSystem.enableScissor(0, 0, window.getWidth(), window.getHeight());
 
-            this.rootComponent.draw(guiContext, mouseX, mouseY, partialTicks, delta);
+            this.rootComponent.draw(uiGraphics, mouseX, mouseY, partialTicks, delta);
 
             RenderSystem.depthMask(true);
             MinecraftForge.EVENT_BUS.post(new ContainerScreenEvent.Render.Background(this.screen, graphics, mouseX, mouseY));
@@ -220,7 +222,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             RenderSystem.disableScissor();
             RenderSystem.disableDepthTest();
 
-            this.rootComponent.drawTooltip(guiContext, mouseX, mouseY, partialTicks, delta);
+            this.rootComponent.drawTooltip(uiGraphics, mouseX, mouseY, partialTicks, delta);
 
             final var hovered = this.rootComponent.childAt(mouseX, mouseY);
             if (!disposed && hovered != null) {
@@ -228,13 +230,13 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             }
 
             if (this.enableInspector) {
-                guiContext.pose().pushPose();
-                guiContext.pose().translate(0, 0, this.inspectorZOffset);
-                guiContext.drawInspector(this.rootComponent, mouseX, mouseY, !this.globalInspector);
-                guiContext.pose().popPose();
+                uiGraphics.pose().pushPose();
+                uiGraphics.pose().translate(0, 0, this.inspectorZOffset);
+                uiGraphics.drawInspector(this.rootComponent, mouseX, mouseY, !this.globalInspector);
+                uiGraphics.pose().popPose();
             }
 
-            this.rootComponent.drawTooltip(guiContext, mouseX, mouseY, partialTicks, delta);
+            this.rootComponent.drawTooltip(uiGraphics, mouseX, mouseY, partialTicks, delta);
 
             if (this.captureFrame) RenderDoc.endFrameCapture();
         } finally {

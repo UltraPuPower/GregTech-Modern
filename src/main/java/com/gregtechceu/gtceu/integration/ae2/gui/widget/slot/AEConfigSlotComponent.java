@@ -23,7 +23,7 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawGradientRect;
 
 /**
  * @author GlodBlock
- * @Description A configurable slot
+ * @apiNote A configurable slot
  * @date 2023/4/22-0:30
  */
 public class AEConfigSlotComponent extends BaseUIComponent {

@@ -160,7 +160,7 @@ public class TextBoxComponent extends EditBox {
         return this;
     }
 
-    public TextBoxComponent setNumbersOnly(long minValue, long maxValue) {
+    public TextBoxComponent numbersOnly(long minValue, long maxValue) {
         setFilter(s -> {
             try {
                 if (s == null) return false;
@@ -184,7 +184,7 @@ public class TextBoxComponent extends EditBox {
         return this; //setWheelDur(1);
     }
 
-    public TextBoxComponent setNumbersOnly(int minValue, int maxValue) {
+    public TextBoxComponent numbersOnly(int minValue, int maxValue) {
         setFilter(s -> {
             try {
                 if (s == null) return false;
@@ -208,7 +208,7 @@ public class TextBoxComponent extends EditBox {
         return this; //setWheelDur(1);
     }
 
-    public TextBoxComponent setNumbersOnly(float minValue, float maxValue) {
+    public TextBoxComponent numbersOnly(float minValue, float maxValue) {
         setFilter(s -> {
             try {
                 if (s == null) return false;

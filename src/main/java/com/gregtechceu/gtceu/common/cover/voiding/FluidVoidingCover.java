@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -102,7 +101,7 @@ public class FluidVoidingCover extends PumpCover {
         group.child(UIComponents.label(Component.translatable(getUITitle()))
                 .positioning(Positioning.relative(0, 0)));
 
-        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled)
+        group.child(UIComponents.toggleButton(GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled)
                 .positioning(Positioning.absolute(0, 15))
                 .sizing(Sizing.fixed(20)));
 

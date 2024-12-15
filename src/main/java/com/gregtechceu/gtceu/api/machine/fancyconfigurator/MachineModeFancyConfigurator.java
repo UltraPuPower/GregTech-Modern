@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
@@ -61,8 +61,8 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
                                     .color(machine.getActiveRecipeType() == finalI ? ColorPattern.CYAN.color : -1),
                             UITextures.text(Component.translatable(machine.getRecipeTypes()[finalI].registryName.toLanguageKey()))
                                     .maxWidth(136)
-                                    .textType(TextTexture.TextType.ROLL))),
-                            0, 0)
+                                    .textType(TextTexture.TextType.ROLL)))
+                    )
                     .positioning(Positioning.absolute(2, 2 + i * 20))
                     .sizing(Sizing.fixed(136), Sizing.fixed(20)));
 

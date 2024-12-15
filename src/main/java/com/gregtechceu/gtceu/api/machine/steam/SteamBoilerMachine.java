@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -317,13 +317,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         var menu = adapter.menu();
-        UIComponentGroup rootComponent;
-        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
+        UIComponentGroup group;
+        adapter.rootComponent.child(group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
 
-        rootComponent.surface(isHighPressure ? Surface.UI_BACKGROUND_STEEL : Surface.UI_BACKGROUND_BRONZE);
-        rootComponent.child(UIComponents.label(getBlockState().getBlock().getName())
+        group.surface(isHighPressure ? Surface.UI_BACKGROUND_STEEL : Surface.UI_BACKGROUND_BRONZE);
+        group.child(UIComponents.label(getBlockState().getBlock().getName())
                 .positioning(Positioning.absolute(6, 6)))
                 .child(UIComponents.progress(menu.<Double>getProperty("progress")::get)
                         .fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
@@ -339,20 +339,20 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
                         .positioning(Positioning.absolute(83, 26))
                         .sizing(Sizing.fixed(10), Sizing.fixed(54)))
-                .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), 10, 54)
+                .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure))
                         .positioning(Positioning.absolute(83, 26))
                         .sizing(Sizing.fixed(10), Sizing.fixed(54)))
                 .child(UIComponents.tank(steamTank.getStorages()[0], 0)
                         .canInsert(false)
                         .canExtract(true)
                         .showAmount(false)
-                        //.fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+                        .fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
                         .positioning(Positioning.absolute(70, 26))
                         .sizing(Sizing.fixed(10), Sizing.fixed(54)))
-                .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), 10, 54)
+                .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure))
                         .positioning(Positioning.absolute(70, 26))
                         .sizing(Sizing.fixed(10), Sizing.fixed(54)))
-                .child(UIComponents.texture(GuiTextures.CANISTER_OVERLAY_STEAM.get(isHighPressure), 18, 18)
+                .child(UIComponents.texture(GuiTextures.CANISTER_OVERLAY_STEAM.get(isHighPressure))
                         .positioning(Positioning.absolute(43, 44)))
                 .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT_STEAM.get(isHighPressure))
                         .positioning(Positioning.absolute(7, 84)));

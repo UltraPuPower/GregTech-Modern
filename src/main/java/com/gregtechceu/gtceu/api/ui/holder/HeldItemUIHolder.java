@@ -34,7 +34,7 @@ public class HeldItemUIHolder implements IUIHolder<HeldItemUIHolder> {
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
         if (held.getItem() instanceof IHeldItemUIConstructor itemUIHolder) {
             itemUIHolder.loadClientUI(this.player, adapter, this);
         }

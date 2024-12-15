@@ -27,6 +27,7 @@ public class CycleItemStackHandler implements IItemHandlerModifiable {
     public int getSlots() {
         return stacks.size();
     }
+
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int i) {
@@ -51,17 +52,21 @@ public class CycleItemStackHandler implements IItemHandlerModifiable {
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         return stack;
     }
+
     @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return ItemStack.EMPTY;
     }
+
     @Override
     public int getSlotLimit(int i) {
         return 64;
     }
+
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return true;
     }
+
 }

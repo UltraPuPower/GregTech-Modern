@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -147,7 +147,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         var menu = adapter.menu();
         UIComponentGroup rootComponent;
         adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
@@ -158,17 +158,17 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
 
         rootComponent.child(UIComponents.slot(menu.getSlot(0))
                         .positioning(Positioning.absolute(52, 20)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY), 18, 18)
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY))
                         .positioning(Positioning.absolute(52, 20))
                         .sizing(Sizing.fixed(18)))
                 .child(UIComponents.slot(menu.getSlot(1))
                         .positioning(Positioning.absolute(52, 38)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY), 18, 18)
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY))
                         .positioning(Positioning.absolute(52, 38))
                         .sizing(Sizing.fixed(18)))
                 .child(UIComponents.slot(menu.getSlot(2))
                         .positioning(Positioning.absolute(52, 38)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY), 18, 18)
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY))
                         .positioning(Positioning.absolute(52, 38))
                         .sizing(Sizing.fixed(18)));
 
@@ -182,21 +182,21 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                         .canInsert(false)
                         .canExtract(true)
                         .positioning(Positioning.absolute(104, 38)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY), 18, 18)
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY))
                         .positioning(Positioning.absolute(104, 38))
                         .sizing(Sizing.fixed(18)))
                 .child(UIComponents.slot(menu.getSlot(5))
                         .canInsert(false)
                         .canExtract(true)
                         .positioning(Positioning.absolute(122, 38)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY), 18, 18)
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY))
                         .positioning(Positioning.absolute(122, 38))
                         .sizing(Sizing.fixed(18)))
                 .child(UIComponents.slot(menu.getSlot(6))
                         .canInsert(false)
                         .canExtract(true)
                         .positioning(Positioning.absolute(140, 38)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY), 18, 18)
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY))
                         .positioning(Positioning.absolute(140, 38))
                         .sizing(Sizing.fixed(18)));
 

@@ -5,19 +5,23 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -75,7 +79,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
 
     //////////////////////////////////////
     // ***** Initialization *****//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -133,19 +138,30 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return super.createUI(entityPlayer)
-                .widget(new SlotWidget(this.fuelHandler.storage, 0, 115, 62)
-                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT_STEAM.get(isHighPressure),
-                                GuiTextures.COAL_OVERLAY_STEAM.get(isHighPressure))))
-                .widget(new SlotWidget(this.ashHandler.storage, 0, 115, 26, true, false)
-                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT_STEAM.get(isHighPressure),
-                                GuiTextures.DUST_OVERLAY_STEAM.get(isHighPressure))))
-                .widget(new ProgressWidget(recipeLogic::getProgressPercent, 115, 44, 18, 18)
-                        .setProgressTexture(
-                                GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
-                                GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP));
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        super.loadServerUI(player, menu, holder);
+    }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+        super.loadClientUI(player, adapter, holder);
+        var menu = adapter.menu();
+        UIComponentGroup group = (UIComponentGroup) adapter.rootComponent.children().get(0);
+
+        group.child(UIComponents.slot(this.fuelHandler.storage, 0)
+                        .backgroundTexture(UITextures.group(GuiTextures.SLOT_STEAM.get(isHighPressure),
+                                GuiTextures.COAL_OVERLAY_STEAM.get(isHighPressure)))
+                        .positioning(Positioning.absolute(115, 62)))
+                .child(UIComponents.slot(this.ashHandler.storage, 0)
+                        .canInsert(false)
+                        .canExtract(true)
+                        .backgroundTexture(UITextures.group(GuiTextures.SLOT_STEAM.get(isHighPressure),
+                                GuiTextures.DUST_OVERLAY_STEAM.get(isHighPressure)))
+                        .positioning(Positioning.absolute(115, 26)))
+                .child(UIComponents.progress(menu.<Double>getProperty("progress")::get, GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure))
+                        .fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+                        .positioning(Positioning.absolute(115, 44))
+                        .sizing(Sizing.fixed(18)));
     }
 
     @Override
@@ -153,4 +169,5 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
         clearInventory(fuelHandler.storage);
         clearInventory(ashHandler.storage);
     }
+
 }

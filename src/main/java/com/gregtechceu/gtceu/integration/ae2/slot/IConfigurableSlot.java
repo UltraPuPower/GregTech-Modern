@@ -4,7 +4,7 @@ import appeng.api.stacks.GenericStack;
 
 /**
  * @author GlodBlock
- * @Description A slot that can be set to keep requesting.
+ * @apiNote A slot that can be set to keep requesting.
  * @date 2023/4/21-0:34
  */
 public interface IConfigurableSlot {

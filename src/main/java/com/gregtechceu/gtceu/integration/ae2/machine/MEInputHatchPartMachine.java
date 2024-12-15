@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -135,14 +136,14 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         var group = UIContainers.group(Sizing.content(), Sizing.content());
+        group.padding(Insets.of(3));
         // ME Network status
         group.child(UIComponents.label(() -> this.isOnline ?
                 Component.translatable("gtceu.gui.me_network.online") :
-                Component.translatable("gtceu.gui.me_network.offline"))
-                .positioning(Positioning.absolute(3, 0)));
+                Component.translatable("gtceu.gui.me_network.offline")));
 
         // Config slots
-        group.child(new AEFluidConfigComponent(3, 10, this.aeFluidHandler));
+        group.child(new AEFluidConfigComponent(this.aeFluidHandler));
 
         return group;
     }

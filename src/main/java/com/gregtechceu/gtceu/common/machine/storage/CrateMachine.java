@@ -2,13 +2,12 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
@@ -38,7 +37,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -93,9 +91,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         UIComponentGroup rootComponent = adapter.rootComponent;
-        rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
 
         int xOffset = inventorySize >= 90 ? 162 : 0;
         int yOverflow = xOffset > 0 ? 18 : 9;
@@ -107,7 +104,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
                 .child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(5, 5)))
                 .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT)
-                        .positioning(Positioning.absolute(7 + xOffset / 2, 82 + yOffset)))
+                        .positioning(Positioning.absolute(8 + xOffset / 2, 83 + yOffset)))
                 .positioning(Positioning.relative(50, 50))
                 .surface(Surface.UI_BACKGROUND));
 
@@ -118,12 +115,9 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
                 Sizing.content(),
                 inventorySize / yOverflow,
                 yOverflow));
-        grid.positioning(Positioning.absolute(7, 17));
+        grid.positioning(Positioning.absolute(8, 18));
         for (int slot = 0; slot < inventorySize; slot++) {
-            grid.child(UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18))
-                            .child(UIComponents.slot(adapter.screen().getMenu().getSlot(slot)).id("inventory." + slot))
-                            .child(UIComponents.texture(GuiTextures.SLOT, 18, 18))
-                            /*.positioning(Positioning.absolute(x * 18, y * 18))*/,
+            grid.child(UIComponents.slot(inventory, slot).id("inventory." + slot),
                     y, x);
             x++;
             if (x == yOverflow) {

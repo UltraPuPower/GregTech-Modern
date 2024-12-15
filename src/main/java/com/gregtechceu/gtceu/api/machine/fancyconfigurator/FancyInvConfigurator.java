@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -51,10 +51,8 @@ public class FancyInvConfigurator implements IFancyConfigurator {
             colSize = 2;
         }
 
-        var group = UIContainers.group(Sizing.fixed(18 * rowSize + 16), Sizing.fixed(18 * colSize + 16));
-        group.padding(Insets.of(8));
-        var container = UIContainers.grid(Sizing.fixed(18 * rowSize + 8), Sizing.fixed(18 * colSize + 8), rowSize, colSize);
-        container.padding(Insets.of(4));
+        var group = UIContainers.group(Sizing.content(8), Sizing.content(8));
+        var container = UIContainers.grid(Sizing.content(4), Sizing.content(4), rowSize, colSize);
 
         int index = 0;
         for (int y = 0; y < colSize; y++) {

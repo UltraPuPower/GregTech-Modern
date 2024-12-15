@@ -33,7 +33,7 @@ public class CoverUIFactory extends UIFactory<CoverBehavior> {
     @Override
     public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, CoverBehavior holder) {
         if (holder instanceof IUICover cover) {
-            cover.loadClientUI(player, adapter);
+            cover.loadClientUI(player, adapter, holder);
         }
     }
 

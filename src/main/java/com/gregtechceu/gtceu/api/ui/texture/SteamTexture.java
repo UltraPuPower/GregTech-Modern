@@ -1,7 +1,5 @@
-package com.gregtechceu.gtceu.api.gui;
+package com.gregtechceu.gtceu.api.ui.texture;
 
-import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
-import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -22,10 +20,10 @@ public class SteamTexture {
         this.steelTexture = steelTexture;
     }
 
-    public static SteamTexture fullImage(ResourceLocation path) {
+    public static SteamTexture fullImage(String path) {
         return new SteamTexture(
-                UITextures.resource(new ResourceLocation(path.getNamespace(), String.format(path.getPath(), BRONZE))),
-                UITextures.resource(new ResourceLocation(path.getNamespace(), String.format(path.getPath(), STEEL))));
+                UITextures.resource(new ResourceLocation(String.format(path, BRONZE))),
+                UITextures.resource(new ResourceLocation(String.format(path, STEEL))));
     }
 
     public ResourceTexture get(boolean isHighPressure) {

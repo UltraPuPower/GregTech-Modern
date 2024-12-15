@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -105,7 +105,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         return UIContainers.group(Sizing.content(), Sizing.content())
-                .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE, 84, 60)
+                .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE)
                         .positioning(Positioning.absolute(46, 15))
                         .sizing(Sizing.fixed(84), Sizing.fixed(60)))
                 .child(new BlockableSlotComponent(heldItems, 0)

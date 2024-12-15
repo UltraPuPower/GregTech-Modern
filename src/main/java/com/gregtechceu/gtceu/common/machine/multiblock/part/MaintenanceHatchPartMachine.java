@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -13,11 +12,16 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -57,7 +61,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MaintenanceHatchPartMachine extends TieredPartMachine
-                                         implements IMachineLife, IMaintenanceMachine, IInteractedMachine {
+        implements IMachineLife, IMaintenanceMachine, IInteractedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
@@ -98,7 +102,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     //////////////////////////////////////
     // ****** Initialization ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     protected NotifiableItemStackHandler createInventory() {
         return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.BOTH);
     }
@@ -120,7 +125,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     //////////////////////////////////////
     // ********* Logic **********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public void setMaintenanceProblems(byte problems) {
         this.maintenanceProblems = problems;
@@ -159,7 +165,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     /**
      * Fixes the maintenance problems of this hatch's Multiblock Controller
-     * 
+     *
      * @param entityPlayer the player performing the fixing
      */
     private void fixMaintenanceProblems(@Nullable Player entityPlayer) {
@@ -186,7 +192,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     }
 
     /**
-     *
      * Handles duct taping for manual and auto-taping use
      *
      * @param handler is the handler to get duct tape from
@@ -313,7 +318,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     //////////////////////////////////////
     // ******* INTERACTION *******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
@@ -329,44 +335,49 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     //////////////////////////////////////
     // ******** GUI *********//
-    //////////////////////////////////////
-    @Override
-    public Widget createBaseUIComponent(FancyMachineUIComponent component) {
-        WidgetGroup group;
-        if (isConfigurable) {
-            group = new WidgetGroup(0, 0, 150, 70);
-            group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 150 - 8, 70 - 8).setBackground(GuiTextures.DISPLAY)
-                    .addWidget(new ComponentPanelWidget(4, 5, list -> {
-                        list.add(getTextWidgetText("duration", this::getDurationMultiplier));
-                        list.add(getTextWidgetText("time", this::getTimeMultiplier));
-                        var buttonText = Component.translatable("gtceu.maintenance.configurable_duration.modify");
-                        buttonText.append(" ");
-                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
-                        buttonText.append(" ");
-                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
-                        list.add(buttonText);
-                    }).setMaxWidthLimit(150 - 8 - 8 - 4).clickHandler((componentData, clickData) -> {
-                        if (!clickData.isRemote) {
-                            if (componentData.equals("sub")) {
-                                durationMultiplier = Mth.clamp(durationMultiplier - DURATION_ACTION_AMOUNT,
-                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
-                            } else if (componentData.equals("add")) {
-                                durationMultiplier = Mth.clamp(durationMultiplier + DURATION_ACTION_AMOUNT,
-                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
-                            }
-                        }
-                    })));
 
+    /// ///////////////////////////////////
+    @Override
+    public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
+        UIComponentGroup group;
+        if (isConfigurable) {
+            group = UIContainers.group(Sizing.fixed(150), Sizing.fixed(70));
+            group.padding(Insets.of(4, 8, 4, 8));
+            group.child(UIContainers.verticalScroll(Sizing.fill(), Sizing.fill(),
+                            UIComponents.componentPanel(list -> {
+                                list.add(getTextWidgetText("duration", this::getDurationMultiplier));
+                                list.add(getTextWidgetText("time", this::getTimeMultiplier));
+                                var buttonText = Component.translatable("gtceu.maintenance.configurable_duration.modify");
+                                buttonText.append(" ");
+                                buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
+                                buttonText.append(" ");
+                                buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
+                                list.add(buttonText);
+                            }).maxWidthLimit(150 - 8 - 8 - 4).clickHandler((componentData, clickData) -> {
+                                if (!clickData.isClientSide) {
+                                    if (componentData.equals("sub")) {
+                                        durationMultiplier = Mth.clamp(durationMultiplier - DURATION_ACTION_AMOUNT,
+                                                MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
+                                    } else if (componentData.equals("add")) {
+                                        durationMultiplier = Mth.clamp(durationMultiplier + DURATION_ACTION_AMOUNT,
+                                                MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
+                                    }
+                                }
+                            }))
+                    .padding(Insets.both(4, 5))
+                    .surface(Surface.UI_DISPLAY));
         } else {
-            group = new WidgetGroup(0, 0, 8 + 18, 8 + 20 + 18);
+            group = UIContainers.group(Sizing.fixed(8 + 18), Sizing.fixed(8 + 20 + 18));
+            group.padding(Insets.of(4));
         }
-        group.addWidget(new SlotWidget(itemStackHandler, 0, group.getSize().width - 4 - 18, 4)
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.DUCT_TAPE_OVERLAY))
-                .setHoverTooltips("gtceu.machine.maintenance_hatch_tape_slot.tooltip"));
-        group.addWidget(new ButtonWidget(group.getSize().width - 4 - 18, 4 + 20, 18, 18, GuiTextures.MAINTENANCE_BUTTON,
-                data -> fixMaintenanceProblems(group.getGui().entityPlayer))
-                .setHoverTooltips("gtceu.machine.maintenance_hatch_tool_slot.tooltip"));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.child(UIComponents.slot(itemStackHandler, 0)
+                .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.DUCT_TAPE_OVERLAY))
+                .tooltip(List.of(Component.translatable("gtceu.machine.maintenance_hatch_tape_slot.tooltip"))));
+        group.child(UIComponents.button(Component.empty(), data -> fixMaintenanceProblems(group.player()))
+                .renderer(ButtonComponent.Renderer.texture(GuiTextures.MAINTENANCE_BUTTON))
+                        .positioning(Positioning.absolute(0, 20))
+                .tooltip(List.of(Component.translatable("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))));
+        group.surface(Surface.UI_BACKGROUND_INVERSE);
         return group;
     }
 
@@ -383,4 +394,5 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                         FormattingUtil.formatNumber2Places(multiplier.get()))
                 .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
     }
+
 }

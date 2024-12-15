@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.GhostCircuitSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -397,9 +397,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine
 
                 // TODO fix this.
                 // if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                // SlotWidget circuitSlot = createCircuitConfigurator().createDefault();
-                // circuitSlot.setSelfPosition(new Position(120, 62));
-                // group.addWidget(circuitSlot);
+                // SlotComponent circuitSlot = createCircuitConfigurator().createDefault();
+                // circuitSlot.positioning(Positioning.absolute(120, 62));
+                // group.child(circuitSlot);
                 // }
 
                 return group;

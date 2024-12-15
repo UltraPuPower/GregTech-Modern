@@ -46,7 +46,7 @@ public class GTOreVeinInfoCategory extends UIRecipeCategory<GTOreVeinComponent> 
     public void setRecipe(IRecipeLayoutBuilder builder, GTOreVeinComponent wrapper, IFocusGroup focuses) {
         super.setRecipe(builder, wrapper, focuses);
         builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
-                .addItemStacks(GTOreVeinComponent.getContainedOresAndBlocks(wrapper.oreDefinition));
+                .addItemStacks(GTOreVeinComponent.getContainedOresAndBlocks(wrapper.getOre()));
     }
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {

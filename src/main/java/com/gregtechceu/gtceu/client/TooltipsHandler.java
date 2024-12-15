@@ -60,7 +60,7 @@ public class TooltipsHandler {
             if (I18n.exists(tooltipKey)) {
                 tooltips.add(1, Component.translatable(tooltipKey));
             } else {
-                List<MutableComponent> multiLang = LangHandler.getMultiLang(tooltipKey);
+                List<Component> multiLang = LangHandler.getMultiLang(tooltipKey);
                 if (multiLang != null && !multiLang.isEmpty()) {
                     tooltips.addAll(1, multiLang);
                 }

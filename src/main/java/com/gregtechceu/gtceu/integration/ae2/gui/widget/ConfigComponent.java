@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEConfigSlotComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,7 +27,7 @@ public abstract class ConfigComponent extends FlowLayout {
     @Getter
     protected final boolean isStocking;
 
-    public ConfigComponent(int x, int y, IConfigurableSlot[] config, boolean isStocking) {
+    public ConfigComponent(IConfigurableSlot[] config, boolean isStocking) {
         super(Sizing.fixed(config.length / 2 * 18), Sizing.fixed(18 * 4 + 2), Algorithm.HORIZONTAL);
         this.isStocking = isStocking;
         this.config = config;

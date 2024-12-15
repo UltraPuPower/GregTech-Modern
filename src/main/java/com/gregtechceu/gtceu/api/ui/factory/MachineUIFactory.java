@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.UIContainerScreen;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
@@ -27,17 +28,17 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     }
 
     @Override
-    public @Nullable UIAdapter<UIComponentGroup> createAdapter(Player player, MetaMachine holder) {
+    public @Nullable UIAdapter<UIComponentGroup> createAdapter(Player player, MetaMachine holder, UIContainerScreen screen) {
         UIModel model = UIModelLoader.get(holder.getDefinition().getId());
         if (model != null) {
             return model.createAdapterWithoutScreen(0, 0, 176, 166, UIComponentGroup.class);
         }
-        return super.createAdapter(player, holder);
+        return super.createAdapter(player, holder, screen);
     }
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-        if (menu.getHolder() instanceof IUIMachine machine) {
+        if (holder instanceof IUIMachine machine) {
             machine.loadServerUI(player, menu, holder);
         }
 
@@ -51,7 +52,7 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
             if (model != null) {
                 return;
             }
-            machine.loadClientUI(player, adapter);
+            machine.loadClientUI(player, adapter, holder);
         }
     }
 

@@ -4,10 +4,13 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.gregtechceu.gtceu.integration.rei.handler.UIDisplayCategory;
 import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.utils.Size;
 
@@ -41,7 +44,7 @@ public class GTRecipeREICategory extends UIDisplayCategory<GTRecipeDisplay> {
         var recipeType = category.getRecipeType();
         var size = recipeType.getRecipeUI().getRecipeViewerSize();
         this.size = new Size(size.width() + 8, size.height() + 8);
-        this.icon = IGui2Renderer.toDrawable(category.getIcon());
+        this.icon = toDrawable(category.getIcon());
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
@@ -93,5 +96,14 @@ public class GTRecipeREICategory extends UIDisplayCategory<GTRecipeDisplay> {
     @Override
     public Component getTitle() {
         return Component.translatable(category.getLanguageKey());
+    }
+
+    static Renderer toDrawable(UITexture guiTexture) {
+        return (graphics, bounds, mouseX, mouseY, delta) -> {
+            if (guiTexture == null) return;
+            if (!(graphics instanceof UIGuiGraphics)) graphics = UIGuiGraphics.of(graphics);
+            var uiGraphics = (UIGuiGraphics) graphics;
+            guiTexture.draw(uiGraphics, mouseX, mouseY, bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getWidth());
+        };
     }
 }

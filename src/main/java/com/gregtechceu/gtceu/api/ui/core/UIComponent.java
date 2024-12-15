@@ -15,10 +15,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import net.minecraft.sounds.SoundEvents;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -92,10 +89,12 @@ public interface UIComponent extends PositionedRectangle {
     ParentUIComponent parent();
 
     default void sendMessage(int id, Consumer<FriendlyByteBuf> writer) {
+        if (this.containerAccess() == null) return;
         this.containerAccess().sendMessage(this, id, writer);
     }
 
     default <R extends Record> void sendMenuUpdate(R message) {
+        if (this.containerAccess() == null) return;
         this.containerAccess().screen().getMenu().sendMessage(message);
     }
 
@@ -257,6 +256,7 @@ public interface UIComponent extends PositionedRectangle {
      */
     @Contract(pure = true)
     @Nullable
+    @UnmodifiableView
     List<ClientTooltipComponent> tooltip();
 
     /**

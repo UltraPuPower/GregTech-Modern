@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
@@ -35,7 +35,7 @@ import java.util.List;
 public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
 
     @OnlyIn(Dist.CLIENT)
-    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         adapter.rootComponent
                 .child(new FancyMachineUIComponent(this, Sizing.fixed(176), Sizing.fixed(166)));
     }
@@ -66,7 +66,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     default ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         var group = UIContainers.group(Sizing.content(), Sizing.content());
 
-        group.child(UIComponents.texture(GuiTextures.SCENE, 0, 0)
+        group.child(UIComponents.texture(GuiTextures.SCENE)
                 .sizing(Sizing.fixed(48), Sizing.fixed(16))
                 .positioning(Positioning.absolute((100 - 48) / 2, 60)));
         // TODO scene component

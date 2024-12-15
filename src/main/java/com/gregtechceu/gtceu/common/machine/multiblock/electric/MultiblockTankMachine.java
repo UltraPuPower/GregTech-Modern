@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -11,16 +9,16 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -81,20 +79,25 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = new WidgetGroup(0, 0, 90, 63);
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        var group = UIContainers.horizontalFlow(Sizing.fixed(90), Sizing.fixed(63));
+        group.surface(Surface.UI_BACKGROUND_INVERSE)
+                .padding(Insets.of(4));
 
-        group.addWidget(new ImageWidget(4, 4, 82, 55, GuiTextures.DISPLAY));
-        group.addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"));
-        group.addWidget(new LabelWidget(8, 18, this::getFluidLabel).setTextColor(-1).setDropShadow(true));
-        group.addWidget(new TankWidget(tank.getStorages()[0], 68, 23, true, true)
-                .setBackground(GuiTextures.FLUID_SLOT));
-
+        group.child(UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+                .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
+                .child(UIComponents.label(this::getFluidLabel)
+                        .color(Color.BLACK)
+                        .shadow(true))
+                .child(UIComponents.tank(tank.getStorages()[0])
+                        .canInsert(true)
+                        .canExtract(true)
+                        .positioning(Positioning.absolute(60, 15)))
+                .surface(Surface.UI_DISPLAY));
         return group;
     }
 
-    private String getFluidLabel() {
-        return String.valueOf(tank.getFluidInTank(0).getAmount());
+    private Component getFluidLabel() {
+        return Component.literal(String.valueOf(tank.getFluidInTank(0).getAmount()));
     }
 
     //////////////////////////////////////

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import lombok.Getter;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -22,35 +22,33 @@ import org.w3c.dom.Element;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class NinePatchTexture extends ResourceTexture {
 
-    @Getter
-    private final ResourceLocation texture;
-    private final int u, v;
-    private final Size cornerPatchSize;
-    private final Size centerPatchSize;
-    private final Size textureSize;
-    private final boolean repeat;
+    private int offsetX, offsetY;
+    private Size cornerPatchSize;
+    private Size centerPatchSize;
+    private Size textureSize;
+    private boolean repeat;
 
-    public NinePatchTexture(ResourceLocation texture, int u, int v, Size cornerPatchSize, Size centerPatchSize,
+    public NinePatchTexture(ResourceLocation imageLocation, int u, int v, Size cornerPatchSize, Size centerPatchSize,
                             Size textureSize, boolean repeat) {
-        super(texture, u, v, textureSize.width(), textureSize.height());
-        this.texture = texture;
-        this.u = u;
-        this.v = v;
+        super(imageLocation, u, v, textureSize.width(), textureSize.height());
+        this.offsetX = u;
+        this.offsetY = v;
         this.textureSize = textureSize;
         this.cornerPatchSize = cornerPatchSize;
         this.centerPatchSize = centerPatchSize;
         this.repeat = repeat;
     }
 
-    public NinePatchTexture(ResourceLocation texture, int u, int v, Size patchSize, Size textureSize, boolean repeat) {
-        this(texture, u, v, patchSize, patchSize, textureSize, repeat);
+    public NinePatchTexture(ResourceLocation imageLocation, int u, int v, Size patchSize, Size textureSize, boolean repeat) {
+        this(imageLocation, u, v, patchSize, patchSize, textureSize, repeat);
     }
 
-    public NinePatchTexture(ResourceLocation texture, Size patchSize, Size textureSize, boolean repeat) {
-        this(texture, 0, 0, patchSize, textureSize, repeat);
+    public NinePatchTexture(ResourceLocation imageLocation, Size patchSize, Size textureSize, boolean repeat) {
+        this(imageLocation, 0, 0, patchSize, textureSize, repeat);
     }
 
     public void draw(UIGuiGraphics context, PositionedRectangle rectangle) {
@@ -61,16 +59,16 @@ public class NinePatchTexture extends ResourceTexture {
         int rightEdge = this.cornerPatchSize.width() + this.centerPatchSize.width();
         int bottomEdge = this.cornerPatchSize.height() + this.centerPatchSize.height();
 
-        context.blit(this.texture, x, y, this.u, this.v, this.cornerPatchSize.width(), this.cornerPatchSize.height(),
+        context.blit(this.imageLocation, x, y, this.offsetX, this.offsetY, this.cornerPatchSize.width(), this.cornerPatchSize.height(),
                 this.textureSize.width(), this.textureSize.height());
-        context.blit(this.texture, x + width - this.cornerPatchSize.width(), y, this.u + rightEdge, this.v,
+        context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(), y, this.offsetX + rightEdge, this.offsetY,
                 this.cornerPatchSize.width(), this.cornerPatchSize.height(), this.textureSize.width(),
                 this.textureSize.height());
-        context.blit(this.texture, x, y + height - this.cornerPatchSize.height(), this.u, this.v + bottomEdge,
+        context.blit(this.imageLocation, x, y + height - this.cornerPatchSize.height(), this.offsetX, this.offsetY + bottomEdge,
                 this.cornerPatchSize.width(), this.cornerPatchSize.height(), this.textureSize.width(),
                 this.textureSize.height());
-        context.blit(this.texture, x + width - this.cornerPatchSize.width(), y + height - this.cornerPatchSize.height(),
-                this.u + rightEdge, this.v + bottomEdge, this.cornerPatchSize.width(), this.cornerPatchSize.height(),
+        context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(), y + height - this.cornerPatchSize.height(),
+                this.offsetX + rightEdge, this.offsetY + bottomEdge, this.cornerPatchSize.width(), this.cornerPatchSize.height(),
                 this.textureSize.width(), this.textureSize.height());
 
         if (this.repeat) {
@@ -88,31 +86,31 @@ public class NinePatchTexture extends ResourceTexture {
         int bottomEdge = this.cornerPatchSize.height() + this.centerPatchSize.height();
 
         if (width > doubleCornerWidth && height > doubleCornerHeight) {
-            context.blit(this.texture, x + this.cornerPatchSize.width(), y + this.cornerPatchSize.height(),
-                    width - doubleCornerWidth, height - doubleCornerHeight, this.u + this.cornerPatchSize.width(),
-                    this.v + this.cornerPatchSize.height(), this.centerPatchSize.width(), this.centerPatchSize.height(),
+            context.blit(this.imageLocation, x + this.cornerPatchSize.width(), y + this.cornerPatchSize.height(),
+                    width - doubleCornerWidth, height - doubleCornerHeight, this.offsetX + this.cornerPatchSize.width(),
+                    this.offsetY + this.cornerPatchSize.height(), this.centerPatchSize.width(), this.centerPatchSize.height(),
                     this.textureSize.width(), this.textureSize.height());
         }
 
         if (width > doubleCornerWidth) {
-            context.blit(this.texture, x + this.cornerPatchSize.width(), y, width - doubleCornerWidth,
-                    this.cornerPatchSize.height(), this.u + this.cornerPatchSize.width(), this.v,
+            context.blit(this.imageLocation, x + this.cornerPatchSize.width(), y, width - doubleCornerWidth,
+                    this.cornerPatchSize.height(), this.offsetX + this.cornerPatchSize.width(), this.offsetY,
                     this.centerPatchSize.width(), this.cornerPatchSize.height(), this.textureSize.width(),
                     this.textureSize.height());
-            context.blit(this.texture, x + this.cornerPatchSize.width(), y + height - this.cornerPatchSize.height(),
-                    width - doubleCornerWidth, this.cornerPatchSize.height(), this.u + this.cornerPatchSize.width(),
-                    this.v + bottomEdge, this.centerPatchSize.width(), this.cornerPatchSize.height(),
+            context.blit(this.imageLocation, x + this.cornerPatchSize.width(), y + height - this.cornerPatchSize.height(),
+                    width - doubleCornerWidth, this.cornerPatchSize.height(), this.offsetX + this.cornerPatchSize.width(),
+                    this.offsetY + bottomEdge, this.centerPatchSize.width(), this.cornerPatchSize.height(),
                     this.textureSize.width(), this.textureSize.height());
         }
 
         if (height > doubleCornerHeight) {
-            context.blit(this.texture, x, y + this.cornerPatchSize.height(), this.cornerPatchSize.width(),
-                    height - doubleCornerHeight, this.u, this.v + this.cornerPatchSize.height(),
+            context.blit(this.imageLocation, x, y + this.cornerPatchSize.height(), this.cornerPatchSize.width(),
+                    height - doubleCornerHeight, this.offsetX, this.offsetY + this.cornerPatchSize.height(),
                     this.cornerPatchSize.width(), this.centerPatchSize.height(), this.textureSize.width(),
                     this.textureSize.height());
-            context.blit(this.texture, x + width - this.cornerPatchSize.width(), y + this.cornerPatchSize.height(),
-                    this.cornerPatchSize.width(), height - doubleCornerHeight, this.u + rightEdge,
-                    this.v + this.cornerPatchSize.height(), this.cornerPatchSize.width(), this.centerPatchSize.height(),
+            context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(), y + this.cornerPatchSize.height(),
+                    this.cornerPatchSize.width(), height - doubleCornerHeight, this.offsetX + rightEdge,
+                    this.offsetY + this.cornerPatchSize.height(), this.cornerPatchSize.width(), this.centerPatchSize.height(),
                     this.textureSize.width(), this.textureSize.height());
         }
     }
@@ -132,10 +130,10 @@ public class NinePatchTexture extends ResourceTexture {
                 float leftoverWidth = width - doubleCornerWidth;
                 while (leftoverWidth > 0) {
                     float drawWidth = Math.min(this.centerPatchSize.width(), leftoverWidth);
-                    context.blit(this.texture, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth,
+                    context.blit(this.imageLocation, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth,
                             y + this.cornerPatchSize.height() + leftoverHeight - drawHeight, drawWidth, drawHeight,
-                            this.u + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth,
-                            this.v + this.cornerPatchSize.height() + this.centerPatchSize.height() - drawHeight,
+                            this.offsetX + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth,
+                            this.offsetY + this.cornerPatchSize.height() + this.centerPatchSize.height() - drawHeight,
                             drawWidth, drawHeight, this.textureSize.width(), this.textureSize.height());
 
                     leftoverWidth -= this.centerPatchSize.width();
@@ -149,14 +147,14 @@ public class NinePatchTexture extends ResourceTexture {
             while (leftoverWidth > 0) {
                 float drawWidth = Math.min(this.centerPatchSize.width(), leftoverWidth);
 
-                context.blit(this.texture, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth, y, drawWidth,
+                context.blit(this.imageLocation, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth, y, drawWidth,
                         this.cornerPatchSize.height(),
-                        this.u + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth, this.v,
+                        this.offsetX + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth, this.offsetY,
                         drawWidth, this.cornerPatchSize.height(), this.textureSize.width(), this.textureSize.height());
-                context.blit(this.texture, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth,
+                context.blit(this.imageLocation, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth,
                         y + height - this.cornerPatchSize.height(), drawWidth, this.cornerPatchSize.height(),
-                        this.u + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth,
-                        this.v + bottomEdge, drawWidth, this.cornerPatchSize.height(), this.textureSize.width(),
+                        this.offsetX + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth,
+                        this.offsetY + bottomEdge, drawWidth, this.cornerPatchSize.height(), this.textureSize.width(),
                         this.textureSize.height());
 
                 leftoverWidth -= this.centerPatchSize.width();
@@ -167,14 +165,14 @@ public class NinePatchTexture extends ResourceTexture {
             float leftoverHeight = height - doubleCornerHeight;
             while (leftoverHeight > 0) {
                 float drawHeight = Math.min(this.centerPatchSize.height(), leftoverHeight);
-                context.blit(this.texture, x, y + this.cornerPatchSize.height() + leftoverHeight - drawHeight,
-                        this.cornerPatchSize.width(), drawHeight, this.u,
-                        this.v + this.cornerPatchSize.height() + this.centerPatchSize.height() - drawHeight,
+                context.blit(this.imageLocation, x, y + this.cornerPatchSize.height() + leftoverHeight - drawHeight,
+                        this.cornerPatchSize.width(), drawHeight, this.offsetX,
+                        this.offsetY + this.cornerPatchSize.height() + this.centerPatchSize.height() - drawHeight,
                         this.cornerPatchSize.width(), drawHeight, this.textureSize.width(), this.textureSize.height());
-                context.blit(this.texture, x + width - this.cornerPatchSize.width(),
+                context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(),
                         y + this.cornerPatchSize.height() + leftoverHeight - drawHeight, this.cornerPatchSize.width(),
-                        drawHeight, this.u + rightEdge,
-                        this.v + this.cornerPatchSize.height() + this.centerPatchSize.height() - drawHeight,
+                        drawHeight, this.offsetX + rightEdge,
+                        this.offsetY + this.cornerPatchSize.height() + this.centerPatchSize.height() - drawHeight,
                         this.cornerPatchSize.width(), drawHeight, this.textureSize.width(), this.textureSize.height());
 
                 leftoverHeight -= this.centerPatchSize.height();
@@ -202,7 +200,8 @@ public class NinePatchTexture extends ResourceTexture {
 
     @ApiStatus.Internal
     public static NinePatchTexture get(ResourceLocation id) {
-        return MetadataLoader.LOADED_TEXTURES.remove(id);
+        return MetadataLoader.LOADED_TEXTURES.computeIfAbsent(id,
+                invalidId -> new NinePatchTexture(invalidId, 0, 0, Size.zero(), Size.zero(), false));
     }
 
     public static NinePatchTexture parse(Element element) {
@@ -228,7 +227,6 @@ public class NinePatchTexture extends ResourceTexture {
         @Override
         protected void apply(Map<ResourceLocation, JsonElement> prepared, ResourceManager manager,
                              ProfilerFiller profiler) {
-            LOADED_TEXTURES.clear();
             prepared.forEach((resourceId, jsonElement) -> {
                 if (!(jsonElement instanceof JsonObject object)) return;
 
@@ -248,17 +246,39 @@ public class NinePatchTexture extends ResourceTexture {
                     var centerPatchSize = Size.of(GsonHelper.getAsInt(centerPatchObject, "width"),
                             GsonHelper.getAsInt(centerPatchObject, "height"));
 
-                    LOADED_TEXTURES.put(resourceId,
-                            new NinePatchTexture(texture, u, v, cornerPatchSize, centerPatchSize, textureSize, repeat));
+                    if (LOADED_TEXTURES.containsKey(resourceId)) {
+                        update(LOADED_TEXTURES.get(resourceId), texture, textureSize, u, v, repeat,
+                                cornerPatchSize, centerPatchSize);
+                    } else {
+                        LOADED_TEXTURES.put(resourceId,
+                                new NinePatchTexture(texture, u, v, cornerPatchSize, centerPatchSize, textureSize, repeat));
+                    }
                 } else {
                     var patchSizeObject = GsonHelper.getAsJsonObject(object, "patch_size");
                     var patchSize = Size.of(GsonHelper.getAsInt(patchSizeObject, "width"),
                             GsonHelper.getAsInt(patchSizeObject, "height"));
 
-                    LOADED_TEXTURES.put(resourceId,
-                            new NinePatchTexture(texture, u, v, patchSize, textureSize, repeat));
+                    if (LOADED_TEXTURES.containsKey(resourceId)) {
+                        update(LOADED_TEXTURES.get(resourceId), texture, textureSize, u, v, repeat, patchSize, patchSize);
+                    } else {
+                        LOADED_TEXTURES.put(resourceId,
+                                new NinePatchTexture(texture, u, v, patchSize, textureSize, repeat));
+                    }
                 }
             });
         }
+
+        public void update(NinePatchTexture tex, ResourceLocation texture,
+                           Size textureSize, int u, int v, boolean repeat,
+                           Size cornerPatchSize, Size centerPatchSize) {
+            tex.imageLocation = texture;
+            tex.offsetX = u;
+            tex.offsetY = v;
+            tex.cornerPatchSize = cornerPatchSize;
+            tex.centerPatchSize = centerPatchSize;
+            tex.textureSize = textureSize;
+            tex.repeat = repeat;
+        }
+
     }
 }

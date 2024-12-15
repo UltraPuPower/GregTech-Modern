@@ -16,7 +16,7 @@ public interface IUIHolder<T> {
         public void loadServerUI(Player player, UIContainerMenu<Object> menu, Object holder) {}
 
         @Override
-        public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {}
+        public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, Object holder) {}
 
         @Override
         public boolean isInvalid() {
@@ -35,7 +35,7 @@ public interface IUIHolder<T> {
     void loadServerUI(Player player, UIContainerMenu<T> menu, T holder);
 
     @OnlyIn(Dist.CLIENT)
-    void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter);
+    void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, T holder);
 
     boolean isInvalid();
 

@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
@@ -166,6 +163,8 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     public void update(float delta, int mouseX, int mouseY) {
         super.update(delta, mouseX, mouseY);
 
+        this.slot.canInsertOverride = this.canInsert;
+        this.slot.canExtractOverride = this.canExtract;
         ((UISlotExtension) this.slot).gtceu$setDisabledOverride(!this.drawContents);
     }
 
@@ -187,12 +186,15 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     @Override
     public void mount(ParentUIComponent parent, int x, int y) {
         super.mount(parent, x, y);
-        finalizeSlot(containerAccess().screen());
+        if (containerAccess().screen() != null) {
+            finalizeSlot(containerAccess().screen());
+        }
     }
 
     @Override
     public void dismount(DismountReason reason) {
-        if (reason == DismountReason.REMOVED) {
+        /*
+        if (reason == DismountReason.REMOVED && containerAccess().screen() != null) {
             var menu = containerAccess().screen().getMenu();
 
             UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
@@ -201,18 +203,23 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
             ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
             ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
         }
+        */
         super.dismount(reason);
     }
 
     @Override
     public void dispose() {
-        var menu = containerAccess().screen().getMenu();
+        /*
+        if (containerAccess().screen() != null) {
+            var menu = containerAccess().screen().getMenu();
 
-        UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
-        menu.slots.set(this.slot.index, placeholder);
-        placeholder.index = this.slot.index;
-        ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
-        ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
+            UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
+            menu.slots.set(this.slot.index, placeholder);
+            placeholder.index = this.slot.index;
+            ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
+            ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
+        }
+        */
         super.dispose();
     }
 
@@ -229,10 +236,12 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
                 if (menuSlot instanceof SlotItemHandler menuHandler && innerSlot instanceof SlotItemHandler innerHandler) {
                     if (menuHandler.getItemHandler() == innerHandler.getItemHandler()) {
                         foundIndex = menuSlot.index;
+                        break;
                     }
                 } else {
                     if (menuSlot.container == innerSlot.container) {
                         foundIndex = menuSlot.index;
+                        break;
                     }
                 }
             }
@@ -241,21 +250,23 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
             menu.slots.set(foundIndex, this.slot);
             ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(foundIndex, this.slot.getItem());
             ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(foundIndex, this.slot.getItem());
+            ((SlotAccessor) this.slot).gtceu$setSlotIndex(foundIndex);
         }
-
-        ((SlotAccessor) slot).gtceu$setX(this.x() - screen.getGuiLeft());
-        ((SlotAccessor) slot).gtceu$setY(this.y() - screen.getGuiTop());
     }
 
     @Override
     public BaseUIComponent x(int x) {
-        ((SlotAccessor) slot).gtceu$setX(x);
+        if (containerAccess() != null && containerAccess().adapter() != null) {
+            ((SlotAccessor) slot).gtceu$setX(x + 1 - containerAccess().adapter().leftPos());
+        }
         return super.x(x);
     }
 
     @Override
     public BaseUIComponent y(int y) {
-        ((SlotAccessor) slot).gtceu$setY(y);
+        if (containerAccess() != null && containerAccess().adapter() != null) {
+            ((SlotAccessor) slot).gtceu$setY(y + 1 - containerAccess().adapter().topPos());
+        }
         return super.y(y);
     }
 
@@ -354,9 +365,6 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
             return inner.getContainerSlot();
         }
 
-        /**
-         * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
-         */
         @Override
         public boolean mayPlace(@NotNull ItemStack stack) {
             return Objects.requireNonNullElseGet(canInsertOverride, () -> inner.isActive());
@@ -378,9 +386,6 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
             inner.setByPlayer(stack);
         }
 
-        /**
-         * Helper method to put a stack in the slot.
-         */
         @Override
         public void set(@NotNull ItemStack stack) {
             inner.set(stack);
@@ -407,22 +412,20 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
             return inner.getNoItemIcon();
         }
 
-        /**
-         * Decrease the size of the stack in slot (first int arg) by the amount of the second int arg. Returns the new
-         * stack.
-         */
         @Override
         @NotNull
         public ItemStack remove(int amount) {
             return inner.remove(amount);
         }
 
-        /**
-         * Return whether this slot's stack can be taken from this slot.
-         */
         @Override
         public boolean mayPickup(@NotNull Player player) {
             return Objects.requireNonNullElseGet(canExtractOverride, () -> inner.mayPickup(player));
+        }
+
+        @Override
+        public void onQuickCraft(ItemStack stack, ItemStack newStack) {
+            inner.onQuickCraft(stack, newStack);
         }
 
         @Override

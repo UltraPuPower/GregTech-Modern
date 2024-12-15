@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
@@ -50,7 +50,7 @@ public class PageSwitcherComponent implements IFancyUIProvider {
                         scrollableGroup = UIContainers.verticalFlow(Sizing.fill(), Sizing.fill()))
                 .scrollbarThickness(8)
                 .scrollbar(ScrollContainer.Scrollbar.custom(GuiTextures.SLIDER_BACKGROUND_VERTICAL.imageLocation,
-                        GuiTextures.BUTTON.getTexture())));
+                        GuiTextures.BUTTON.imageLocation)));
 
         var groupedPages = pages.stream().collect(Collectors.groupingBy(
                 page -> Objects.requireNonNullElse(page.getPageGroupingData(), new PageGroupingData(null, -1))));
@@ -77,7 +77,7 @@ public class PageSwitcherComponent implements IFancyUIProvider {
                                 .renderer(ButtonComponent.Renderer.texture(GuiTextures.BACKGROUND.imageLocation,
                                         0, 0, 16, 16))
                                 .sizing(Sizing.fill()));
-                        pageWidget.child(UIComponents.texture(page.getTabIcon(), 0, 0)
+                        pageWidget.child(UIComponents.texture(page.getTabIcon())
                                 .positioning(Positioning.absolute(4, 4))
                                 .sizing(Sizing.fixed(17)));
                         // For some reason, this doesn't work in any other way:

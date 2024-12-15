@@ -7,9 +7,16 @@ import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridComponent;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -18,6 +25,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -31,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author GlodBlock
- * @Description The Output Bus that can directly send its contents to ME storage network.
+ * @apiNote The Output Bus that can directly send its contents to ME storage network.
  * @date 2023/4/19-20:37
  */
 @MethodsReturnNonnullByDefault
@@ -101,14 +109,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
+        FlowLayout group = UIContainers.verticalFlow(Sizing.fixed(170), Sizing.fixed(65));
+        group.padding(Insets.of(5));
         // ME Network status
-        group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
-        group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
+        group.child(UIComponents.label(() -> this.isOnline ?
+                        Component.translatable("gtceu.gui.me_network.online") :
+                        Component.translatable("gtceu.gui.me_network.offline")));
+        group.child(UIComponents.label(Component.translatable("gtceu.gui.waiting_list")));
         // display list
-        group.addWidget(new AEListGridWidget.Item(5, 20, 3, this.internalBuffer));
+        group.child(new AEListGridComponent.Item(3, this.internalBuffer)
+                .positioning(Positioning.absolute(5, 20)));
 
         return group;
     }

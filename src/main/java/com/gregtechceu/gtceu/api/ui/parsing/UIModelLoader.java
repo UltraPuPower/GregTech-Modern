@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.parsing;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.Minecraft;
@@ -92,6 +93,12 @@ public class UIModelLoader implements ResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(ResourceManager manager) {
         LOADED_MODELS.clear();
+        GTRegistries.RECIPE_TYPES.forEach(type -> type.getRecipeUI().reloadCustomUI());
+        GTRegistries.MACHINES.forEach(def -> {
+            if (def.getEditableUI() != null) {
+                def.getEditableUI().reloadCustomUI();
+            }
+        });
 
         manager.listResources(PATH_PREFIX, identifier -> identifier.getPath().endsWith(PATH_SUFFIX))
                 .forEach((resourceId, resource) -> {

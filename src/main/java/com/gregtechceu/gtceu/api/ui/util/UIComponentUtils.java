@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.gui;
+package com.gregtechceu.gtceu.api.ui.util;
 
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;

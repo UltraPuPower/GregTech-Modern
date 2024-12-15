@@ -195,7 +195,9 @@ public class SceneComponent extends UIComponentGroup {
         if (particleManager != null) {
             particleManager.tick();
         }
-        tooltip(getTooltips(Screen.getTooltipFromItem(Minecraft.getInstance(), hoverItem)));
+        if (hoverItem != null) {
+            tooltip(getTooltips(Screen.getTooltipFromItem(Minecraft.getInstance(), hoverItem)));
+        }
     }
 
     public void releaseCacheBuffer() {

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
@@ -178,7 +178,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         var menu = adapter.menu();
         var rootComponent = adapter.rootComponent;
         var screenGroup = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166));
@@ -204,7 +204,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
         screenGroup.child(UIComponents.label(getBlockState().getBlock().getName())
                 .positioning(Positioning.relative(0, 0)));
-        screenGroup.child(new PredicatedTextureComponent(GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure), 18, 18)
+        screenGroup.child(new PredicatedTextureComponent(GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
                 .positioning(Positioning.absolute(pos.x + group.width() / 2 - 9,
                         pos.y + group.height() / 2 - 9)))
                 .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT));

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -97,7 +97,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
         group.padding(Insets.both(10, 5));
         group.child(UIComponents.label(Component.translatable(getUITitle())));
 
-        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled)
+        group.child(UIComponents.toggleButton(GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled)
                 .positioning(Positioning.absolute(0, 5))
                 .sizing(Sizing.fixed(20)));
 

@@ -15,11 +15,10 @@ import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -78,7 +77,7 @@ public abstract class BaseUIComponent implements UIComponent {
     protected boolean dirty = false;
 
     protected CursorStyle cursorStyle = CursorStyle.NONE;
-    protected List<ClientTooltipComponent> tooltip = List.of();
+    protected List<ClientTooltipComponent> tooltip = new ArrayList<>();
 
     @Getter
     @Setter
@@ -325,9 +324,10 @@ public abstract class BaseUIComponent implements UIComponent {
         return this;
     }
 
+    @UnmodifiableView
     @Override
     public List<ClientTooltipComponent> tooltip() {
-        return this.tooltip;
+        return Collections.unmodifiableList(this.tooltip);
     }
 
     @Override

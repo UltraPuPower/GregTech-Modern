@@ -66,7 +66,7 @@ public class LongInputComponent extends NumberInputComponent<Long> {
 
     @Override
     protected void setTextFieldRange(TextBoxComponent textField, Long min, Long max) {
-        textField.setNumbersOnly(min, max);
+        textField.numbersOnly(min, max);
     }
 
     @Override

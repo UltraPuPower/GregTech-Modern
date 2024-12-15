@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigComponent;
@@ -14,8 +14,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -41,13 +39,13 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorn
 
 /**
  * @author GlodBlock
- * @Description A configurable slot for {@link FluidStack}
+ * @apiNote A configurable slot for {@link FluidStack}
  * @date 2023/4/21-0:50
  */
 public class AEFluidConfigSlotComponent extends AEConfigSlotComponent implements GhostIngredientSlot<FluidStack> {
 
-    public AEFluidConfigSlotComponent(int x, int y, ConfigComponent widget, int index) {
-        super(new Position(x, y), new Size(18, 18 * 2), widget, index);
+    public AEFluidConfigSlotComponent(ConfigComponent widget, int index) {
+        super(widget, index);
     }
 
     @Override

@@ -176,15 +176,11 @@ public class GTOreVeinComponent extends FlowLayout {
                 .textType(com.gregtechceu.gtceu.api.ui.texture.TextTexture.TextType.LEFT_ROLL)
                 .maxWidth(width - 10)
                 .positioning(Positioning.absolute(width - 10, 16)));
-        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.spawn_range"))
-                .verticalSizing(Sizing.fixed(10)));
-        child(UIComponents.label(Component.literal(range))
-                .verticalSizing(Sizing.fixed(10)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.spawn_range")));
+        child(UIComponents.label(Component.literal(range)));
 
-        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight))
-                .verticalSizing(Sizing.fixed(10)));
-        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions"))
-                .verticalSizing(Sizing.fixed(10)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions")));
         setupDimensionMarker(80);
     }
 
@@ -193,10 +189,8 @@ public class GTOreVeinComponent extends FlowLayout {
                 .textType(com.gregtechceu.gtceu.api.ui.texture.TextTexture.TextType.LEFT_ROLL)
                 .maxWidth(width - 10)
                 .positioning(Positioning.absolute(width - 10, 16)));
-        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight))
-                .verticalSizing(Sizing.fixed(10)));
-        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions"))
-                .verticalSizing(Sizing.fixed(10)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions")));
         setupDimensionMarker(60);
     }
 
@@ -205,10 +199,8 @@ public class GTOreVeinComponent extends FlowLayout {
                 .textType(com.gregtechceu.gtceu.api.ui.texture.TextTexture.TextType.LEFT_ROLL)
                 .maxWidth(width - 10)
                 .positioning(Positioning.absolute(width - 10, 16)));
-        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight))
-                .verticalSizing(Sizing.fixed(10)));
-        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions"))
-                .verticalSizing(Sizing.fixed(10)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.weight", weight)));
+        child(UIComponents.label(Component.translatable("gtceu.jei.ore_vein_diagram.dimensions")));
         setupDimensionMarker(60);
     }
 

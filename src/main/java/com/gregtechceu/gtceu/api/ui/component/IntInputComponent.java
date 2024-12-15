@@ -71,6 +71,6 @@ public class IntInputComponent extends NumberInputComponent<Integer> {
 
     @Override
     protected void setTextFieldRange(TextBoxComponent textField, Integer min, Integer max) {
-        textField.setNumbersOnly(min, max);
+        textField.numbersOnly(min, max);
     }
 }

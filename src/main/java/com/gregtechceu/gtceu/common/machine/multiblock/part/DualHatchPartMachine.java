@@ -1,17 +1,16 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -133,28 +132,34 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         int slots = getInventorySize();
         int tanks = (int) Math.sqrt(slots);
-        var group = new WidgetGroup(0, 0, 18 * (tanks + 1) + 16, 18 * tanks + 16);
-        var container = new WidgetGroup(4, 4, 18 * (tanks + 1) + 8, 18 * tanks + 8);
+        var group = UIContainers.group(Sizing.content(8), Sizing.content(8));
+
+        GridLayout container = UIContainers.grid(Sizing.content(4), Sizing.content(4), tanks, tanks + 1);
 
         int index = 0;
         for (int y = 0; y < tanks; y++) {
             for (int x = 0; x < tanks; x++) {
-                container.addWidget(new SlotWidget(
-                        getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-                        .setBackgroundTexture(GuiTextures.SLOT)
-                        .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
+                container.child(UIComponents.slot(
+                                getInventory().storage, index++)
+                                .canInsert(io.support(IO.IN))
+                                .canExtract(true)
+                        .backgroundTexture(GuiTextures.SLOT)
+                        .ingredientIO(this.io),
+                        y, x);
             }
         }
 
         index = 0;
         for (int y = 0; y < tanks; y++) {
-            container.addWidget(new TankWidget(
-                    tank.getStorages()[index++], 4 + tanks * 18, 4 + y * 18, true, io.support(IO.IN))
-                    .setBackground(GuiTextures.FLUID_SLOT));
+            container.child(UIComponents.tank(tank.getStorages()[index++])
+                    .canInsert(io.support(IO.IN))
+                    .canExtract(true)
+                    .backgroundTexture(GuiTextures.FLUID_SLOT),
+                    y, tanks);
         }
 
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
+        container.surface(Surface.UI_BACKGROUND_INVERSE);
+        group.child(container);
         return group;
     }
 

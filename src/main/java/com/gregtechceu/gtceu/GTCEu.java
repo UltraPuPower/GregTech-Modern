@@ -78,10 +78,6 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_SHIMMER);
     }
 
-    public static boolean isJAVDLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_JAVD);
-    }
-
     public static boolean isFTBTeamsLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_FTB_TEAMS);
     }

@@ -4,8 +4,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
+import com.lowdragmc.lowdraglib.gui.ingredient.IRecipeIngredientSlot;
+import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -25,11 +28,11 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
     protected T component;
     protected EMIUIAdapter adapter;
     @Getter
-    protected List<EmiIngredient> inputs;
+    protected List<EmiIngredient> inputs = new ArrayList<>();
     @Getter
-    protected List<EmiStack> outputs;
+    protected List<EmiStack> outputs = new ArrayList<>();
     @Getter
-    protected List<EmiIngredient> catalysts;
+    protected List<EmiIngredient> catalysts = new ArrayList<>();
     @Getter
     protected int displayWidth, displayHeight;
 
@@ -41,13 +44,45 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
      */
     public UIEMIRecipe(Supplier<T> componentSupplier) {
         this.component = componentSupplier.get();
+        // inflate up to a sane default
+        this.component.inflate(Size.of(200, 200));
 
         Bounds bounds = new Bounds(0, 0, this.component.width(), this.component.height());
         this.adapter = new EMIUIAdapter(bounds);
         this.adapter.rootComponent().child(this.component);
+        this.adapter.prepare();
 
         this.displayWidth = this.component.width();
         this.displayHeight = this.component.height();
+
+        for (UIComponent c : getFlatWidgetCollection(this.component)) {
+            if (c instanceof ClickableIngredientSlot<?> slot) {
+                var io = slot.ingredientIO();
+
+                EmiIngredient ingredient;
+                var override = slot.ingredientOverride();
+                if (override != null) {
+                    ingredient = (EmiIngredient) override;
+                } else {
+                    var converter = EmiStackConverter.getForNullable(slot.ingredientClass());
+                    if (converter == null) {
+                        continue;
+                    }
+                    //noinspection unchecked,rawtypes
+                    ingredient = ((EmiStackConverter.Converter) converter).convertTo(slot);
+                }
+
+                if (io == IO.IN || io == IO.BOTH) {
+                    inputs.add(ingredient);
+                }
+                if (io == IO.OUT || io == IO.BOTH) {
+                    outputs.add(ingredient.getEmiStacks().get(0));
+                }
+                if (io == IO.NONE) {
+                    catalysts.add(ingredient);
+                }
+            }
+        }
     }
 
     @Override
@@ -64,18 +99,18 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
                 */
                 var io = slot.ingredientIO();
                 if (io != null) {
-                    EmiIngredient ingredients;
+                    EmiIngredient ingredient;
 
                     var override = slot.ingredientOverride();
                     if (override != null) {
-                        ingredients = (EmiIngredient) override;
+                        ingredient = (EmiIngredient) override;
                     } else {
                         var converter = EmiStackConverter.getForNullable(slot.ingredientClass());
                         if (converter == null) {
                             continue;
                         }
                         //noinspection unchecked,rawtypes
-                        ingredients = ((EmiStackConverter.Converter) converter).convertTo(slot);
+                        ingredient = ((EmiStackConverter.Converter) converter).convertTo(slot);
                     }
 
                     SlotWidget slotWidget = null;
@@ -88,11 +123,11 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
                         tankW.setFluidTank(EmptyFluidHandler.INSTANCE)
                                 .drawContents(false)
                                 .drawTooltip(false);
-                        long capacity = Math.max(1, ingredients.getAmount());
-                        slotWidget = new TankWidget(ingredients, w.x(), w.y(), w.width(), w.height(), capacity);
+                        long capacity = Math.max(1, ingredient.getAmount());
+                        slotWidget = new TankWidget(ingredient, w.x(), w.y(), w.width(), w.height(), capacity);
                     }
                     if (slotWidget == null) {
-                        slotWidget = new SlotWidget(ingredients, w.x(), w.y());
+                        slotWidget = new SlotWidget(ingredient, w.x(), w.y());
                     }
 
                     slotWidget.customBackground(null, w.x(), w.y(), w.width(), w.height()).drawBack(false);

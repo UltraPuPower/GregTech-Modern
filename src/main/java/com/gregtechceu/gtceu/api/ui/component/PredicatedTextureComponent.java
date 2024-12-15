@@ -15,8 +15,8 @@ public class PredicatedTextureComponent extends TextureComponent {
     private BooleanSupplier predicate;
     private boolean isVisible = true;
 
-    public PredicatedTextureComponent(UITexture area, int regionWidth, int regionHeight) {
-        super(area, regionWidth, regionHeight);
+    public PredicatedTextureComponent(UITexture area) {
+        super(area);
     }
 
     /*

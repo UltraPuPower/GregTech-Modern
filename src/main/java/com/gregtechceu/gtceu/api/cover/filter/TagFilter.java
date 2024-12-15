@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -123,7 +123,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         UIComponentGroup group = UIContainers.group(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3));
         group.positioning(Positioning.absolute(x, y));
 
-        group.child(UIComponents.texture(GuiTextures.INFO_ICON, 20, 20)
+        group.child(UIComponents.texture(GuiTextures.INFO_ICON)
                         .sizing(Sizing.fixed(20))
                         .positioning(Positioning.absolute(0, 0))
                 .tooltip(LangHandler.getMultiLang("cover.tag_filter.info")));

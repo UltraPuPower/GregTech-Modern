@@ -48,6 +48,17 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     }
 
     @Override
+    public boolean enabled() {
+        return this.gtceu$getWrapper().enabled();
+    }
+
+    @Override
+    public VanillaWidgetComponent enabled(boolean enabled) {
+        this.gtceu$getWrapper().enabled(enabled);
+        return this.gtceu$getWrapper();
+    }
+
+    @Override
     public void applySizing() {
         this.gtceu$getWrapper().applySizing();
     }

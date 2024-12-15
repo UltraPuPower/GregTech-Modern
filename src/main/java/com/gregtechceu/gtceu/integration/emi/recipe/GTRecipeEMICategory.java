@@ -4,11 +4,15 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.emi.IGui2Renderable;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import dev.emi.emi.api.render.EmiRenderable;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
@@ -26,7 +30,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     private final GTRecipeCategory category;
 
     private GTRecipeEMICategory(GTRecipeCategory category) {
-        super(category.registryKey, IGui2Renderable.toDrawable(category.getIcon(), 16, 16));
+        super(category.registryKey, toDrawable(category.getIcon(), 16, 16));
         this.category = category;
     }
 
@@ -63,5 +67,15 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     @Override
     public Component getName() {
         return Component.translatable(category.getLanguageKey());
+    }
+
+
+    static EmiRenderable toDrawable(UITexture guiTexture, int width, int height) {
+        return (graphics, x, y, delta) -> {
+            if (guiTexture == null) return;
+            if (!(graphics instanceof UIGuiGraphics)) graphics = UIGuiGraphics.of(graphics);
+            var uiGraphics = (UIGuiGraphics) graphics;
+            guiTexture.draw(uiGraphics, 0, 0, x, y, width, height);
+        };
     }
 }

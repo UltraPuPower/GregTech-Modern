@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockOreInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 
+import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitComponent;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
@@ -114,8 +115,9 @@ public class GTJEIPlugin implements IModPlugin {
         GTBedrockFluidInfoCategory.registerRecipes(registration);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreInfoCategory.registerRecipes(registration);
+
         registration.addRecipes(GTProgrammedCircuitCategory.RECIPE_TYPE,
-                List.of(new GTProgrammedCircuitCategory.GTProgrammedCircuitWrapper()));
+                List.of(new GTProgrammedCircuitComponent()));
     }
 
     @Override

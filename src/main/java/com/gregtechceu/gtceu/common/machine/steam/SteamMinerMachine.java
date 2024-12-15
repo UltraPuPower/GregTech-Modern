@@ -3,9 +3,7 @@ package com.gregtechceu.gtceu.common.machine.steam;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -16,17 +14,16 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PredicatedTextureComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -86,7 +83,8 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
         if (args.length > 2 && args[args.length - 3] instanceof Integer fortune &&
@@ -148,7 +146,8 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     //////////////////////////////////////
     // ********** LOGIC **********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     protected void updateAutoOutputSubscription() {
         var outputFacingItems = getFrontFacing();
         if (!exportItems.isEmpty() && GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacingItems)) {
@@ -168,46 +167,51 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     //////////////////////////////////////
     // *********** GUI ***********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-
+        // TODO implement
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
-
-    }
-
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         int rowSize = (int) Math.sqrt(inventorySize);
 
-        ModularUI builder = new ModularUI(175, 176, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(false));
-        builder.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(false), 7,
-                94, true));
+        FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed(175), Sizing.fixed(176));
+        group.surface(Surface.UI_BACKGROUND_BRONZE);
+        group.child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT_STEAM.get(false))
+                .positioning(Positioning.absolute(7, 94)));
 
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), rowSize, rowSize);
+        grid.positioning(Positioning.absolute(142 - rowSize * 9, 18));
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
-                builder.widget(new SlotWidget(exportItems, index, 142 - rowSize * 9 + x * 18, 18 + y * 18, true, false)
-                        .setBackgroundTexture(GuiTextures.SLOT_STEAM.get(false)));
+                grid.child(UIComponents.slot(exportItems, index)
+                                .canInsert(false)
+                                .canExtract(true)
+                                .backgroundTexture(GuiTextures.SLOT_STEAM.get(false)),
+                        y, x);
             }
         }
+        group.child(grid)
+                .child(UIComponents.label(getBlockState().getBlock().getName())
+                        .positioning(Positioning.absolute(5, 5)))
+                .child(new PredicatedTextureComponent(GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
+                        .predicate(recipeLogic::isWaiting)
+                        .positioning(Positioning.absolute(79, 42))
+                        .sizing(Sizing.fixed(18)))
+                .child(UIContainers.verticalFlow(Sizing.fixed(105), Sizing.fixed(75))
+                        .child(UIComponents.componentPanel(this::addDisplayText)
+                                .maxWidthLimit(84))
+                        .child(UIComponents.componentPanel(this::addDisplayText2)
+                                .maxWidthLimit(84))
+                        .padding(Insets.of(3))
+                        .positioning(Positioning.absolute(7, 16)));
 
-        builder.widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()));
-        builder.widget(new PredicatedTextureComponent(GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure), 18, 18)
-                .predicate(recipeLogic::isWaiting)
-                .positioning(Positioning.absolute(79, 42)));
-        builder.widget(new ImageWidget(7, 16, 105, 75, GuiTextures.DISPLAY_STEAM.get(false)));
-        builder.widget(new ComponentPanelWidget(10, 19, this::addDisplayText)
-                .setMaxWidthLimit(84));
-        builder.widget(new ComponentPanelWidget(70, 19, this::addDisplayText2)
-                .setMaxWidthLimit(84));
-
-        return builder;
+        adapter.rootComponent.child(group);
     }
 
     void addDisplayText(List<Component> textList) {

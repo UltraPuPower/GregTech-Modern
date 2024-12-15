@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -15,12 +13,15 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -223,27 +224,29 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         int invTier = getTankSize(tier);
-        var group = new WidgetGroup(0, 0, 18 * (invTier + 1) + 16, 18 * invTier + 16);
-        var container = new WidgetGroup(4, 4, 18 * (invTier + 1) + 8, 18 * invTier + 8);
+        var group = UIContainers.group(Sizing.content(8), Sizing.content(8));
+        var container = UIContainers.grid(Sizing.content(4), Sizing.content(4), invTier, invTier + 1);
 
         int index = 0;
         for (int y = 0; y < invTier; y++) {
             for (int x = 0; x < invTier; x++) {
-                container.addWidget(new SlotWidget(
-                        getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, true)
-                        .setBackgroundTexture(GuiTextures.SLOT));
+                container.child(UIComponents.slot(getInventory().storage, index++)
+                                .canInsert(true)
+                                .canExtract(true),
+                        y, x);
             }
         }
 
         index = 0;
         for (int y = 0; y < invTier; y++) {
-            container.addWidget(new TankWidget(
-                    tank.getStorages()[index++], 4 + invTier * 18, 4 + y * 18, true, true)
-                    .setBackground(GuiTextures.FLUID_SLOT));
+            container.child(UIComponents.tank(tank.getStorages()[index++])
+                            .canInsert(true)
+                            .canExtract(true),
+                    y, invTier);
         }
 
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
+        container.surface(Surface.UI_BACKGROUND_INVERSE);
+        group.child(container);
         return group;
     }
 

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
@@ -104,6 +105,9 @@ public abstract class UIRecipeCategory<T extends UIComponent> implements IRecipe
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, T component, IFocusGroup focuses) {
+        // inflate up to a sane default
+        component.inflate(Size.of(200, 200));
+
         List<UIComponent> flatVisibleWidgetCollection = getFlatWidgetCollection(component);
         for (int i = 0; i < flatVisibleWidgetCollection.size(); i++) {
             var widget = flatVisibleWidgetCollection.get(i);
@@ -124,7 +128,12 @@ public abstract class UIRecipeCategory<T extends UIComponent> implements IRecipe
 
     @Override
     public void createRecipeExtras(IRecipeExtrasBuilder builder, T component, IFocusGroup focuses) {
-        builder.addGuiEventListener(new UIEventListener<>(component));
+        JEIUIAdapter adapter = new JEIUIAdapter(component.area());
+        adapter.rootComponent().child(component);
+        adapter.prepare();
+
+        builder.addWidget(adapter);
+        builder.addGuiEventListener(adapter);
     }
 
     @Override

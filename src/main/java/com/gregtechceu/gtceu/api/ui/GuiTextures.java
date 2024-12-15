@@ -1,7 +1,8 @@
-package com.gregtechceu.gtceu.api.gui;
+package com.gregtechceu.gtceu.api.ui;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.SteamTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
@@ -60,7 +61,7 @@ public class GuiTextures {
     public static final NinePatchTexture BACKGROUND = NinePatchTexture.get(GTCEu.id("background"));
     public static final NinePatchTexture BACKGROUND_INVERSE = NinePatchTexture.get(GTCEu.id("background_inverse"));
     public static final SteamTexture BACKGROUND_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/base/background_%s.png"));
+            .fullImage("gtceu:textures/gui/base/background_%s.png");
     public static final ResourceTexture CLIPBOARD_BACKGROUND = UITextures.resource(
             GTCEu.id("textures/gui/base/clipboard_background.png"));
     public static final ResourceTexture CLIPBOARD_PAPER_BACKGROUND = UITextures.resource(
@@ -69,7 +70,7 @@ public class GuiTextures {
 
 
     public static final ResourceTexture DISPLAY = UITextures.resource(GTCEu.id("textures/gui/base/display.png"));
-    public static final SteamTexture DISPLAY_STEAM = SteamTexture.fullImage(GTCEu.id("textures/gui/base/display_%s.png"));
+    public static final SteamTexture DISPLAY_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/display_%s.png");
     public static final NinePatchTexture BLANK = NinePatchTexture.get(GTCEu.id("blank"));
     public static final NinePatchTexture BLANK_TRANSPARENT = NinePatchTexture.get(GTCEu.id("blank_transparent"));
     public static final NinePatchTexture FLUID_SLOT = NinePatchTexture.get(GTCEu.id("fluid_slot"));
@@ -77,12 +78,12 @@ public class GuiTextures {
             GTCEu.id("textures/gui/base/fluid_tank_background.png"));
     public static final ResourceTexture FLUID_TANK_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/base/fluid_tank_overlay.png"));
-    public static final NinePatchTexture SLOT = NinePatchTexture.get(GTCEu.id("textures/gui/base/slot.png"));
+    public static final NinePatchTexture SLOT = NinePatchTexture.get(GTCEu.id("slot"));
     public static final NinePatchTexture SLOT_DARK = NinePatchTexture.get(GTCEu.id("slot_dark"));
 
     public static final ResourceTexture SLOT_DARKENED = UITextures.resource(
             GTCEu.id("textures/gui/base/darkened_slot.png"));
-    public static final SteamTexture SLOT_STEAM = SteamTexture.fullImage(GTCEu.id("textures/gui/base/slot_%s.png"));
+    public static final SteamTexture SLOT_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/slot_%s.png");
     public static final ResourceTexture TOGGLE_BUTTON_BACK = UITextures.resource(
             GTCEu.id("textures/gui/widget/toggle_button_background.png"));
 
@@ -118,10 +119,12 @@ public class GuiTextures {
             GTCEu.id("textures/gui/widget/button_void_partial.png"));
     public static final ResourceTexture BUTTON_VOID_MULTIBLOCK = UITextures.resource(
             GTCEu.id("textures/gui/widget/button_void_multiblock.png"));
-    public static final ResourceTexture BUTTON_LEFT = UITextures.resource(GTCEu.id("textures/gui/widget/left.png"));
     public static final ResourceTexture BUTTON_PUBLIC_PRIVATE = UITextures.resource(
             GTCEu.id("textures/gui/widget/button_public_private.png"));
+    public static final ResourceTexture BUTTON_LEFT = UITextures.resource(GTCEu.id("textures/gui/widget/left.png"));
     public static final ResourceTexture BUTTON_RIGHT = UITextures.resource(GTCEu.id("textures/gui/widget/right.png"));
+    public static final ResourceTexture BUTTON_UP = UITextures.resource(GTCEu.id("textures/gui/widget/up.png"));
+    public static final ResourceTexture BUTTON_DOWN = UITextures.resource(GTCEu.id("textures/gui/widget/down.png"));
     public static final ResourceTexture BUTTON_SILK_TOUCH_MODE = UITextures.resource(
             GTCEu.id("textures/gui/widget/button_silk_touch_mode.png"));
     public static final ResourceTexture BUTTON_SWITCH_VIEW = UITextures.resource(
@@ -168,7 +171,7 @@ public class GuiTextures {
     public static final ResourceTexture INDICATOR_NO_ENERGY = UITextures.resource(
             GTCEu.id("textures/gui/base/indicator_no_energy.png"));
     public static final SteamTexture INDICATOR_NO_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/base/indicator_no_steam_%s.png"));
+            .fullImage("gtceu:textures/gui/base/indicator_no_steam_%s.png");
     public static final ResourceTexture TANK_ICON = UITextures.resource(GTCEu.id("textures/gui/base/tank_icon.png"));
 
     // WIDGET UI RELATED
@@ -240,17 +243,17 @@ public class GuiTextures {
     public static final ResourceTexture CANISTER_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/canister_overlay.png"));
     public static final SteamTexture CANISTER_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/canister_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/canister_overlay_%s.png");
     public static final ResourceTexture CENTRIFUGE_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/centrifuge_overlay.png"));
     public static final ResourceTexture CIRCUIT_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/circuit_overlay.png"));
     public static final SteamTexture COAL_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/coal_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/coal_overlay_%s.png");
     public static final ResourceTexture COMPRESSOR_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/compressor_overlay.png"));
     public static final SteamTexture COMPRESSOR_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/compressor_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/compressor_overlay_%s.png");
     public static final ResourceTexture CRACKING_OVERLAY_1 = UITextures.resource(
             GTCEu.id("textures/gui/overlay/cracking_overlay_1.png"));
     public static final ResourceTexture CRACKING_OVERLAY_2 = UITextures.resource(
@@ -258,7 +261,7 @@ public class GuiTextures {
     public static final ResourceTexture CRUSHED_ORE_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/crushed_ore_overlay.png"));
     public static final SteamTexture CRUSHED_ORE_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/crushed_ore_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/crushed_ore_overlay_%s.png");
     public static final ResourceTexture CRYSTAL_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/crystal_overlay.png"));
     public static final ResourceTexture CUTTER_OVERLAY = UITextures.resource(
@@ -268,11 +271,11 @@ public class GuiTextures {
     public static final ResourceTexture DUST_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/dust_overlay.png"));
     public static final SteamTexture DUST_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/dust_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/dust_overlay_%s.png");
     public static final ResourceTexture EXTRACTOR_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/extractor_overlay.png"));
     public static final SteamTexture EXTRACTOR_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/extractor_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/extractor_overlay_%s.png");
     public static final ResourceTexture FILTER_SLOT_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/filter_slot_overlay.png"));
     public static final ResourceTexture FURNACE_OVERLAY_1 = UITextures.resource(
@@ -280,11 +283,11 @@ public class GuiTextures {
     public static final ResourceTexture FURNACE_OVERLAY_2 = UITextures.resource(
             GTCEu.id("textures/gui/overlay/furnace_overlay_2.png"));
     public static final SteamTexture FURNACE_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/furnace_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/furnace_overlay_%s.png");
     public static final ResourceTexture HAMMER_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/hammer_overlay.png"));
     public static final SteamTexture HAMMER_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/hammer_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/hammer_overlay_%s.png");
     public static final ResourceTexture HEATING_OVERLAY_1 = UITextures.resource(
             GTCEu.id("textures/gui/overlay/heating_overlay_1.png"));
     public static final ResourceTexture HEATING_OVERLAY_2 = UITextures.resource(
@@ -296,7 +299,7 @@ public class GuiTextures {
     public static final ResourceTexture IN_SLOT_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/in_slot_overlay.png"));
     public static final SteamTexture IN_SLOT_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/in_slot_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/in_slot_overlay_%s.png");
     public static final ResourceTexture INGOT_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/ingot_overlay.png"));
     public static final ResourceTexture INT_CIRCUIT_OVERLAY = UITextures.resource(
@@ -320,7 +323,7 @@ public class GuiTextures {
     public static final ResourceTexture OUT_SLOT_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/out_slot_overlay.png"));
     public static final SteamTexture OUT_SLOT_OVERLAY_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/overlay/out_slot_overlay_%s.png"));
+            .fullImage("gtceu:textures/gui/overlay/out_slot_overlay_%s.png");
     public static final ResourceTexture PAPER_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/paper_overlay.png"));
     public static final ResourceTexture PRINTED_PAPER_OVERLAY = UITextures.resource(
@@ -372,7 +375,7 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_ARROW = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_arrow.png"));
     public static final SteamTexture PROGRESS_BAR_ARROW_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_arrow_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_arrow_%s.png");
     public static final ResourceTexture PROGRESS_BAR_ARROW_MULTIPLE = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_arrow_multiple.png"));
     public static final ResourceTexture PROGRESS_BAR_ASSEMBLER = UITextures.resource(
@@ -387,9 +390,9 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_BENDING = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_bending.png"));
     public static final SteamTexture PROGRESS_BAR_BOILER_EMPTY = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_boiler_empty_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_boiler_empty_%s.png");
     public static final SteamTexture PROGRESS_BAR_BOILER_FUEL = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_boiler_fuel_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_boiler_fuel_%s.png");
     public static final ResourceTexture PROGRESS_BAR_BOILER_HEAT = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_boiler_heat.png"));
     public static final ResourceTexture PROGRESS_BAR_CANNER = UITextures.resource(
@@ -403,7 +406,7 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_COMPRESS = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_compress.png"));
     public static final SteamTexture PROGRESS_BAR_COMPRESS_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_compress_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_compress_%s.png");
     public static final ResourceTexture PROGRESS_BAR_CRACKING = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_cracking.png"));
     public static final ResourceTexture PROGRESS_BAR_CRACKING_INPUT = UITextures.resource(
@@ -415,7 +418,7 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_EXTRACT = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_extract.png"));
     public static final SteamTexture PROGRESS_BAR_EXTRACT_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_extract_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_extract_%s.png");
     public static final ResourceTexture PROGRESS_BAR_EXTRUDER = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_extruder.png"));
     public static final ResourceTexture PROGRESS_BAR_FUSION = UITextures.resource(
@@ -425,11 +428,11 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_HAMMER = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_hammer.png"));
     public static final SteamTexture PROGRESS_BAR_HAMMER_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_hammer_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_hammer_%s.png");
     public static final ResourceTexture PROGRESS_BAR_HAMMER_BASE = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_hammer_base.png"));
     public static final SteamTexture PROGRESS_BAR_HAMMER_BASE_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_hammer_base_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_hammer_base_%s.png");
     public static final ResourceTexture PROGRESS_BAR_LATHE = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_lathe.png"));
     public static final ResourceTexture PROGRESS_BAR_LATHE_BASE = UITextures.resource(
@@ -437,7 +440,7 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_MACERATE = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_macerate.png"));
     public static final SteamTexture PROGRESS_BAR_MACERATE_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_macerate_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_macerate_%s.png");
     public static final ResourceTexture PROGRESS_BAR_MAGNET = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_magnet.png"));
     public static final ResourceTexture PROGRESS_BAR_MASS_FAB = UITextures.resource(
@@ -455,7 +458,7 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_SLICE = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_slice.png"));
     public static final SteamTexture PROGRESS_BAR_SOLAR_STEAM = SteamTexture
-            .fullImage(GTCEu.id("textures/gui/progress_bar/progress_bar_solar_%s.png"));
+            .fullImage("gtceu:textures/gui/progress_bar/progress_bar_solar_%s.png");
     public static final ResourceTexture PROGRESS_BAR_UNLOCK = UITextures.resource(
             GTCEu.id("textures/gui/progress_bar/progress_bar_unlock.png"));
     public static final ResourceTexture PROGRESS_BAR_UNPACKER = UITextures.resource(

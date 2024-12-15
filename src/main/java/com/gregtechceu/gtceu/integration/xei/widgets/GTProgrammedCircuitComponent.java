@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.xei.widgets;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
@@ -34,7 +34,7 @@ public class GTProgrammedCircuitComponent extends UIComponentGroup {
                                 .canInsert(false)
                                 .canExtract(false)
                                 .ingredientIO((i + j * 8 == 31 ? IO.OUT : IO.BOTH)),
-                        i, i);
+                        i, j);
             }
         }
         child(grid);

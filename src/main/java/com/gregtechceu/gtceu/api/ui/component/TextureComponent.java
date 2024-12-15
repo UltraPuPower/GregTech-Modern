@@ -64,18 +64,9 @@ public class TextureComponent extends BaseUIComponent {
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
 
-        var textureElement = children.get("texture");
-        this.texture.parseProperties(model, textureElement, UIParsing.childElements(textureElement));
+        UIParsing.expectChildren(element, children, "value");
+        this.texture = model.parseTexture(UITexture.class, children.get("value"));
 
         UIParsing.apply(children, "blend", UIParsing::parseBool, this::blend);
-    }
-
-    public static TextureComponent parse(Element element) {
-        var children = UIParsing.childElements(element);
-        UIParsing.expectChildren(element, children, "texture");
-
-        var child = children.get("texture");
-        var texture = UIParsing.getTextureFactory(child).apply(child);
-        return new TextureComponent(texture);
     }
 }

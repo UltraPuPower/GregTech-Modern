@@ -4,13 +4,19 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.GridLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.editable.EditableMachineUI;
 import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -20,25 +26,23 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -361,75 +365,74 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+
+    @Override
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        // TODO implement, EASY
+    }
+
     public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, inventorySize) -> new EditableMachineUI(path, () -> {
                 var template = createTemplate(inventorySize).createDefault();
+
                 var energyBar = createEnergyBar().createDefault();
                 var batterySlot = createBatterySlot().createDefault();
-                var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-                batterySlot.setSelfPosition(
-                        new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-                energyGroup.addWidget(energyBar);
-                energyGroup.addWidget(batterySlot);
-                var group = new WidgetGroup(0, 0,
-                        Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                        Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-                var size = group.getSize();
-                energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+                var energyGroup = UIContainers.group(Sizing.content(), Sizing.content(20));
+                energyBar.positioning(Positioning.relative(2, 50));
+                batterySlot.positioning(Positioning.relative(50, 100));
+                energyGroup.child(energyBar);
+                energyGroup.child(batterySlot);
 
-                template.setSelfPosition(new Position(
-                        (size.width - 4 - template.getSize().width) / 2 + 4,
-                        (size.height - template.getSize().height) / 2));
+                var group = UIContainers.group(Sizing.content(4 + 8), Sizing.content(4));
+                template.positioning(Positioning.relative(50, 50));
 
-                group.addWidget(energyGroup);
-                group.addWidget(template);
+                group.child(energyGroup);
+                group.child(template);
                 return group;
             }, (template, adapter, machine) -> {
                 if (machine instanceof BlockBreakerMachine blockBreakerMachine) {
-                    createTemplate(inventorySize).setupUI(template, blockBreakerMachine);
-                    createEnergyBar().setupUI(template, blockBreakerMachine);
-                    createBatterySlot().setupUI(template, blockBreakerMachine);
+                    createTemplate(inventorySize).setupUI(template, adapter, blockBreakerMachine);
+                    createEnergyBar().setupUI(template, adapter, blockBreakerMachine);
+                    createBatterySlot().setupUI(template, adapter, blockBreakerMachine);
                 }
             }));
 
     protected static EditableUI<SlotComponent, BlockBreakerMachine> createBatterySlot() {
         return new EditableUI<>("battery_slot", SlotComponent.class, () -> {
-            var slotWidget = new SlotWidget();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
+            var slotWidget = UIComponents.slot(0);
+            slotWidget.backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY));
             return slotWidget;
         }, (slotWidget, adapter, machine) -> {
-            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-            slotWidget.setCanPutItems(true);
-            slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+            slotWidget.setSlot(machine.chargerInventory, 0);
+            slotWidget.canInsert(true);
+            slotWidget.canExtract(true);
+            slotWidget.tooltip(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]));
         });
     }
 
-    protected static EditableUI<UIComponentGroup, BlockBreakerMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
+    protected static EditableUI<GridLayout, BlockBreakerMachine> createTemplate(int inventorySize) {
+        return new EditableUI<>("functional_container", GridLayout.class, () -> {
             int rowSize = (int) Math.sqrt(inventorySize);
-            WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8, rowSize * 18 + 8);
+            GridLayout main = UIContainers.grid(Sizing.content(4), Sizing.content(4), rowSize, rowSize);
             for (int y = 0; y < rowSize; y++) {
                 for (int x = 0; x < rowSize; x++) {
                     int index = y * rowSize + x;
-                    SlotWidget slotWidget = new SlotWidget();
-                    slotWidget.initTemplate();
-                    slotWidget.setSelfPosition(new Position(4 + x * 18, 4 + y * 18));
-                    slotWidget.setBackground(GuiTextures.SLOT);
-                    slotWidget.setId("slot_" + index);
-                    main.addWidget(slotWidget);
+                    SlotComponent slotComponent = UIComponents.slot(index);
+                    slotComponent.backgroundTexture(GuiTextures.SLOT);
+                    slotComponent.id("item-out." + index);
+                    main.child(slotComponent, x, y);
                 }
             }
-            main.setBackground(GuiTextures.BACKGROUND_INVERSE);
+            main.surface(Surface.UI_BACKGROUND_INVERSE);
             return main;
         }, (group, adapter, machine) -> {
-            UIComponentUtils.componentByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
+            UIComponentUtils.componentByIdForEach(group, "^item-out.[0-9]+$", SlotComponent.class, slot -> {
                 var index = UIComponentUtils.componentIdIndex(slot);
                 if (index >= 0 && index < machine.cache.getSlots()) {
-                    slot.setHandlerSlot(machine.cache, index);
-                    slot.setCanTakeItems(true);
-                    slot.setCanPutItems(false);
+                    slot.setSlot(machine.cache, index);
+                    slot.canInsert(false);
+                    slot.canExtract(true);
                 }
             });
         });
@@ -438,6 +441,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ******* Rendering ********//
     //////////////////////////////////////
+
     @Override
     public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                     Direction side) {
@@ -499,4 +503,5 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         }
         return InteractionResult.PASS;
     }
+
 }

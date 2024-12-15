@@ -4,26 +4,28 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.SelectorComponent;
+import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -62,7 +64,8 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -76,7 +79,8 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
 
     //////////////////////////////////////
     // ********** MISC ***********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     protected void updateEnergyTick() {
         if (getOffsetTimer() % 20 == 0) {
@@ -186,75 +190,90 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
 
     //////////////////////////////////////
     // *********** GUI ***********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-
+        // TODO implement
+        // NEEDS MESSAGES FOR TICKS/EU/AMPS PER CYCLE & ACTIVE STATE, REMEMBER TO ADD THOSE!!
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
-
-    }
-
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(7, 32, "gtceu.creative.energy.voltage"))
-                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(voltage),
-                        value -> {
-                            voltage = Long.parseLong(value);
-                            setTier = GTUtil.getTierByVoltage(voltage);
-                        }).setNumbersOnly(0L, Long.MAX_VALUE))
-                .widget(new LabelWidget(7, 74, "gtceu.creative.energy.amperage"))
-                .widget(new ButtonWidget(7, 87, 20, 20,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("-")),
-                        cd -> amps = --amps == -1 ? 0 : amps))
-                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(amps),
-                        value -> amps = Integer.parseInt(value)).setNumbersOnly(0, Integer.MAX_VALUE))
-                .widget(new ButtonWidget(149, 87, 20, 20,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("+")),
-                        cd -> {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+        adapter.rootComponent.child(UIContainers.verticalFlow(Sizing.fixed(176), Sizing.fixed(166))
+                .gap(8)
+                .<FlowLayout>configure(c -> {
+                    c.surface(Surface.UI_BACKGROUND)
+                            .padding(Insets.both(7, 32));
+                })
+                .child(UIComponents.label(Component.translatable("gtceu.creative.energy.voltage")))
+                .child(UIComponents.textBox(Sizing.fixed(152))
+                        .textSupplier(() -> String.valueOf(voltage))
+                        .<TextBoxComponent>configure(c -> {
+                            c.onChanged().subscribe(value -> {
+                                voltage = Long.parseLong(value);
+                                setTier = GTUtil.getTierByVoltage(voltage);
+                            });
+                        })
+                        .verticalSizing(Sizing.fixed(16)))
+                .child(UIComponents.label(Component.translatable("gtceu.creative.energy.amperage")))
+                .child(UIComponents.button(Component.literal("-"), cd -> amps = --amps == -1 ? 0 : amps)
+                        .renderer(ButtonComponent.Renderer.texture(GuiTextures.VANILLA_BUTTON))
+                        .positioning(Positioning.absolute(0, 55))
+                        .sizing(Sizing.fixed(20)))
+                .child(UIComponents.textBox(Sizing.fixed(114))
+                        .textSupplier(() -> String.valueOf(amps))
+                        .<TextBoxComponent>configure(c -> {
+                            c.onChanged().subscribe(value -> amps = Integer.parseInt(value));
+                        }).numbersOnly(0, Integer.MAX_VALUE)
+                        .positioning(Positioning.absolute(24, 53))
+                        .verticalSizing(Sizing.fixed(16)))
+                .child(UIComponents.button(Component.literal("-"), cd -> {
                             if (amps < Integer.MAX_VALUE) {
                                 amps++;
                             }
-                        }))
-                .widget(new LabelWidget(7, 110,
-                        () -> "Average Energy I/O per tick: " + this.lastAverageEnergyIOPerTick))
-                .widget(new SwitchWidget(7, 139, 77, 20, (clickData, value) -> active = value)
-                        .setTexture(
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.off")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.on")))
-                        .setPressed(active))
-                .widget(new SwitchWidget(85, 139, 77, 20, (clickData, value) -> {
-                    source = value;
-                    if (source) {
-                        voltage = 0;
-                        amps = 0;
-                        setTier = 0;
-                    } else {
-                        voltage = GTValues.V[14];
-                        amps = Integer.MAX_VALUE;
-                        setTier = 14;
-                    }
-                }).setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.energy.sink")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.energy.source")))
-                        .setPressed(source))
-                .widget(new SelectorWidget(7, 7, 50, 20, Arrays.stream(GTValues.VNF).toList(), -1)
-                        .setOnChanged(tier -> {
+                        }).renderer(ButtonComponent.Renderer.texture(GuiTextures.VANILLA_BUTTON))
+                        .positioning(Positioning.absolute(142, 55))
+                        .sizing(Sizing.fixed(20)))
+                // FIXME MAKE TRANSLATABLE
+                .child(UIComponents.label(() -> Component.translatable("Average Energy I/O per tick: " + this.lastAverageEnergyIOPerTick)))
+                .child(UIComponents.switchComponent((clickData, value) -> active = value)
+                        .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
+                                        "gtceu.creative.activity.off"))),
+                                UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
+                                        "gtceu.creative.activity.on"))))
+                        .pressed(active)
+                        .positioning(Positioning.absolute(0, 107))
+                        .sizing(Sizing.fixed(77), Sizing.fixed(20)))
+                .child(UIComponents.switchComponent((clickData, value) -> {
+                            source = value;
+                            if (source) {
+                                voltage = 0;
+                                amps = 0;
+                                setTier = 0;
+                            } else {
+                                voltage = GTValues.V[14];
+                                amps = Integer.MAX_VALUE;
+                                setTier = 14;
+                            }
+                        })
+                        .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
+                                        "gtceu.creative.energy.sink"))),
+                                UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
+                                        "gtceu.creative.energy.source"))))
+                        .pressed(source)
+                        .positioning(Positioning.absolute(78, 107))
+                        .sizing(Sizing.fixed(77), Sizing.fixed(20)))
+                .child(new SelectorComponent(Sizing.fixed(50), Sizing.fixed(20), Arrays.stream(GTValues.VNF).toList(), -1)
+                        .onChanged(tier -> {
                             setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
                             voltage = GTValues.VEX[setTier];
                         })
-                        .setSupplier(() -> GTValues.VNF[setTier])
-                        .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)
-                        .setBackground(ColorPattern.BLACK.rectTexture())
-                        .setValue(GTValues.VNF[setTier]));
+                        .supplier(() -> GTValues.VNF[setTier])
+                        .buttonSurface(GuiTextures.VANILLA_BUTTON::draw)
+                        .surface(Surface.flat(Color.BLACK.argb()))
+                        .positioning(Positioning.absolute(0, -25))));
     }
+
 }

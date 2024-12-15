@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.ui.component.directional.handlers;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.*;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -79,7 +79,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
                 .changeListener(this::coverItemChanged)
                 .positioning(Positioning.absolute(19, 0))
                 .sizing(Sizing.fixed(18)));
-        group.child(UIComponents.texture(UITextures.group(GuiTextures.SLOT, GuiTextures.IO_CONFIG_COVER_SLOT_OVERLAY), 18, 18)
+        group.child(UIComponents.texture(UITextures.group(GuiTextures.SLOT, GuiTextures.IO_CONFIG_COVER_SLOT_OVERLAY))
                 .positioning(Positioning.absolute(19, 0))
                 .sizing(Sizing.fixed(18)));
         group.child(new PredicatedButtonComponent(CONFIG_BUTTON_TEXTURE, this::toggleConfigTab,

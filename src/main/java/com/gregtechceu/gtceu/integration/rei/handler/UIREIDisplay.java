@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.rei.handler;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -36,9 +37,13 @@ public class UIREIDisplay<T extends UIComponent> implements Display {
 
     public UIREIDisplay(Supplier<T> componentSupplier, CategoryIdentifier<?> category) {
         this.component = componentSupplier.get();
+        // inflate up to a sane default
+        this.component.inflate(Size.of(200, 200));
 
         Rectangle bounds = new Rectangle(0, 0, this.component.width(), this.component.height());
         this.adapter = new REIUIAdapter(bounds);
+        adapter.rootComponent().child(this.component);
+        adapter.prepare();
 
         this.inputEntries = new ArrayList<>();
         this.outputEntries = new ArrayList<>();

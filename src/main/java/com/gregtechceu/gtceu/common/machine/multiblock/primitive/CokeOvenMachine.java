@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -73,7 +73,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         var menu = adapter.menu();
         UIComponentGroup rootComponent;
         adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
@@ -84,7 +84,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
 
         rootComponent.child(UIComponents.slot(menu.getSlot(0))
                         .positioning(Positioning.absolute(52, 30)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY), 18, 18)
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY))
                         .positioning(Positioning.absolute(52, 30))
                         .sizing(Sizing.fixed(18)));
 
@@ -97,11 +97,11 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
                         .canInsert(false)
                         .canExtract(true)
                         .positioning(Positioning.absolute(103, 30)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY), 18, 18)
+                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY))
                         .positioning(Positioning.absolute(103, 30))
                         .sizing(Sizing.fixed(18)));
 
-        rootComponent.child(UIComponents.texture(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY, 20, 58)
+        rootComponent.child(UIComponents.texture(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
                         .positioning(Positioning.absolute(134, 13))
                         .sizing(Sizing.fixed(20), Sizing.fixed(58)))
                 .child(UIComponents.tank(exportFluids.getStorages()[0], 0)

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
-import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -50,6 +49,8 @@ public class TitleBarComponent extends UIComponentGroup {
     private final TextureComponent tabIcon;
     private final LabelComponent tabTitle;
 
+    private boolean hasInit = false;
+
     protected TitleBarComponent(int parentWidth, Consumer<ClickData> onBackClicked, Consumer<ClickData> onMenuClicked) {
         super(Sizing.fixed(parentWidth), Sizing.fixed(HEIGHT));
         this.margins(Insets.of(0, 0, HORIZONTAL_MARGIN, HORIZONTAL_MARGIN));
@@ -69,13 +70,15 @@ public class TitleBarComponent extends UIComponentGroup {
         child(this.mainSection = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fill()));
         mainSection.positioning(Positioning.absolute(BUTTON_WIDTH, 0));
         mainSection.surface(Surface.TITLE_BAR_BACKGROUND);
-        mainSection.child(this.tabIcon = (TextureComponent) UIComponents.texture(UITexture.EMPTY, 0, 0)
+        mainSection.child(this.tabIcon = (TextureComponent) UIComponents.texture(UITexture.EMPTY)
                 .sizing(Sizing.fixed(innerHeight - 2), Sizing.fixed(innerHeight - 2))
                 .positioning(Positioning.absolute(BORDER_SIZE + 1, BORDER_SIZE + 1)));
 
         mainSection.child(this.tabTitle = (LabelComponent) UIComponents.label(Component.empty())
                 .sizing(Sizing.content())
                 .positioning(Positioning.absolute(BORDER_SIZE + innerHeight, BORDER_SIZE)));
+
+        hasInit = true;
     }
 
     public void updateState(IFancyUIProvider currentPage, boolean showBackButton, boolean showMenuButton) {
@@ -106,6 +109,8 @@ public class TitleBarComponent extends UIComponentGroup {
     @Override
     protected void updateLayout() {
         super.updateLayout();
+        if (!hasInit) return;
+
         var hiddenButtons = 2;
         if (showBackButton) hiddenButtons--;
         if (showMenuButton) hiddenButtons--;

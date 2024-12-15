@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component.directional;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.ui.component.SceneComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
@@ -62,7 +62,7 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
     public void init() {
         super.init();
 
-        child(textureComponent = UIComponents.texture(GuiTextures.BACKGROUND_INVERSE, width, height));
+        child(textureComponent = UIComponents.texture(GuiTextures.BACKGROUND_INVERSE));
         textureComponent.sizing(Sizing.fill(), Sizing.fill());
         child(sceneComponent = createSceneComponent());
 

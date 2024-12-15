@@ -244,7 +244,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public void handleDisplayClick(String componentData, ClickData clickData) {
-        if (!clickData.isRemote) {
+        if (!clickData.isClientSide) {
             if (componentData.equals("chunk_mode")) {
                 getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());
             }

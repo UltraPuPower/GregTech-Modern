@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -264,7 +264,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
                 Supplier<UITexture> textureSupplier = () -> hpcaHandler.getComponentTexture(index);
-                builder.child(UIComponents.texture(UITextures.dynamic(textureSupplier), 13, 13)
+                builder.child(UIComponents.texture(UITextures.dynamic(textureSupplier))
                         .positioning(Positioning.absolute(startX + (15 * j), startY + (15 * i))));
             }
         }

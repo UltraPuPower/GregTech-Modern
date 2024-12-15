@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -120,7 +120,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         int rowSize = (int) Math.sqrt(inventory.getSlots());
         int xOffset = rowSize == 10 ? 9 : 0;
 
@@ -146,7 +146,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
                                 .canInsert(true)
                                 .canExtract(true)
                                 .sizing(Sizing.fill()))
-                        .child(UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                        .child(UIComponents.texture(GuiTextures.SLOT)
                                 .sizing(Sizing.fill()));
                 grid.child(stack, x, y);
             }

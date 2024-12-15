@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.misc.PacketProspecting;
+import com.gregtechceu.gtceu.api.ui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.ProspectingTexture;
@@ -58,7 +58,7 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
         this.scanTick = scanTick;
         int imageWidth = (chunkRadius * 2 - 1) * 16;
         int imageHeight = (chunkRadius * 2 - 1) * 16;
-        child(UIComponents.texture(GuiTextures.BACKGROUND_INVERSE, imageWidth + 8, imageHeight + 8)
+        child(UIComponents.texture(GuiTextures.BACKGROUND_INVERSE)
                 .positioning(Positioning.absolute(0, (height - imageHeight) / 2 - 4))
                 .sizing(Sizing.fixed(imageWidth + 8), Sizing.fixed(imageHeight + 8)));
         var group = (UIComponentGroup) UIContainers.group(Sizing.fixed(width - (imageWidth + 10)), Sizing.fill())
@@ -147,7 +147,7 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
                     .onSelected(c -> texture.setSelected(uniqueID))
                     .selectedTexture(Color.WHITE.borderTexture(-1));
 
-            selectable.child(UIComponents.texture(icon, 15, 15)
+            selectable.child(UIComponents.texture(icon)
                     .sizing(Sizing.fixed(15)));
             selectable.child(UIComponents.label(renderingName)
                     .maxWidth(width - 15)

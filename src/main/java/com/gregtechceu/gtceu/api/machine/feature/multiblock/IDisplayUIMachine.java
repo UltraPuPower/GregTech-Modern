@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
@@ -48,7 +48,7 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
     }
 
     @Override
-    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         UIComponentGroup rootComponent = adapter.rootComponent;
 
         var screen = UIContainers.verticalFlow(Sizing.fixed(162), Sizing.fixed(121));

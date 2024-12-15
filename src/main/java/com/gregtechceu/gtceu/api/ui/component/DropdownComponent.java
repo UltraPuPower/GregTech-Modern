@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
+import com.gregtechceu.gtceu.api.ui.base.BaseParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -88,7 +89,7 @@ public class DropdownComponent extends FlowLayout {
     }
 
     @Override
-    public ParentUIComponent surface(Surface surface) {
+    public BaseParentUIComponent surface(Surface surface) {
         return this.entries.surface(surface);
     }
 

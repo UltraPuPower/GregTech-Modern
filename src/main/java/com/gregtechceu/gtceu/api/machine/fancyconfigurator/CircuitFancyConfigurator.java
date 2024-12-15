@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
@@ -156,7 +156,8 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
                         }).renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
                                 UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
                         .positioning(Positioning.absolute(5 + (18 * y), 48 + (18 * x)))
-                        .sizing(Sizing.fixed(18)), y, x);
+                        .sizing(Sizing.fixed(18)),
+                        y, x);
                 idx++;
             }
         }

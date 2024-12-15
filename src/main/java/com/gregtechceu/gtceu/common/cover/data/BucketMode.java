@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
 
 public enum BucketMode implements EnumSelectorComponent.SelectableEnum {
 
@@ -14,13 +17,13 @@ public enum BucketMode implements EnumSelectorComponent.SelectableEnum {
     @Getter
     public final String tooltip;
     @Getter
-    public final IGuiTexture icon;
+    public final UITexture icon;
 
     public final int multiplier;
 
     BucketMode(String tooltip, String textureName, int multiplier) {
         this.tooltip = tooltip;
-        this.icon = new ResourceTexture(textureName + ".png").scale(16F / 20F);
+        this.icon = UITextures.resource(new ResourceLocation(textureName + ".png")).scale(16F / 20F);
         this.multiplier = multiplier;
     }
 }

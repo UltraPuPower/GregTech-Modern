@@ -86,7 +86,7 @@ public class SearchComponent<T> extends FlowLayout {
             }
         });
 
-        textBoxComponent.setResponder(s -> {
+        textBoxComponent.onChanged().subscribe(value -> {
             popUp.child(null);
             popUp.height(0);
             if (showUp) {
@@ -95,7 +95,7 @@ public class SearchComponent<T> extends FlowLayout {
                 popUp.moveTo(x(), y() + height());
             }
             setShow(true);
-            this.engine.searchWord(s);
+            this.engine.searchWord(value);
             if (isServer) {
                 sendMessage(-1, buffer -> {});
             }

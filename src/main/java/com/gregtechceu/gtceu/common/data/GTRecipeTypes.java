@@ -8,13 +8,12 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.core.Insets;
@@ -41,8 +40,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModLoader;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -439,7 +436,7 @@ public class GTRecipeTypes {
                             .sizing(Sizing.fixed(18))
                             .positioning(Positioning.relative(100, 100))
                             .margins(Insets.of(30)));
-                    widgetGroup.child(UIComponents.texture(GuiTextures.FLUID_SLOT, 18, 18)
+                    widgetGroup.child(UIComponents.texture(GuiTextures.FLUID_SLOT)
                             .sizing(Sizing.fixed(18))
                             .positioning(Positioning.relative(100, 100))
                             .margins(Insets.of(30)));
@@ -450,7 +447,7 @@ public class GTRecipeTypes {
                             .sizing(Sizing.fixed(18))
                             .positioning(Positioning.relative(100, 100))
                             .margins(Insets.both(30 + 20, 30)));
-                    widgetGroup.child(UIComponents.texture(GuiTextures.FLUID_SLOT, 18, 18)
+                    widgetGroup.child(UIComponents.texture(GuiTextures.FLUID_SLOT)
                             .sizing(Sizing.fixed(18))
                             .positioning(Positioning.relative(100, 100))
                             .margins(Insets.both(30 + 20, 30)));
@@ -686,12 +683,6 @@ public class GTRecipeTypes {
 
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);
-
-    //////////////////////////////////////
-    // ****** Integration *******//
-    /// ///////////////////////////////////
-    @Nullable
-    public static GTRecipeType CREATE_MIXER_RECIPES;
 
     public static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
         var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);

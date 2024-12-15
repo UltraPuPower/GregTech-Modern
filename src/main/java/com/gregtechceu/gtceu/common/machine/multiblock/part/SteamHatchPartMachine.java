@@ -1,19 +1,20 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fluids.FluidType;
 
@@ -42,17 +43,24 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(IS_STEEL))
-                .widget(new ImageWidget(7, 16, 81, 55, GuiTextures.DISPLAY_STEAM.get(IS_STEEL)))
-                .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
-                .widget(new LabelWidget(11, 30, () -> tank.getFluidInTank(0).getAmount() + "").setTextColor(-1)
-                        .setDropShadow(true))
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new TankWidget(tank.getStorages()[0], 90, 35, true, true)
-                        .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                        GuiTextures.SLOT_STEAM.get(IS_STEEL), 7, 84, true));
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+        FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166));
+        group.child(UIComponents.label(getBlockState().getBlock().getName())
+                        .positioning(Positioning.absolute(6, 6)))
+                .child(UIContainers.verticalFlow(Sizing.fixed(81), Sizing.fixed(55))
+                        .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
+                        .child(UIComponents.label(() -> Component.literal(String.valueOf(tank.getFluidInTank(0).getAmount())))
+                                .color(Color.BLACK)
+                                .shadow(true))
+                        .surface(GuiTextures.DISPLAY_STEAM.get(IS_STEEL)::draw)
+                        .padding(Insets.both(3, 4))
+                        .positioning(Positioning.absolute(7, 16)))
+                .child(UIComponents.tank(tank.getStorages()[0])
+                        .positioning(Positioning.absolute(90, 35)))
+                .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT_STEAM.get(IS_STEEL))
+                        .positioning(Positioning.absolute(7, 84)))
+                .surface(GuiTextures.BACKGROUND_STEAM.get(IS_STEEL)::draw);
+
+        adapter.rootComponent.child(group);
     }
 }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -45,7 +45,7 @@ public interface IUICover extends IUIHolder<CoverBehavior> {
     }
 
     @Override
-    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter) {
+    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, CoverBehavior holder) {
         var rootComponent = adapter.rootComponent;
 
         var component = createUIWidget(adapter);

@@ -60,9 +60,16 @@ public class UIGuiGraphics extends GuiGraphics {
     public static UIGuiGraphics of(GuiGraphics g) {
         var graphics = new UIGuiGraphics(Minecraft.getInstance(), g.bufferSource());
         ((GuiGraphicsAccessor) graphics)
-                .gtceu$setScissorStack(((GuiGraphicsAccessor) graphics).gtceu$getScissorStack());
-        ((GuiGraphicsAccessor) graphics).gtceu$setPose(((GuiGraphicsAccessor) graphics).gtceu$getPose());
+                .gtceu$setScissorStack(((GuiGraphicsAccessor) g).gtceu$getScissorStack());
+        ((GuiGraphicsAccessor) graphics).gtceu$setPose(((GuiGraphicsAccessor) g).gtceu$getPose());
 
+        return graphics;
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    public static UIGuiGraphics of(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource) {
+        var graphics = new UIGuiGraphics(Minecraft.getInstance(), bufferSource);
+        ((GuiGraphicsAccessor) graphics).gtceu$setPose(poseStack);
         return graphics;
     }
 

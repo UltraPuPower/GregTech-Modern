@@ -35,7 +35,7 @@ public class HeldItemUIFactory extends UIFactory<HeldItemUIHolder> {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
-        holder.loadClientUI(player, adapter);
+        holder.loadClientUI(player, adapter, holder);
     }
 
     @OnlyIn(Dist.CLIENT)

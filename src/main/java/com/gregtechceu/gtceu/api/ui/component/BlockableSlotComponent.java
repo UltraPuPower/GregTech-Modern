@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Setter;
@@ -8,13 +7,12 @@ import lombok.experimental.Accessors;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
 
 /**
- * Basically just your normal SlotWidget, but can render the slot as "grayed-out" with a Supplier value.
+ * Basically just your normal SlotComponent, but can render the slot as "grayed-out" with a Supplier value.
  */
 @Accessors(fluent = true, chain = true)
 public class BlockableSlotComponent extends SlotComponent {

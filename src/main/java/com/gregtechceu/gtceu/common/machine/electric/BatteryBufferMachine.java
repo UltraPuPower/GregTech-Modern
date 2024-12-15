@@ -5,8 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
@@ -15,16 +14,17 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -48,7 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BatteryBufferMachine extends TieredEnergyMachine
-                                  implements IControllable, IFancyUIMachine, IMachineLife {
+        implements IControllable, IFancyUIMachine, IMachineLife {
 
     public static final long AMPS_PER_BATTERY = 2L;
 
@@ -75,7 +75,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -110,11 +111,12 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     //////////////////////////////////////
     // ********** GUI ***********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-
+        // TODO implement, EASY
     }
 
     @Override
@@ -125,37 +127,36 @@ public class BatteryBufferMachine extends TieredEnergyMachine
             rowSize = 4;
             colSize = 2;
         }
-        var template = new WidgetGroup(0, 0, 18 * rowSize + 8, 18 * colSize + 8);
-        template.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        var template = UIContainers.grid(Sizing.content(4), Sizing.content(4), rowSize, colSize);
+        template.padding(Insets.of(4));
+        template.surface(Surface.UI_BACKGROUND_INVERSE);
         int index = 0;
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
-                template.addWidget(new SlotWidget(batteryInventory, index++, 4 + x * 18, 4 + y * 18, true, true)
-                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.BATTERY_OVERLAY)));
+                template.child(UIComponents.slot(batteryInventory, index++)
+                                .canInsert(true)
+                                .canExtract(true)
+                                .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.BATTERY_OVERLAY)),
+                        x, y);
             }
         }
 
         var editableUI = createEnergyBar();
         var energyBar = editableUI.createDefault();
 
-        var group = new WidgetGroup(0, 0,
-                Math.max(energyBar.getSize().width + template.getSize().width + 4 + 8, 172),
-                Math.max(template.getSize().height + 8, energyBar.getSize().height + 8));
-        var size = group.getSize();
-        energyBar.setSelfPosition(new Position(3, (size.height - energyBar.getSize().height) / 2));
-        template.setSelfPosition(new Position(
-                (size.width - energyBar.getSize().width - 4 - template.getSize().width) / 2 + 2 +
-                        energyBar.getSize().width + 2,
-                (size.height - template.getSize().height) / 2));
-        group.addWidget(energyBar);
-        group.addWidget(template);
-        editableUI.setupUI(group, this);
+        var group = UIContainers.group(Sizing.content(4 + 8), Sizing.content(8));
+        energyBar.positioning(Positioning.relative(2, 50));
+        template.positioning(Positioning.relative(50, 50));
+        group.child(energyBar);
+        group.child(template);
+        editableUI.setupUI(group, (UIAdapter<UIComponentGroup>) component.containerAccess().adapter(), this);
         return group;
     }
 
     //////////////////////////////////////
     // ****** Battery Logic ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     private List<Object> getNonFullBatteries() {
         List<Object> batteries = new ArrayList<>();
@@ -357,5 +358,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         private long getInternalStorage() {
             return energyStored;
         }
+
     }
+
 }

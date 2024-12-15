@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
@@ -23,6 +26,7 @@ import java.util.function.Consumer;
  * component, it is often beneficial to subclass one of gtceu-ui's existing layout classes,
  * especially {@link com.gregtechceu.gtceu.api.ui.container.WrappingParentUIComponent} is often useful
  */
+@Accessors(fluent = true, chain = true)
 public abstract class BaseParentUIComponent extends BaseUIComponent implements ParentUIComponent {
 
     protected static final int UPDATE_CHILD = 1;
@@ -30,13 +34,17 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
     protected final Observable<VerticalAlignment> verticalAlignment = Observable.of(VerticalAlignment.CENTER);
     protected final Observable<HorizontalAlignment> horizontalAlignment = Observable.of(HorizontalAlignment.CENTER);
 
+    @Getter
     protected final AnimatableProperty<Insets> padding = AnimatableProperty.of(Insets.none());
 
     protected @NotNull UIComponentMenuAccess parentAccess = new ParentComponentMenuAccess();
     protected @Nullable FocusHandler focusHandler = null;
     protected @Nullable ArrayList<Runnable> taskQueue = null;
 
+    @Getter @Setter
     protected Surface surface = Surface.BLANK;
+    @Getter
+    @Setter
     protected boolean allowOverflow = false;
 
     protected BaseParentUIComponent(Sizing horizontalSizing, Sizing verticalSizing) {
@@ -120,33 +128,6 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
         this.padding.set(padding);
         this.updateLayout();
         return this;
-    }
-
-    @Override
-    public AnimatableProperty<Insets> padding() {
-        return this.padding;
-    }
-
-    @Override
-    public ParentUIComponent allowOverflow(boolean allowOverflow) {
-        this.allowOverflow = allowOverflow;
-        return this;
-    }
-
-    @Override
-    public boolean allowOverflow() {
-        return this.allowOverflow;
-    }
-
-    @Override
-    public ParentUIComponent surface(Surface surface) {
-        this.surface = surface;
-        return this;
-    }
-
-    @Override
-    public Surface surface() {
-        return this.surface;
     }
 
     @Override
@@ -302,11 +283,13 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
         @Override
         public AbstractContainerScreen<?> screen() {
+            if (BaseParentUIComponent.this.containerAccess() == null) return null;
             return BaseParentUIComponent.this.containerAccess().screen();
         }
 
         @Override
         public UIAdapter<?> adapter() {
+            if (BaseParentUIComponent.this.containerAccess() == null) return null;
             return BaseParentUIComponent.this.containerAccess().adapter();
         }
     }

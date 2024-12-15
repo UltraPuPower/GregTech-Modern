@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
@@ -14,12 +17,12 @@ public enum VoidingMode implements EnumSelectorComponent.SelectableEnum {
     @Getter
     public final String tooltip;
     @Getter
-    public final IGuiTexture icon;
+    public final UITexture icon;
     public final int maxStackSize;
 
     VoidingMode(String tooltip, String textureName, int maxStackSize) {
         this.tooltip = tooltip;
         this.maxStackSize = maxStackSize;
-        this.icon = new ResourceTexture("gtceu:textures/gui/icon/voiding_mode/" + textureName + ".png");
+        this.icon = UITextures.resource(GTCEu.id("textures/gui/icon/voiding_mode/" + textureName + ".png"));
     }
 }

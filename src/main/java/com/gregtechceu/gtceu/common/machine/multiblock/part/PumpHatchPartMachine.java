@@ -1,23 +1,25 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -34,20 +36,35 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new ImageWidget(7, 16, 81, 55, GuiTextures.DISPLAY))
-                .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
-                .widget(new LabelWidget(11, 30, () -> String.valueOf(tank.getFluidInTank(0).getAmount()))
-                        .setTextColor(-1).setDropShadow(true))
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new TankWidget(tank.getStorages()[0], 90, 35, true, io.support(IO.IN))
-                        .setBackground(GuiTextures.FLUID_SLOT))
-                .widget(new ToggleButtonComponent(7, 53, 18, 18,
-                        GuiTextures.BUTTON_FLUID_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.fluid_auto_input.tooltip"))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        // TODO implement
     }
+
+    @Override
+    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+        FlowLayout group = UIContainers.verticalFlow(Sizing.fixed(176), Sizing.fixed(166));
+        adapter.rootComponent.child(group);
+
+        group.child(UIComponents.label(getBlockState().getBlock().getName()))
+                .child(UIContainers.verticalFlow(Sizing.fixed(81), Sizing.fixed(55))
+                        .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
+                        .child(UIComponents.label(() -> Component.literal(String.valueOf(tank.getFluidInTank(0).getAmount())))
+                                .color(Color.BLACK)
+                                .shadow(true))
+                        .child(UIComponents.tank(tank.getStorages()[0])
+                                .canInsert(io.support(IO.IN))
+                                .canExtract(true)
+                                .positioning(Positioning.absolute(90, 35)))
+                        .child(UIComponents.toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
+                                .shouldUseBaseBackground()
+                                .tooltip(List.of(Component.translatable("gtceu.gui.fluid_auto_input.tooltip")))
+                                .positioning(Positioning.absolute(7, 53))
+                                .sizing(Sizing.fixed(18)))
+                        .surface(Surface.UI_DISPLAY)
+                        .positioning(Positioning.absolute(7, 16)))
+                .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT)
+                        .positioning(Positioning.absolute(7, 84)))
+                .surface(Surface.UI_BACKGROUND);
+    }
+
 }

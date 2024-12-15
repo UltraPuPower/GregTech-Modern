@@ -14,10 +14,10 @@ import java.util.Map;
 public class ResourceTexture extends TransformTexture {
     
     public ResourceLocation imageLocation;
-    public int offsetX = 0;
-    public int offsetY = 0;
-    public int imageWidth = 1;
-    public int imageHeight = 1;
+    public int offsetX;
+    public int offsetY;
+    public int imageWidth;
+    public int imageHeight;
     @Setter
     protected int color = -1;
 

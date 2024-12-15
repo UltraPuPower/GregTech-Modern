@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.api.recipe.ui;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.SteamTexture;
-import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.texture.SteamTexture;
+import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -79,7 +79,7 @@ public class GTRecipeTypeUI {
 
     @Nullable
     private UIModel customUICache;
-    private Size xeiSize;
+    private Size recipeViewerSize;
     @Getter
     private int originalWidth;
 
@@ -103,18 +103,20 @@ public class GTRecipeTypeUI {
 
     public void reloadCustomUI() {
         this.customUICache = null;
-        this.xeiSize = null;
+        this.recipeViewerSize = null;
     }
 
-    public Size getJEISize() {
-        Size size = this.xeiSize;
-        if (size == null) {
-            var originalSize = createEditableUITemplate(false, false).createDefault().fullSize();
+    public Size getRecipeViewerSize() {
+        if (this.recipeViewerSize == null) {
+            var component = createEditableUITemplate(false, false).createDefault();
+            // inflate up to a sane default(?)
+            component.inflate(Size.of(200, 200));
+            var originalSize = component.fullSize();
             this.originalWidth = originalSize.width();
-            this.xeiSize = size = Size.of(Math.max(originalWidth, 150),
+            this.recipeViewerSize = Size.of(Math.max(originalWidth, 150),
                     getPropertyHeightShift() + 5 + originalSize.height());
         }
-        return size;
+        return this.recipeViewerSize;
     }
 
     public record RecipeHolder(DoubleSupplier progressSupplier,
@@ -170,19 +172,16 @@ public class GTRecipeTypeUI {
 
             var inputs = addInventorySlotGroup(false, isSteam, isHighPressure);
             var outputs = addInventorySlotGroup(true, isSteam, isHighPressure);
-            var maxWidth = Math.max(inputs.width(), outputs.width());
-            var group = UIContainers.group(Sizing.fixed(2 * maxWidth + 40),
-                    Sizing.fixed(Math.max(inputs.height(), outputs.height())));
-            var size = group.fullSize();
+            var group = UIContainers.group(Sizing.content(20), Sizing.content());
 
-            inputs.positioning(Positioning.relative(50, 50));
-            outputs.positioning(Positioning.relative(50, 50));
+            inputs.positioning(Positioning.relative(0, 50));
+            outputs.positioning(Positioning.relative(60, 50));
             group.child(inputs);
             group.child(outputs);
 
             var progressWidget = UIComponents.progress(ProgressComponent.JEIProgress);
             progressWidget.progressTexture(progressBarTexture)
-                    .positioning(Positioning.absolute(maxWidth + 10, size.height() / 2 - 10))
+                    .positioning(Positioning.relative(50, 50))
                     .sizing(Sizing.fixed(20));
             progressWidget.id("progress");
             group.child(progressWidget);
@@ -258,7 +257,7 @@ public class GTRecipeTypeUI {
         });
     }
 
-    protected GridLayout addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
+    protected ParentUIComponent addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
         int maxCount = 0;
         int totalR = 0;
         TreeMap<RecipeCapability<?>, Integer> map = new TreeMap<>(RecipeCapability.COMPARATOR);
@@ -285,7 +284,12 @@ public class GTRecipeTypeUI {
                 }
             }
         }
-        GridLayout group = UIContainers.grid(Sizing.fixed(maxCount * 18 + 8), Sizing.fixed(totalR * 18 + 8), totalR, maxCount / totalR);
+        if (totalR == 0 || maxCount == 0) {
+            // early exit if no content
+            return UIContainers.group(Sizing.fixed(0), Sizing.fixed(0));
+        }
+        GridLayout group = UIContainers.grid(Sizing.fixed(maxCount * 18 + 8), Sizing.fixed(totalR * 18 + 8),
+                totalR, maxCount);
         group.padding(Insets.of(4));
         int index = 0;
         for (var entry : map.entrySet()) {
@@ -299,11 +303,11 @@ public class GTRecipeTypeUI {
                 //noinspection DataFlowIssue
                 component.positioning(Positioning.absolute((index % 3) * 18, (index / 3) * 18))
                         .id(cap.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
-                var texture = UIComponents.texture(getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure), 18, 18);
+                var texture = UIComponents.texture(getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure));
 
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
                 layout.children(List.of(component, texture));
-                group.child(component, index % 3, index / 3);
+                group.child(component, index / 3, index % 3);
                 index++;
             }
             // move to new row

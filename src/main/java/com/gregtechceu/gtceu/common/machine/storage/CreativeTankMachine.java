@@ -1,22 +1,20 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PhantomFluidComponent;
+import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -129,32 +127,51 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
+        // TODO implement
+        // NEEDS MESSAGES FOR TICKS/ITEMS PER CYCLE & ACTIVE STATE, REMEMBER TO ADD THOSE!!
+        super.loadServerUI(player, menu, holder);
+    }
+
+    @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(131));
+        var group = UIContainers.verticalFlow(Sizing.fixed(176), Sizing.fixed(131));
+        group.padding(Insets.both(7, 9));
         group.child(new PhantomFluidComponent(cache, 0, this::getStored, this::updateStored)
-                .showAmount(false)
-                .positioning(Positioning.absolute(36, 6)));
-        group.child(UIComponents.label(Component.translatable("gtceu.creative.tank.fluid"))
-                .positioning(Positioning.absolute(7, 9)));
-        group.child(UIComponents.texture(GuiTextures.DISPLAY, 154, 14)
-                .positioning(Positioning.absolute(7, 45))
-                .sizing(Sizing.fixed(154), Sizing.fixed(14)));
-        group.child(new TextFieldWidget(9, 47, 152, 10, () -> String.valueOf(mBPerCycle), this::setmBPerCycle)
-                .setMaxStringLength(11)
-                .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.child(new LabelWidget(7, 28, "gtceu.creative.tank.mbpc"));
-        group.child(new ImageWidget(7, 82, 154, 14, GuiTextures.DISPLAY));
-        group.child(new TextFieldWidget(9, 84, 152, 10, () -> String.valueOf(ticksPerCycle), this::setTicksPerCycle)
-                .setMaxStringLength(11)
-                .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.child(new LabelWidget(7, 65, "gtceu.creative.tank.tpc"));
-        group.child(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
-                .setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.off")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.on")))
-                .setPressed(isWorkingEnabled()));
+                        .showAmount(false)
+                        .positioning(Positioning.absolute(29, -3)))
+                .child(UIComponents.label(Component.translatable("gtceu.creative.tank.fluid")))
+                .child(UIComponents.texture(GuiTextures.DISPLAY)
+                        .sizing(Sizing.fixed(154), Sizing.fixed(14)))
+                .child(UIComponents.textBox(Sizing.fixed(152))
+                        .textSupplier(() -> String.valueOf(mBPerCycle))
+                        .<TextBoxComponent>configure(c -> {
+                            c.onChanged().subscribe(this::setmBPerCycle);
+                            c.setMaxLength(11);
+                        }).numbersOnly(1, Integer.MAX_VALUE))
+                .child(UIComponents.label(Component.translatable("gtceu.creative.tank.mbpc")))
+                .child(UIContainers.horizontalFlow(Sizing.fixed(154), Sizing.fixed(14))
+                        .<FlowLayout>configure(c -> {
+                            c.positioning(Positioning.absolute(0, 73));
+                            c.surface(Surface.UI_DISPLAY);
+                        })
+                        .child(UIComponents.textBox(Sizing.fixed(152))
+                                .textSupplier(() -> String.valueOf(ticksPerCycle))
+                                .<TextBoxComponent>configure(c -> {
+                                    c.onChanged().subscribe(this::setTicksPerCycle);
+                                    c.setMaxLength(11);
+                                })
+                                .numbersOnly(1, Integer.MAX_VALUE)
+                                .positioning(Positioning.absolute(2, 11))))
+                .child(UIComponents.label(Component.translatable("gtceu.creative.tank.tpc")))
+                .child(UIComponents.switchComponent((clickData, value) -> setWorkingEnabled(value))
+                        .texture(
+                                UITextures.group(GuiTextures.VANILLA_BUTTON,
+                                        UITextures.text(Component.translatable("gtceu.creative.activity.off"))),
+                                UITextures.group(GuiTextures.VANILLA_BUTTON,
+                                        UITextures.text(Component.translatable("gtceu.creative.activity.on"))))
+                        .pressed(isWorkingEnabled())
+                        .sizing(Sizing.fixed(162), Sizing.fixed(20)));
 
         return group;
     }
@@ -202,5 +219,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
         public int getTankCapacity(int tank) {
             return 1000;
         }
+
     }
+
 }

@@ -29,7 +29,7 @@ public record Color(float red, float green, float blue, float alpha) implements 
 
 
     public static final Color T_WHITE = Color.ofArgb(0x88ffffff);
-    public static final Color T_BLACK = Color.ofArgb(0x44222222);
+    public static final Color T_BLACK = Color.ofArgb(0x44000000);
     public static final Color SEAL_BLACK = Color.ofArgb(0xFF313638);
     public static final Color T_SEAL_BLACK = Color.ofArgb(0x88313638);
     public static final Color GRAY = Color.ofArgb(0xff666666);

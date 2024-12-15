@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -34,7 +34,7 @@ public class AmountSetComponent extends BaseUIComponent {
         this.parentWidget = widget;
         this.amountText = UIComponents.textBox(Sizing.fixed(65))
                 .textSupplier(this::getAmountStr)
-                .setNumbersOnly(0, Integer.MAX_VALUE)
+                .numbersOnly(0, Integer.MAX_VALUE)
                 .configure(c -> {
                     c.onChanged().subscribe(this::setNewAmount);
                     c.verticalSizing(Sizing.fixed(13))

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEFluidConfigSlotComponent;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
@@ -9,15 +10,15 @@ import appeng.api.stacks.GenericStack;
 
 /**
  * @author GlodBlock
- * @Description Display {@link net.minecraftforge.fluids.FluidStack} config
+ * @apiNote Display {@link net.minecraftforge.fluids.FluidStack} config
  * @date 2023/4/21-1:45
  */
 public class AEFluidConfigComponent extends ConfigComponent {
 
     private final ExportOnlyAEFluidList fluidList;
 
-    public AEFluidConfigComponent(int x, int y, ExportOnlyAEFluidList list) {
-        super(x, y, list.getInventory(), list.isStocking());
+    public AEFluidConfigComponent(ExportOnlyAEFluidList list) {
+        super(list.getInventory(), list.isStocking());
         this.fluidList = list;
     }
 
@@ -30,7 +31,8 @@ public class AEFluidConfigComponent extends ConfigComponent {
             this.displayList[index] = new ExportOnlyAEFluidSlot();
             this.cached[index] = new ExportOnlyAEFluidSlot();
             line = index / 8;
-            this.child(new AEFluidConfigSlotComponent((index - line * 8) * 18, line * (18 * 2 + 2), this, index));
+            this.child(new AEFluidConfigSlotComponent(this, index)
+                    .positioning(Positioning.absolute((index - line * 8) * 18, line * (18 * 2 + 2))));
         }
     }
 

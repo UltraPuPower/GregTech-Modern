@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.gui.misc;
+package com.gregtechceu.gtceu.api.ui.misc;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;

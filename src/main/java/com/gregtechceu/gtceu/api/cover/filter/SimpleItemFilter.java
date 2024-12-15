@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -136,10 +137,10 @@ public class SimpleItemFilter implements ItemFilter {
             }
         }
         group.child(grid);
-        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList))
+        group.child(UIComponents.toggleButton(GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList))
                 .positioning(Positioning.absolute(18 * 3 + 5, 0))
                 .sizing(Sizing.fixed(20));
-        group.child(new ToggleButtonComponent(GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt)
+        group.child(UIComponents.toggleButton(GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt)
                 .positioning(Positioning.absolute(18 * 3 + 5, 20))
                 .sizing(Sizing.fixed(20)));
         return grid;

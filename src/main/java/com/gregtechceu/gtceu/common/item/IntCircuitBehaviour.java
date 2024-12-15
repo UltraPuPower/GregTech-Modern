@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -134,7 +134,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
                 });
         group.child(slot);
 
-        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 9, 4)
+        GridLayout grid = UIContainers.grid(Sizing.content(), Sizing.content(), 4, 9)
                 .configure(layout -> layout.positioning(Positioning.absolute(5, 48)));
         int idx = 0;
         for (int x = 0; x <= 2; x++) {
@@ -147,20 +147,22 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
                                 })
                         .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
                                 UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
-                        .sizing(Sizing.fixed(18)), x, y);
+                        .sizing(Sizing.fixed(18)),
+                        x, y);
                 idx++;
             }
         }
         for (int x = 0; x <= 5; x++) {
             int finalIdx = x + 27;
-            group.child(UIComponents.button(Component.empty(),
+            grid.child(UIComponents.button(Component.empty(),
                             clickData -> {
                                 setCircuitConfiguration(holder, finalIdx);
                                 prop.set(finalIdx);
                             })
                     .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
                             UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
-                    .sizing(Sizing.fixed(18)));
+                    .sizing(Sizing.fixed(18)),
+                    3, x);
         }
         group.child(grid);
         group.surface(Surface.UI_BACKGROUND);

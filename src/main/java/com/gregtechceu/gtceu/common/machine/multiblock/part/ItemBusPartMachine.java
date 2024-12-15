@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -236,7 +236,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
                                 .canExtract(true)
                                 .canInsert(io.support(IO.IN))
                                 .ingredientIO(this.io),
-                        UIComponents.texture(GuiTextures.SLOT, 18, 18)
+                        UIComponents.texture(GuiTextures.SLOT)
                                 .sizing(Sizing.fixed(18))));
                 container.child(layout, x, y);
             }

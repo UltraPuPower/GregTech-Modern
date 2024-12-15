@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UIComponentUtils;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -73,10 +73,6 @@ public class GTRecipeComponent extends UIComponentGroup {
         this.recipe = recipe;
         this.padding(Insets.of(0, 0, -getXOffset(recipe) + 3, 0));
         this.minTier = RecipeHelper.getRecipeEUtTier(recipe);
-        setRecipeWidget();
-        setTierToMin();
-        initializeRecipeTextWidget();
-        addButtons();
     }
 
     private static int getXOffset(GTRecipe recipe) {
@@ -85,6 +81,17 @@ public class GTRecipeComponent extends UIComponentGroup {
                     recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
         }
         return 0;
+    }
+
+    @Override
+    public void containerAccess(UIComponentMenuAccess access) {
+        super.containerAccess(access);
+        access.adapter().leftPos(0);
+        access.adapter().topPos(0);
+        setRecipeWidget();
+        setTierToMin();
+        initializeRecipeTextWidget();
+        addButtons();
     }
 
     @SuppressWarnings("UnstableApiUsage")

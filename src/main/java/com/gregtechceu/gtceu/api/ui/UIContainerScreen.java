@@ -19,7 +19,7 @@ public class UIContainerScreen extends BaseContainerScreen<UIComponentGroup, UIC
     @SuppressWarnings({ "unchecked", "DataFlowIssue", "rawtypes" })
     @Override
     protected @NotNull UIAdapter<UIComponentGroup> createAdapter() {
-        return ((UIContainerMenu) menu).getFactory().createAdapter(menu.player(), menu.getHolder());
+        return ((UIContainerMenu) menu).getFactory().createAdapter(menu.player(), menu.getHolder(), this);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

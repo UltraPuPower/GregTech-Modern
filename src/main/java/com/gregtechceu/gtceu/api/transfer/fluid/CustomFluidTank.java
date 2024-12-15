@@ -3,20 +3,25 @@ package com.gregtechceu.gtceu.api.transfer.fluid;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+@Slf4j
 public class CustomFluidTank extends FluidTank
                              implements IFluidHandlerModifiable, ITagSerializable<CompoundTag>, IContentChangeAware {
 
-    protected List<Runnable> onContentsChanged = new ArrayList<>();
+    @Getter
+    @Setter
+    protected Runnable onContentsChanged = () -> {};
+    protected List<Runnable> onContentsChangedList = new ArrayList<>();
 
     public CustomFluidTank(int capacity) {
         this(capacity, e -> true);
@@ -33,7 +38,8 @@ public class CustomFluidTank extends FluidTank
 
     @Override
     protected void onContentsChanged() {
-        onContentsChanged.forEach(Runnable::run);
+        onContentsChanged.run();
+        onContentsChangedList.forEach(Runnable::run);
     }
 
     public CustomFluidTank copy() {
@@ -64,31 +70,18 @@ public class CustomFluidTank extends FluidTank
         readFromNBT(nbt);
     }
 
-
-    public Runnable getOnContentsChanged() {
-        return () -> {
-            for (Runnable r : this.onContentsChanged) {
-                r.run();
-            }
-        };
-    }
-
-    public void setOnContentsChanged(Runnable onContentsChanged) {
-        this.onContentsChanged.clear();
-        this.onContentsChanged.add(onContentsChanged);
-    }
-
     public int addOnContentsChanged(Runnable onContentsChanged) {
-        int size = this.onContentsChanged.size();
-        this.onContentsChanged.add(onContentsChanged);
+        int size = this.onContentsChangedList.size();
+        this.onContentsChangedList.add(onContentsChanged);
         return size;
     }
     
     public void removeOnContersChanged(int index) {
-        this.onContentsChanged.remove(index);
+        this.onContentsChangedList.remove(index);
     }
 
     public void removeOnContersChanged(Runnable onContentsChanged) {
-        this.onContentsChanged.remove(onContentsChanged);
+        this.onContentsChangedList.remove(onContentsChanged);
     }
+
 }

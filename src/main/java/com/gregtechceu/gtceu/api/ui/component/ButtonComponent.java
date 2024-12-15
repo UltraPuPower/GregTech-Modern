@@ -170,9 +170,7 @@ public class ButtonComponent extends Button {
         }
 
         static Renderer texture(UITexture texture) {
-            return (graphics, button, delta) -> {
-                texture.draw(graphics, 0, 0, button.getX(), button.getY(), button.width, button.height);
-            };
+            return (graphics, button, delta) -> texture.draw(graphics, button);
         }
 
         static Renderer texture(UITexture base, UITexture hovered, UITexture disabled) {

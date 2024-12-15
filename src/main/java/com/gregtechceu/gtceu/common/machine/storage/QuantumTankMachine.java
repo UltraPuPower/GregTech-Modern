@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PhantomFluidComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
@@ -18,19 +17,15 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.Color;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -67,7 +62,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class QuantumTankMachine extends TieredMachine implements IAutoOutputFluid, IInteractedMachine, IControllable,
-                                IDropSaveMachine, IFancyUIMachine {
+        IDropSaveMachine, IFancyUIMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumTankMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
@@ -115,7 +110,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -176,7 +172,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     //////////////////////////////////////
     // ******* Auto Output *******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public void setAutoOutputFluids(boolean allow) {
@@ -228,7 +225,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     //////////////////////////////////////
     // ******* Interaction *******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public boolean isFacingValid(Direction facing) {
@@ -312,47 +310,55 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     //////////////////////////////////////
     // *********** GUI ***********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-
+        // TODO implement
     }
 
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = UIContainers.group(Sizing.fixed(90), Sizing.fixed(63));
-        group.child(new ImageWidget(4, 4, 82, 55, GuiTextures.DISPLAY))
-                .child(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
-                .child(new LabelWidget(8, 18, () -> FormattingUtil.formatBuckets(storedAmount))
-                        .setTextColor(-1)
-                        .setDropShadow(false))
-                .child(new TankWidget(cache, 0, 68, 23, true, true)
-                        .setShowAmount(false)
-                        .setBackground(GuiTextures.FLUID_SLOT))
+        var group = UIContainers.horizontalFlow(Sizing.fixed(90), Sizing.fixed(63));
+        group.padding(Insets.of(4));
+        group.child(UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+                        .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
+                        .child(UIComponents.label(() -> Component.literal(FormattingUtil.formatBuckets(storedAmount)))
+                                .color(Color.BLACK)
+                                .shadow(false))
+                        .padding(Insets.of(4))
+                        .surface(Surface.UI_DISPLAY))
+                .child(UIComponents.tank(cache, 0)
+                        .showAmount(false)
+                        .positioning(Positioning.absolute(68, 23)))
                 .child(new PhantomFluidComponent(lockedFluid, 0,
                         this::getLockedFluid, this::setLocked)
                         .showAmount(false)
                         .backgroundTexture(Color.T_GRAY.rectTexture())
                         .positioning(Positioning.absolute(68, 41)))
-                .child(new ToggleButtonComponent(4, 41, 18, 18,
-                        GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
-                .child(new ToggleButtonComponent(22, 41, 18, 18,
-                        GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.fluid_lock.tooltip"))
-                .child(new ToggleButtonComponent(40, 41, 18, 18,
-                        GuiTextures.BUTTON_VOID, () -> isVoiding, (b) -> isVoiding = b)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.fluid_voiding_partial.tooltip"));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+                .child(UIComponents.toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
+                        .shouldUseBaseBackground()
+                        .setTooltipText("gtceu.gui.fluid_auto_output.tooltip")
+                        .positioning(Positioning.absolute(0, 37))
+                        .sizing(Sizing.fixed(18)))
+                .child(UIComponents.toggleButton(GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
+                        .shouldUseBaseBackground()
+                        .setTooltipText("gtceu.gui.fluid_lock.tooltip")
+                        .positioning(Positioning.absolute(18, 37))
+                        .sizing(Sizing.fixed(18)))
+                .child(UIComponents.toggleButton(GuiTextures.BUTTON_VOID, () -> isVoiding, (b) -> isVoiding = b)
+                        .shouldUseBaseBackground()
+                        .setTooltipText("gtceu.gui.fluid_voiding_partial.tooltip")
+                        .positioning(Positioning.absolute(36, 37))
+                        .sizing(Sizing.fixed(18)));
+        group.surface(Surface.UI_BACKGROUND_INVERSE);
         return group;
     }
 
     //////////////////////////////////////
     // ******* Rendering ********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     @Override
     public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                     Direction side) {
@@ -449,5 +455,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         public ManagedFieldHolder getFieldHolder() {
             return MANAGED_FIELD_HOLDER;
         }
+
     }
+
 }

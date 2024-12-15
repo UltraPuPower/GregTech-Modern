@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.list;
 
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.ScrollContainer;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
-import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -21,11 +21,12 @@ import java.util.List;
 
 /**
  * @author GlodBlock
- * @Description A display only widget for {@link KeyStorage}
+ * @apiNote A display only widget for {@link KeyStorage}
  * @date 2023/4/19-0:18
  */
-public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
+public abstract class AEListGridComponent extends ScrollContainer<UIComponent> {
 
+    protected final FlowLayout container;
     protected final KeyStorage list;
     private final int slotAmountY;
     private int slotRowsAmount;
@@ -36,8 +37,10 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
     protected final KeyStorage cached = new KeyStorage();
     protected final List<GenericStack> displayList = new ArrayList<>();
 
-    public AEListGridWidget(int x, int y, int slotsY, KeyStorage internalList) {
-        super(x, y, 18 + 140, slotsY * 18);
+    public AEListGridComponent(int slotsY, KeyStorage internalList) {
+        super(ScrollDirection.VERTICAL, Sizing.fixed(18 + 140), Sizing.content(), null);
+        container = UIContainers.verticalFlow(Sizing.fill(), Sizing.fill());
+        this.child(container);
         this.list = internalList;
         this.slotAmountY = slotsY;
     }
@@ -48,16 +51,16 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
 
     private void addSlotRows(int amount) {
         for (int i = 0; i < amount; i++) {
-            int widgetAmount = this.widgets.size();
-            Widget widget = createDisplayWidget(0, i * 18, widgetAmount);
-            this.addWidget(widget);
+            int childCount = container.children().size();
+            UIComponent component = createDisplayComponent(childCount);
+            container.child(component);
         }
     }
 
     private void removeSlotRows(int amount) {
         for (int i = 0; i < amount; i++) {
-            Widget slotWidget = this.widgets.remove(this.widgets.size() - 1);
-            removeWidget(slotWidget);
+            UIComponent slotComponent = container.children().get(container.children().size() - 1);
+            container.removeChild(slotComponent);
         }
     }
 
@@ -139,26 +142,25 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
 
     protected abstract AEKey fromPacket(FriendlyByteBuf buffer);
 
-    protected abstract Widget createDisplayWidget(int x, int y, int index);
+    protected abstract UIComponent createDisplayComponent(int index);
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    protected void parentUpdate(float delta, int mouseX, int mouseY) {
+        super.parentUpdate(delta, mouseX, mouseY);
         if (this.list == null) return;
         int slotRowsRequired = Math.max(this.slotAmountY, list.storage.size());
         if (this.slotRowsAmount != slotRowsRequired) {
             int slotsToAdd = slotRowsRequired - this.slotRowsAmount;
             this.slotRowsAmount = slotRowsRequired;
-            this.writeUpdateInfo(ROW_CHANGE_ID, buf -> buf.writeVarInt(slotsToAdd));
+            this.sendMessage(ROW_CHANGE_ID, buf -> buf.writeVarInt(slotsToAdd));
             this.modifySlotRows(slotsToAdd);
         }
-        this.writeUpdateInfo(CONTENT_CHANGE_ID, this::writeListChange);
+        this.sendMessage(CONTENT_CHANGE_ID, this::writeListChange);
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
-        super.readUpdateInfo(id, buffer);
+    public void receiveMessage(int id, FriendlyByteBuf buffer) {
+        super.receiveMessage(id, buffer);
         if (id == ROW_CHANGE_ID) {
             int slotsToAdd = buffer.readVarInt();
             this.modifySlotRows(slotsToAdd);
@@ -168,6 +170,8 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         }
     }
 
+    // TODO implement
+    /*
     @Override
     public void writeInitialData(FriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
@@ -181,18 +185,18 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void readInitialData(FriendlyByteBuf buffer) {
         super.readInitialData(buffer);
         if (this.list == null) return;
         this.modifySlotRows(buffer.readVarInt());
         this.readListChange(buffer);
     }
+    */
 
-    public static class Item extends AEListGridWidget {
+    public static class Item extends AEListGridComponent {
 
-        public Item(int x, int y, int slotsY, KeyStorage internalList) {
-            super(x, y, slotsY, internalList);
+        public Item(int slotsY, KeyStorage internalList) {
+            super(slotsY, internalList);
         }
 
         @Override
@@ -206,15 +210,15 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         }
 
         @Override
-        protected Widget createDisplayWidget(int x, int y, int index) {
-            return new AEItemDisplayWidget(x, y, this, index);
+        protected UIComponent createDisplayComponent(int index) {
+            return new AEItemDisplayComponent(this, index);
         }
     }
 
-    public static class Fluid extends AEListGridWidget {
+    public static class Fluid extends AEListGridComponent {
 
-        public Fluid(int x, int y, int slotsY, KeyStorage internalList) {
-            super(x, y, slotsY, internalList);
+        public Fluid(int slotsY, KeyStorage internalList) {
+            super(slotsY, internalList);
         }
 
         @Override
@@ -228,8 +232,8 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         }
 
         @Override
-        protected Widget createDisplayWidget(int x, int y, int index) {
-            return new AEFluidDisplayWidget(x, y, this, index);
+        protected UIComponent createDisplayComponent(int index) {
+            return new AEFluidDisplayComponent(this, index);
         }
     }
 }

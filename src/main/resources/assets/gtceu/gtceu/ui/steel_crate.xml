@@ -1,16 +1,17 @@
 <gtceu-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="../../../../../../../gtceu-ui.xsd">
     <components>
-        <root>
+        <group>
             <children>
                 <flow-layout direction="horizontal">
                     <children>
-                        <nine-patch-texture texture="gtceu:background">
+                        <texture>
+                            <value type="nine-patch" texture="gtceu:background"/>
                             <sizing>
                                 <horizontal method="fill"/>
                                 <vertical method="fill"/>
                             </sizing>
-                        </nine-patch-texture>
+                        </texture>
 
                         <grid-layout rows="9" columns="8">
                             <children>
@@ -107,6 +108,6 @@
             <surface>
                 <vanilla-translucent/>
             </surface>
-        </root>
+        </group>
     </components>
 </gtceu-ui>

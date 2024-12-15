@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -32,7 +34,7 @@ public class GTRecipeCategory {
     private final String languageKey;
     @Nullable
     @Setter
-    private IGuiTexture icon = null;
+    private UITexture icon = null;
     @Getter
     @Setter
     private boolean isXEIVisible = true;
@@ -57,10 +59,10 @@ public class GTRecipeCategory {
         return category;
     }
 
-    public IGuiTexture getIcon() {
+    public UITexture getIcon() {
         if (icon == null) {
-            if (recipeType.getIconSupplier() != null) icon = new ItemStackTexture(recipeType.getIconSupplier().get());
-            else icon = new ItemStackTexture(Items.BARRIER);
+            if (recipeType.getIconSupplier() != null) icon = UITextures.item(recipeType.getIconSupplier().get());
+            else icon = UITextures.item(Items.BARRIER.getDefaultInstance());
         }
         return icon;
     }

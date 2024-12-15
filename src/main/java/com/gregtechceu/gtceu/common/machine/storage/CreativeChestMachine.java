@@ -1,27 +1,26 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
+import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -111,37 +110,56 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-
+        // TODO implement
+        // NEEDS MESSAGES FOR TICKS/ITEMS PER CYCLE & ACTIVE STATE, REMEMBER TO ADD THOSE!!
     }
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(131));
-        group.child(new PhantomSlotComponent(cache, 0)
-                .clearSlotOnRightClick(true)
-                .maxStackSize(1)
-                .backgroundTexture(GuiTextures.SLOT)
-                .changeListener(this::markDirty)
-                .positioning(Positioning.absolute(36, 6)));
-        group.child(new LabelWidget(7, 9, "gtceu.creative.chest.item"));
-        group.child(new ImageWidget(7, 48, 154, 14, GuiTextures.DISPLAY));
-        group.child(new TextFieldWidget(9, 50, 152, 10, () -> String.valueOf(itemsPerCycle), this::setItemsPerCycle)
-                .setMaxStringLength(11)
-                .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.child(new LabelWidget(7, 28, "gtceu.creative.chest.ipc"));
-        group.child(new ImageWidget(7, 85, 154, 14, GuiTextures.DISPLAY));
-        group.child(new TextFieldWidget(9, 87, 152, 10, () -> String.valueOf(ticksPerCycle), this::setTicksPerCycle)
-                .setMaxStringLength(11)
-                .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.child(new LabelWidget(7, 65, "gtceu.creative.chest.tpc"));
-        group.child(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
-                .setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.off")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.on")))
-                .setPressed(isWorkingEnabled()));
-
+        var group = UIContainers.verticalFlow(Sizing.fixed(176), Sizing.fixed(131));
+        group.padding(Insets.both(7, 9));
+        group.child(UIComponents.label(Component.translatable("gtceu.creative.chest.item")))
+                .child(new PhantomSlotComponent(cache, 0)
+                        .clearSlotOnRightClick(true)
+                        .maxStackSize(1)
+                        .backgroundTexture(GuiTextures.SLOT)
+                        .changeListener(this::markDirty)
+                        .positioning(Positioning.absolute(29, -3)))
+                .child(UIContainers.verticalFlow(Sizing.fixed(154), Sizing.fixed(14))
+                        .<FlowLayout>configure(c -> {
+                            c.surface(Surface.UI_DISPLAY)
+                                    .positioning(Positioning.absolute(0, 39));
+                        }).child(UIComponents.textBox(Sizing.fixed(152))
+                                .textSupplier(() -> String.valueOf(itemsPerCycle))
+                                .<TextBoxComponent>configure(c -> {
+                                    c.onChanged().subscribe(value -> {
+                                        this.setItemsPerCycle(value);
+                                    });
+                                    c.setMaxLength(11);
+                                })
+                                .numbersOnly(1, Integer.MAX_VALUE)))
+                .child(UIComponents.label(Component.translatable("gtceu.creative.chest.ipc")))
+                .child(UIContainers.verticalFlow(Sizing.fixed(154), Sizing.fixed(14))
+                        .<FlowLayout>configure(c -> {
+                            c.surface(Surface.UI_DISPLAY)
+                                    .positioning(Positioning.absolute(7, 85));
+                        }).child(UIComponents.textBox(Sizing.fixed(152))
+                                .textSupplier(() -> String.valueOf(ticksPerCycle))
+                                .<TextBoxComponent>configure(c -> {
+                                    c.onChanged().subscribe(value -> {
+                                        this.setTicksPerCycle(value);
+                                    });
+                                    c.setMaxLength(11);
+                                })
+                                .numbersOnly(1, Integer.MAX_VALUE)))
+                .child(UIComponents.label(Component.translatable("gtceu.creative.chest.tpc")))
+                .child(UIComponents.switchComponent((clickData, value) -> setWorkingEnabled(value))
+                        .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
+                                        "gtceu.creative.activity.off"))),
+                                UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
+                                        "gtceu.creative.activity.on"))))
+                        .pressed(isWorkingEnabled())
+                        .sizing(Sizing.fixed(162), Sizing.fixed(20)));
         return group;
     }
 
@@ -187,5 +205,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
         public int getSlotLimit(int slot) {
             return 1;
         }
+
     }
+
 }

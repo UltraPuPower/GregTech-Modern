@@ -116,9 +116,10 @@ public class UIParsing {
      *                                 capable of parsing the given element
      */
     public static Function<Element, UITexture> getTextureFactory(Element element) {
-        var factory = TEXTURE_FACTORIES.get(element.getNodeName());
+        UIParsing.expectAttributes(element, "type");
+        var factory = TEXTURE_FACTORIES.get(element.getAttribute("type"));
         if (factory == null) {
-            throw new UIModelParsingException("Unknown component type: " + element.getNodeName());
+            throw new UIModelParsingException("Unknown texture type: " + element.getNodeName());
         }
 
         return factory;
@@ -362,7 +363,7 @@ public class UIParsing {
 
         // Textures
         registerComponentFactory("sprite", SpriteComponent::parse);
-        registerComponentFactory("texture", TextureComponent::parse);
+        registerComponentFactory("texture", element -> UIComponents.texture(UITexture.EMPTY));
 
         // Game Objects
         registerComponentFactory("entity", EntityComponent::parse);

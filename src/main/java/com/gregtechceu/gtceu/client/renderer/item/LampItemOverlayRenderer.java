@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,6 +28,8 @@ public class LampItemOverlayRenderer {
 
     public static void renderOverlay(GuiGraphics graphics, ItemStack stack, int xPosition,
                                      int yPosition) {
+        if (!(graphics instanceof UIGuiGraphics)) graphics = UIGuiGraphics.of(graphics);
+        var uiGraphics = (UIGuiGraphics) graphics;
         if (stack.hasTag()) {
             var tag = stack.getTag();
             var overlayType = getOverlayType(isLightEnabled(tag), isBloomEnabled(tag));
@@ -36,11 +39,11 @@ public class LampItemOverlayRenderer {
 
             RenderSystem.disableDepthTest();
             if (overlayType.noBloom()) {
-                GuiTextures.LAMP_NO_BLOOM.draw(graphics, 0, 0, xPosition, yPosition, 16, 16);
+                GuiTextures.LAMP_NO_BLOOM.draw(uiGraphics, 0, 0, xPosition, yPosition, 16, 16);
             }
 
             if (overlayType.noLight()) {
-                GuiTextures.LAMP_NO_LIGHT.draw(graphics, 0, 0, xPosition, yPosition, 16, 16);
+                GuiTextures.LAMP_NO_LIGHT.draw(uiGraphics, 0, 0, xPosition, yPosition, 16, 16);
             }
             RenderSystem.enableDepthTest();
         }

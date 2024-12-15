@@ -143,7 +143,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         if (this.stackSizeInput == null)
             return;
 
-        this.stackSizeInput.setVisible(shouldShowStackSize());
+        this.stackSizeInput.enabled(shouldShowStackSize());
         this.stackSizeInput.setMin(1);
         this.stackSizeInput.setMax(this.voidingMode.maxStackSize);
     }
