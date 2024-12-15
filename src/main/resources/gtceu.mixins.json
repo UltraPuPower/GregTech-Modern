@@ -59,6 +59,7 @@
         "OreConfigurationMixin",
         "OreVeinifierMixin",
         "PartialNBTIngredientAccessor",
+        "PotionBrewingAccessor",
         "PrimedTntAccessor",
         "RecipeManagerAccessor",
         "RecipeManagerInvoker",

@@ -25,6 +25,7 @@ public class CycleFluidStackHandler implements IFluidHandlerModifiable {
     public int getTanks() {
         return this.stacks.size();
     }
+
     @NotNull
     @Override
     public FluidStack getFluidInTank(int tank) {
@@ -33,6 +34,7 @@ public class CycleFluidStackHandler implements IFluidHandlerModifiable {
                 stackList.get(Math.abs((int) (System.currentTimeMillis() / 1000L) % stackList.size())) :
                 FluidStack.EMPTY;
     }
+
     @Override
     public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
         if (tank >= 0 && tank < this.stacks.size()) {
@@ -44,27 +46,33 @@ public class CycleFluidStackHandler implements IFluidHandlerModifiable {
     public int getTankCapacity(int tank) {
         return this.getFluidInTank(tank).getAmount();
     }
+
     @Override
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
         return false;
     }
+
     @Override
     public int fill(FluidStack resource, FluidAction action) {
         return 0;
     }
+
     @Override
     public boolean supportsFill(int tank) {
         return false;
     }
+
     @NotNull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
         return FluidStack.EMPTY;
     }
+
     @Override
     public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
         return FluidStack.EMPTY;
     }
+
     @Override
     public boolean supportsDrain(int tank) {
         return false;

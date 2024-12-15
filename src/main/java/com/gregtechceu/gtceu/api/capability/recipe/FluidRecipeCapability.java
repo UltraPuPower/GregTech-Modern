@@ -33,13 +33,10 @@ import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -346,6 +343,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             tank.ingredientIO(io);
             tank.canInsert(!isXEI && io.support(IO.IN));
             tank.canExtract(!isXEI);
+            if (isXEI) tank.showAmount(false);
             if (content != null) {
                 float chance = (float) recipeType.getChanceFunction()
                         .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
@@ -354,9 +352,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
                     if (!isXEI && ingredient.getStacks().length > 0) {
                         FluidStack stack = ingredient.getStacks()[0];
-                        TooltipsHandler.appendFluidTooltips(stack,
-                                tooltips::add,
-                                TooltipFlag.NORMAL);
+                        TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
 
                     GTRecipeComponent.setConsumedChance(content,

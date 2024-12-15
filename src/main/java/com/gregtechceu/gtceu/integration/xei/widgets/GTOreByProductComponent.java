@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemEntryList;
+import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -17,19 +19,12 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 public class GTOreByProductComponent extends UIComponentGroup {
 
@@ -132,8 +127,8 @@ public class GTOreByProductComponent extends UIComponentGroup {
                     .sizing(Sizing.fixed(176), Sizing.fixed(166)));
         }
 
-        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> itemInputs = recipeWrapper.itemInputs;
-        TagOrCycleItemStackHandler itemInputsHandler = new TagOrCycleItemStackHandler(itemInputs);
+        List<ItemEntryList> itemInputs = recipeWrapper.itemInputs;
+        CycleItemEntryHandler itemInputsHandler = new CycleItemEntryHandler(itemInputs);
         UIComponentGroup itemStackGroup = UIContainers.group(Sizing.fill(), Sizing.fill());
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
             final int finalI = i;
@@ -175,8 +170,8 @@ public class GTOreByProductComponent extends UIComponentGroup {
             itemOutputExists.add(true);
         }
 
-        List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
-        TagOrCycleFluidHandler fluidInputsHandler = new TagOrCycleFluidHandler(fluidInputs);
+        List<FluidEntryList> fluidInputs = recipeWrapper.fluidInputs;
+        CycleFluidEntryHandler fluidInputsHandler = new CycleFluidEntryHandler(fluidInputs);
         UIComponentGroup fluidStackGroup = UIContainers.group(Sizing.fill(), Sizing.fill());
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
