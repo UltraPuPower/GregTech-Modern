@@ -21,7 +21,7 @@ import java.util.*;
 class RecipeRunner {
 
     record RecipeHandlingResult(@Nullable RecipeCapability<?> capability, @UnknownNullability List content,
-                                RecipeHandler.ActionResult result) {}
+                                RecipeHelper.ActionResult result) {}
 
     // --------------------------------------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ class RecipeRunner {
         fillContentMatchList(entries);
 
         if (searchRecipeContents.isEmpty())
-            return new RecipeHandlingResult(null, null, RecipeHandler.ActionResult.PASS_NO_CONTENTS);
+            return new RecipeHandlingResult(null, null, RecipeHelper.ActionResult.PASS_NO_CONTENTS);
 
         return this.handleContents();
     }
@@ -125,7 +125,7 @@ class RecipeRunner {
     @Nullable
     private RecipeHandlingResult handleContents() {
         if (recipeContents.isEmpty()) {
-            return new RecipeHandlingResult(null, null, RecipeHandler.ActionResult.SUCCESS);
+            return new RecipeHandlingResult(null, null, RecipeHelper.ActionResult.SUCCESS);
         }
         var result = handleContentsInternal(io);
         if (!result.result.isSuccess()) {
@@ -136,7 +136,7 @@ class RecipeRunner {
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {
         if (!capabilityProxies.containsKey(capIO))
-            return new RecipeHandlingResult(null, null, RecipeHandler.ActionResult.SUCCESS);
+            return new RecipeHandlingResult(null, null, RecipeHelper.ActionResult.SUCCESS);
 
         // noinspection DataFlowIssue checked above.
         var handlers = new ArrayList<>(capabilityProxies.get(capIO));
@@ -188,16 +188,16 @@ class RecipeRunner {
         }
 
         if (handled) {
-            return new RecipeHandlingResult(null, null, RecipeHandler.ActionResult.SUCCESS);
+            return new RecipeHandlingResult(null, null, RecipeHelper.ActionResult.SUCCESS);
         }
 
         for (var entry : recipeContents.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 return new RecipeHandlingResult(entry.getKey(), entry.getValue(),
-                        RecipeHandler.ActionResult.FAIL_NO_REASON);
+                        RecipeHelper.ActionResult.FAIL_NO_REASON);
             }
         }
 
-        return new RecipeHandlingResult(null, null, RecipeHandler.ActionResult.FAIL_NO_REASON);
+        return new RecipeHandlingResult(null, null, RecipeHelper.ActionResult.FAIL_NO_REASON);
     }
 }
