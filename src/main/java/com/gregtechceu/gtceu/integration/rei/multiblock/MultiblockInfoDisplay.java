@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.rei.multipage;
+package com.gregtechceu.gtceu.integration.rei.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.ui.component.PatternPreviewComponent;

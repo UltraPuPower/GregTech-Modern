@@ -39,15 +39,6 @@ import java.util.List;
 @Accessors(fluent = true)
 public class UIGuiGraphics extends GuiGraphics {
 
-    @Deprecated
-    public static final ResourceLocation PANEL_TEXTURE = new ResourceLocation("owo", "textures/gui/panel.png");
-    @Deprecated
-    public static final ResourceLocation DARK_PANEL_TEXTURE = new ResourceLocation("owo",
-            "textures/gui/dark_panel.png");
-    @Deprecated
-    public static final ResourceLocation PANEL_INSET_TEXTURE = new ResourceLocation("owo",
-            "textures/gui/panel_inset.png");
-
     public static final ResourceLocation PANEL_NINE_PATCH_TEXTURE = GTCEu.id("background_steel");
     public static final ResourceLocation DARK_PANEL_NINE_PATCH_TEXTURE = GTCEu.id("background_bronze");
 

@@ -111,11 +111,10 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
 
         int x = 0;
         int y = 0;
-        GridLayout grid;
-        parent.child(grid = UIContainers.grid(Sizing.content(),
+        GridLayout grid = UIContainers.grid(Sizing.content(),
                 Sizing.content(),
                 inventorySize / yOverflow,
-                yOverflow));
+                yOverflow);
         grid.positioning(Positioning.absolute(8, 18));
         for (int slot = 0; slot < inventorySize; slot++) {
             grid.child(UIComponents.slot(inventory, slot).id("inventory." + slot),
@@ -126,6 +125,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
                 y++;
             }
         }
+        parent.child(grid);
 
         //parent.alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
     }

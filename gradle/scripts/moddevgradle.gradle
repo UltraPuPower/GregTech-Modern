@@ -1,9 +1,10 @@
+import org.gradle.internal.os.OperatingSystem
+OperatingSystem os = OperatingSystem.current();
 
 mixin {
     add sourceSets.main, "gtceu.refmap.json"
     config 'gtceu.mixins.json'
 }
-
 neoForge {
     // Specify the version of NeoForge to use.
     version = forge.versions.minecraftForge.get()
@@ -36,6 +37,9 @@ neoForge {
             ideName = "Client 1"
 
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            if (os.isWindows()) {
+                systemProperty("gtceu.renderdocPath", win_renderdoc_path)
+            }
         }
 
         client2 {
@@ -45,6 +49,9 @@ neoForge {
 
             programArguments.addAll('--username', 'YoungOnion')
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            if (os.isWindows()) {
+                systemProperty("gtceu.renderdocPath", win_renderdoc_path)
+            }
         }
 
         // Client with GTM + Jade, EMI, AE2
@@ -54,6 +61,9 @@ neoForge {
             ideName = "Clean Client"
 
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            if (os.isWindows()) {
+                systemProperty("gtceu.renderdocPath", win_renderdoc_path)
+            }
         }
 
         server {

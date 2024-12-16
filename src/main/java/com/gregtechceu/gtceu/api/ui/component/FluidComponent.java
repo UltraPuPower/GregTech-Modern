@@ -67,12 +67,12 @@ public class FluidComponent extends BaseUIComponent implements ClickableIngredie
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         return 16;
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         return 16;
     }
 

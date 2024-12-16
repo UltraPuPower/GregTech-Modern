@@ -27,7 +27,7 @@ public class PlayerInventoryComponent extends UIComponentGroup {
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
                 // .positioning(Positioning.absolute(x * 18, y * 18))
-                grid.child(UIComponents.slot(inventory, y + x * 9 + 9)
+                grid.child(UIComponents.slot(inventory, x + y * 9 + 9)
                         .backgroundTexture(slotTexture),
                         y, x);
             }

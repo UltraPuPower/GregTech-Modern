@@ -78,14 +78,13 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
 
         // Check whether this screen was already initialized
         if (this.uiAdapter != null) {
+            super.init();
+            this.uiAdapter.leftPos(leftPos);
+            this.uiAdapter.topPos(topPos);
             // If it was, only resize the adapter instead of recreating it - this preserves UI state
             this.uiAdapter.moveAndResize(0, 0, this.width, this.height);
             // Re-add it as a child to circumvent vanilla clearing them
             this.addRenderableWidget(this.uiAdapter);
-
-            super.init();
-            this.uiAdapter.leftPos(leftPos);
-            this.uiAdapter.topPos(topPos);
         } else {
             try {
                 this.uiAdapter = this.createAdapter();
@@ -308,7 +307,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
     @Override
     protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType type) {
         if (slot != null &&
-                uiAdapter.rootComponent.getHoveredComponent(slot.x, slot.y) instanceof SlotComponent slotComponent) {
+                uiAdapter.rootComponent.getHoveredComponent(slot.x - 1 + leftPos, slot.y - 1 + topPos) instanceof SlotComponent slotComponent) {
             if (slotComponent.slotClick(mouseButton, type, this.menu.player())) {
                 return;
             }

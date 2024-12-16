@@ -30,6 +30,10 @@ public class Sizing implements Animatable<Sizing> {
         this.value = value;
     }
 
+    public Sizing copy() {
+        return new Sizing(value, method).min(min).max(max);
+    }
+
     /**
      * Inflate into the given space
      *
@@ -43,26 +47,20 @@ public class Sizing implements Animatable<Sizing> {
             case FILL -> {
                 int value = Math.round((this.value / 100f) * space);
                 if (min != -1) {
-                    if (max != -1) {
-                        yield Mth.clamp(value, min, max);
-                    }
-                    yield Math.min(min, value);
+                    value = Math.max(min, value);
                 }
                 if (max != -1) {
-                    yield Math.max(max, value);
+                    value = Math.min(max, value);
                 }
                 yield value;
             }
             case CONTENT -> {
                 int value = contentSizeFunction.apply(this) + this.value * 2;
                 if (min != -1) {
-                    if (max != -1) {
-                        yield Mth.clamp(value, min, max);
-                    }
-                    yield Math.min(min, value);
+                    value = Math.max(min, value);
                 }
                 if (max != -1) {
-                    yield Math.max(max, value);
+                    value = Math.min(max, value);
                 }
                 yield value;
             }
@@ -133,6 +131,10 @@ public class Sizing implements Animatable<Sizing> {
         } else {
             return new Sizing(Mth.lerpInt(delta, this.value, next.value), this.method);
         }
+    }
+
+    public Sizing andThen(Sizing next) {
+        return new GroupedSizing(this, next);
     }
 
     public enum Method {
@@ -208,6 +210,11 @@ public class Sizing implements Animatable<Sizing> {
         }
 
         @Override
+        public Sizing copy() {
+            return new MergedSizing(first.copy(), second.copy(), delta);
+        }
+
+        @Override
         public int inflate(int space, Function<Sizing, Integer> contentSizeFunction) {
             return Mth.lerpInt(
                     this.delta,
@@ -251,6 +258,57 @@ public class Sizing implements Animatable<Sizing> {
         @Override
         public int hashCode() {
             return Objects.hash(super.hashCode(), first, second, delta);
+        }
+    }
+
+    private static class GroupedSizing extends Sizing {
+
+        private final Sizing first, second;
+
+        private GroupedSizing(Sizing first, Sizing second) {
+            super(first.value, first.method);
+            this.first = first;
+            this.second = second;
+        }
+
+        @Override
+        public Sizing copy() {
+            return new GroupedSizing(first.copy(), second.copy());
+        }
+
+        @Override
+        public int inflate(int space, Function<Sizing, Integer> contentSizeFunction) {
+            return this.first.inflate(space, contentSizeFunction) + this.second.inflate(space, contentSizeFunction);
+        }
+
+        @Override
+        public Sizing interpolate(Sizing next, float delta) {
+            return this.first.interpolate(next, delta);
+        }
+
+        @Override
+        public boolean isContent() {
+            return this.first.isContent() || this.second.isContent();
+        }
+
+        @Override
+        public float contentFactor() {
+            return this.first.contentFactor() + this.second.contentFactor();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            MergedSizing that = (MergedSizing) o;
+            return Objects.equals(first, that.first) &&
+                    Objects.equals(second, that.second);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), first, second);
         }
     }
 }

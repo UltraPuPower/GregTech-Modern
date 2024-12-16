@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.rei.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.rei.handler.UIREIHandler;
-import com.gregtechceu.gtceu.integration.rei.multipage.MultiblockInfoDisplayCategory;
+import com.gregtechceu.gtceu.integration.rei.multiblock.MultiblockInfoDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.oreprocessing.GTOreProcessingDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockFluidDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockOreDisplayCategory;

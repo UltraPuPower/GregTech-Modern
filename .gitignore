@@ -24,3 +24,6 @@ src/generated/resources/.cache/
 *.patch
 *.DS_Store
 
+# ignore renderdoc files
+*.cap
+*.rdc

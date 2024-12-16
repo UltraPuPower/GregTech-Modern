@@ -88,6 +88,7 @@ public class ButtonComponent extends Button {
     @Override
     public ButtonComponent enabled(boolean enabled) {
         super.enabled(enabled);
+        this.active(enabled);
         this.visible(enabled);
         return this;
     }

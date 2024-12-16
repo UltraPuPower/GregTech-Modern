@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.emi.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.emi.handler.EmiStackConverter;
-import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
+import com.gregtechceu.gtceu.integration.emi.multiblock.MultiblockInfoEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluidEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockOreEmiCategory;

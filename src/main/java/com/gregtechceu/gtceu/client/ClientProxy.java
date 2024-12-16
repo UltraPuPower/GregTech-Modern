@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerScreen;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
 import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
+import com.gregtechceu.gtceu.client.renderdoc.RenderDoc;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.client.ui.ScreenInternals;
@@ -24,6 +26,7 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import net.minecraft.Util;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
@@ -37,6 +40,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import org.jetbrains.annotations.ApiStatus;
 
 import static com.gregtechceu.gtceu.api.ui.UIContainerMenu.MENU_TYPE;
 
@@ -62,8 +66,46 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
         }
+        loadRenderdoc();
 
         ScreenInternals.init();
+    }
+
+
+    private static final String LINUX_RENDERDOC_WARNING = """
+
+            ========================================
+            Ignored 'gtceu.renderdocPath' property as this Minecraft instance is not running on Windows.
+            Please populate the LD_PRELOAD environment variable instead
+            ========================================""";
+
+    private static final String MAC_RENDERDOC_WARNING = """
+
+            ========================================
+            Ignored 'gtceu.renderdocPath' property as this Minecraft instance is not running on Windows.
+            RenderDoc is not supported on macOS
+            ========================================""";
+
+    private static final String GENERIC_RENDERDOC_WARNING = """
+
+            ========================================
+            Ignored 'gtceu.renderdocPath' property as this Minecraft instance is not running on Windows.
+            ========================================""";
+
+    @ApiStatus.Internal
+    public static void loadRenderdoc() {
+        final var renderdocPath = System.getProperty("gtceu.renderdocPath");
+        if (renderdocPath != null) {
+            if (Util.getPlatform() == Util.OS.WINDOWS) {
+                System.load(renderdocPath);
+            } else {
+                GTCEu.LOGGER.warn(switch (Util.getPlatform()) {
+                    case LINUX -> LINUX_RENDERDOC_WARNING;
+                    case OSX -> MAC_RENDERDOC_WARNING;
+                    default -> GENERIC_RENDERDOC_WARNING;
+                });
+            }
+        }
     }
 
     @SubscribeEvent

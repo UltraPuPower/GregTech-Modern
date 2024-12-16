@@ -289,7 +289,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public void removeProgressPercentListener(int index) {
-        this.progressPercentListener.remove(index);
+        if (this.progressPercentListener.size() > index) {
+            this.progressPercentListener.remove(index);
+        }
     }
 
     public void removeProgressPercentListener(DoubleConsumer listener) {

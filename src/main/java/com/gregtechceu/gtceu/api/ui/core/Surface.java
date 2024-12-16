@@ -23,11 +23,11 @@ public interface Surface {
     Surface UI_DISPLAY = GuiTextures.DISPLAY::draw;
 
     Surface UI_BACKGROUND_BRONZE = (graphics, component) -> {
-        graphics.drawPanel(component.x(), component.y(), component.width(), component.height(), false);
+        GuiTextures.BACKGROUND_STEAM.get(false).draw(graphics, component);
     };
 
     Surface UI_BACKGROUND_STEEL = (graphics, component) -> {
-        graphics.drawPanel(component.x(), component.y(), component.width(), component.height(), true);
+        GuiTextures.BACKGROUND_STEAM.get(true).draw(graphics, component);
     };
 
     Surface UI_BACKGROUND_INVERSE = GuiTextures.BACKGROUND_INVERSE::draw;
@@ -123,9 +123,9 @@ public interface Surface {
 
         for (var child : children) {
             surface = switch (child.getNodeName()) {
-                case "background" -> surface.and(
+                case "panel" -> surface.and(
                         child.getAttribute("inverse").equalsIgnoreCase("true") ? UI_BACKGROUND_INVERSE : UI_BACKGROUND);
-                case "panel" -> surface.and(child.getAttribute("dark").equalsIgnoreCase("true") ? UI_BACKGROUND_STEEL :
+                case "steam-panel" -> surface.and(child.getAttribute("steel").equalsIgnoreCase("true") ? UI_BACKGROUND_STEEL :
                         UI_BACKGROUND_BRONZE);
                 case "tiled" -> {
                     UIParsing.expectAttributes(child, "texture-width", "texture-height");

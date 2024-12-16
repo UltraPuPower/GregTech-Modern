@@ -78,7 +78,9 @@ public class CustomFluidTank extends FluidTank
     }
 
     public void removeOnContersChanged(int index) {
-        this.onContentsChangedList.remove(index);
+        if (this.onContentsChangedList.size() > index) {
+            this.onContentsChangedList.remove(index);
+        }
     }
 
     public void removeOnContersChanged(Runnable onContentsChanged) {

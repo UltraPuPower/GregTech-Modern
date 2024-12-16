@@ -8,10 +8,7 @@ import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.*;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
@@ -37,6 +34,8 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         adapter.rootComponent
                 .child(new FancyMachineUIComponent(this, Sizing.fixed(176), Sizing.fixed(166))
+                        .horizontalAlignment(HorizontalAlignment.CENTER)
+                        .verticalAlignment(VerticalAlignment.CENTER)
                         .positioning(Positioning.relative(50, 50)));
     }
 

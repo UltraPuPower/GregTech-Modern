@@ -71,7 +71,7 @@ public class GTRecipeComponent extends UIComponentGroup {
                 Sizing.fixed(recipe.recipeType.getRecipeUI().getRecipeViewerSize().height()));
         positioning(Positioning.absolute(getXOffset(recipe), 0));
         this.recipe = recipe;
-        this.padding(Insets.of(0, 0, -getXOffset(recipe) + 3, 0));
+        this.padding(Insets.of(0, 0, /*-getXOffset(recipe) + */3, 0));
         this.minTier = RecipeHelper.getRecipeEUtTier(recipe);
     }
 

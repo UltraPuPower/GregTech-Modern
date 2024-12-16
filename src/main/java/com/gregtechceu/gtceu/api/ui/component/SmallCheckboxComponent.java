@@ -53,12 +53,12 @@ public class SmallCheckboxComponent extends BaseUIComponent {
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         return this.label.get() != null ? 13 + 2 + Minecraft.getInstance().font.width(this.label.get()) : 13;
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         return 13;
     }
 

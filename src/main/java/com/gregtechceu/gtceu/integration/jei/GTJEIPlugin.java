@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jei.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.jei.handler.UIJEIHandler;
-import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
+import com.gregtechceu.gtceu.integration.jei.multiblock.MultiblockInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockFluidInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockOreInfoCategory;

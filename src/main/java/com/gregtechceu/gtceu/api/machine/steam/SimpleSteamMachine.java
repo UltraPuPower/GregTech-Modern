@@ -183,7 +183,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         var rootComponent = adapter.rootComponent;
         var screenGroup = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166));
         screenGroup.padding(Insets.of(5));
-        screenGroup.surface(isHighPressure ? Surface.UI_BACKGROUND_STEEL : Surface.UI_BACKGROUND_BRONZE);
+        screenGroup.surface(GuiTextures.BACKGROUND_STEAM.get(isHighPressure)::draw);
 
         var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
         storages.put(IO.IN, ItemRecipeCapability.CAP, importItems.storage);

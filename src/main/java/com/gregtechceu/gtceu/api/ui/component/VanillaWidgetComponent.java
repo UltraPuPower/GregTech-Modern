@@ -55,7 +55,7 @@ public class VanillaWidgetComponent extends BaseUIComponent {
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         if (this.widget instanceof Button || this.widget instanceof Checkbox ||
                 this.widget instanceof SliderComponent) {
             return 20;
@@ -75,7 +75,7 @@ public class VanillaWidgetComponent extends BaseUIComponent {
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         if (this.widget instanceof Button button) {
             return Minecraft.getInstance().font.width(button.getMessage()) + 8;
         } else if (this.widget instanceof Checkbox checkbox) {

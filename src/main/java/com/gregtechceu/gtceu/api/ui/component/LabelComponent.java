@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.ui.util.Observable;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -65,7 +66,7 @@ public class LabelComponent extends BaseUIComponent {
     protected Function<Style, Boolean> textClickHandler = UIGuiGraphics.utilityScreen()::handleComponentClicked;
 
     protected LabelComponent(Component text) {
-        zIndex(100);
+        zIndex(400);
         this.text = text;
         this.wrappedText = new ArrayList<>();
 
@@ -123,7 +124,7 @@ public class LabelComponent extends BaseUIComponent {
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         int widestText = 0;
         for (var line : this.wrappedText) {
             int width = this.font.width(line);
@@ -138,7 +139,7 @@ public class LabelComponent extends BaseUIComponent {
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         this.wrapLines();
         return (this.wrappedText.size() * (this.lineHeight() + 2)) - 2;
     }
@@ -185,7 +186,7 @@ public class LabelComponent extends BaseUIComponent {
         var pose = graphics.pose();
 
         pose.pushPose();
-        pose.translate(0, 1 / Minecraft.getInstance().getWindow().getGuiScale(), 0);
+        //pose.translate(0, 1 / Minecraft.getInstance().getWindow().getGuiScale(), 0);
 
         int x = this.x;
         int y = this.y;
@@ -196,6 +197,8 @@ public class LabelComponent extends BaseUIComponent {
         if (this.verticalSizing.get().isContent()) {
             y += this.verticalSizing.get().value;
         }
+
+        RenderSystem.disableDepthTest();
 
         switch (this.verticalTextAlignment) {
             case CENTER -> y += (this.height - ((this.wrappedText.size() * (this.lineHeight() + 2)) - 2)) / 2;

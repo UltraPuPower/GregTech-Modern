@@ -91,22 +91,6 @@ public abstract class BaseUIComponent implements UIComponent {
         Observable.observeAll(this::notifyParentIfMounted, margins, positioning, horizontalSizing, verticalSizing);
     }
 
-    /**
-     * @return The horizontal size this component needs to fit its contents
-     */
-    protected int determineHorizontalContentSize(Sizing sizing) {
-        throw new UnsupportedOperationException(
-                this.getClass().getSimpleName() + " does not support Sizing.content() on the horizontal axis");
-    }
-
-    /**
-     * @return The vertical size this component needs to fit its contents
-     */
-    protected int determineVerticalContentSize(Sizing sizing) {
-        throw new UnsupportedOperationException(
-                this.getClass().getSimpleName() + " does not support Sizing.content() on the vertical axis");
-    }
-
     @Override
     public BaseUIComponent inflate(Size space) {
         this.space = space;

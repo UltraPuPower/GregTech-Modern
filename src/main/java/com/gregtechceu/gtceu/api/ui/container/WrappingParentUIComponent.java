@@ -31,12 +31,12 @@ public class WrappingParentUIComponent<C extends UIComponent> extends BaseParent
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         return this.child.fullSize().width() + this.padding.get().horizontal();
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         return this.child.fullSize().height() + this.padding.get().vertical();
     }
 

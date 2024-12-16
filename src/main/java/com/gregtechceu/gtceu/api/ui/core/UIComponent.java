@@ -283,6 +283,22 @@ public interface UIComponent extends PositionedRectangle {
     }
 
     /**
+     * @return The horizontal size this component needs to fit its contents
+     */
+    default int determineHorizontalContentSize(Sizing sizing) {
+        throw new UnsupportedOperationException(
+                this.getClass().getSimpleName() + " does not support Sizing.content() on the horizontal axis");
+    }
+
+    /**
+     * @return The vertical size this component needs to fit its contents
+     */
+    default int determineVerticalContentSize(Sizing sizing) {
+        throw new UnsupportedOperationException(
+                this.getClass().getSimpleName() + " does not support Sizing.content() on the vertical axis");
+    }
+
+    /**
      * Inflate this component into some amount of available space
      *
      * @param space The available space for this component to expand into

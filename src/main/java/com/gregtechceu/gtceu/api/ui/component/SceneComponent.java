@@ -90,7 +90,6 @@ public class SceneComponent extends UIComponentGroup {
     protected boolean useCache;
     protected boolean useOrthographicCamera = false;
     protected boolean autoReleased;
-    protected BiConsumer<SceneComponent, List<Component>> onAddedTooltips;
     protected Consumer<SceneComponent> beforeWorldRender;
     protected Consumer<SceneComponent> afterWorldRender;
 
@@ -104,11 +103,6 @@ public class SceneComponent extends UIComponentGroup {
     public SceneComponent(Sizing horizontalSizing, Sizing verticalSizing, Level world) {
         super(horizontalSizing, verticalSizing);
         createScene(world);
-    }
-
-    public SceneComponent onAddedTooltips(BiConsumer<SceneComponent, List<Component>> onAddedTooltips) {
-        this.onAddedTooltips = onAddedTooltips;
-        return this;
     }
 
     public SceneComponent useCacheBuffer() {
@@ -200,7 +194,7 @@ public class SceneComponent extends UIComponentGroup {
             particleManager.tick();
         }
         if (hoverItem != null) {
-            tooltip(getTooltips(Screen.getTooltipFromItem(Minecraft.getInstance(), hoverItem)));
+            tooltip(Screen.getTooltipFromItem(Minecraft.getInstance(), hoverItem));
         }
     }
 
@@ -288,13 +282,6 @@ public class SceneComponent extends UIComponentGroup {
         renderer.setCameraLookAt(center, camZoom(), Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
         needCompileCache();
         return this;
-    }
-
-    private List<Component> getTooltips(List<Component> list) {
-        if (this.onAddedTooltips != null) {
-            this.onAddedTooltips.accept(this, list);
-        }
-        return list;
     }
 
     protected void renderBeforeBatchEnd(MultiBufferSource bufferSource, float partialTicks) {}
@@ -452,14 +439,13 @@ public class SceneComponent extends UIComponentGroup {
             return true;
         }
         if (!intractable) return false;
-        if (isMouseOverElement(mouseX, mouseY)) {
+        if (true && isMouseOverElement(mouseX, mouseY)) {
             if (draggable) {
                 dragging = true;
             }
             clickPosFace = hoverPosFace;
             return true;
         }
-        dragging = false;
         return false;
     }
 
@@ -476,6 +462,11 @@ public class SceneComponent extends UIComponentGroup {
             return true;
         }
         return result;
+    }
+
+    @Override
+    public boolean canFocus(FocusSource source) {
+        return true;
     }
 
     @Override

@@ -24,8 +24,6 @@ import java.util.function.Consumer;
 
 public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
-    public static final ScreenPosition LAYOUT = new ScreenPosition(-69, -69);
-
     public final UIAdapter<UIComponentGroup> adapter;
 
     @Getter
@@ -47,7 +45,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
         if (Minecraft.getInstance().screen != null) {
             this.closeListener = (ScreenEvent.Closing event) -> {
-                this.adapter.dispose();
+                //this.adapter.dispose();
                 MinecraftForge.EVENT_BUS.unregister(this.closeListener);
             };
             MinecraftForge.EVENT_BUS.register(this.closeListener);
@@ -73,7 +71,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(int mouseX, int mouseY, int button) {
         return this.adapter.mouseClicked(mouseX - this.adapter.x(), mouseY - this.adapter.y(), button);
     }
 

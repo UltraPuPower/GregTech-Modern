@@ -322,7 +322,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         UIComponentGroup group;
         adapter.rootComponent.child(group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
 
-        group.surface(isHighPressure ? Surface.UI_BACKGROUND_STEEL : Surface.UI_BACKGROUND_BRONZE);
+        group.surface(GuiTextures.BACKGROUND_STEAM.get(isHighPressure)::draw);
         group.child(UIComponents.label(getBlockState().getBlock().getName())
                 .positioning(Positioning.absolute(6, 6)))
                 .child(UIComponents.progress(menu.<Double>getProperty("progress")::get)

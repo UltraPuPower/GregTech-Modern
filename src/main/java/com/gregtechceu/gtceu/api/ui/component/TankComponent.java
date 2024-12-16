@@ -221,6 +221,17 @@ public class TankComponent extends BaseUIComponent implements ClickableIngredien
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        if (backgroundTexture != null) {
+            backgroundTexture.updateTick();
+        }
+        if (overlayTexture != null) {
+            overlayTexture.updateTick();
+        }
+    }
+
+    @Override
     public boolean onMouseDown(double mouseX, double mouseY, int button) {
         Player player = player();
         if (player == null) return false;
@@ -331,12 +342,12 @@ public class TankComponent extends BaseUIComponent implements ClickableIngredien
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         return 18;
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         return 18;
     }
 

@@ -36,12 +36,12 @@ public class GridLayout extends BaseParentUIComponent {
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         return this.contentSize.width() + this.padding.get().right();
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         return this.contentSize.height() + this.padding.get().bottom();
     }
 

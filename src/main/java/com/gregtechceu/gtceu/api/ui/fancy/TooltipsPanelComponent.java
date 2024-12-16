@@ -18,7 +18,7 @@ public class TooltipsPanelComponent extends BaseUIComponent {
 
     @Getter
     protected List<IFancyTooltip> tooltips = new ArrayList<>();
-
+w
     public TooltipsPanelComponent() {
         positioning(Positioning.absolute(202, 2));
         sizing(Sizing.fixed(20), Sizing.fixed(0));
@@ -30,6 +30,21 @@ public class TooltipsPanelComponent extends BaseUIComponent {
 
     public void attachTooltips(IFancyTooltip... tooltips) {
         this.tooltips.addAll(Arrays.asList(tooltips));
+    }
+
+    @Override
+    public void update(float delta, int mouseX, int mouseY) {
+        super.update(delta, mouseX, mouseY);
+        int offsetY = 0;
+        for (IFancyTooltip tooltip : this.tooltips) {
+            if (tooltip.showFancyTooltip()) {
+                if (UIComponent.isMouseOver(x, y + offsetY, width, height, mouseX, mouseY)) {
+                    loadTooltip(tooltip);
+                    return;
+                }
+                offsetY += width + 2;
+            }
+        }
     }
 
     @Override
@@ -45,19 +60,6 @@ public class TooltipsPanelComponent extends BaseUIComponent {
         }
         sizing(horizontalSizing.get(), Sizing.fixed(Math.max(0, offsetY)));
         applySizing();
-        if (getHoveredComponent(mouseX, mouseY) == this &&
-                containerAccess().adapter() != null && containerAccess().adapter().screen() != null) {
-            offsetY = 0;
-            for (IFancyTooltip tooltip : this.tooltips) {
-                if (tooltip.showFancyTooltip()) {
-                    if (UIComponent.isMouseOver(x, y + offsetY, width, height, mouseX, mouseY)) {
-                        loadTooltip(tooltip);
-                        return;
-                    }
-                    offsetY += width + 2;
-                }
-            }
-        }
     }
 
     protected void loadTooltip(IFancyTooltip tab) {

@@ -263,7 +263,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     public void removeRecipeTypeChangeListener(int index) {
-        this.recipeTypeChangeListener.remove(index);
+        if (this.recipeTypeChangeListener.size() > index) {
+            this.recipeTypeChangeListener.remove(index);
+        }
     }
 
     public void removeRecipeTypeChangeListener(IntConsumer listener) {

@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
+import com.gregtechceu.gtceu.api.ui.util.MountingHelper;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -24,30 +26,46 @@ public class UIComponentGroup extends BaseParentUIComponent {
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         return this.contentSize.width() + this.padding.get().horizontal();
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         return this.contentSize.height() + this.padding.get().vertical();
     }
 
     @Override
     public void layout(Size space) {
-        this.children.forEach(child -> {
-            child.inflate(calculateChildSpace(space));
-            this.mountChild(child, ch -> {
-                ch.mount(
-                        this,
-                        ch.x() + child.margins().get().left() +
-                                this.horizontalAlignment().align(child.fullSize().width(),
-                                        this.width - padding().get().horizontal()),
-                        ch.y() + child.margins().get().top() +
-                                this.verticalAlignment().align(child.fullSize().height(),
-                                        this.height - padding.get().vertical()));
-            });
+        var layoutWidth = new MutableInt(0);
+        var layoutHeight = new MutableInt(0);
+
+        final var layout = new ArrayList<UIComponent>();
+        final var padding = this.padding.get();
+        final var childSpace = this.calculateChildSpace(this.space);
+
+        this.children.forEach(child -> child.inflate(childSpace));
+
+        var mountState = MountingHelper.mountEarly(this::mountChild, this.children, child -> {
+            layout.add(child);
+
+            child.mount(this,
+                    this.x() + padding.left() + child.margins().get().left(),
+                    this.y() + padding.top() + child.margins().get().top());
+
+            final var childSize = child.fullSize();
+            if (childSize.width() > layoutWidth.intValue()) {
+                layoutWidth.setValue(childSize.width());
+            }
+            if (childSize.height() > layoutHeight.intValue()) {
+                layoutHeight.setValue(childSize.height());
+            }
         });
+
+        this.contentSize = Size.of(layoutWidth.intValue(), layoutHeight.intValue());
+        this.applySizing();
+
+        mountState.mountLate();
     }
 
     /**

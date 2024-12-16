@@ -160,8 +160,14 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     }
 
     @Override
-    public void update(float delta, int mouseX, int mouseY) {
-        super.update(delta, mouseX, mouseY);
+    public void tick() {
+        super.tick();
+        if (backgroundTexture != null) {
+            backgroundTexture.updateTick();
+        }
+        if (overlayTexture != null) {
+            overlayTexture.updateTick();
+        }
 
         this.slot.canInsertOverride = this.canInsert;
         this.slot.canExtractOverride = this.canExtract;
@@ -174,12 +180,12 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     }
 
     @Override
-    protected int determineHorizontalContentSize(Sizing sizing) {
+    public int determineHorizontalContentSize(Sizing sizing) {
         return 18;
     }
 
     @Override
-    protected int determineVerticalContentSize(Sizing sizing) {
+    public int determineVerticalContentSize(Sizing sizing) {
         return 18;
     }
 
@@ -225,10 +231,11 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
 
     public void finalizeSlot(AbstractContainerScreen<?> screen) {
         var menu = screen.getMenu();
-        Slot innerSlot = this.slot.getInner();
 
-        int foundIndex = -1;
-        if (!menu.slots.contains(innerSlot)) {
+        if (!menu.slots.contains(this.slot)) {
+            Slot innerSlot = this.slot.getInner();
+            int foundIndex = -1;
+
             for (Slot menuSlot : menu.slots) {
                 if (menuSlot.getContainerSlot() != innerSlot.getContainerSlot()) {
                     continue;
@@ -246,12 +253,12 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
                     }
                 }
             }
-        }
-        if (foundIndex != -1) {
-            menu.slots.set(foundIndex, this.slot);
-            ((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(foundIndex, this.slot.getItem());
-            ((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(foundIndex, this.slot.getItem());
-            ((SlotAccessor) this.slot).gtceu$setSlotIndex(foundIndex);
+            if (foundIndex != -1) {
+                menu.slots.set(foundIndex, this.slot);
+                ((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(foundIndex, this.slot.getItem());
+                ((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(foundIndex, this.slot.getItem());
+                ((SlotAccessor) this.slot).gtceu$setSlotIndex(foundIndex);
+            }
         }
     }
 
@@ -449,7 +456,7 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
         @SuppressWarnings("unused") // it actually overrides an accessor mixin's method.
         public void gtceu$setSlotIndex(int index) {
             this.index = index;
-            inner.index = index;
+            ((SlotAccessor)inner).gtceu$setSlotIndex(index);
         }
     }
 }

@@ -172,16 +172,17 @@ public class GTRecipeTypeUI {
 
             var inputs = addInventorySlotGroup(false, isSteam, isHighPressure);
             var outputs = addInventorySlotGroup(true, isSteam, isHighPressure);
-            var group = UIContainers.group(Sizing.content(20), Sizing.content());
+            var group = UIContainers.group(Sizing.fill(), Sizing.fill());
+            group.allowOverflow(true);
 
-            inputs.positioning(Positioning.relative(0, 50));
-            outputs.positioning(Positioning.relative(60, 50));
+            inputs.positioning(Positioning.relative(35, 45));
+            outputs.positioning(Positioning.relative(65, 45));
             group.child(inputs);
             group.child(outputs);
 
             var progressWidget = UIComponents.progress(ProgressComponent.JEIProgress);
             progressWidget.progressTexture(progressBarTexture)
-                    .positioning(Positioning.relative(50, 50))
+                    .positioning(Positioning.relative(50, 45))
                     .sizing(Sizing.fixed(20));
             progressWidget.id("progress");
             group.child(progressWidget);
@@ -305,14 +306,17 @@ public class GTRecipeTypeUI {
             for (int slotIndex = 0; slotIndex < capCount; slotIndex++) {
                 var component = cap.createUIComponent();
                 // noinspection DataFlowIssue
-                component.positioning(Positioning.absolute((index % 3) * 18, (index / 3) * 18))
+                component.positioning(Positioning.absolute(0, 0))
                         .id(cap.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
                 var texture = UIComponents.texture(
-                        getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure));
+                        getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure))
+                        .positioning(Positioning.absolute(0, 0))
+                        .sizing(Sizing.fill());
 
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+                layout.positioning(Positioning.absolute((index % 3) * 18, (index / 3) * 18));
                 layout.children(List.of(component, texture));
-                group.child(component, index / 3, index % 3);
+                group.child(component, index / 3 % 3, index % 3);
                 index++;
             }
             // move to new row

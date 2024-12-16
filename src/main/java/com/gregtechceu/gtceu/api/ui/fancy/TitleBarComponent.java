@@ -24,12 +24,11 @@ public class TitleBarComponent extends UIComponentGroup {
 
     private static final int BORDER_SIZE = 3;
     private static final int HORIZONTAL_MARGIN = 8;
-    private static final int HEIGHT = 16;
+    public static final int HEIGHT = 16;
     private static final int BUTTON_WIDTH = 18;
 
     private static final float ROLL_SPEED = 0.7f;
 
-    private int width;
     private boolean showBackButton = false;
     private boolean showMenuButton = false;
     private final int innerHeight;
@@ -53,11 +52,13 @@ public class TitleBarComponent extends UIComponentGroup {
 
     private boolean hasInit = false;
 
-    protected TitleBarComponent(int parentWidth, Consumer<ClickData> onBackClicked, Consumer<ClickData> onMenuClicked) {
-        super(Sizing.fixed(parentWidth), Sizing.fixed(HEIGHT));
-        this.margins(Insets.of(0, 0, HORIZONTAL_MARGIN, HORIZONTAL_MARGIN));
+    protected TitleBarComponent(Consumer<ClickData> onBackClicked, Consumer<ClickData> onMenuClicked) {
+        super(Sizing.fill(), Sizing.fixed(HEIGHT));
+        allowOverflow(true);
+        //this.padding(Insets.both(HORIZONTAL_MARGIN, 0));
+        this.margins(Insets.both(HORIZONTAL_MARGIN, 0));
+        this.positioning(Positioning.absolute(HORIZONTAL_MARGIN, 0));
         this.innerHeight = HEIGHT - BORDER_SIZE;
-        this.width = parentWidth - (2 * HORIZONTAL_MARGIN);
 
         child(this.buttonGroup = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fixed(innerHeight)));
         buttonGroup.positioning(Positioning.absolute(0, BORDER_SIZE));
@@ -66,7 +67,8 @@ public class TitleBarComponent extends UIComponentGroup {
                 .positioning(Positioning.absolute(0, BORDER_SIZE))
                 .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(HEIGHT - BORDER_SIZE)));
         buttonGroup.child(this.menuButton = UIComponents.button(Component.literal("+"), onMenuClicked)
-                .positioning(Positioning.absolute(width - BUTTON_WIDTH, BORDER_SIZE))
+                .positioning(Positioning.relative(100, 100))
+                .margins(Insets.both(BUTTON_WIDTH, BORDER_SIZE))
                 .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(HEIGHT - BORDER_SIZE)));
 
         child(this.mainSection = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fill()));
@@ -81,6 +83,7 @@ public class TitleBarComponent extends UIComponentGroup {
                 .positioning(Positioning.absolute(BORDER_SIZE + innerHeight, BORDER_SIZE)));
 
         hasInit = true;
+        updateLayout();
     }
 
     public void updateState(IFancyUIProvider currentPage, boolean showBackButton, boolean showMenuButton) {

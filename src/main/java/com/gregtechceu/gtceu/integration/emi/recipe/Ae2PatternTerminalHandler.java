@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
-import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiRecipe;
+import com.gregtechceu.gtceu.integration.emi.multiblock.MultiblockInfoEmiRecipe;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

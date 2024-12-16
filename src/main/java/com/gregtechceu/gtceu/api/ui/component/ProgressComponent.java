@@ -75,14 +75,18 @@ public class ProgressComponent extends BaseUIComponent {
     }
 
     @Override
-    public void update(float delta, int mouseX, int mouseY) {
-        super.update(delta, mouseX, mouseY);
+    public void tick() {
+        super.tick();
         if (this.progressTexture != null) {
             this.progressTexture.updateTick();
         }
         if (this.overlayTexture != null) {
             this.overlayTexture.updateTick();
         }
+    }
+
+    @Override
+    public void update(float delta, int mouseX, int mouseY) {
         if (((tooltip() != null && !tooltip().isEmpty()) || dynamicHoverTips != null)) {
             var tips = new ArrayList<>(Objects.requireNonNullElseGet(tooltip(), Collections::emptyList));
             if (dynamicHoverTips != null) {

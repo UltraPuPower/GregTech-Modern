@@ -13,6 +13,7 @@
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
+        "emi.RecipeScreenMixin",
         "journeymap.FullscreenMixin",
         "rei.FluidEntryRendererMixin",
         "ui.accessor.AbstractContainerScreenAccessor",
@@ -25,6 +26,7 @@
         "ui.accessor.MultilineTextFieldAccessor",
         "ui.mixin.AbstractContainerScreenMixin",
         "ui.mixin.AbstractWidgetMixin",
+        "ui.mixin.ChatScreenMixin",
         "ui.mixin.EntityRenderDispatcherMixin",
         "ui.mixin.GuiGraphicsMixin",
         "ui.mixin.KeyboardHandlerMixin",
@@ -86,6 +88,7 @@
         "ui.accessor.SlotAccessor",
         "ui.mixin.AbstractContainerMenuMixin",
         "ui.mixin.ScreenMixin",
+        "ui.mixin.ServerPlayerMixin",
         "ui.mixin.SlotMixin"
     ],
     "injectors": {

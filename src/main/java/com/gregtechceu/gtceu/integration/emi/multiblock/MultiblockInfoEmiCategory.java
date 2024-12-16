@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.emi.multipage;
+package com.gregtechceu.gtceu.integration.emi.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;

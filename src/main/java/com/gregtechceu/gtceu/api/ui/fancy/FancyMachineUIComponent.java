@@ -3,13 +3,9 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Size;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.Surface;
+import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerScreenAccessor;
 
@@ -26,7 +22,6 @@ import java.util.Deque;
 import java.util.List;
 import java.util.stream.Stream;
 
-// TODO remove fixed offsets in favor of dynamic ones
 @ApiStatus.Internal
 @Accessors(fluent = true, chain = true)
 @Getter
@@ -34,7 +29,7 @@ public class FancyMachineUIComponent extends UIComponentGroup {
 
     protected final TitleBarComponent titleBar;
     protected final VerticalTabsComponent sideTabsComponent;
-    protected final FlowLayout pageContainer;
+    protected final UIComponentGroup pageContainer;
     protected final PageSwitcherComponent pageSwitcher;
     @Getter
     protected final ConfiguratorPanelComponent configuratorPanel;
@@ -62,28 +57,39 @@ public class FancyMachineUIComponent extends UIComponentGroup {
 
     public FancyMachineUIComponent(IFancyUIProvider mainPage,
                                    Sizing horizontalSizing, Sizing verticalSizing) {
-        super(horizontalSizing, verticalSizing);
+        super(horizontalSizing.andThen(Sizing.fixed(20)), verticalSizing.andThen(Sizing.fixed(16)));
         this.mainPage = mainPage;
+        this.allowOverflow(true);
 
-        child(this.pageContainer = UIContainers.horizontalFlow(horizontalSizing, verticalSizing));
+        child(this.pageContainer = UIContainers.group(horizontalSizing, verticalSizing)
+                .configure(c -> {
+                    c.allowOverflow(true)
+                            .surface(Surface.UI_BACKGROUND)
+                            .positioning(Positioning.absolute(20, TitleBarComponent.HEIGHT));
+                }));
 
         if (mainPage.hasPlayerInventory()) {
-            child(this.playerInventory = UIComponents.playerInventory());
-            this.playerInventory.positioning(Positioning.absolute(2, height - 86));
+            child(this.playerInventory = UIComponents.playerInventory()
+                    .configure(c -> {
+                        c.positioning(Positioning.relative(50, 100))
+                                .padding(Insets.of(0, 2, 22, 2));
+                    }));
         } else {
             playerInventory = null;
         }
 
-        child(this.titleBar = new TitleBarComponent(width, this::navigateBack, this::openPageSwitcher));
+        child(this.titleBar = new TitleBarComponent(this::navigateBack, this::openPageSwitcher));
         child(this.sideTabsComponent = (VerticalTabsComponent) new VerticalTabsComponent(this::navigate)
-                .positioning(Positioning.absolute(-20, 0))
+                .positioning(Positioning.absolute(0, TitleBarComponent.HEIGHT))
                 .sizing(Sizing.fixed(24), Sizing.fill()));
         child(this.tooltipsPanel = new TooltipsPanelComponent());
-        child(this.configuratorPanel = new ConfiguratorPanelComponent());
-        this.configuratorPanel.positioning(Positioning.absolute(-(24 + 2), height));
+        child(this.configuratorPanel = new ConfiguratorPanelComponent()
+                .configure(c -> {
+                    c.allowOverflow(true)
+                            .positioning(Positioning.absolute(-(24 + 2), height));
+                }));
         this.pageSwitcher = new PageSwitcherComponent(this::switchPage);
 
-        surface(Surface.UI_BACKGROUND);
         // surface(GuiTextures.BACKGROUND.copy()
         // .setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
     }
@@ -125,7 +131,8 @@ public class FancyMachineUIComponent extends UIComponentGroup {
     }
 
     protected void navigateBack(ClickData clickData) {
-        NavigationEntry navigationEntry = previousPages.pop();
+        NavigationEntry navigationEntry = previousPages.pollFirst();
+        if (navigationEntry == null) return;
 
         performNavigation(navigationEntry.page, navigationEntry.homePage);
         navigationEntry.onNavigation.run();
@@ -193,20 +200,33 @@ public class FancyMachineUIComponent extends UIComponentGroup {
     protected void setupFancyUI(IFancyUIProvider fancyUI, boolean showInventory) {
         clearUI();
 
+
+        UIAdapter<?> adapter = containerAccess().adapter();
+        Size size = Size.zero();
+        if (adapter != null) {
+            size = Size.of(adapter.width(), adapter.height());
+        }
+        this.inflate(size);
+
         sideTabsComponent.selectTab(fancyUI);
         titleBar.updateState(
                 currentHomePage,
                 !this.previousPages.isEmpty(),
                 this.allPages.size() > 1 && this.currentPage != this.pageSwitcher);
 
+        size = this.calculateChildSpace(size);
         var page = fancyUI.createMainPage(this);
+        page.inflate(size);
 
         // layout
-        int width = Math.max(172, page.width() + border() * 2);
-        int height = Math.max(86, page.height() + border * 2);
-        Size size = Size.of(width, height);
-        this.sizing(Sizing.fixed(width),
-                Sizing.fixed(height + (!showInventory || playerInventory == null ? 0 : playerInventory.height())));
+        Sizing horizontal = page.horizontalSizing().get().copy().min(172);
+        Sizing vertical = page.verticalSizing().get().copy().min(86);
+        this.sizing(horizontal.andThen(Sizing.fixed(20)), vertical.andThen(Sizing.fixed(16)));
+
+        final var margins = this.margins.get();
+        int width = horizontal.inflate(this.space.width() - margins.horizontal(), page::determineHorizontalContentSize);
+        int height = vertical.inflate(this.space.height() - margins.vertical(),
+                page::determineVerticalContentSize);
 
         AbstractContainerScreen<?> screen = containerAccess().screen();
         if (screen != null) {
@@ -223,30 +243,26 @@ public class FancyMachineUIComponent extends UIComponentGroup {
             containerAccess().adapter().moveAndResize(0, 0, screen.width, screen.height);
         }
 
-        this.sideTabsComponent.sizing(Sizing.fixed(24), Sizing.fixed(height));
-        this.pageContainer.sizing(Sizing.fixed(width), Sizing.fixed(height));
+        this.pageContainer.sizing(horizontal, vertical);
         this.tooltipsPanel.positioning(Positioning.absolute(width + 2, 2));
 
-        setupInventoryPosition(showInventory, size);
+        setupInventoryPosition(showInventory);
 
         // setup
-        this.pageContainer.child(page);
-        page.positioning(Positioning.absolute(
-                (pageContainer.width() - page.width()) / 2,
-                (pageContainer.height() - page.height()) / 2));
+        this.pageContainer.child(page.horizontalAlignment(HorizontalAlignment.CENTER)
+                .verticalAlignment(VerticalAlignment.CENTER)
+                .positioning(Positioning.relative(50, 50)));
         fancyUI.attachConfigurators(configuratorPanel);
         configuratorPanel
-                .positioning(Positioning.absolute(-24 - 2, screen.height - configuratorPanel.height() - 4));
+                .positioning(Positioning.absolute(-4 - 2, screen.height - configuratorPanel.height() - 4));
         fancyUI.attachTooltips(tooltipsPanel);
 
-        titleBar.sizing(Sizing.fill(), Sizing.fixed(titleBar.height()));
+        this.inflate(this.space);
     }
 
-    private void setupInventoryPosition(boolean showInventory, Size parentSize) {
+    private void setupInventoryPosition(boolean showInventory) {
         if (this.playerInventory == null)
             return;
-
-        this.playerInventory.moveTo((parentSize.width() - playerInventory.width()) / 2, parentSize.height());
 
         if (showInventory && !this.children.contains(this.playerInventory)) {
             child(this.playerInventory);

@@ -39,7 +39,7 @@ public class TextureComponent extends BaseUIComponent {
             return;
         }
 
-        RenderSystem.enableDepthTest();
+        RenderSystem.disableDepthTest();
 
         if (this.blend) {
             RenderSystem.enableBlend();
@@ -48,9 +48,8 @@ public class TextureComponent extends BaseUIComponent {
 
         var pose = graphics.pose();
         pose.pushPose();
-        pose.translate(x, y, 0);
 
-        this.texture.draw(graphics, mouseX, mouseY, x(), this.y(), width(), height());
+        this.texture.draw(graphics, mouseX, mouseY, x(), y(), width(), height());
 
         if (this.blend) {
             RenderSystem.disableBlend();
