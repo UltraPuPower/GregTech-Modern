@@ -54,7 +54,7 @@ public class FluidComponent extends BaseUIComponent implements ClickableIngredie
     protected int capacity = 16000;
     @Getter
     @Setter
-    protected ProgressTexture.FillDirection fillDirection;
+    protected ProgressTexture.FillDirection fillDirection = ProgressTexture.FillDirection.ALWAYS_FULL;
 
     protected boolean setTooltipFromStack = false;
     @Setter

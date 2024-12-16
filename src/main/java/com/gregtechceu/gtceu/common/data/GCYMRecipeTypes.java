@@ -5,11 +5,11 @@ import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.core.Insets;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;

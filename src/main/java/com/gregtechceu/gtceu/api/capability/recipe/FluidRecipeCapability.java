@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;

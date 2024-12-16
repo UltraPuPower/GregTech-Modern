@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class GTOreByProductComponent extends UIComponentGroup {
 
@@ -175,7 +176,7 @@ public class GTOreByProductComponent extends UIComponentGroup {
         UIComponentGroup fluidStackGroup = UIContainers.group(Sizing.fill(), Sizing.fill());
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
-            if (!fluidInputs.get(slotIndex).map(Function.identity(), Function.identity()).isEmpty()) {
+            if (!fluidInputs.get(slotIndex).isEmpty()) {
                 var tank = UIComponents.tank(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)))
                         .canInsert(false)
                         .canExtract(false)
