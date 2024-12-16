@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * @implNote CircuitFancyConfigurator
  */
 public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCustomMouseWheelAction,
-        IFancyCustomMiddleClickAction {
+                                      IFancyCustomMiddleClickAction {
 
     private static final int SET_TO_ZERO = 2;
     private static final int SET_TO_EMPTY = 3;
@@ -73,8 +73,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
         if (nextValue == NO_CONFIG) {
             if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                 circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
-                writeClientAction.accept(SET_TO_EMPTY, buf -> {
-                });
+                writeClientAction.accept(SET_TO_EMPTY, buf -> {});
             }
         } else {
             circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(nextValue));
@@ -109,8 +108,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
             circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(0));
         } else {
             circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
-            writeClientAction.accept(SET_TO_EMPTY, buf -> {
-            });
+            writeClientAction.accept(SET_TO_EMPTY, buf -> {});
         }
     }
 
@@ -127,11 +125,11 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
                 .positioning(Positioning.relative(50, 15)));
         if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
             group.child(UIComponents.button(Component.empty(),
-                            clickData -> {
-                                if (!clickData.isClientSide) {
-                                    circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
-                                }
-                            })
+                    clickData -> {
+                        if (!clickData.isClientSide) {
+                            circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
+                        }
+                    })
                     .renderer(ButtonComponent.Renderer.EMPTY)
                     .positioning(Positioning.relative(50, 15))
                     .sizing(Sizing.fixed(18)));
@@ -217,5 +215,4 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
             return currentValue - 1;
         }
     }
-
 }

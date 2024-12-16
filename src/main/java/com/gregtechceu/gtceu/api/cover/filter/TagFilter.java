@@ -13,10 +13,10 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
-
-import lombok.Getter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -56,10 +56,10 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
 
     public void setOreDict(String oreDict) {
         /*
-        Moved the validation filtering here as the vanilla textbox doesn't do modification on input.
-        also makes the user experience better.
-        hopefully.
-        -screret
+         * Moved the validation filtering here as the vanilla textbox doesn't do modification on input.
+         * also makes the user experience better.
+         * hopefully.
+         * -screret
          */
         // remove all operators that are double
         oreDict = DOUBLE_WILDCARD.matcher(oreDict).replaceAll("*");
@@ -124,8 +124,8 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         group.positioning(Positioning.absolute(x, y));
 
         group.child(UIComponents.texture(GuiTextures.INFO_ICON)
-                        .sizing(Sizing.fixed(20))
-                        .positioning(Positioning.absolute(0, 0))
+                .sizing(Sizing.fixed(20))
+                .positioning(Positioning.absolute(0, 0))
                 .tooltip(LangHandler.getMultiLang("cover.tag_filter.info")));
 
         this.textBox = UIComponents.textBox(Sizing.fixed(18 * 3 + 25))
@@ -135,7 +135,6 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         textBox.setMaxLength(64);
         textBox.positioning(Positioning.absolute(0, 29));
         group.child(textBox);
-
 
         return group;
     }

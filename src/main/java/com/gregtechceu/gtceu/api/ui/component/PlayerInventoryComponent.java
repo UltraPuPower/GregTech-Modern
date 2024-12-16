@@ -2,13 +2,11 @@ package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.*;
-
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+
 import net.minecraft.world.entity.player.Inventory;
 
 import org.w3c.dom.Element;
-
-import java.util.List;
 
 public class PlayerInventoryComponent extends UIComponentGroup {
 
@@ -30,7 +28,7 @@ public class PlayerInventoryComponent extends UIComponentGroup {
             for (int x = 0; x < 9; x++) {
                 // .positioning(Positioning.absolute(x * 18, y * 18))
                 grid.child(UIComponents.slot(inventory, y + x * 9 + 9)
-                                .backgroundTexture(slotTexture),
+                        .backgroundTexture(slotTexture),
                         y, x);
             }
         }
@@ -41,7 +39,7 @@ public class PlayerInventoryComponent extends UIComponentGroup {
         for (int x = 0; x < 9; x++) {
             // .positioning(Positioning.absolute(x * 18, 0))
             grid2.child(UIComponents.slot(inventory, x)
-                            .backgroundTexture(slotTexture),
+                    .backgroundTexture(slotTexture),
                     0, x);
         }
         this.child(grid2);
@@ -51,5 +49,4 @@ public class PlayerInventoryComponent extends UIComponentGroup {
     public static PlayerInventoryComponent parse(Element element) {
         return new PlayerInventoryComponent();
     }
-
 }

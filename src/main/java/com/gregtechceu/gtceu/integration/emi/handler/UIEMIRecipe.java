@@ -7,17 +7,17 @@ import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
-import com.lowdragmc.lowdraglib.gui.ingredient.IRecipeIngredientSlot;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
+
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.EmptyHandler;
+
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.*;
 import lombok.Getter;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
                     if (converter == null) {
                         continue;
                     }
-                    //noinspection unchecked,rawtypes
+                    // noinspection unchecked,rawtypes
                     ingredient = ((EmiStackConverter.Converter) converter).convertTo(slot);
                 }
 
@@ -91,12 +91,14 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
 
         for (UIComponent w : getFlatWidgetCollection(component)) {
             if (w instanceof ClickableIngredientSlot<?> slot) {
-                /* do we still want this?
-                if (w.parent() instanceof DraggableScrollableWidgetGroup draggable && draggable.isUseScissor()) {
-                    // don't add the EMI widget at all if we have a draggable group, let the draggable widget handle it instead.
-                    continue;
-                }
-                */
+                /*
+                 * do we still want this?
+                 * if (w.parent() instanceof DraggableScrollableWidgetGroup draggable && draggable.isUseScissor()) {
+                 * // don't add the EMI widget at all if we have a draggable group, let the draggable widget handle it
+                 * instead.
+                 * continue;
+                 * }
+                 */
                 var io = slot.ingredientIO();
                 if (io != null) {
                     EmiIngredient ingredient;
@@ -109,7 +111,7 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
                         if (converter == null) {
                             continue;
                         }
-                        //noinspection unchecked,rawtypes
+                        // noinspection unchecked,rawtypes
                         ingredient = ((EmiStackConverter.Converter) converter).convertTo(slot);
                     }
 
@@ -157,5 +159,4 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
         }
         return widgetList;
     }
-
 }

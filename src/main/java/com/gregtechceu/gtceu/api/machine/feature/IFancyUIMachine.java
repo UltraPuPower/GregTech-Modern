@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
-
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -41,7 +40,8 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     }
 
     /**
-     * We should not override this method in general, and use {@link IFancyUIMachine#createBaseUIComponent(FancyMachineUIComponent)} instead,
+     * We should not override this method in general, and use
+     * {@link IFancyUIMachine#createBaseUIComponent(FancyMachineUIComponent)} instead,
      */
     @Override
     default ParentUIComponent createMainPage(FancyMachineUIComponent component) {
@@ -51,7 +51,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
             if (template == null) {
                 template = editableUI.createDefault();
             }
-            //noinspection unchecked
+            // noinspection unchecked
             editableUI.setupUI(template,
                     (UIAdapter<UIComponentGroup>) component.containerAccess().adapter(),
                     self());
@@ -71,33 +71,34 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                 .positioning(Positioning.absolute((100 - 48) / 2, 60)));
         // TODO scene component
         /*
-        TrackedDummyWorld world = new TrackedDummyWorld();
-        world.addBlock(BlockPos.ZERO, BlockInfo.fromBlockState(self().getBlockState()));
-        SceneComponent sceneWidget = new SceneComponent(0, 0, 100, 100, world) {
-
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY,
-                                         float partialTicks) {
-                // AUTO ROTATION
-                if (renderer != null) {
-                    this.rotationPitch = (partialTicks + getGui().getTickCount()) * 2;
-                    renderer.setCameraLookAt(this.center, 0.1f, Math.toRadians(this.rotationPitch),
-                            Math.toRadians(this.rotationYaw));
-                }
-                super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
-            }
-        };
-        sceneWidget.useOrtho(true)
-                .setOrthoRange(0.5f)
-                .setScalable(false)
-                .setDraggable(false)
-                .setRenderFacing(false)
-                .setRenderSelect(false);
-        sceneWidget.getRenderer().setFov(30);
-        group.child(sceneWidget);
-        sceneWidget.setRenderedCore(List.of(BlockPos.ZERO), null);
-        */
+         * TrackedDummyWorld world = new TrackedDummyWorld();
+         * world.addBlock(BlockPos.ZERO, BlockInfo.fromBlockState(self().getBlockState()));
+         * SceneComponent sceneWidget = new SceneComponent(0, 0, 100, 100, world) {
+         * 
+         * @Override
+         * 
+         * @OnlyIn(Dist.CLIENT)
+         * public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY,
+         * float partialTicks) {
+         * // AUTO ROTATION
+         * if (renderer != null) {
+         * this.rotationPitch = (partialTicks + getGui().getTickCount()) * 2;
+         * renderer.setCameraLookAt(this.center, 0.1f, Math.toRadians(this.rotationPitch),
+         * Math.toRadians(this.rotationYaw));
+         * }
+         * super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
+         * }
+         * };
+         * sceneWidget.useOrtho(true)
+         * .setOrthoRange(0.5f)
+         * .setScalable(false)
+         * .setDraggable(false)
+         * .setRenderFacing(false)
+         * .setRenderSelect(false);
+         * sceneWidget.getRenderer().setFov(30);
+         * group.child(sceneWidget);
+         * sceneWidget.setRenderedCore(List.of(BlockPos.ZERO), null);
+         */
         return group;
     }
 

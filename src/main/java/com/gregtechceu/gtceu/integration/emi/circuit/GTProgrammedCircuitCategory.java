@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.emi.handler.UIEMIRecipe;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitComponent;
 
-import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 

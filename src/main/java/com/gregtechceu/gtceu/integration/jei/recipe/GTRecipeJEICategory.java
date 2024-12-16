@@ -7,12 +7,10 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-
 import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeComponent;
+
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.jei.IGui2IDrawable;
 
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,8 +28,9 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.function.Function;
+
+import javax.annotation.Nonnull;
 
 public class GTRecipeJEICategory extends UIRecipeCategory<GTRecipeComponent> {
 
@@ -103,6 +102,7 @@ public class GTRecipeJEICategory extends UIRecipeCategory<GTRecipeComponent> {
 
     static IDrawable toDrawable(UITexture guiTexture, final int width, final int height) {
         return new IDrawable() {
+
             @Override
             public int getWidth() {
                 return width;

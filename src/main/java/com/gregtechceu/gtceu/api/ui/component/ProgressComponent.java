@@ -7,12 +7,14 @@ import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.w3c.dom.Element;
 
 import java.util.*;
@@ -22,6 +24,7 @@ import java.util.function.Function;
 
 @Accessors(fluent = true, chain = true)
 public class ProgressComponent extends BaseUIComponent {
+
     public final static DoubleSupplier JEIProgress = () -> Math.abs(System.currentTimeMillis() % 2000) / 2000.;
     @Setter
     public DoubleSupplier progressSupplier;
@@ -39,12 +42,13 @@ public class ProgressComponent extends BaseUIComponent {
     private Consumer<List<Component>> serverTooltipSupplier;
 
     public ProgressComponent() {
-        this(JEIProgress,  ProgressTexture.EMPTY);
+        this(JEIProgress, ProgressTexture.EMPTY);
     }
 
     public ProgressComponent(DoubleSupplier progressSupplier, ResourceTexture fullImage) {
         this.progressSupplier = progressSupplier;
-        this.progressTexture = UITextures.progress(fullImage.getSubTexture(0.0, 0.0, 1.0, 0.5), fullImage.getSubTexture(0.0, 0.5, 1.0, 0.5));
+        this.progressTexture = UITextures.progress(fullImage.getSubTexture(0.0, 0.0, 1.0, 0.5),
+                fullImage.getSubTexture(0.0, 0.5, 1.0, 0.5));
         this.lastProgressValue = -1;
     }
 
@@ -111,27 +115,27 @@ public class ProgressComponent extends BaseUIComponent {
     }
 
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        super.writeInitialData(buffer);
-        buffer.writeDouble(lastProgressValue);
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        super.readInitialData(buffer);
-        lastProgressValue = buffer.readDouble();
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        double actualValue = progressSupplier.getAsDouble();
-        if (actualValue - lastProgressValue != 0) {
-            this.lastProgressValue = actualValue;
-            sendMessage(0, buffer -> buffer.writeDouble(actualValue));
-        }
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * super.writeInitialData(buffer);
+     * buffer.writeDouble(lastProgressValue);
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * super.readInitialData(buffer);
+     * lastProgressValue = buffer.readDouble();
+     * }
+     * 
+     * @Override
+     * public void detectAndSendChanges() {
+     * double actualValue = progressSupplier.getAsDouble();
+     * if (actualValue - lastProgressValue != 0) {
+     * this.lastProgressValue = actualValue;
+     * sendMessage(0, buffer -> buffer.writeDouble(actualValue));
+     * }
+     * }
+     */
 
     @Override
     public void receiveMessage(int id, FriendlyByteBuf buf) {

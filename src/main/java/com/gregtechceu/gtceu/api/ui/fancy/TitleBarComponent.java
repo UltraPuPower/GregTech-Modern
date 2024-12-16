@@ -3,18 +3,20 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -64,8 +66,8 @@ public class TitleBarComponent extends UIComponentGroup {
                 .positioning(Positioning.absolute(0, BORDER_SIZE))
                 .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(HEIGHT - BORDER_SIZE)));
         buttonGroup.child(this.menuButton = UIComponents.button(Component.literal("+"), onMenuClicked)
-                        .positioning(Positioning.absolute(width - BUTTON_WIDTH, BORDER_SIZE))
-                        .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(HEIGHT - BORDER_SIZE)));
+                .positioning(Positioning.absolute(width - BUTTON_WIDTH, BORDER_SIZE))
+                .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(HEIGHT - BORDER_SIZE)));
 
         child(this.mainSection = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fill()));
         mainSection.positioning(Positioning.absolute(BUTTON_WIDTH, 0));

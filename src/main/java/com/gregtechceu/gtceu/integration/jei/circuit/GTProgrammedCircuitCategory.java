@@ -5,9 +5,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitComponent;
 
-import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
-import com.lowdragmc.lowdraglib.jei.ModularWrapper;
-
 import net.minecraft.network.chat.Component;
 
 import mezz.jei.api.gui.drawable.IDrawable;

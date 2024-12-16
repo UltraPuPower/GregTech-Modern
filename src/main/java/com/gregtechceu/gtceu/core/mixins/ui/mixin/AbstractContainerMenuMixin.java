@@ -1,16 +1,15 @@
 package com.gregtechceu.gtceu.core.mixins.ui.mixin;
 
+import com.gregtechceu.gtceu.api.ui.inject.UIAbstractContainerMenu;
+import com.gregtechceu.gtceu.api.ui.serialization.ContainerMenuMessageData;
 import com.gregtechceu.gtceu.api.ui.serialization.NetworkException;
 import com.gregtechceu.gtceu.api.ui.serialization.PacketBufSerializer;
-import com.gregtechceu.gtceu.api.ui.util.pond.UIAbstractContainerMenuExtension;
-import com.gregtechceu.gtceu.api.ui.serialization.ContainerMenuMessageData;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
-import com.gregtechceu.gtceu.api.ui.inject.UIAbstractContainerMenu;
+import com.gregtechceu.gtceu.api.ui.util.pond.UIAbstractContainerMenuExtension;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
-
 import com.gregtechceu.gtceu.common.network.packets.PacketSyncUIProperties;
 import com.gregtechceu.gtceu.common.network.packets.PacketUIData;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

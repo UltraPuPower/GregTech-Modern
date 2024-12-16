@@ -141,7 +141,7 @@ public class GTOreVeinComponent extends FlowLayout {
     private void setupBaseGui(BedrockFluidDefinition fluid) {
         Fluid storedFluid = fluid.getStoredFluid().get();
         TankComponent fluidSlot = (TankComponent) UIComponents.tank(
-                        new CustomFluidTank(new FluidStack(storedFluid, 1000)))
+                new CustomFluidTank(new FluidStack(storedFluid, 1000)))
                 .canInsert(false)
                 .canExtract(false)
                 .positioning(Positioning.absolute(46, 18));
@@ -163,8 +163,8 @@ public class GTOreVeinComponent extends FlowLayout {
                     .canExtract(false)
                     .positioning(Positioning.absolute(x, 18));
             int finalIndex = i;
-            oreSlot.tooltip((stack, tooltips) ->
-                    tooltips.add(Component.translatable("gtceu.jei.ore_vein_diagram.chance", chances.get(finalIndex))));
+            oreSlot.tooltip((stack, tooltips) -> tooltips
+                    .add(Component.translatable("gtceu.jei.ore_vein_diagram.chance", chances.get(finalIndex))));
             oreSlot.ingredientIO(IO.OUT);
             child(oreSlot);
             x += 18;
@@ -229,7 +229,9 @@ public class GTOreVeinComponent extends FlowLayout {
                 handler.setStackInSlot(i, icon);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                     dimSlot.overlayTexture(
-                            UITextures.text(Component.literal("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)))
+                            UITextures
+                                    .text(Component.literal(
+                                            "T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)))
                                     .scale(0.75F)
                                     .transform(-3F, 5F));
                 }
@@ -283,5 +285,4 @@ public class GTOreVeinComponent extends FlowLayout {
         ResourceLocation id = ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(oreDefinition);
         return id.getPath();
     }
-
 }

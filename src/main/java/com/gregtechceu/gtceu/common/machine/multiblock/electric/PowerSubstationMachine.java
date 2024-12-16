@@ -4,14 +4,6 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.*;
-import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -24,6 +16,14 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -47,7 +47,7 @@ import java.time.Duration;
 import java.util.*;
 
 public class PowerSubstationMachine extends WorkableMultiblockMachine
-        implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
+                                    implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -354,15 +354,15 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         var group = UIContainers.group(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
         group.padding(Insets.of(4));
         group.child(UIContainers.verticalScroll(Sizing.fixed(182), Sizing.fixed(117),
-                        UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
-                                .child(UIComponents.label(self().getBlockState().getBlock().getName())
-                                        .positioning(Positioning.absolute(4, 5)))
-                                .child(UIComponents.componentPanel(this::addDisplayText)
-                                        .maxWidthLimit(150)
-                                        .clickHandler(this::handleDisplayClick)
-                                        .positioning(Positioning.absolute(4, 17)))
+                UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+                        .child(UIComponents.label(self().getBlockState().getBlock().getName())
+                                .positioning(Positioning.absolute(4, 5)))
+                        .child(UIComponents.componentPanel(this::addDisplayText)
+                                .maxWidthLimit(150)
+                                .clickHandler(this::handleDisplayClick)
+                                .positioning(Positioning.absolute(4, 17)))
 
-                )
+        )
                 .surface(getScreenTexture()::draw));
         group.surface(Surface.UI_BACKGROUND_INVERSE);
         return group;
@@ -577,7 +577,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         public ManagedFieldHolder getFieldHolder() {
             return MANAGED_FIELD_HOLDER;
         }
-
     }
 
     public static class BatteryMatchWrapper {
@@ -593,7 +592,5 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             amount++;
             return this;
         }
-
     }
-
 }

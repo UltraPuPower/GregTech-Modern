@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
@@ -16,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PredicatedTextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -189,7 +189,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         storages.put(IO.IN, ItemRecipeCapability.CAP, importItems.storage);
         storages.put(IO.OUT, ItemRecipeCapability.CAP, exportItems.storage);
 
-        //noinspection DataFlowIssue
+        // noinspection DataFlowIssue
         var group = getRecipeType().getRecipeUI().createUITemplate(menu.<Double>getProperty("progress")::get,
                 adapter,
                 storages,
@@ -211,5 +211,4 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
         rootComponent.child(screenGroup);
     }
-
 }

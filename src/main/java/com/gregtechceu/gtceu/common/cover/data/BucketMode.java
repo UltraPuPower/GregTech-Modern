@@ -3,11 +3,10 @@ package com.gregtechceu.gtceu.common.cover.data;
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
+import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
 
 public enum BucketMode implements EnumSelectorComponent.SelectableEnum {
 

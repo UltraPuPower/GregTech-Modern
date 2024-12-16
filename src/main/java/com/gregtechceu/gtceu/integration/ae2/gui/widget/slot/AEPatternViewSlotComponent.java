@@ -14,10 +14,10 @@ public class AEPatternViewSlotComponent extends SlotComponent {
     protected UITexture occupiedTexture;
 
     public AEPatternViewSlotComponent(
-                                   Container inventory,
-                                   int slotIndex,
-                                   boolean canTakeItems,
-                                   boolean canPutItems) {
+                                      Container inventory,
+                                      int slotIndex,
+                                      boolean canTakeItems,
+                                      boolean canPutItems) {
         super(inventory, slotIndex);
         this.canInsert(canPutItems);
         this.canExtract(canTakeItems);

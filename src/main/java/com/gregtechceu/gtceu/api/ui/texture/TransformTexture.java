@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.texture;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.joml.Quaternionf;
@@ -38,28 +39,31 @@ public abstract class TransformTexture implements UITexture {
         graphics.pose().translate(-x + -width / 2f, -y + -height / 2f, 0);
     }
 
-
     protected void postDraw(UIGuiGraphics graphics, float x, float y, float width, float height) {
         graphics.pose().popPose();
     }
 
     @Override
-    public final void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+    public final void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                           float height) {
         preDraw(graphics, x, y, width, height);
         drawInternal(graphics, mouseX, mouseY, x, y, width, height);
         postDraw(graphics, x, y, width, height);
     }
 
     @Override
-    public final void drawSubArea(UIGuiGraphics graphics, float x, float y, float width, float height, float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
+    public final void drawSubArea(UIGuiGraphics graphics, float x, float y, float width, float height, float drawnU,
+                                  float drawnV, float drawnWidth, float drawnHeight) {
         preDraw(graphics, x, y, width, height);
         drawSubAreaInternal(graphics, x, y, width, height, drawnU, drawnV, drawnWidth, drawnHeight);
         postDraw(graphics, x, y, width, height);
     }
 
-    protected abstract void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height);
+    protected abstract void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                                         float height);
 
-    protected void drawSubAreaInternal(UIGuiGraphics graphics, float x, float y, float width, float height, float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
+    protected void drawSubAreaInternal(UIGuiGraphics graphics, float x, float y, float width, float height,
+                                       float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
         drawInternal(graphics, 0, 0, x, y, width, height);
     }
 
@@ -75,5 +79,4 @@ public abstract class TransformTexture implements UITexture {
             UIParsing.apply(offsetValues, "y", UIParsing::parseFloat, this::yOffset);
         }
     }
-
 }

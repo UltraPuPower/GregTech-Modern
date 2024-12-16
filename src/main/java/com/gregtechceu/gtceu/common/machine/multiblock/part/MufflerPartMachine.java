@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -11,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
@@ -23,6 +22,7 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -108,7 +108,6 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
     /// ///////////////////////////////////
 
-
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
         // Position all slots at 0,0 as they'll be moved to the correct position on the client.
@@ -126,11 +125,12 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
         var menu = adapter.menu();
         UIComponentGroup rootComponent;
-        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176 + xOffset * 2), Sizing.fixed(18 + 18 * rowSize + 94)));
+        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176 + xOffset * 2),
+                Sizing.fixed(18 + 18 * rowSize + 94)));
 
         rootComponent.surface(Surface.UI_BACKGROUND);
         rootComponent.child(UIComponents.label(getBlockState().getBlock().getName())
-                        .positioning(Positioning.absolute(10, 5)))
+                .positioning(Positioning.absolute(10, 5)))
                 .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT)
                         .positioning(Positioning.absolute(7 + xOffset,
                                 18 + 18 * rowSize + 12)));
@@ -143,9 +143,9 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
                 // +36 for player inventory
                 stack.child(UIComponents.slot(menu.getSlot(index + 36))
-                                .canInsert(true)
-                                .canExtract(true)
-                                .sizing(Sizing.fill()))
+                        .canInsert(true)
+                        .canExtract(true)
+                        .sizing(Sizing.fill()))
                         .child(UIComponents.texture(GuiTextures.SLOT)
                                 .sizing(Sizing.fill()));
                 grid.child(stack, x, y);

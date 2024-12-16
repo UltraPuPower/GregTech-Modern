@@ -20,13 +20,11 @@ import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockOreInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.jei.subtype.PotionFluidSubtypeInterpreter;
-
 import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitComponent;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
-import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
-import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -36,9 +34,11 @@ import net.minecraftforge.fluids.FluidStack;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.registration.*;
+import mezz.jei.api.runtime.IJeiRuntime;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class GTJEIPlugin implements IModPlugin {
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGenericGuiContainerHandler(BaseContainerScreen.class, UIJEIHandler.INSTANCE);
         // why is there no generic version for this.>
-        //noinspection unchecked,rawtypes
+        // noinspection unchecked,rawtypes
         registration.addGhostIngredientHandler(BaseContainerScreen.class,
                 (IGhostIngredientHandler<BaseContainerScreen>) (IGhostIngredientHandler<?>) UIJEIHandler.INSTANCE);
     }

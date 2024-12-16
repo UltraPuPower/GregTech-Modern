@@ -6,12 +6,10 @@ import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.rei.handler.UIDisplayCategory;
-import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
-import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.network.chat.Component;

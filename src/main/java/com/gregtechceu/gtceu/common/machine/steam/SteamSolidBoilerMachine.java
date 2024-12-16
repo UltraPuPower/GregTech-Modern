@@ -5,12 +5,12 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -149,16 +149,18 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
         UIComponentGroup group = (UIComponentGroup) adapter.rootComponent.children().get(0);
 
         group.child(UIComponents.slot(this.fuelHandler.storage, 0)
-                        .backgroundTexture(UITextures.group(GuiTextures.SLOT_STEAM.get(isHighPressure),
-                                GuiTextures.COAL_OVERLAY_STEAM.get(isHighPressure)))
-                        .positioning(Positioning.absolute(115, 62)))
+                .backgroundTexture(UITextures.group(GuiTextures.SLOT_STEAM.get(isHighPressure),
+                        GuiTextures.COAL_OVERLAY_STEAM.get(isHighPressure)))
+                .positioning(Positioning.absolute(115, 62)))
                 .child(UIComponents.slot(this.ashHandler.storage, 0)
                         .canInsert(false)
                         .canExtract(true)
                         .backgroundTexture(UITextures.group(GuiTextures.SLOT_STEAM.get(isHighPressure),
                                 GuiTextures.DUST_OVERLAY_STEAM.get(isHighPressure)))
                         .positioning(Positioning.absolute(115, 26)))
-                .child(UIComponents.progress(menu.<Double>getProperty("progress")::get, GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure))
+                .child(UIComponents
+                        .progress(menu.<Double>getProperty("progress")::get,
+                                GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure))
                         .fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
                         .positioning(Positioning.absolute(115, 44))
                         .sizing(Sizing.fixed(18)));
@@ -169,5 +171,4 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
         clearInventory(fuelHandler.storage);
         clearInventory(ashHandler.storage);
     }
-
 }

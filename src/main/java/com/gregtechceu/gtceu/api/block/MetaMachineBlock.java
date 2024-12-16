@@ -383,5 +383,4 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
-
 }

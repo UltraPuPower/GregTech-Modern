@@ -7,12 +7,9 @@ import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-
 import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
@@ -30,6 +27,9 @@ import net.minecraft.world.item.TooltipFlag;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -37,7 +37,6 @@ import org.joml.Matrix4f;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +49,8 @@ public class ItemComponent extends BaseUIComponent implements ClickableIngredien
     protected final ItemRenderer itemRenderer;
     @Getter
     protected ItemStack stack;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected boolean showOverlay = false;
     @Getter
     protected boolean setTooltipFromStack = false;
@@ -193,5 +193,4 @@ public class ItemComponent extends BaseUIComponent implements ClickableIngredien
             }
         });
     }
-
 }

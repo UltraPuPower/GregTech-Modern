@@ -37,8 +37,8 @@ public abstract class UIFactory<T> {
 
     public final boolean openUI(final T holder, ServerPlayer player) {
         NetworkHooks.openScreen(player, new SimpleMenuProvider((containerId, inv, player1) -> {
-                    return new UIContainerMenu<>(containerId, inv, this, holder, false);
-                }, getUITitle(holder, player)),
+            return new UIContainerMenu<>(containerId, inv, this, holder, false);
+        }, getUITitle(holder, player)),
                 buf -> {
                     buf.writeResourceLocation(this.uiFactoryId);
                     writeHolderToSyncData(buf, holder);
@@ -69,5 +69,4 @@ public abstract class UIFactory<T> {
     protected abstract T readHolderFromSyncData(FriendlyByteBuf syncData);
 
     protected abstract void writeHolderToSyncData(FriendlyByteBuf syncData, T holder);
-
 }

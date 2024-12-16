@@ -8,10 +8,12 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.TextTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -59,13 +61,13 @@ public class SelectorComponent extends FlowLayout {
         this.candidates = candidates;
         this.selectables = new ArrayList<>();
         this.child(button);
-        this.child(UIComponents.texture(textTexture =
-                        UITextures.text(Component.empty()).color(fontColor).width(width).textType(TextTexture.TextType.ROLL)
-                )
+        this.child(UIComponents
+                .texture(textTexture = UITextures.text(Component.empty()).color(fontColor).width(width)
+                        .textType(TextTexture.TextType.ROLL))
                 .positioning(Positioning.absolute(0, 1))
                 .sizing(horizontalSizing, verticalSizing));
         this.child(popUp = UIContainers.verticalScroll(horizontalSizing, Sizing.content(),
-                        UIContainers.horizontalFlow(Sizing.content(), Sizing.content()))
+                UIContainers.horizontalFlow(Sizing.content(), Sizing.content()))
                 .configure(c -> {
                     c.positioning(Positioning.across(0, 100));
                 }));
@@ -98,9 +100,9 @@ public class SelectorComponent extends FlowLayout {
             SelectableFlowLayout select = new SelectableFlowLayout(Sizing.fixed(width), Sizing.fixed(15),
                     Algorithm.HORIZONTAL, () -> Objects.equals(currentValue, candidate));
             select.child(UIComponents.texture(UITextures.text(Component.literal(candidate))
-                            .color(fontColor.argb())
-                            .width(width)
-                            .textType(TextTexture.TextType.ROLL))
+                    .color(fontColor.argb())
+                    .width(width)
+                    .textType(TextTexture.TextType.ROLL))
                     .sizing(Sizing.fixed(width), Sizing.fixed(15)));
             select.selectedTexture(UITextures.colorBorder(Color.BLACK, -1));
             select.onSelected(s -> {
@@ -230,21 +232,21 @@ public class SelectorComponent extends FlowLayout {
     }
 
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        super.writeInitialData(buffer);
-        if (supplier != null) {
-            value(supplier.get());
-        }
-        buffer.m_130070_(currentValue);
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        super.readInitialData(buffer);
-        value(buffer.m_130277_());
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * super.writeInitialData(buffer);
+     * if (supplier != null) {
+     * value(supplier.get());
+     * }
+     * buffer.m_130070_(currentValue);
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * super.readInitialData(buffer);
+     * value(buffer.m_130277_());
+     * }
+     */
 
     @Override
     public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
@@ -291,5 +293,4 @@ public class SelectorComponent extends FlowLayout {
             candidates(latest);
         }
     }
-
 }

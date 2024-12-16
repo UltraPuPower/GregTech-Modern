@@ -37,7 +37,7 @@ import java.util.Map;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 
 public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
-        implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
+                                      implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
 
     private IEnergyContainer powerOutput;
     private IEnergyContainer powerInput;
@@ -194,15 +194,15 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     public @NotNull ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         var group = UIContainers.verticalFlow(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
         group.padding(Insets.of(8));
-        group.child(UIContainers.draggable(Sizing.fill(), Sizing.fill(), UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+        group.child(UIContainers.draggable(Sizing.fill(), Sizing.fill(),
+                UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
                         .child(UIComponents.label(self().getBlockState().getBlock().getName()))
                         .child(UIComponents.componentPanel(this::addDisplayText)
                                 .maxWidthLimit(150)
                                 .clickHandler(this::handleDisplayClick))
-                                .positioning(Positioning.absolute(4, 17))
+                        .positioning(Positioning.absolute(4, 17))
                         .padding(Insets.of(4))))
-                .surface((graphics, c) ->
-                        getScreenTexture().draw(graphics, 0, 0, c.x(), c.y(), c.width(), c.height()));
+                .surface((graphics, c) -> getScreenTexture().draw(graphics, 0, 0, c.x(), c.y(), c.width(), c.height()));
         group.surface(Surface.UI_BACKGROUND_INVERSE);
         return group;
     }

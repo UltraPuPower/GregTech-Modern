@@ -9,10 +9,8 @@ import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;

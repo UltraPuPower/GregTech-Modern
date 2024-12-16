@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.util;
 
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -31,7 +32,8 @@ public class UIComponentUtils {
         getComponentsById(group, regex).forEach(consumer);
     }
 
-    public static <T extends UIComponent> void componentByIdForEach(ParentUIComponent group, String regex, Class<T> clazz,
+    public static <T extends UIComponent> void componentByIdForEach(ParentUIComponent group, String regex,
+                                                                    Class<T> clazz,
                                                                     Consumer<T> consumer) {
         for (UIComponent widget : getComponentsById(group, regex)) {
             if (clazz.isInstance(widget)) {

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.ingredient;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -45,5 +46,4 @@ public interface ClickableIngredientSlot<I> extends UIComponent {
     default Object ingredientOverride() {
         return null;
     }
-
 }

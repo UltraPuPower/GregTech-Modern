@@ -10,15 +10,15 @@ import com.gregtechceu.gtceu.api.ui.util.EventStream;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.EditBoxAccessor;
 
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.resources.ResourceLocation;
+
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.lwjgl.glfw.GLFW;
 import org.w3c.dom.Element;
 
@@ -70,7 +70,6 @@ public class TextBoxComponent extends EditBox {
         }
     }
 
-
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         boolean result = super.keyPressed(keyCode, scanCode, modifiers);
@@ -97,8 +96,7 @@ public class TextBoxComponent extends EditBox {
         if (wheelDur > 0 && numberInstance != null && isMouseOverElement(mouseX, mouseY) && isFocused()) {
             try {
                 text(numberInstance.format(Float.parseFloat(getValue()) + (wheelDelta > 0 ? 1 : -1) * wheelDur));
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
             setFocused(true);
             return true;
         }
@@ -110,8 +108,7 @@ public class TextBoxComponent extends EditBox {
         if (isDragging && numberInstance != null && isFocused()) {
             try {
                 text(numberInstance.format(Float.parseFloat(getValue()) + dragX * wheelDur));
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
             setFocused(true);
             return true;
         }
@@ -143,7 +140,7 @@ public class TextBoxComponent extends EditBox {
             try {
                 TagParser.parseTag(s);
                 return true;
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {}
             return false;
         });
         hover = Component.translatable("ldlib.gui.text_field.compound_tag");
@@ -169,7 +166,7 @@ public class TextBoxComponent extends EditBox {
                 if (minValue <= value && value <= maxValue) return true;
                 if (value < minValue) return false;
                 return true;
-            } catch (NumberFormatException ignored) { }
+            } catch (NumberFormatException ignored) {}
             return false;
         });
         if (minValue == Long.MIN_VALUE && maxValue == Long.MAX_VALUE) {
@@ -181,7 +178,7 @@ public class TextBoxComponent extends EditBox {
         } else {
             hover = Component.translatable("ldlib.gui.text_field.number.0", minValue, maxValue);
         }
-        return this; //setWheelDur(1);
+        return this; // setWheelDur(1);
     }
 
     public TextBoxComponent numbersOnly(int minValue, int maxValue) {
@@ -193,7 +190,7 @@ public class TextBoxComponent extends EditBox {
                 if (minValue <= value && value <= maxValue) return true;
                 if (value < minValue) return false;
                 return true;
-            } catch (NumberFormatException ignored) { }
+            } catch (NumberFormatException ignored) {}
             return false;
         });
         if (minValue == Integer.MIN_VALUE && maxValue == Integer.MAX_VALUE) {
@@ -205,7 +202,7 @@ public class TextBoxComponent extends EditBox {
         } else {
             hover = Component.translatable("ldlib.gui.text_field.number.0", minValue, maxValue);
         }
-        return this; //setWheelDur(1);
+        return this; // setWheelDur(1);
     }
 
     public TextBoxComponent numbersOnly(float minValue, float maxValue) {
@@ -217,7 +214,7 @@ public class TextBoxComponent extends EditBox {
                 if (minValue <= value && value <= maxValue) return true;
                 if (value < minValue) return false;
                 return true;
-            } catch (NumberFormatException ignored) { }
+            } catch (NumberFormatException ignored) {}
             return false;
         });
         if (minValue == -Float.MAX_VALUE && maxValue == Float.MAX_VALUE) {
@@ -229,10 +226,8 @@ public class TextBoxComponent extends EditBox {
         } else {
             hover = Component.translatable("ldlib.gui.text_field.number.0", minValue, maxValue);
         }
-        return this; //setWheelDur(0.1f);
+        return this; // setWheelDur(0.1f);
     }
-
-
 
     public TextBoxComponent wheelDur(float wheelDur) {
         this.wheelDur = wheelDur;

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.w3c.dom.Element;
@@ -33,7 +34,7 @@ public class DualProgressComponent extends UIComponentGroup {
     }
 
     public DualProgressComponent(ProgressComponent texture1, ProgressComponent texture2, DoubleSupplier progress,
-                              double splitPoint) {
+                                 double splitPoint) {
         super(Sizing.content(), Sizing.content());
         this.progressSupplier = progress;
         this.splitPoint = splitPoint;
@@ -97,7 +98,5 @@ public class DualProgressComponent extends UIComponentGroup {
         texture2(model.parseComponent(ProgressComponent.class, children.get("texture2")));
 
         UIParsing.apply(children, "split-point", UIParsing::parseDouble, this::splitPoint);
-
     }
-
 }

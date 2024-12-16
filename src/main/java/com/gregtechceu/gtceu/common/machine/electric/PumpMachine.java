@@ -2,17 +2,17 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -580,7 +580,6 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
 
     @Override
     public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-
         SyncedProperty<FluidStack> prop = menu.createProperty(FluidStack.class, "cache", this.cache.getFluidInTank(0));
         CustomFluidTank tank = this.cache.getStorages()[0];
         final int listenerIndex = tank.addOnContentsChanged(() -> prop.set(tank.getFluid()));
@@ -609,7 +608,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                                     .surface(Surface.UI_DISPLAY);
                         })
                         .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
-                        .child(UIComponents.label(() -> Component.literal(String.valueOf(cache.getFluidInTank(0).getAmount())))
+                        .child(UIComponents
+                                .label(() -> Component.literal(String.valueOf(cache.getFluidInTank(0).getAmount())))
                                 .color(Color.BLACK)
                                 .shadow(true))
                         .child(UIComponents.tank(cache.getStorages()[0])
@@ -617,7 +617,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                                 .canExtract(true)
                                 .positioning(Positioning.absolute(79, 35)))
                         .child(UIComponents.toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT,
-                                        this::isAutoOutputFluids, this::setAutoOutputFluids)
+                                this::isAutoOutputFluids, this::setAutoOutputFluids)
                                 .tooltip(List.of(Component.translatable("gtceu.gui.fluid_auto_output.tooltip")))
                                 .positioning(Positioning.absolute(1, 53))
                                 .sizing(Sizing.fixed(18))))

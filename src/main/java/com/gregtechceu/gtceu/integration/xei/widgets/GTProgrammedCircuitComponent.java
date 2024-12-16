@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.xei.widgets;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -31,9 +31,9 @@ public class GTProgrammedCircuitComponent extends UIComponentGroup {
             for (int i = 0; i < 8; i++) {
                 handler.setStackInSlot((i + j * 8), IntCircuitBehaviour.stack(1 + (i + j * 8)));
                 grid.child(UIComponents.slot(handler, (i + j * 8))
-                                .canInsert(false)
-                                .canExtract(false)
-                                .ingredientIO((i + j * 8 == 31 ? IO.OUT : IO.BOTH)),
+                        .canInsert(false)
+                        .canExtract(false)
+                        .ingredientIO((i + j * 8 == 31 ? IO.OUT : IO.BOTH)),
                         i, j);
             }
         }

@@ -4,14 +4,14 @@ import com.gregtechceu.gtceu.api.ui.component.*;
 import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
-
 import com.gregtechceu.gtceu.api.ui.texture.*;
+
 import net.minecraft.ResourceLocationException;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
 import net.minecraftforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -32,7 +32,8 @@ public class UIParsing {
 
     /**
      * @deprecated In order to more properly separate factories added by different
-     *             mods, use {@link #registerComponentFactory(ResourceLocation, Function)}, which takes a ResourceLocation
+     *             mods, use {@link #registerComponentFactory(ResourceLocation, Function)}, which takes a
+     *             ResourceLocation
      *             instead
      */
     @ApiStatus.Internal
@@ -359,7 +360,8 @@ public class UIParsing {
         registerComponentFactory("group", element -> UIContainers.group(Sizing.content(), Sizing.content()));
         registerComponentFactory("scroll", ScrollContainer::parse);
         registerComponentFactory("collapsible", CollapsibleContainer::parse);
-        registerComponentFactory("draggable", element -> UIContainers.draggable(Sizing.content(), Sizing.content(), null));
+        registerComponentFactory("draggable",
+                element -> UIContainers.draggable(Sizing.content(), Sizing.content(), null));
 
         // Textures
         registerComponentFactory("sprite", SpriteComponent::parse);
@@ -390,7 +392,6 @@ public class UIParsing {
         registerComponentFactory("small-checkbox", element -> new SmallCheckboxComponent());
         registerComponentFactory("progress", element -> UIComponents.progress(ProgressComponent.JEIProgress));
         registerComponentFactory("dual-progress", element -> UIComponents.dualProgress());
-
 
         // Textures
         registerTextureFactory("resource", ResourceTexture::parse);

@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;

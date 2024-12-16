@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.items.IItemHandlerModifiable;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
@@ -85,5 +87,4 @@ public class BlockableSlotComponent extends SlotComponent {
         // prevent slot removal and hover highlighting when slot is blocked
         return super.isMouseOverElement(mouseX, mouseY) && !isBlocked.getAsBoolean();
     }
-
 }

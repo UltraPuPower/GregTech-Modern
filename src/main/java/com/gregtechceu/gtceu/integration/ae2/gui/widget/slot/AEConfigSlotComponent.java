@@ -103,5 +103,4 @@ public class AEConfigSlotComponent extends BaseUIComponent {
         if (!parentWidget.isStocking()) return true;
         return !parentWidget.hasStackInConfig(stack);
     }
-
 }

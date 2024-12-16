@@ -7,12 +7,14 @@ import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +84,8 @@ public class ConfiguratorPanelComponent extends FlowLayout {
     }
 
     @Override
-    protected void drawChildren(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta, List<? extends UIComponent> children) {
+    protected void drawChildren(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta,
+                                List<? extends UIComponent> children) {
         for (UIComponent widget : children) {
             if (widget != expanded) {
                 RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -128,8 +131,7 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             padding(Insets.of(getTabSize()));
             positioning(Positioning.absolute(0, tabs.size() * (getTabSize() + 2)));
             this.configurator = configurator;
-            this.button = new ButtonComponent(Component.empty(), b -> {
-            }) {
+            this.button = new ButtonComponent(Component.empty(), b -> {}) {
 
                 @Override
                 public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -183,7 +185,8 @@ public class ConfiguratorPanelComponent extends FlowLayout {
                         .child(config)
                         .child(UIComponents.label(configurator.getTitle())
                                 .maxWidth(config.width() - getTabSize())
-                                .sizing(Sizing.fixed(config.width() - getTabSize() - 5), Sizing.fixed(getTabSize() - border))
+                                .sizing(Sizing.fixed(config.width() - getTabSize() - 5),
+                                        Sizing.fixed(getTabSize() - border))
                                 .positioning(Positioning.relative(border + 5, border)));
                 this.child(button);
                 this.child(view);
@@ -244,8 +247,8 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             }
 
             positioning().animate(getAnimationTime(), Easing.QUADRATIC, Positioning.absolute(
-                            dragOffsetX - width + (tabs.size() > 1 ? -2 : getTabSize()),
-                            dragOffsetY))
+                    dragOffsetX - width + (tabs.size() > 1 ? -2 : getTabSize()),
+                    dragOffsetY))
                     .finished().subscribe((dir, looping) -> {
                         child(view);
                     });
@@ -257,7 +260,6 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             if (view != null) {
                 removeChild(view);
             }
-
 
             positioning().animate(getAnimationTime(), Easing.QUADRATIC, Positioning.absolute(x, y));
             horizontalSizing().animate(getAnimationTime(), Easing.QUADRATIC, Sizing.fixed(getTabSize()));
@@ -279,7 +281,7 @@ public class ConfiguratorPanelComponent extends FlowLayout {
 
         @Override
         public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
-            if (false /*&& this.positioning().animation().finished()*/) {
+            if (false /* && this.positioning().animation().finished() */) {
                 graphics.enableScissor(x + border - 1, y + border - 1,
                         x + border - 1 + width - (border - 1) * 2,
                         y + border - 1 + height - (border - 1) * 2);
@@ -337,13 +339,11 @@ public class ConfiguratorPanelComponent extends FlowLayout {
         public boolean onMouseMoved(double mouseX, double mouseY) {
             return super.onMouseMoved(mouseX, mouseY) || isMouseOverElement(mouseX, mouseY);
         }
-
     }
 
     public class FloatingTab extends Tab {
 
-        protected Runnable closeCallback = () -> {
-        };
+        protected Runnable closeCallback = () -> {};
 
         public FloatingTab(IFancyConfigurator configurator) {
             super(configurator);
@@ -362,11 +362,9 @@ public class ConfiguratorPanelComponent extends FlowLayout {
         public void onClose(Runnable closeCallback) {
             this.closeCallback = closeCallback;
         }
-
     }
 
     private static int getAnimationTime() {
         return ConfigHolder.INSTANCE.client.animationTime;
     }
-
 }

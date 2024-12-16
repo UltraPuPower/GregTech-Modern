@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
-import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;

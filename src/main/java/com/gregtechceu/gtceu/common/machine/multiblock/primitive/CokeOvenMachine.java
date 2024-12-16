@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -83,27 +83,29 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
                 .positioning(Positioning.absolute(5, 5)));
 
         rootComponent.child(UIComponents.slot(menu.getSlot(0))
-                        .positioning(Positioning.absolute(52, 30)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY))
+                .positioning(Positioning.absolute(52, 30)))
+                .child(UIComponents
+                        .texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY))
                         .positioning(Positioning.absolute(52, 30))
                         .sizing(Sizing.fixed(18)));
 
         rootComponent.child(UIComponents.progress(adapter.menu().<Double>getProperty("progress")::get)
-                        .progressTexture(GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR)
-                        .positioning(Positioning.absolute(76, 32))
-                        .sizing(Sizing.fixed(20), Sizing.fixed(15)));
+                .progressTexture(GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR)
+                .positioning(Positioning.absolute(76, 32))
+                .sizing(Sizing.fixed(20), Sizing.fixed(15)));
 
         rootComponent.child(UIComponents.slot(menu.getSlot(1))
-                        .canInsert(false)
-                        .canExtract(true)
-                        .positioning(Positioning.absolute(103, 30)))
-                .child(UIComponents.texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY))
+                .canInsert(false)
+                .canExtract(true)
+                .positioning(Positioning.absolute(103, 30)))
+                .child(UIComponents
+                        .texture(UITextures.group(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY))
                         .positioning(Positioning.absolute(103, 30))
                         .sizing(Sizing.fixed(18)));
 
         rootComponent.child(UIComponents.texture(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
-                        .positioning(Positioning.absolute(134, 13))
-                        .sizing(Sizing.fixed(20), Sizing.fixed(58)))
+                .positioning(Positioning.absolute(134, 13))
+                .sizing(Sizing.fixed(20), Sizing.fixed(58)))
                 .child(UIComponents.tank(exportFluids.getStorages()[0], 0)
                         .canInsert(false)
                         .canExtract(true)
@@ -113,7 +115,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
                         .sizing(Sizing.fixed(20), Sizing.fixed(58)));
 
         rootComponent.child(UIComponents.playerInventory(player.getInventory(), GuiTextures.PRIMITIVE_SLOT)
-                        .positioning(Positioning.absolute(7, 84)));
+                .positioning(Positioning.absolute(7, 84)));
     }
 
     @Override

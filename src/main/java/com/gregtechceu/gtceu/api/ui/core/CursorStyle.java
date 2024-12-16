@@ -37,18 +37,21 @@ public enum CursorStyle {
 
     /**
      * The horizontal resize cursor
+     * 
      * @see #VERTICAL_RESIZE
      */
     HORIZONTAL_RESIZE(GLFW.GLFW_HRESIZE_CURSOR),
 
     /**
      * The vertical resize cursor
+     * 
      * @see #HORIZONTAL_RESIZE
      */
     VERTICAL_RESIZE(GLFW.GLFW_VRESIZE_CURSOR),
 
     /**
      * The NorthWest-SouthEast resize cursor
+     * 
      * @see #NESW_RESIZE
      *
      * @implNote This cursor style is not necessarily supported by all cursor themes
@@ -57,6 +60,7 @@ public enum CursorStyle {
 
     /**
      * The NorthEast-SouthWest resize cursor
+     * 
      * @see #NWSE_RESIZE
      *
      * @implNote This cursor style is not necessarily supported by all cursor themes

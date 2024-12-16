@@ -7,11 +7,9 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-
 import com.gregtechceu.gtceu.integration.rei.handler.UIDisplayCategory;
+
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.Util;
@@ -103,7 +101,8 @@ public class GTRecipeREICategory extends UIDisplayCategory<GTRecipeDisplay> {
             if (guiTexture == null) return;
             if (!(graphics instanceof UIGuiGraphics)) graphics = UIGuiGraphics.of(graphics);
             var uiGraphics = (UIGuiGraphics) graphics;
-            guiTexture.draw(uiGraphics, mouseX, mouseY, bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getWidth());
+            guiTexture.draw(uiGraphics, mouseX, mouseY, bounds.getX(), bounds.getY(), bounds.getWidth(),
+                    bounds.getWidth());
         };
     }
 }

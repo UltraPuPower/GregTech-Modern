@@ -97,14 +97,14 @@ public class Content {
         return new UITexture() {
 
             @Override
-            public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+            public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                             float height) {
                 drawChance(graphics, x, y, width, height, recipeTier, chanceTier, function);
                 drawRangeAmount(graphics, x, y, width, height);
                 drawFluidAmount(graphics, x, y, width, height);
                 if (perTick) {
                     drawTick(graphics, x, y, width, height);
                 }
-
             }
         };
     }

@@ -113,8 +113,8 @@ public abstract class ProspectorMode<T> {
                     }
                 }
                 return UITextures.item(BuiltInRegistries.BLOCK.get(new ResourceLocation(name))
-                                .asItem()
-                                .getDefaultInstance())
+                        .asItem()
+                        .getDefaultInstance())
                         .scale(0.8f);
             });
         }

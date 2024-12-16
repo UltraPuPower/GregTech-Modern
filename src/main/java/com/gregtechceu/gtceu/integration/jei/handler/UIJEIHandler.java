@@ -2,27 +2,27 @@ package com.gregtechceu.gtceu.integration.jei.handler;
 
 import com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
-
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
 import com.gregtechceu.gtceu.integration.jei.GTJEIPlugin;
+
+import net.minecraft.client.renderer.Rect2i;
+
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.runtime.IClickableIngredient;
-import net.minecraft.client.renderer.Rect2i;
-
-import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class UIJEIHandler implements IGuiContainerHandler<BaseContainerScreen<?, ?>>, IGhostIngredientHandler<BaseContainerScreen<?, ?>> {
+public class UIJEIHandler implements IGuiContainerHandler<BaseContainerScreen<?, ?>>,
+                          IGhostIngredientHandler<BaseContainerScreen<?, ?>> {
 
     public static final UIJEIHandler INSTANCE = new UIJEIHandler();
 
-    private UIJEIHandler() {
-    }
+    private UIJEIHandler() {}
 
     @Override
     public List<Rect2i> getGuiExtraAreas(BaseContainerScreen<?, ?> screen) {
@@ -48,7 +48,8 @@ public class UIJEIHandler implements IGuiContainerHandler<BaseContainerScreen<?,
     }
 
     @Override
-    public <I> List<Target<I>> getTargetsTyped(BaseContainerScreen<?, ?> gui, ITypedIngredient<I> ingredient, boolean doStart) {
+    public <I> List<Target<I>> getTargetsTyped(BaseContainerScreen<?, ?> gui, ITypedIngredient<I> ingredient,
+                                               boolean doStart) {
         List<GhostIngredientSlot<?>> ghostSlots = gui.componentsForGhostIngredients().toList();
         List<Target<I>> ghostHandlerTargets = new ArrayList<>();
         for (var slot : ghostSlots) {
@@ -66,9 +67,7 @@ public class UIJEIHandler implements IGuiContainerHandler<BaseContainerScreen<?,
     }
 
     @Override
-    public void onComplete() {
-
-    }
+    public void onComplete() {}
 
     private record ClickableIngredient<T>(ITypedIngredient<T> ingredient, Rect2i area)
             implements IClickableIngredient<T> {
@@ -94,5 +93,4 @@ public class UIJEIHandler implements IGuiContainerHandler<BaseContainerScreen<?,
             return area;
         }
     }
-
 }

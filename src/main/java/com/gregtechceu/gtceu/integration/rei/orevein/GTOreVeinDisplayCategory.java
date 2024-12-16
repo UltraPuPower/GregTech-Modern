@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
-import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.network.chat.Component;

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -32,31 +33,31 @@ public class PredicatedButtonComponent extends ButtonComponent {
     }
 
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        super.writeInitialData(buffer);
-        var result = predicate == null || predicate.getAsBoolean();
-        visible(result);
-        buffer.writeBoolean(result);
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        super.readInitialData(buffer);
-        setVisible(buffer.readBoolean());
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-        if (predicate != null) {
-            if (isVisible() != predicate.getAsBoolean()) {
-                setVisible(!isVisible());
-                writeUpdateInfo(1, buf -> buf.writeBoolean(isVisible()));
-            }
-        }
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * super.writeInitialData(buffer);
+     * var result = predicate == null || predicate.getAsBoolean();
+     * visible(result);
+     * buffer.writeBoolean(result);
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * super.readInitialData(buffer);
+     * setVisible(buffer.readBoolean());
+     * }
+     * 
+     * @Override
+     * public void detectAndSendChanges() {
+     * super.detectAndSendChanges();
+     * if (predicate != null) {
+     * if (isVisible() != predicate.getAsBoolean()) {
+     * setVisible(!isVisible());
+     * writeUpdateInfo(1, buf -> buf.writeBoolean(isVisible()));
+     * }
+     * }
+     * }
+     */
 
     @Override
     public void update(float delta, int mouseX, int mouseY) {

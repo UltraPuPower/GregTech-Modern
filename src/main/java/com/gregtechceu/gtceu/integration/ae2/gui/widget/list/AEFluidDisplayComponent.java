@@ -76,5 +76,4 @@ public class AEFluidDisplayComponent extends BaseUIComponent {
             drawSelectionOverlay(graphics, stackX, stackY, 16, 16);
         }
     }
-
 }

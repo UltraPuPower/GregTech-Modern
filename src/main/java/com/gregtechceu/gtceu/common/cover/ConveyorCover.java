@@ -10,9 +10,9 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
@@ -433,9 +433,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     /// ///////////////////////////////////
 
     @Override
-    public void loadServerUI(Player player, UIContainerMenu<CoverBehavior> menu, CoverBehavior holder) {
-
-    }
+    public void loadServerUI(Player player, UIContainerMenu<CoverBehavior> menu, CoverBehavior holder) {}
 
     @Override
     public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
@@ -443,21 +441,21 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         group.padding(Insets.both(10, 5));
         group.child(UIComponents.label(Component.translatable(getUITitle(), GTValues.VN[tier])));
 
-        group.child(new IntInputComponent(Sizing.fixed(156), Sizing.fixed(20), () -> this.transferRate, this::setTransferRate)
+        group.child(new IntInputComponent(Sizing.fixed(156), Sizing.fixed(20), () -> this.transferRate,
+                this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
 
         ioModeSwitch = UIComponents.switchComponent((clickData, value) -> {
-                    setIo(value ? IO.IN : IO.OUT);
-                    ioModeSwitch.tooltip(List.of(
-                            Component.translatable("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))));
-                })
+            setIo(value ? IO.IN : IO.OUT);
+            ioModeSwitch.tooltip(List.of(
+                    Component.translatable("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))));
+        })
                 .texture(
                         UITextures.group(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
                         UITextures.group(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
                 .pressed(io == IO.IN)
                 .tooltip(List.of(
-                        Component.translatable("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))
-                ))
+                        Component.translatable("cover.conveyor.mode", LocalizationUtils.format(io.tooltip))))
                 .positioning(Positioning.absolute(0, 40))
                 .sizing(Sizing.fixed(20));
         group.child(ioModeSwitch);

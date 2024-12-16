@@ -3,15 +3,6 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
-import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIContainers;
-import com.gregtechceu.gtceu.api.ui.core.Insets;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Positioning;
-import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -26,6 +17,15 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.UIContainers;
+import com.gregtechceu.gtceu.api.ui.core.Insets;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Positioning;
+import com.gregtechceu.gtceu.api.ui.core.Sizing;
+import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
@@ -239,7 +239,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     private void refundAll(ButtonComponent clickData) {
         // TODO sync button clicks to server
-        if (false /*!clickData.isRemote*/) {
+        if (false /* !clickData.isRemote */) {
             for (InternalSlot internalSlot : internalInventory) {
                 internalSlot.refund();
             }
@@ -289,7 +289,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         int colSize = 3;
         var mainGroup = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
         mainGroup.padding(Insets.both(8, 2));
-        var group = UIContainers.grid(Sizing.fixed(18 * rowSize + 16), Sizing.fixed(18 * colSize + 16), rowSize, colSize);
+        var group = UIContainers.grid(Sizing.fixed(18 * rowSize + 16), Sizing.fixed(18 * colSize + 16), rowSize,
+                colSize);
         int index = 0;
         for (int y = 0; y < colSize; ++y) {
             for (int x = 0; x < rowSize; ++x) {
@@ -316,8 +317,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         mainGroup.child(group);
         // ME Network status
         mainGroup.child(0, UIComponents.label(() -> this.isOnline ?
-                        Component.translatable("gtceu.gui.me_network.online") :
-                        Component.translatable("gtceu.gui.me_network.offline")));
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline")));
 
         mainGroup.child(new AETextInputButtonComponent(Sizing.fixed(70), Sizing.fixed(10))
                 .setText(customName)

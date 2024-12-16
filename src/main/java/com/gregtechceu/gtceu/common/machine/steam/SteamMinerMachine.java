@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.steam;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -12,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PredicatedTextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -55,7 +55,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine,
-        IUIMachine, IMachineLife, IDataInfoProvider {
+                               IUIMachine, IMachineLife, IDataInfoProvider {
 
     @Getter
     @Setter
@@ -190,9 +190,9 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 grid.child(UIComponents.slot(exportItems, index)
-                                .canInsert(false)
-                                .canExtract(true)
-                                .backgroundTexture(GuiTextures.SLOT_STEAM.get(false)),
+                        .canInsert(false)
+                        .canExtract(true)
+                        .backgroundTexture(GuiTextures.SLOT_STEAM.get(false)),
                         y, x);
             }
         }
@@ -275,5 +275,4 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         }
         return new ArrayList<>();
     }
-
 }

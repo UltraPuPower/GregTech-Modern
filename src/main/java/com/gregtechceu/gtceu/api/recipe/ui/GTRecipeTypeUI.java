@@ -3,13 +3,11 @@ package com.gregtechceu.gtceu.api.recipe.ui;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.texture.SteamTexture;
-import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.DualProgressComponent;
 import com.gregtechceu.gtceu.api.ui.component.ProgressComponent;
@@ -21,8 +19,10 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
 import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.api.ui.texture.SteamTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
@@ -31,6 +31,9 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.common.collect.Table;
 import dev.emi.emi.api.EmiApi;
@@ -39,9 +42,6 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
-import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -187,8 +187,8 @@ public class GTRecipeTypeUI {
             group.child(progressWidget);
 
             progressWidget.progressTexture((isSteam && steamProgressBarTexture != null) ? UITextures.progress(
-                            steamProgressBarTexture.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
-                            steamProgressBarTexture.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
+                    steamProgressBarTexture.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
+                    steamProgressBarTexture.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
                     .fillDirection(steamMoveType) : progressBarTexture);
 
             return group;
@@ -198,38 +198,40 @@ public class GTRecipeTypeUI {
             // bind progress
             List<UIComponent> progress = new ArrayList<>();
             // First set the progress suppliers separately.
-            UIComponentUtils.componentByIdForEach(template, "^progress$", ProgressComponent.class, progressComponent -> {
-                progressComponent.progressSupplier(recipeHolder.progressSupplier);
-                progress.add(progressComponent);
-            });
+            UIComponentUtils.componentByIdForEach(template, "^progress$", ProgressComponent.class,
+                    progressComponent -> {
+                        progressComponent.progressSupplier(recipeHolder.progressSupplier);
+                        progress.add(progressComponent);
+                    });
             // Then set the dual-progress widgets, to override their builtin ones' suppliers, in case someone forgot to
             // remove the id from the internal ones.
-            UIComponentUtils.componentByIdForEach(template, "^progress$", DualProgressComponent.class, dualProgressComponent -> {
-                dualProgressComponent.progressSupplier(recipeHolder.progressSupplier);
-                progress.add(dualProgressComponent);
-            });
+            UIComponentUtils.componentByIdForEach(template, "^progress$", DualProgressComponent.class,
+                    dualProgressComponent -> {
+                        dualProgressComponent.progressSupplier(recipeHolder.progressSupplier);
+                        progress.add(dualProgressComponent);
+                    });
             // add recipe button
             if (!isJEI && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
                 for (UIComponent component : progress) {
                     template.child(UIComponents.button(Component.empty(), cd -> {
-                                if (LDLib.isReiLoaded()) {
-                                    ViewSearchBuilder.builder().addCategories(
-                                                    recipeType.getCategories().stream()
-                                                            .filter(GTRecipeCategory::isXEIVisible)
-                                                            .map(GTRecipeREICategory::machineCategory)
-                                                            .collect(Collectors.toList()))
-                                            .open();
-                                } else if (LDLib.isJeiLoaded()) {
-                                    JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
-                                            recipeType.getCategories().stream()
-                                                    .filter(GTRecipeCategory::isXEIVisible)
-                                                    .map(GTRecipeJEICategory::machineType)
-                                                    .collect(Collectors.toList()));
-                                } else if (LDLib.isEmiLoaded()) {
-                                    EmiApi.displayRecipeCategory(
-                                            GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
-                                }
-                            }).renderer(ButtonComponent.Renderer.EMPTY)
+                        if (LDLib.isReiLoaded()) {
+                            ViewSearchBuilder.builder().addCategories(
+                                    recipeType.getCategories().stream()
+                                            .filter(GTRecipeCategory::isXEIVisible)
+                                            .map(GTRecipeREICategory::machineCategory)
+                                            .collect(Collectors.toList()))
+                                    .open();
+                        } else if (LDLib.isJeiLoaded()) {
+                            JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
+                                    recipeType.getCategories().stream()
+                                            .filter(GTRecipeCategory::isXEIVisible)
+                                            .map(GTRecipeJEICategory::machineType)
+                                            .collect(Collectors.toList()));
+                        } else if (LDLib.isEmiLoaded()) {
+                            EmiApi.displayRecipeCategory(
+                                    GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
+                        }
+                    }).renderer(ButtonComponent.Renderer.EMPTY)
                             .positioning(component.positioning().get())
                             .sizing(component.horizontalSizing().get(), component.verticalSizing().get())
                             .tooltip(List.of(Component.translatable("gtceu.recipe_type.show_recipes"))));
@@ -245,10 +247,12 @@ public class GTRecipeTypeUI {
                     // bind overlays
                     Class<? extends UIComponent> widgetClass = cap.getWidgetClass();
                     if (widgetClass != null) {
-                        UIComponentUtils.componentByIdForEach(template, "^%s.[0-9]+$".formatted(cap.slotName(io)), widgetClass,
+                        UIComponentUtils.componentByIdForEach(template, "^%s.[0-9]+$".formatted(cap.slotName(io)),
+                                widgetClass,
                                 widget -> {
                                     var index = UIComponentUtils.componentIdIndex(widget);
-                                    cap.applyUIComponentInfo(widget, adapter, index, isJEI, io, recipeHolder, recipeType, null, null,
+                                    cap.applyUIComponentInfo(widget, adapter, index, isJEI, io, recipeHolder,
+                                            recipeType, null, null,
                                             storage, 0, 0);
                                 });
                     }
@@ -300,10 +304,11 @@ public class GTRecipeTypeUI {
             int capCount = entry.getValue();
             for (int slotIndex = 0; slotIndex < capCount; slotIndex++) {
                 var component = cap.createUIComponent();
-                //noinspection DataFlowIssue
+                // noinspection DataFlowIssue
                 component.positioning(Positioning.absolute((index % 3) * 18, (index / 3) * 18))
                         .id(cap.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
-                var texture = UIComponents.texture(getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure));
+                var texture = UIComponents.texture(
+                        getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure));
 
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
                 layout.children(List.of(component, texture));
@@ -382,5 +387,4 @@ public class GTRecipeTypeUI {
                 progressBar.getSubTexture(0, 0.5, 1, 0.5)).fillDirection(moveType);
         return this;
     }
-
 }

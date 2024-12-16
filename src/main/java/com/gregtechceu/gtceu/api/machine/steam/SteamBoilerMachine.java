@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -327,7 +327,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 .positioning(Positioning.absolute(6, 6)))
                 .child(UIComponents.progress(menu.<Double>getProperty("progress")::get)
                         .fillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .progressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), GuiTextures.PROGRESS_BAR_BOILER_HEAT)
+                        .progressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure),
+                                GuiTextures.PROGRESS_BAR_BOILER_HEAT)
                         .dynamicHoverTips(pct -> Component.translatable("gtceu.multiblock.large_boiler.temperature",
                                 currentTemperature + 274, getMaxTemperature() + 274))
                         .positioning(Positioning.absolute(96, 26))
@@ -401,5 +402,4 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         }
         return new ArrayList<>();
     }
-
 }

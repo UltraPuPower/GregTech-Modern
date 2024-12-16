@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -18,6 +16,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +33,7 @@ import static com.lowdragmc.lowdraglib.LDLib.isRemote;
 
 @Accessors(fluent = true, chain = true)
 public class ComponentPanelComponent extends BaseUIComponent {
+
     protected int maxWidthLimit;
     @Setter
     @Nullable
@@ -116,7 +119,7 @@ public class ComponentPanelComponent extends BaseUIComponent {
         if (textSupplier != null) {
             List<Component> textBuffer = new ArrayList<>();
             textSupplier.accept(textBuffer);
-            if (!lastText.equals(textBuffer)){
+            if (!lastText.equals(textBuffer)) {
                 this.lastText = textBuffer;
                 formatDisplayText();
                 updateComponentTextSize();
@@ -198,8 +201,8 @@ public class ComponentPanelComponent extends BaseUIComponent {
     public void formatDisplayText() {
         var font = Minecraft.getInstance().font;
         int maxTextWidthResult = maxWidthLimit == 0 ? Integer.MAX_VALUE : maxWidthLimit;
-        this.cacheLines = lastText.stream().flatMap(component ->
-                ComponentRenderUtils.wrapComponents(component, maxTextWidthResult, font).stream())
+        this.cacheLines = lastText.stream()
+                .flatMap(component -> ComponentRenderUtils.wrapComponents(component, maxTextWidthResult, font).stream())
                 .toList();
     }
 
@@ -214,20 +217,20 @@ public class ComponentPanelComponent extends BaseUIComponent {
                 var lineWidth = font.width(cacheLine);
                 var offsetX = x() + (width() - lineWidth) / 2f;
                 if (mouseX >= offsetX) {
-                    var mouseOffset = (int)(mouseX - x());
+                    var mouseOffset = (int) (mouseX - x());
                     return font.getSplitter().componentStyleAtWidth(cacheLine, mouseOffset);
                 }
             }
         } else {
             if (mouseX >= x() && selectedLine >= 0 && selectedLine < cacheLines.size()) {
                 var cacheLine = cacheLines.get((int) selectedLine);
-                var mouseOffset = (int)(mouseX - x());
+                var mouseOffset = (int) (mouseX - x());
                 return font.getSplitter().componentStyleAtWidth(cacheLine, mouseOffset);
             }
         }
         return null;
     }
-    
+
     @Override
     public boolean onMouseDown(double mouseX, double mouseY, int button) {
         var style = getStyleUnderMouse(mouseX, mouseY);
@@ -264,11 +267,11 @@ public class ComponentPanelComponent extends BaseUIComponent {
             var cacheLine = cacheLines.get(i);
             if (isCenter) {
                 var lineWidth = fontRenderer.width(cacheLine);
-                graphics.drawString(fontRenderer, cacheLine, x() + (width() - lineWidth) / 2, y() + i * (fontRenderer.lineHeight + space), -1);
+                graphics.drawString(fontRenderer, cacheLine, x() + (width() - lineWidth) / 2,
+                        y() + i * (fontRenderer.lineHeight + space), -1);
             } else {
                 graphics.drawString(fontRenderer, cacheLines.get(i), x(), y() + i * (fontRenderer.lineHeight + 2), -1);
             }
         }
-
     }
 }

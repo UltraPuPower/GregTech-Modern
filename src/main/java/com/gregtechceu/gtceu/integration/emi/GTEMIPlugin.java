@@ -136,13 +136,14 @@ public class GTEMIPlugin implements EmiPlugin {
                     if (slot.ingredientHandlingOverride(emiStack)) {
                         return true;
                     }
-                    EmiStackConverter.Converter<?> converter = EmiStackConverter.getForNullable(slot.ghostIngredientClass());
+                    EmiStackConverter.Converter<?> converter = EmiStackConverter
+                            .getForNullable(slot.ghostIngredientClass());
                     if (converter == null) {
                         continue;
                     }
                     var converted = converter.convertFrom(emiStack);
                     if (converted != null) {
-                        //noinspection unchecked,rawtypes
+                        // noinspection unchecked,rawtypes
                         ((GhostIngredientSlot) slot).setGhostIngredient(converted);
                         return true;
                     }

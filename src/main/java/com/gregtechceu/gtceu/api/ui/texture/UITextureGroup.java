@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.texture;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -48,7 +49,8 @@ public class UITextureGroup extends TransformTexture {
     }
 
     @Override
-    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                                float height) {
         for (UITexture child : children) {
             child.draw(graphics, mouseX, mouseY, x, y, width, height);
         }
@@ -62,7 +64,8 @@ public class UITextureGroup extends TransformTexture {
     }
 
     @Override
-    protected void drawSubAreaInternal(UIGuiGraphics graphics, float x, float y, float width, float height, float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
+    protected void drawSubAreaInternal(UIGuiGraphics graphics, float x, float y, float width, float height,
+                                       float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
         for (UITexture child : children) {
             child.drawSubArea(graphics, x, y, width, height, drawnU, drawnV, drawnWidth, drawnHeight);
         }
@@ -80,5 +83,4 @@ public class UITextureGroup extends TransformTexture {
             this.child(model.parseTexture(UITexture.class, child));
         }
     }
-
 }

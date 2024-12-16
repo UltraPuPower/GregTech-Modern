@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+
+import net.minecraft.network.FriendlyByteBuf;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.function.BooleanSupplier;
 
@@ -20,30 +22,30 @@ public class PredicatedTextureComponent extends TextureComponent {
     }
 
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        super.writeInitialData(buffer);
-        isVisible = predicate == null || predicate.getAsBoolean();
-        buffer.writeBoolean(isVisible);
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        super.readInitialData(buffer);
-        isVisible = buffer.readBoolean();
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-        if (predicate != null) {
-            if (isVisible != predicate.getAsBoolean()) {
-                isVisible = !isVisible;
-                writeUpdateInfo(1, buf -> buf.writeBoolean(isVisible));
-            }
-        }
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * super.writeInitialData(buffer);
+     * isVisible = predicate == null || predicate.getAsBoolean();
+     * buffer.writeBoolean(isVisible);
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * super.readInitialData(buffer);
+     * isVisible = buffer.readBoolean();
+     * }
+     * 
+     * @Override
+     * public void detectAndSendChanges() {
+     * super.detectAndSendChanges();
+     * if (predicate != null) {
+     * if (isVisible != predicate.getAsBoolean()) {
+     * isVisible = !isVisible;
+     * writeUpdateInfo(1, buf -> buf.writeBoolean(isVisible));
+     * }
+     * }
+     * }
+     */
 
     @Override
     public void update(float delta, int mouseX, int mouseY) {

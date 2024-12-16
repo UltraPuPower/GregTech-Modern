@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
-
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;

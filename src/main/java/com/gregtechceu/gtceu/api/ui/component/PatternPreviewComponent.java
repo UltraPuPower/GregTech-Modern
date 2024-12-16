@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.ui.component;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -11,6 +10,7 @@ import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.ScrollContainer;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -101,9 +101,9 @@ public class PatternPreviewComponent extends FlowLayout {
         }
 
         child(UIComponents.texture(UITextures.text(Component.translatable(controllerDefinition.getDescriptionId()))
-                        .textType(TextTexture.TextType.ROLL)
-                        .width(170)
-                        .dropShadow(true))
+                .textType(TextTexture.TextType.ROLL)
+                .width(170)
+                .dropShadow(true))
                 .positioning(Positioning.absolute(1, 1))
                 .sizing(Sizing.fill(), Sizing.fixed(10)));
 
@@ -117,16 +117,17 @@ public class PatternPreviewComponent extends FlowLayout {
         });
 
         child(UIComponents.button(Component.empty(),
-                        (x) -> setPage((index + 1 >= patterns.length) ? 0 : index + 1))
+                (x) -> setPage((index + 1 >= patterns.length) ? 0 : index + 1))
                 .renderer(ButtonComponent.Renderer.texture(
                         UITextures.group(
                                 Color.T_GRAY.rectTexture(),
-                                UITextures.text(Component.literal("1")).textSupplier(() -> Component.literal("P:" + index)))))
+                                UITextures.text(Component.literal("1"))
+                                        .textSupplier(() -> Component.literal("P:" + index)))))
                 .sizing(Sizing.fixed(18))
                 .positioning(Positioning.absolute(138, 30)));
 
         child(UIComponents.button(Component.empty(),
-                        cd -> updateLayer())
+                cd -> updateLayer())
                 .renderer(ButtonComponent.Renderer.texture(UITextures.group(
                         Color.T_GRAY.rectTexture(),
                         UITextures.text(Component.literal("1")).textSupplier(() -> Component.literal(layer >= 0 ?
@@ -269,9 +270,9 @@ public class PatternPreviewComponent extends FlowLayout {
             isLoaded = true;
         } else if (!isLoaded && LDLib.isReiLoaded() &&
                 Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen) {
-            setPage(0);
-            isLoaded = true;
-        }
+                    setPage(0);
+                    isLoaded = true;
+                }
     }
 
     @Override
@@ -352,7 +353,8 @@ public class PatternPreviewComponent extends FlowLayout {
         for (Map.Entry<BlockPos, BlockInfo> entry : blocks.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState blockState = ((Level) PatternPreviewComponent.LEVEL).getBlockState(pos);
-            ItemStack itemStack = blockState.getBlock().getCloneItemStack(PatternPreviewComponent.LEVEL, pos, blockState);
+            ItemStack itemStack = blockState.getBlock().getCloneItemStack(PatternPreviewComponent.LEVEL, pos,
+                    blockState);
 
             if (itemStack.isEmpty() && !blockState.getFluidState().isEmpty()) {
                 Fluid fluid = blockState.getFluidState().getType();
@@ -392,7 +394,6 @@ public class PatternPreviewComponent extends FlowLayout {
                         return item;
                     }).filter(item -> !item.isEmpty()).toList();
         }
-
     }
 
     public static class MBPattern {
@@ -422,7 +423,5 @@ public class PatternPreviewComponent extends FlowLayout {
             minY = min;
             maxY = max;
         }
-
     }
-
 }

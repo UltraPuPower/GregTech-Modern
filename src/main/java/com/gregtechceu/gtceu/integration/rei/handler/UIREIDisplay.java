@@ -5,10 +5,12 @@ import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
+
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+
 import lombok.Getter;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
@@ -89,7 +91,7 @@ public class UIREIDisplay<T extends UIComponent> implements Display {
             if (converter == null) {
                 return null;
             }
-            //noinspection unchecked,rawtypes
+            // noinspection unchecked,rawtypes
             ingredient = ((REIStackConverter.Converter) converter).convertTo(slot);
         }
         return ingredient;
@@ -105,11 +107,12 @@ public class UIREIDisplay<T extends UIComponent> implements Display {
         for (UIComponent w : getFlatWidgetCollection(widget)) {
             if (w instanceof ClickableIngredientSlot<?> slot) {
                 /*
-                if (w.getParent() instanceof DraggableScrollableWidgetGroup draggable && draggable.isUseScissor()) {
-                    // don't add the REI widget at all if we have a draggable group, let the draggable widget handle it instead.
-                    continue;
-                }
-                */
+                 * if (w.getParent() instanceof DraggableScrollableWidgetGroup draggable && draggable.isUseScissor()) {
+                 * // don't add the REI widget at all if we have a draggable group, let the draggable widget handle it
+                 * instead.
+                 * continue;
+                 * }
+                 */
                 EntryWidget entryWidget = new EntryWidget(new Rectangle(slot.x(), slot.y(),
                         slot.width(), slot.height()))
                         .noBackground();
@@ -149,5 +152,4 @@ public class UIREIDisplay<T extends UIComponent> implements Display {
         required.addAll(inputEntries);
         return required;
     }
-
 }

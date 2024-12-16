@@ -9,16 +9,14 @@ import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.emi.IGui2Renderable;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import dev.emi.emi.api.render.EmiRenderable;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
+import dev.emi.emi.api.render.EmiRenderable;
 import dev.emi.emi.api.stack.EmiStack;
 
 import java.util.function.Function;
@@ -68,7 +66,6 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     public Component getName() {
         return Component.translatable(category.getLanguageKey());
     }
-
 
     static EmiRenderable toDrawable(UITexture guiTexture, int width, int height) {
         return (graphics, x, y, delta) -> {

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.list;
 
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
-
 import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.component.ItemComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;

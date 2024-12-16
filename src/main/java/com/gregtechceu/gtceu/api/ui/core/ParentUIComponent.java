@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
-import com.google.common.base.Strings;
 import com.gregtechceu.gtceu.api.ui.parsing.IncompatibleUIModelException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
+import com.google.common.base.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Element;
@@ -330,7 +330,7 @@ public interface ParentUIComponent extends UIComponent {
     default UIComponent getHoveredComponent(int mouseX, int mouseY) {
         for (int i = children().size() - 1; i >= 0; i--) {
             UIComponent child = children().get(i);
-            if(child.enabled()) {
+            if (child.enabled()) {
                 child = child.getHoveredComponent(mouseX, mouseY);
                 if (child != null) {
                     return child;

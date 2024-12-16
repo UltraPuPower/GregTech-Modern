@@ -9,9 +9,6 @@ import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractWidgetAccessor;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -21,6 +18,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -44,8 +44,7 @@ public class ButtonComponent extends Button {
     protected Consumer<ClickData> onPress;
 
     protected ButtonComponent(Component message, Consumer<ClickData> onPress) {
-        super(0, 0, 0, 0, message, button -> {
-        }, Button.DEFAULT_NARRATION);
+        super(0, 0, 0, 0, message, button -> {}, Button.DEFAULT_NARRATION);
         this.onPress = onPress;
         this.sizing(Sizing.content());
     }
@@ -126,8 +125,7 @@ public class ButtonComponent extends Button {
     @FunctionalInterface
     public interface Renderer {
 
-        Renderer EMPTY = (graphics, button, delta) -> {
-        };
+        Renderer EMPTY = (graphics, button, delta) -> {};
 
         Renderer VANILLA = (graphics, button, delta) -> {
             RenderSystem.enableDepthTest();
@@ -217,7 +215,5 @@ public class ButtonComponent extends Button {
                         "Unknown button renderer '" + rendererElement.getNodeName() + "'");
             };
         }
-
     }
-
 }

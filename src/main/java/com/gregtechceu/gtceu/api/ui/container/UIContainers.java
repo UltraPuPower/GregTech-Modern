@@ -37,7 +37,8 @@ public final class UIContainers {
         return new StackLayout(horizontalSizing, verticalSizing);
     }
 
-    public static <T extends UIComponent> WrappingParentUIComponent<T> wrapped(Sizing horizontalSizing, Sizing verticalSizing, T child) {
+    public static <T extends UIComponent> WrappingParentUIComponent<T> wrapped(Sizing horizontalSizing,
+                                                                               Sizing verticalSizing, T child) {
         return new WrappingParentUIComponent<>(horizontalSizing, verticalSizing, child);
     }
 

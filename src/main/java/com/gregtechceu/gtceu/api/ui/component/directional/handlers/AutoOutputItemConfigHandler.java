@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.component.directional.handlers;
 
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.*;
+import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Color;
@@ -9,13 +12,10 @@ import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.ui.util.ClickData;
-
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
+
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -145,10 +145,10 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
         LabelComponent text = new LabelComponent(Component.translatable("gtceu.gui.auto_output.name")) {
 
             // TODO implement
-            //@Override
-            //public boolean isVisible() {
-            //    return machine.isAutoOutputItems() && machine.getOutputFacingItems() != null;
-            //}
+            // @Override
+            // public boolean isVisible() {
+            // return machine.isAutoOutputItems() && machine.getOutputFacingItems() != null;
+            // }
         };
 
         text.color(Color.ofArgb(0xff00b4ff));

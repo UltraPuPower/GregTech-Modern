@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.factory.CoverUIFactory;
-import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.factory.CoverUIFactory;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 

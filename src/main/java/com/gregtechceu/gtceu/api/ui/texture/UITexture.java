@@ -2,13 +2,15 @@ package com.gregtechceu.gtceu.api.ui.texture;
 
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
+
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureManager;
 import org.w3c.dom.Element;
 
 import java.util.Map;
@@ -37,15 +39,12 @@ public interface UITexture {
 
     void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height);
 
-
     default void updateTick() {}
 
     UITexture EMPTY = new UITexture() {
 
         @Override
-        public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
-
-        }
+        public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {}
     };
 
     UITexture MISSING_TEXTURE = new UITexture() {
@@ -65,8 +64,9 @@ public interface UITexture {
             tesselator.end();
         }
     };
-    
-    default void drawSubArea(UIGuiGraphics graphics, float x, float y, float width, float height, float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
+
+    default void drawSubArea(UIGuiGraphics graphics, float x, float y, float width, float height, float drawnU,
+                             float drawnV, float drawnWidth, float drawnHeight) {
         draw(graphics, 0, 0, x, y, width, height);
     }
 

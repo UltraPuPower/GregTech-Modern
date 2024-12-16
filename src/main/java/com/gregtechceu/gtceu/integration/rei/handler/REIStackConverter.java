@@ -4,21 +4,20 @@ import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
-import com.gregtechceu.gtceu.integration.xei.entry.item.ItemEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
 import com.gregtechceu.gtceu.utils.GTMath;
-import dev.emi.emi.api.stack.EmiIngredient;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
 import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.EntryType;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
-import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +35,7 @@ public class REIStackConverter {
     public static final Map<Class<?>, Converter<?>> CONVERTERS = new Reference2ReferenceOpenHashMap<>();
 
     public static final Converter<ItemStack> ITEM = register(ItemStack.class, new Converter<>() {
+
         @Override
         public @Nullable ItemStack convertFrom(EntryStack<?> stack) {
             EntryType<?> type = stack.getType();
@@ -52,7 +52,8 @@ public class REIStackConverter {
         }
 
         @Override
-        public @NotNull EntryIngredient convertTo(EntryList<ItemStack> stack, float chance, UnaryOperator<ItemStack> mapper) {
+        public @NotNull EntryIngredient convertTo(EntryList<ItemStack> stack, float chance,
+                                                  UnaryOperator<ItemStack> mapper) {
             if (stack == null || stack.isEmpty()) {
                 return EntryIngredient.empty();
             }
@@ -68,6 +69,7 @@ public class REIStackConverter {
         }
     });
     public static final Converter<FluidStack> FLUID = register(FluidStack.class, new Converter<FluidStack>() {
+
         @Override
         public @Nullable FluidStack convertFrom(EntryStack<?> stack) {
             EntryType<?> type = stack.getType();
@@ -75,7 +77,8 @@ public class REIStackConverter {
                 return null;
             }
             dev.architectury.fluid.FluidStack fluidStack = stack.castValue();
-            return new FluidStack(fluidStack.getFluid(), GTMath.saturatedCast(fluidStack.getAmount()), fluidStack.getTag());
+            return new FluidStack(fluidStack.getFluid(), GTMath.saturatedCast(fluidStack.getAmount()),
+                    fluidStack.getTag());
         }
 
         private static dev.architectury.fluid.FluidStack toREIStack(FluidStack stack) {
@@ -90,7 +93,8 @@ public class REIStackConverter {
         }
 
         @Override
-        public @NotNull EntryIngredient convertTo(EntryList<FluidStack> stack, float chance, UnaryOperator<FluidStack> mapper) {
+        public @NotNull EntryIngredient convertTo(EntryList<FluidStack> stack, float chance,
+                                                  UnaryOperator<FluidStack> mapper) {
             if (stack == null || stack.isEmpty()) {
                 return EntryIngredient.empty();
             }
@@ -134,7 +138,5 @@ public class REIStackConverter {
         default EntryIngredient convertTo(ClickableIngredientSlot<T> slot) {
             return this.convertTo(slot.getIngredients(), slot.chance(), slot.renderMappingFunction());
         }
-
     }
-
 }

@@ -7,10 +7,7 @@ import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitComponent;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
-import com.lowdragmc.lowdraglib.rei.ModularDisplay;
-import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.network.chat.Component;
@@ -22,7 +19,8 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 
 import java.util.Optional;
 
-public class GTProgrammedCircuitCategory extends UIDisplayCategory<GTProgrammedCircuitCategory.GTProgrammedCircuitDisplay> {
+public class GTProgrammedCircuitCategory extends
+                                         UIDisplayCategory<GTProgrammedCircuitCategory.GTProgrammedCircuitDisplay> {
 
     public static CategoryIdentifier<GTProgrammedCircuitDisplay> CATEGORY = CategoryIdentifier
             .of(GTCEu.id("programmed_circuit"));

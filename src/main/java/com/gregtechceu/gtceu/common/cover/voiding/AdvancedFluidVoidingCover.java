@@ -128,7 +128,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     @Override
     protected void buildAdditionalUI(UIComponentGroup group) {
         group.child(
-                new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20), VoidingMode.values(), voidingMode, this::setVoidingMode)
+                new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20), VoidingMode.values(), voidingMode,
+                        this::setVoidingMode)
                         .positioning(Positioning.absolute(146, 20)));
 
         this.stackSizeInput = new IntInputComponent(Sizing.fixed(84), Sizing.fixed(20),

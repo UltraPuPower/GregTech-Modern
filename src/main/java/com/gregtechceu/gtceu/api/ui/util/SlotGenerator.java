@@ -34,12 +34,13 @@ public final class SlotGenerator {
      * will be the {@code addSlot} method of the screen handler for which
      * slots are being generated
      * <p>
+     * 
      * <pre>
      * {@code
      * SlotGenerator.begin(this::addSlot, 50, 10)
-     *     .grid(someInventory, 0, 3, 3) // add a 3x3 grid of slots 0-8 of 'someInventory'
-     *     .moveTo(10, 100)
-     *     .playerInventory(playerInventory); // add the player inventory and hotbar slots
+     *         .grid(someInventory, 0, 3, 3) // add a 3x3 grid of slots 0-8 of 'someInventory'
+     *         .moveTo(10, 100)
+     *         .playerInventory(playerInventory); // add the player inventory and hotbar slots
      * }
      * </pre>
      */
@@ -102,7 +103,7 @@ public final class SlotGenerator {
     }
 
     public SlotGenerator slot(IItemHandler handler, int index, int x, int y) {
-        slotConsumer.accept(this.slotFactory.create(handler, index , x, y));
+        slotConsumer.accept(this.slotFactory.create(handler, index, x, y));
         return this;
     }
 
@@ -113,8 +114,7 @@ public final class SlotGenerator {
                         handler,
                         startIndex + row * width + column,
                         anchorX + column * (18 + this.horizontalSpacing),
-                        anchorY + row * (18 + this.verticalSpacing)
-                ));
+                        anchorY + row * (18 + this.verticalSpacing)));
             }
         }
         return this;
@@ -127,8 +127,7 @@ public final class SlotGenerator {
                         handler,
                         startIndex + row * width + column,
                         anchorX + column * (18 + this.horizontalSpacing),
-                        anchorY + row * (18 + this.verticalSpacing)
-                ));
+                        anchorY + row * (18 + this.verticalSpacing)));
             }
         }
         return this;
@@ -144,11 +143,13 @@ public final class SlotGenerator {
 
     @FunctionalInterface
     public interface SlotFactory {
+
         Slot create(IItemHandler handler, int index, int x, int y);
     }
 
     @FunctionalInterface
     public interface VanillaSlotFactory {
+
         Slot create(Container handler, int index, int x, int y);
     }
 }

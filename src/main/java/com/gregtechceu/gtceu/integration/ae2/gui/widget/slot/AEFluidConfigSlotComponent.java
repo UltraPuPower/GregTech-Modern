@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
@@ -147,43 +147,43 @@ public class AEFluidConfigSlotComponent extends AEConfigSlotComponent implements
     }
 
     /*
-    @Override
-    public void handleClientAction(int id, FriendlyByteBuf buffer) {
-        super.handleClientAction(id, buffer);
-        IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
-        if (id == REMOVE_ID) {
-            slot.setConfig(null);
-            this.parentWidget.disableAmount();
-            sendMessage(REMOVE_ID, buf -> {});
-        }
-        if (id == UPDATE_ID) {
-            FluidStack fluid = FluidStack.readFromPacket(buffer);
-            var stack = AEUtil.fromFluidStack(fluid);
-            if (!isStackValidForSlot(stack)) return;
-            slot.setConfig(stack);
-            this.parentWidget.enableAmount(this.index);
-            if (fluid != FluidStack.EMPTY) {
-                sendMessage(UPDATE_ID, fluid::writeToPacket);
-            }
-        }
-        if (id == AMOUNT_CHANGE_ID) {
-            if (slot.getConfig() != null) {
-                int amt = buffer.readInt();
-                slot.setConfig(ExportOnlyAESlot.copy(slot.getConfig(), amt));
-                sendMessage(AMOUNT_CHANGE_ID, buf -> buf.writeInt(amt));
-            }
-        }
-        if (id == PICK_UP_ID) {
-            if (slot.getStock() != null) {
-                boolean isShiftKeyDown = buffer.readBoolean();
-                int clickResult = tryClickContainer(isShiftKeyDown);
-                if (clickResult >= 0) {
-                    sendMessage(PICK_UP_ID, buf -> buf.writeVarInt(clickResult));
-                }
-            }
-        }
-    }
-    */
+     * @Override
+     * public void handleClientAction(int id, FriendlyByteBuf buffer) {
+     * super.handleClientAction(id, buffer);
+     * IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
+     * if (id == REMOVE_ID) {
+     * slot.setConfig(null);
+     * this.parentWidget.disableAmount();
+     * sendMessage(REMOVE_ID, buf -> {});
+     * }
+     * if (id == UPDATE_ID) {
+     * FluidStack fluid = FluidStack.readFromPacket(buffer);
+     * var stack = AEUtil.fromFluidStack(fluid);
+     * if (!isStackValidForSlot(stack)) return;
+     * slot.setConfig(stack);
+     * this.parentWidget.enableAmount(this.index);
+     * if (fluid != FluidStack.EMPTY) {
+     * sendMessage(UPDATE_ID, fluid::writeToPacket);
+     * }
+     * }
+     * if (id == AMOUNT_CHANGE_ID) {
+     * if (slot.getConfig() != null) {
+     * int amt = buffer.readInt();
+     * slot.setConfig(ExportOnlyAESlot.copy(slot.getConfig(), amt));
+     * sendMessage(AMOUNT_CHANGE_ID, buf -> buf.writeInt(amt));
+     * }
+     * }
+     * if (id == PICK_UP_ID) {
+     * if (slot.getStock() != null) {
+     * boolean isShiftKeyDown = buffer.readBoolean();
+     * int clickResult = tryClickContainer(isShiftKeyDown);
+     * if (clickResult >= 0) {
+     * sendMessage(PICK_UP_ID, buf -> buf.writeVarInt(clickResult));
+     * }
+     * }
+     * }
+     * }
+     */
 
     @OnlyIn(Dist.CLIENT)
     @Override
@@ -239,7 +239,6 @@ public class AEFluidConfigSlotComponent extends AEConfigSlotComponent implements
         if (!ingredient.isEmpty()) {
             sendMessage(UPDATE_ID, ingredient::writeToPacket);
         }
-
     }
 
     @Override
@@ -317,5 +316,4 @@ public class AEFluidConfigSlotComponent extends AEConfigSlotComponent implements
 
         return -1;
     }
-
 }

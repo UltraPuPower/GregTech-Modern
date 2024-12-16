@@ -3,16 +3,18 @@ package com.gregtechceu.gtceu.api.ui.texture;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
+import net.minecraft.resources.ResourceLocation;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.resources.ResourceLocation;
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
 @Accessors(fluent = true, chain = true)
 public class ResourceTexture extends TransformTexture {
-    
+
     public ResourceLocation imageLocation;
     public int offsetX;
     public int offsetY;
@@ -43,10 +45,10 @@ public class ResourceTexture extends TransformTexture {
 
     public ResourceTexture getSubTexture(double offsetX, double offsetY, double width, double height) {
         return new ResourceTexture(imageLocation,
-                (int) (this.offsetX + (float)(imageWidth * offsetX)),
-                (int) (this.offsetY + (float)(imageHeight * offsetY)),
+                (int) (this.offsetX + (float) (imageWidth * offsetX)),
+                (int) (this.offsetY + (float) (imageHeight * offsetY)),
                 (int) (this.imageWidth * (float) width),
-                (int) (this.imageHeight * (float)height));
+                (int) (this.imageHeight * (float) height));
     }
 
     public ResourceTexture copy() {
@@ -54,12 +56,14 @@ public class ResourceTexture extends TransformTexture {
     }
 
     @Override
-    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                                float height) {
         drawSubArea(graphics, x, y, width, height, 0, 0, 1, 1);
     }
 
     @Override
-    protected void drawSubAreaInternal(UIGuiGraphics graphics, float x, float y, float width, float height, float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
+    protected void drawSubAreaInternal(UIGuiGraphics graphics, float x, float y, float width, float height,
+                                       float drawnU, float drawnV, float drawnWidth, float drawnHeight) {
         if (imageLocation == null || imageWidth <= 0 || imageHeight <= 0) {
             return;
         }
@@ -100,5 +104,4 @@ public class ResourceTexture extends TransformTexture {
 
         return new ResourceTexture(textureId, u, v, textureWidth, textureHeight);
     }
-
 }

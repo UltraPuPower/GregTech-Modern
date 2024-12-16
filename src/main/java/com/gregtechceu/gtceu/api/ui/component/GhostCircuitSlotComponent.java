@@ -10,12 +10,14 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import lombok.Getter;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -54,10 +56,10 @@ public class GhostCircuitSlotComponent extends SlotComponent {
                 // open popup on shift-left-click
                 if (!isConfiguratorOpen()) {
                     // FIXME add the widget somehow
-                    //this.containerAccess().adapter().rootComponent.child(configurator = createConfigurator());
+                    // this.containerAccess().adapter().rootComponent.child(configurator = createConfigurator());
                 } else {
                     // FIXME add the widget somehow
-                    //this.containerAccess().adapter().rootComponent.removeWidget(configurator);
+                    // this.containerAccess().adapter().rootComponent.removeWidget(configurator);
                     configurator = null;
                 }
             } else if (button == 0) {
@@ -67,8 +69,7 @@ public class GhostCircuitSlotComponent extends SlotComponent {
             } else if (button == 1 && Screen.hasShiftDown()) {
                 // clear on shift-right-click
                 this.circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-                sendMessage(SET_TO_EMPTY, buf -> {
-                });
+                sendMessage(SET_TO_EMPTY, buf -> {});
             } else if (button == 1) {
                 // decrement on right-click
                 int newValue = getNextValue(false);
@@ -122,16 +123,15 @@ public class GhostCircuitSlotComponent extends SlotComponent {
         return false;
     }
 
-    //@Override
-    //public boolean canMergeSlot(ItemStack stack) {
-    //    return false;
-    //}
+    // @Override
+    // public boolean canMergeSlot(ItemStack stack) {
+    // return false;
+    // }
 
     public void setCircuitValue(int newValue) {
         if (newValue == NO_CONFIG) {
             this.circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-            sendMessage(SET_TO_EMPTY, buf -> {
-            });
+            sendMessage(SET_TO_EMPTY, buf -> {});
         } else {
             this.circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(newValue));
             sendMessage(SET_TO_N, buf -> buf.writeVarInt(newValue));
@@ -158,11 +158,11 @@ public class GhostCircuitSlotComponent extends SlotComponent {
                 .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY)));
         if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
             group.child(UIComponents.button(Component.empty(),
-                            clickData -> {
-                                if (!clickData.isClientSide) {
-                                    circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-                                }
-                            })
+                    clickData -> {
+                        if (!clickData.isClientSide) {
+                            circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
+                        }
+                    })
                     .renderer(ButtonComponent.Renderer.EMPTY)
                     .positioning(Positioning.relative(50, 15))
                     .sizing(Sizing.fixed(18)));
@@ -175,17 +175,17 @@ public class GhostCircuitSlotComponent extends SlotComponent {
             for (int y = 0; y <= 8; y++) {
                 int finalIdx = idx;
                 grid.child(UIComponents.button(Component.empty(),
-                                clickData -> {
-                                    if (!clickData.isClientSide) {
-                                        ItemStack stack = circuitInventory.getStackInSlot(0).copy();
-                                        if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
-                                            IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
-                                            circuitInventory.setStackInSlot(0, stack);
-                                        } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                                            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
-                                        }
-                                    }
-                                })
+                        clickData -> {
+                            if (!clickData.isClientSide) {
+                                ItemStack stack = circuitInventory.getStackInSlot(0).copy();
+                                if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
+                                    IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
+                                    circuitInventory.setStackInSlot(0, stack);
+                                } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                                    circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
+                                }
+                            }
+                        })
                         .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
                                 UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
                         .sizing(Sizing.fixed(18)),
@@ -196,17 +196,17 @@ public class GhostCircuitSlotComponent extends SlotComponent {
         for (int x = 0; x <= 5; x++) {
             int finalIdx = x + 27;
             grid.child(UIComponents.button(Component.empty(),
-                            clickData -> {
-                                if (!clickData.isClientSide) {
-                                    ItemStack stack = circuitInventory.getStackInSlot(0).copy();
-                                    if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
-                                        IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
-                                        circuitInventory.setStackInSlot(0, stack);
-                                    } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                                        circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
-                                    }
-                                }
-                            })
+                    clickData -> {
+                        if (!clickData.isClientSide) {
+                            ItemStack stack = circuitInventory.getStackInSlot(0).copy();
+                            if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
+                                IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
+                                circuitInventory.setStackInSlot(0, stack);
+                            } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                                circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
+                            }
+                        }
+                    })
                     .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
                             UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
                     .sizing(Sizing.fixed(18)), 9, x);
@@ -215,5 +215,4 @@ public class GhostCircuitSlotComponent extends SlotComponent {
         group.surface(Surface.UI_BACKGROUND);
         return group;
     }
-
 }

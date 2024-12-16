@@ -2,15 +2,15 @@ package com.gregtechceu.gtceu.api.ui.editable;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
-import lombok.Getter;
+
 import net.minecraft.resources.ResourceLocation;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class EditableMachineUI implements IEditableUI<UIComponentGroup, MetaMachine> {

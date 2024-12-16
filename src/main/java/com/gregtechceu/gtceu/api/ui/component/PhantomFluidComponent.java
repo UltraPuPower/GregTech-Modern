@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.api.ui.component;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,6 +16,10 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -179,5 +180,4 @@ public class PhantomFluidComponent extends TankComponent implements GhostIngredi
             RenderSystem.setShaderColor(1, 1, 1, 1);
         }
     }
-
 }

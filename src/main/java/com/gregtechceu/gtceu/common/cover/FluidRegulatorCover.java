@@ -266,5 +266,4 @@ public class FluidRegulatorCover extends PumpCover {
 
         return !this.filterHandler.getFilter().supportsAmounts();
     }
-
 }

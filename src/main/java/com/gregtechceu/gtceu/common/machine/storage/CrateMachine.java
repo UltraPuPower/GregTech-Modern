@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
@@ -33,10 +33,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-
-import lombok.Getter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
-        IDropSaveMachine, IInteractedMachine {
+                          IDropSaveMachine, IInteractedMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
@@ -100,7 +100,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
                 (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
 
         FlowLayout parent;
-        rootComponent.child(parent = (FlowLayout) UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset), Sizing.fixed(166 + yOffset))
+        rootComponent.child(parent = (FlowLayout) UIContainers
+                .horizontalFlow(Sizing.fixed(176 + xOffset), Sizing.fixed(166 + yOffset))
                 .child(UIComponents.label(getBlockState().getBlock().getName())
                         .positioning(Positioning.absolute(5, 5)))
                 .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT)
@@ -179,5 +180,4 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     public void onMachineRemoved() {
         if (!isTaped) clearInventory(inventory.storage);
     }
-
 }

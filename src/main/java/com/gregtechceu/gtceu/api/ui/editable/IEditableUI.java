@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.editable;
 
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
 import java.util.function.Supplier;
-
 
 public interface IEditableUI<W extends UIComponent, T> {
 
@@ -30,6 +28,7 @@ public interface IEditableUI<W extends UIComponent, T> {
 
     @FunctionalInterface
     interface BinderFunction<W extends UIComponent, T> {
+
         void bind(W group, UIAdapter<UIComponentGroup> adapter, T machine);
     }
 }

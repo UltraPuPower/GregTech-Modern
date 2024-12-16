@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.commands.arguments.FluidParser;
 import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
-import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -39,7 +38,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -189,7 +187,8 @@ public class FluidComponent extends BaseUIComponent implements ClickableIngredie
     public void parseProperties(UIModel model, Element element, Map<String, Element> children) {
         super.parseProperties(model, element, children);
         UIParsing.apply(children, "capacity", UIParsing::parseUnsignedInt, this::capacity);
-        UIParsing.apply(children, "fill-direction", UIParsing.parseEnum(ProgressTexture.FillDirection.class), this::fillDirection);
+        UIParsing.apply(children, "fill-direction", UIParsing.parseEnum(ProgressTexture.FillDirection.class),
+                this::fillDirection);
         UIParsing.apply(children, "show-amount", UIParsing::parseBool, this::showAmount);
         UIParsing.apply(children, "show-overlay", UIParsing::parseBool, this::showOverlay);
         UIParsing.apply(children, "set-tooltip-from-stack", UIParsing::parseBool, this::setTooltipFromStack);
@@ -208,5 +207,4 @@ public class FluidComponent extends BaseUIComponent implements ClickableIngredie
             }
         });
     }
-
 }

@@ -15,16 +15,16 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.client.event.ContainerScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -45,7 +45,8 @@ import java.util.function.Consumer;
  * @see com.gregtechceu.gtceu.api.ui.base.BaseContainerScreen
  */
 @Accessors(fluent = true, chain = true)
-public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener, Renderable, NarratableEntry, UIComponentMenuAccess {
+public class UIAdapter<R extends ParentUIComponent>
+                      implements GuiEventListener, Renderable, NarratableEntry, UIComponentMenuAccess {
 
     @Getter
     private static boolean isRendering = false;
@@ -122,7 +123,7 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
      * @return The new UI adapter, ready for layout inflation
      */
     public static <R extends ParentUIComponent> UIAdapter<R> createWithoutScreen(int x, int y, int width, int height,
-                                                                          BiFunction<Sizing, Sizing, R> rootComponentMaker) {
+                                                                                 BiFunction<Sizing, Sizing, R> rootComponentMaker) {
         var rootComponent = rootComponentMaker.apply(Sizing.fill(100), Sizing.fill(100));
         return new UIAdapter<>(x, y, width, height, rootComponent, false);
     }
@@ -216,7 +217,8 @@ public class UIAdapter<R extends ParentUIComponent> implements GuiEventListener,
             this.rootComponent.draw(uiGraphics, mouseX, mouseY, partialTicks, delta);
 
             RenderSystem.depthMask(true);
-            MinecraftForge.EVENT_BUS.post(new ContainerScreenEvent.Render.Background(this.screen, graphics, mouseX, mouseY));
+            MinecraftForge.EVENT_BUS
+                    .post(new ContainerScreenEvent.Render.Background(this.screen, graphics, mouseX, mouseY));
             RenderSystem.depthMask(false);
 
             RenderSystem.disableScissor();

@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ScrollablePhantomFluidComponent;
-import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -48,8 +46,7 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
 
-    protected Consumer<FluidFilter> itemWriter = filter -> {
-    };
+    protected Consumer<FluidFilter> itemWriter = filter -> {};
     protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
@@ -214,5 +211,4 @@ public class SimpleFluidFilter implements FluidFilter {
                 match.setAmount(Math.min(match.getAmount(), maxStackSize));
         }
     }
-
 }

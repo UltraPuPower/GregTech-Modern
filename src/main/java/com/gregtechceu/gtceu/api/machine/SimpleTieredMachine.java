@@ -3,7 +3,18 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.GhostCircuitSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -13,18 +24,7 @@ import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.editable.EditableMachineUI;
 import com.gregtechceu.gtceu.api.ui.editable.EditableUI;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
@@ -40,8 +40,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,13 +50,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -70,12 +70,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @author KilaBash
  * @date 2023/2/19
  * @implNote SimpleMachine
- * All simple single machines are implemented here.
+ *           All simple single machines are implemented here.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleTieredMachine extends WorkableTieredMachine
-        implements IAutoOutputBoth, IFancyUIMachine, IHasCircuitSlot {
+                                 implements IAutoOutputBoth, IFancyUIMachine, IHasCircuitSlot {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleTieredMachine.class,
             WorkableTieredMachine.MANAGED_FIELD_HOLDER);
@@ -385,7 +385,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
-                UIComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
+                UIComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
+                        .createDefault();
                 SlotComponent batterySlot = createBatterySlot().createDefault();
                 UIComponentGroup group = UIContainers.group(Sizing.content(),
                         Sizing.fixed(Math.max(template.height(), 78)));
@@ -414,7 +415,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                     storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
                     storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
 
-                    //noinspection DataFlowIssue
+                    // noinspection DataFlowIssue
                     tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false)
                             .setupUI(template, adapter, new GTRecipeTypeUI.RecipeHolder(
                                     adapter.menu().<Double>getProperty("progress")::get,
@@ -441,8 +442,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             component.canInsert(true);
             component.tooltip(new ArrayList<>(
                     LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                            GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()])
-            ));
+                            GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()])));
         });
     }
 
@@ -482,5 +482,4 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         }
         return super.sideTips(player, pos, state, toolTypes, side);
     }
-
 }

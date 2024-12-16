@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock;
 
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfiguratorButton;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 
 import net.minecraft.network.chat.Component;
 

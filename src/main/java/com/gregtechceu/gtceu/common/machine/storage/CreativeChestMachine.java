@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -155,7 +155,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                 .child(UIComponents.label(Component.translatable("gtceu.creative.chest.tpc")))
                 .child(UIComponents.switchComponent((clickData, value) -> setWorkingEnabled(value))
                         .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
-                                        "gtceu.creative.activity.off"))),
+                                "gtceu.creative.activity.off"))),
                                 UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
                                         "gtceu.creative.activity.on"))))
                         .pressed(isWorkingEnabled())
@@ -205,7 +205,5 @@ public class CreativeChestMachine extends QuantumChestMachine {
         public int getSlotLimit(int slot) {
             return 1;
         }
-
     }
-
 }

@@ -71,5 +71,4 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
         // TODO implement
     }
-
 }

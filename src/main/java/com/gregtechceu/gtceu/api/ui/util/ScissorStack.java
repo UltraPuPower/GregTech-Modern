@@ -4,12 +4,12 @@ import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -80,8 +80,7 @@ public final class ScissorStack {
                 Math.max(0, (int) (newFrame.x() * scale)),
                 Math.max((int) (window.getHeight() - (newFrame.y() * scale) - newFrame.height() * scale), 0),
                 Math.min(Mth.clamp((int) (newFrame.width() * scale), 0, window.getWidth()), window.getWidth()),
-                Math.min(Mth.clamp((int) (newFrame.height() * scale), 0, window.getHeight()), window.getHeight())
-        );
+                Math.min(Mth.clamp((int) (newFrame.height() * scale), 0, window.getHeight()), window.getHeight()));
     }
 
     public static void drawUnclipped(Runnable action) {

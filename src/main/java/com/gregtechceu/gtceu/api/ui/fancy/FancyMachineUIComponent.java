@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Size;
@@ -12,10 +12,12 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerScreenAccessor;
+
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +61,7 @@ public class FancyMachineUIComponent extends UIComponentGroup {
     protected record NavigationEntry(IFancyUIProvider page, IFancyUIProvider homePage, Runnable onNavigation) {}
 
     public FancyMachineUIComponent(IFancyUIProvider mainPage,
-                                      Sizing horizontalSizing, Sizing verticalSizing) {
+                                   Sizing horizontalSizing, Sizing verticalSizing) {
         super(horizontalSizing, verticalSizing);
         this.mainPage = mainPage;
 
@@ -82,11 +84,9 @@ public class FancyMachineUIComponent extends UIComponentGroup {
         this.pageSwitcher = new PageSwitcherComponent(this::switchPage);
 
         surface(Surface.UI_BACKGROUND);
-        //surface(GuiTextures.BACKGROUND.copy()
-        //        .setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
+        // surface(GuiTextures.BACKGROUND.copy()
+        // .setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
     }
-
-
 
     @Override
     public void init() {

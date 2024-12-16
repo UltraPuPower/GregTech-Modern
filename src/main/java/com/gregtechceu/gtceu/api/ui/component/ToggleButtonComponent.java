@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 
+import net.minecraft.network.chat.Component;
+
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -26,12 +27,12 @@ public class ToggleButtonComponent extends SwitchComponent {
     private String tooltipText;
 
     protected ToggleButtonComponent(BooleanSupplier isPressedCondition,
-                                 BooleanConsumer setPressedExecutor) {
+                                    BooleanConsumer setPressedExecutor) {
         this(GuiTextures.VANILLA_BUTTON, isPressedCondition, setPressedExecutor);
     }
 
     protected ToggleButtonComponent(UITexture buttonTexture,
-                                 BooleanSupplier isPressedCondition, BooleanConsumer setPressedExecutor) {
+                                    BooleanSupplier isPressedCondition, BooleanConsumer setPressedExecutor) {
         super((clickData, aBoolean) -> setPressedExecutor.accept(aBoolean.booleanValue()));
         texture = buttonTexture;
         if (buttonTexture instanceof ResourceTexture resourceTexture) {

@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;

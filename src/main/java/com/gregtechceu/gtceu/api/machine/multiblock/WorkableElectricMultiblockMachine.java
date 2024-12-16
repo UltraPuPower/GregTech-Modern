@@ -6,7 +6,14 @@ import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -14,13 +21,6 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.ui.fancy.TooltipsPanelComponent;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -113,12 +113,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
         UIComponentGroup inner = UIContainers.group(Sizing.fill(), Sizing.fill());
         inner.child(UIComponents.label(self().getBlockState().getBlock().getName())
-                        .positioning(Positioning.absolute(0, 1)))
+                .positioning(Positioning.absolute(0, 1)))
                 .child(UIComponents.componentPanel(this::addDisplayText)
                         .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
                         .maxWidthLimit(200)
                         .clickHandler(this::handleDisplayClick))
-                        .positioning(Positioning.absolute(0, 13));
+                .positioning(Positioning.absolute(0, 13));
         group.child(UIContainers.verticalScroll(Sizing.fill(), Sizing.fill(), inner))
                 .surface(Surface.UI_BACKGROUND_INVERSE);
         return group;

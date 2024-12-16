@@ -119,13 +119,14 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     @Override
     protected void buildAdditionalUI(UIComponentGroup group) {
         group.child(
-                new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20), VoidingMode.values(), voidingMode, this::setVoidingMode)
+                new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20), VoidingMode.values(), voidingMode,
+                        this::setVoidingMode)
                         .positioning(Positioning.absolute(146, 20)));
 
         this.stackSizeInput = new IntInputComponent(() -> globalVoidingLimit, val -> globalVoidingLimit = val);
         configureStackSizeInput();
         stackSizeInput.positioning(Positioning.absolute(64, 20))
-                        .sizing(Sizing.fixed(80), Sizing.fixed(20));
+                .sizing(Sizing.fixed(80), Sizing.fixed(20));
 
         group.child(this.stackSizeInput);
     }

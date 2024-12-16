@@ -7,13 +7,15 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+
 import com.lowdragmc.lowdraglib.LDLib;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Element;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +23,12 @@ import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EnumSelectorComponent<T extends Enum<T> & EnumSelectorComponent.SelectableEnum> extends WrappingParentUIComponent<CycleButtonComponent> {
+public class EnumSelectorComponent<T extends Enum<T> & EnumSelectorComponent.SelectableEnum>
+                                  extends WrappingParentUIComponent<CycleButtonComponent> {
 
     public interface SelectableEnum {
 
@@ -66,18 +71,18 @@ public class EnumSelectorComponent<T extends Enum<T> & EnumSelectorComponent.Sel
     }
 
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        super.writeInitialData(buffer);
-        buffer.writeInt(selected);
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        super.readInitialData(buffer);
-        onSelected(buffer.readInt());
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * super.writeInitialData(buffer);
+     * buffer.writeInt(selected);
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * super.readInitialData(buffer);
+     * onSelected(buffer.readInt());
+     * }
+     */
 
     public T getCurrentValue() {
         return values.get(selected);

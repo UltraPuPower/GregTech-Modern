@@ -4,9 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProductComponent;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.rei.ModularDisplay;
-
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;

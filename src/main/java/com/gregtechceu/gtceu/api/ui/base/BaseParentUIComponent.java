@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -41,7 +41,8 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
     protected @Nullable FocusHandler focusHandler = null;
     protected @Nullable ArrayList<Runnable> taskQueue = null;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     protected Surface surface = Surface.BLANK;
     @Getter
     @Setter
@@ -242,10 +243,11 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
             this.focusHandler.cycle((modifiers & GLFW.GLFW_MOD_SHIFT) == 0);
         } else if ((keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_DOWN ||
                 keyCode == GLFW.GLFW_KEY_UP) && (modifiers & GLFW.GLFW_MOD_ALT) != 0) {
-            this.focusHandler.moveFocus(keyCode);
-        } else if (this.focusHandler.focused() != null) {
-            return this.focusHandler.focused().onKeyPress(keyCode, scanCode, modifiers);
-        }
+                    this.focusHandler.moveFocus(keyCode);
+                } else
+            if (this.focusHandler.focused() != null) {
+                return this.focusHandler.focused().onKeyPress(keyCode, scanCode, modifiers);
+            }
 
         return super.onKeyPress(keyCode, scanCode, modifiers);
     }
@@ -298,7 +300,7 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
     public boolean isMouseOverElement(double mouseX, double mouseY) {
         for (int i = children().size() - 1; i >= 0; i--) {
             UIComponent widget = children().get(i);
-            if(widget.isMouseOverElement(mouseX, mouseY)) {
+            if (widget.isMouseOverElement(mouseX, mouseY)) {
                 return true;
             }
         }
@@ -329,8 +331,8 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
 
     /**
      * @return The offset from the origin of this component
-     * at which children can start to be mounted. Accumulates
-     * padding as well as padding from content sizing
+     *         at which children can start to be mounted. Accumulates
+     *         padding as well as padding from content sizing
      */
     protected Size childMountingOffset() {
         var padding = this.padding.get();

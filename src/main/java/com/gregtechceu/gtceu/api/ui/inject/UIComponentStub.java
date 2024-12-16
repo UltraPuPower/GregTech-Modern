@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-
 import net.minecraft.network.chat.Component;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;

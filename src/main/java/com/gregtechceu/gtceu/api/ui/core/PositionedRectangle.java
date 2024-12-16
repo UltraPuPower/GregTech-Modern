@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.util.Mth;
+
 import org.jetbrains.annotations.Contract;
 
 /**

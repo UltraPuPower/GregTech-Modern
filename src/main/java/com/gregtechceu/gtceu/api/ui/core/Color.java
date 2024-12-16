@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
-
 import com.gregtechceu.gtceu.api.ui.texture.ColorBorderTexture;
 import com.gregtechceu.gtceu.api.ui.texture.ColorRectTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
@@ -26,7 +26,6 @@ public record Color(float red, float green, float blue, float alpha) implements 
     public static final Color GREEN = Color.ofRgb(0x00FF00);
     public static final Color BLUE = Color.ofRgb(0x0000FF);
     public static final Color HOVER_GRAY = Color.ofArgb(0x80FFFFFF);
-
 
     public static final Color T_WHITE = Color.ofArgb(0x88ffffff);
     public static final Color T_BLACK = Color.ofArgb(0x44000000);

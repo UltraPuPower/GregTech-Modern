@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
+
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
@@ -20,7 +21,8 @@ public class IntInputComponent extends NumberInputComponent<Integer> {
         super(valueSupplier, onChanged);
     }
 
-    public IntInputComponent(Sizing horizontalSizing, Sizing verticalSizing, Supplier<Integer> valueSupplier, Consumer<Integer> onChanged) {
+    public IntInputComponent(Sizing horizontalSizing, Sizing verticalSizing, Supplier<Integer> valueSupplier,
+                             Consumer<Integer> onChanged) {
         super(horizontalSizing, verticalSizing, valueSupplier, onChanged);
     }
 

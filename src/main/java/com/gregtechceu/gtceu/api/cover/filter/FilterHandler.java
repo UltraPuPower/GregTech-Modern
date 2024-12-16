@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -72,7 +72,8 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
                 .positioning(Positioning.absolute(xPos, yPos));
     }
 
-    public UIComponent createFilterConfigUI(int xPos, int yPos, int width, int height, UIAdapter<UIComponentGroup> adapter) {
+    public UIComponent createFilterConfigUI(int xPos, int yPos, int width, int height,
+                                            UIAdapter<UIComponentGroup> adapter) {
         this.filterGroup = UIContainers.group(Sizing.fixed(width), Sizing.fixed(height));
         filterGroup.positioning(Positioning.absolute(xPos, yPos));
         if (!this.filterItem.isEmpty()) {

@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
@@ -27,12 +27,14 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         int rowSize = (int) Math.sqrt(getInventorySize());
         int xOffset = rowSize == 10 ? 9 : 0;
 
-        FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset * 2), Sizing.fixed(18 + 18 * rowSize + 94));
+        FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed(176 + xOffset * 2),
+                Sizing.fixed(18 + 18 * rowSize + 94));
         group.surface(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks)::draw);
 
         group.child(UIComponents.label(getBlockState().getBlock().getName())
-                        .positioning(Positioning.absolute(10, 5)))
-                .child(UIComponents.toggleButton(GuiTextures.BUTTON_ITEM_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
+                .positioning(Positioning.absolute(10, 5)))
+                .child(UIComponents
+                        .toggleButton(GuiTextures.BUTTON_ITEM_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
                         .shouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_auto_input.tooltip")
                         .positioning(Positioning.absolute(2, 18 + 18 * rowSize + 12 - 20)))
@@ -46,10 +48,10 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 grid.child(UIComponents.slot(getInventory().storage, index)
-                                .canInsert(io.support(IO.IN))
-                                .canExtract(true)
-                                .backgroundTexture(GuiTextures.SLOT_STEAM
-                                        .get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks)),
+                        .canInsert(io.support(IO.IN))
+                        .canExtract(true)
+                        .backgroundTexture(GuiTextures.SLOT_STEAM
+                                .get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks)),
                         x, y);
             }
         }

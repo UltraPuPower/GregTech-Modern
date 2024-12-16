@@ -70,5 +70,4 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {
         // TODO implement
     }
-
 }

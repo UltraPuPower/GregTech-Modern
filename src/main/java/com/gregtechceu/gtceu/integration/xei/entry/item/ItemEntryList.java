@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.xei.entry.item;
 
 import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
+
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;

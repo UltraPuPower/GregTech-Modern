@@ -5,13 +5,8 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import mezz.jei.api.gui.inputs.IJeiGuiEventListener;
-import mezz.jei.api.gui.inputs.IJeiInputHandler;
-import mezz.jei.api.gui.inputs.IJeiUserInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.Rect2i;
@@ -19,6 +14,7 @@ import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 import lombok.Getter;
+import mezz.jei.api.gui.inputs.IJeiGuiEventListener;
 import mezz.jei.api.gui.widgets.IRecipeWidget;
 
 import java.util.function.Consumer;
@@ -89,16 +85,16 @@ public class JEIUIAdapter implements IRecipeWidget, IJeiGuiEventListener {
     }
 
     /*
-    @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return this.adapter.keyReleased(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean charTyped(char chr, int modifiers) {
-        return this.adapter.charTyped(chr, modifiers);
-    }
-    */
+     * @Override
+     * public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+     * return this.adapter.keyReleased(keyCode, scanCode, modifiers);
+     * }
+     * 
+     * @Override
+     * public boolean charTyped(char chr, int modifiers) {
+     * return this.adapter.charTyped(chr, modifiers);
+     * }
+     */
 
     @Override
     public void drawWidget(GuiGraphics context, double mouseX, double mouseY) {

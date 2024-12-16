@@ -2,10 +2,6 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.component.PhantomFluidComponent;
-import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -17,6 +13,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.PhantomFluidComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
@@ -62,7 +61,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class QuantumTankMachine extends TieredMachine implements IAutoOutputFluid, IInteractedMachine, IControllable,
-        IDropSaveMachine, IFancyUIMachine {
+                                IDropSaveMachine, IFancyUIMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumTankMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
@@ -322,12 +321,12 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         var group = UIContainers.horizontalFlow(Sizing.fixed(90), Sizing.fixed(63));
         group.padding(Insets.of(4));
         group.child(UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
-                        .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
-                        .child(UIComponents.label(() -> Component.literal(FormattingUtil.formatBuckets(storedAmount)))
-                                .color(Color.BLACK)
-                                .shadow(false))
-                        .padding(Insets.of(4))
-                        .surface(Surface.UI_DISPLAY))
+                .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
+                .child(UIComponents.label(() -> Component.literal(FormattingUtil.formatBuckets(storedAmount)))
+                        .color(Color.BLACK)
+                        .shadow(false))
+                .padding(Insets.of(4))
+                .surface(Surface.UI_DISPLAY))
                 .child(UIComponents.tank(cache, 0)
                         .showAmount(false)
                         .positioning(Positioning.absolute(68, 23)))
@@ -336,7 +335,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         .showAmount(false)
                         .backgroundTexture(Color.T_GRAY.rectTexture())
                         .positioning(Positioning.absolute(68, 41)))
-                .child(UIComponents.toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
+                .child(UIComponents
+                        .toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids,
+                                this::setAutoOutputFluids)
                         .shouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip")
                         .positioning(Positioning.absolute(0, 37))
@@ -455,7 +456,5 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         public ManagedFieldHolder getFieldHolder() {
             return MANAGED_FIELD_HOLDER;
         }
-
     }
-
 }

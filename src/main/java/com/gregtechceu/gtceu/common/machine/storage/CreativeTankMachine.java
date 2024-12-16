@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PhantomFluidComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -138,8 +138,8 @@ public class CreativeTankMachine extends QuantumTankMachine {
         var group = UIContainers.verticalFlow(Sizing.fixed(176), Sizing.fixed(131));
         group.padding(Insets.both(7, 9));
         group.child(new PhantomFluidComponent(cache, 0, this::getStored, this::updateStored)
-                        .showAmount(false)
-                        .positioning(Positioning.absolute(29, -3)))
+                .showAmount(false)
+                .positioning(Positioning.absolute(29, -3)))
                 .child(UIComponents.label(Component.translatable("gtceu.creative.tank.fluid")))
                 .child(UIComponents.texture(GuiTextures.DISPLAY)
                         .sizing(Sizing.fixed(154), Sizing.fixed(14)))
@@ -219,7 +219,5 @@ public class CreativeTankMachine extends QuantumTankMachine {
         public int getTankCapacity(int tank) {
             return 1000;
         }
-
     }
-
 }

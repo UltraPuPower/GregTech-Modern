@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.api.ui.texture;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
+import net.minecraft.util.Mth;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.util.Mth;
 import org.w3c.dom.Element;
 
 import java.util.Map;
@@ -53,7 +55,8 @@ public class ProgressTexture extends TransformTexture {
     }
 
     @Override
-    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                                float height) {
         if (emptyBarArea != null) {
             emptyBarArea.draw(graphics, mouseX, mouseY, x, y, width, height);
         }
@@ -89,13 +92,16 @@ public class ProgressTexture extends TransformTexture {
     }
 
     public enum FillDirection {
+
         LEFT_TO_RIGHT {
+
             @Override
             public double getDrawnHeight(double progress) {
                 return 1.0;
             }
         },
         RIGHT_TO_LEFT {
+
             @Override
             public double getDrawnU(double progress) {
                 return 1.0 - progress;
@@ -107,12 +113,14 @@ public class ProgressTexture extends TransformTexture {
             }
         },
         UP_TO_DOWN {
+
             @Override
             public double getDrawnWidth(double progress) {
                 return 1.0;
             }
         },
         DOWN_TO_UP {
+
             @Override
             public double getDrawnV(double progress) {
                 return 1.0 - progress;
@@ -125,6 +133,7 @@ public class ProgressTexture extends TransformTexture {
         },
 
         ALWAYS_FULL {
+
             @Override
             public double getDrawnHeight(double progress) {
                 return 1.0;
@@ -152,5 +161,4 @@ public class ProgressTexture extends TransformTexture {
             return progress;
         }
     }
-
 }

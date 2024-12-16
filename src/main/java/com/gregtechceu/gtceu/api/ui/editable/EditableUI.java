@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.editable;
 
-import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
+
 import lombok.Getter;
 
 import java.util.function.Supplier;

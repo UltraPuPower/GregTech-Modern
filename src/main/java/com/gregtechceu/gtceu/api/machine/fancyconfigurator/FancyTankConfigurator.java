@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 
 import net.minecraft.network.chat.Component;
@@ -58,11 +57,11 @@ public class FancyTankConfigurator implements IFancyConfigurator {
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 container.child(UIComponents.tank(tanks[index++], 0)
-                                .backgroundTexture(GuiTextures.FLUID_SLOT)
-                                .ingredientIO(IO.IN)
-                                .canInsert(true)
-                                .canExtract(true)
-                                .positioning(Positioning.absolute( x * 18, y * 18)),
+                        .backgroundTexture(GuiTextures.FLUID_SLOT)
+                        .ingredientIO(IO.IN)
+                        .canInsert(true)
+                        .canExtract(true)
+                        .positioning(Positioning.absolute(x * 18, y * 18)),
                         x, y);
             }
         }

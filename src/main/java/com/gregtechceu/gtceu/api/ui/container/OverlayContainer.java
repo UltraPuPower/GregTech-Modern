@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.ui.container;
 
 import com.gregtechceu.gtceu.api.ui.core.*;
-
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;

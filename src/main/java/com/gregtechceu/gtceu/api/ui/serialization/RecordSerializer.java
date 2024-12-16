@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.ui.serialization;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import lombok.Getter;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.Getter;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

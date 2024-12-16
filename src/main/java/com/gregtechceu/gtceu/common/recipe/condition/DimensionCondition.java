@@ -86,7 +86,7 @@ public class DimensionCondition extends RecipeCondition {
         layout.child(dimSlot);
         if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
             layout.child(UIComponents.texture(UITextures.text(
-                            Component.literal("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)))
+                    Component.literal("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)))
                     .scale(0.75f).transform(-3.0f, 5.0f)));
         }
         return layout;

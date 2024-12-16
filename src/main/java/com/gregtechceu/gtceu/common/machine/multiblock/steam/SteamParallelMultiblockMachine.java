@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -154,11 +154,11 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         group.padding(Insets.both(7, 4));
 
         group.child(UIContainers.verticalScroll(Sizing.fixed(162), Sizing.fixed(121),
-                        UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
-                                .child(UIComponents.label(getBlockState().getBlock().getName()))
-                                .child(UIComponents.componentPanel(this::addDisplayText)
-                                        .maxWidthLimit(150)
-                                        .clickHandler(this::handleDisplayClick)))
+                UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+                        .child(UIComponents.label(getBlockState().getBlock().getName()))
+                        .child(UIComponents.componentPanel(this::addDisplayText)
+                                .maxWidthLimit(150)
+                                .clickHandler(this::handleDisplayClick)))
                 .padding(Insets.both(4, 5)))
                 .child(UIComponents.playerInventory(player.getInventory(),
                         GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))

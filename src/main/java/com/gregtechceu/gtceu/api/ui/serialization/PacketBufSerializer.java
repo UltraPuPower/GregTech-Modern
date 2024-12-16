@@ -14,12 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -418,7 +418,7 @@ public record PacketBufSerializer<T>(FriendlyByteBuf.Writer<T> serializer, Frien
         register(BlockPos.class, FriendlyByteBuf::writeBlockPos, FriendlyByteBuf::readBlockPos);
         register(ChunkPos.class, FriendlyByteBuf::writeChunkPos, FriendlyByteBuf::readChunkPos);
         register(ItemStack.class, FriendlyByteBuf::writeItem, FriendlyByteBuf::readItem);
-        register(FluidStack.class,(buf, stack) -> stack.writeToPacket(buf), FluidStack::readFromPacket);
+        register(FluidStack.class, (buf, stack) -> stack.writeToPacket(buf), FluidStack::readFromPacket);
         register(ResourceLocation.class, FriendlyByteBuf::writeResourceLocation, FriendlyByteBuf::readResourceLocation);
         register(CompoundTag.class, FriendlyByteBuf::writeNbt, FriendlyByteBuf::readNbt);
         register(BlockHitResult.class, FriendlyByteBuf::writeBlockHitResult, FriendlyByteBuf::readBlockHitResult);

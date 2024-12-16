@@ -8,13 +8,13 @@ import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.*;
 
 import java.util.ArrayList;
@@ -69,7 +69,6 @@ public abstract class BaseUIComponent implements UIComponent {
 
     protected final EventStream<MouseEnter> mouseEnterEvents = MouseEnter.newStream();
     protected final EventStream<MouseLeave> mouseLeaveEvents = MouseLeave.newStream();
-
 
     protected final EventStream<Dismount> dismountEvents = Dismount.newStream();
 
@@ -368,18 +367,18 @@ public abstract class BaseUIComponent implements UIComponent {
 
     @Nullable
     public Player player() {
-        if(containerAccess() == null || containerAccess().screen() == null) return null;
+        if (containerAccess() == null || containerAccess().screen() == null) return null;
         return containerAccess().screen().getMenu().player();
     }
 
     @NotNull
     public ItemStack getCarried() {
-        if(containerAccess() == null || containerAccess().screen() == null) return ItemStack.EMPTY;
+        if (containerAccess() == null || containerAccess().screen() == null) return ItemStack.EMPTY;
         return containerAccess().screen().getMenu().getCarried();
     }
 
     public void setCarried(@NotNull ItemStack stack) {
-        if(containerAccess() == null || containerAccess().screen() == null) return;
+        if (containerAccess() == null || containerAccess().screen() == null) return;
         containerAccess().screen().getMenu().setCarried(stack);
     }
 

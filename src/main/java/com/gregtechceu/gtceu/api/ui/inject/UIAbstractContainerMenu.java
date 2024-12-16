@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.inject;
 
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
+
 import net.minecraft.world.entity.player.Player;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -33,6 +34,7 @@ public interface UIAbstractContainerMenu {
     default <T> SyncedProperty<T> createProperty(Class<T> klass, String name, T initial) {
         throw new NotImplementedException("Implemented in AbstractContainerMenuMixin");
     }
+
     /**
      * Get a synced property by name
      *

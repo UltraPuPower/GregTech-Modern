@@ -20,7 +20,8 @@ public class LongInputComponent extends NumberInputComponent<Long> {
         super(valueSupplier, onChanged);
     }
 
-    public LongInputComponent(Sizing horizontalSizing, Sizing verticalSizing, Supplier<Long> valueSupplier, Consumer<Long> onChanged) {
+    public LongInputComponent(Sizing horizontalSizing, Sizing verticalSizing, Supplier<Long> valueSupplier,
+                              Consumer<Long> onChanged) {
         super(horizontalSizing, verticalSizing, valueSupplier, onChanged);
     }
 

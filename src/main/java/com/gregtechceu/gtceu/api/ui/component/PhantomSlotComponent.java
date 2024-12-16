@@ -1,33 +1,23 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
-import com.lowdragmc.lowdraglib.LDLib;
+
 import com.lowdragmc.lowdraglib.gui.editor.annotation.ConfigSetter;
-import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
-import com.lowdragmc.lowdraglib.gui.ingredient.Target;
-import com.mojang.blaze3d.platform.InputConstants;
-import dev.emi.emi.api.stack.EmiStack;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import mezz.jei.api.ingredients.ITypedIngredient;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandlerModifiable;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Predicate;
 
 @Accessors(fluent = true, chain = true)
@@ -105,7 +95,6 @@ public class PhantomSlotComponent extends SlotComponent implements GhostIngredie
             buffer.writeVarInt(0);
             buffer.writeBoolean(shiftDown);
         });
-
     }
 
     @Override
@@ -194,5 +183,4 @@ public class PhantomSlotComponent extends SlotComponent implements GhostIngredie
     public boolean areItemsEqual(ItemStack itemStack1, ItemStack itemStack2) {
         return ItemStack.matches(itemStack1, itemStack2);
     }
-
 }

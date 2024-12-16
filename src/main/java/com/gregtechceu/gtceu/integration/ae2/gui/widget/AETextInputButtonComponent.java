@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
-
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -52,20 +51,19 @@ public class AETextInputButtonComponent extends UIComponentGroup {
         this.textField.positioning(Positioning.absolute(0, 0));
         this.textField.onChanged().subscribe(this::setText);
         this.child(UIComponents.toggleButton(this::isInputting,
-                                        pressed -> {
-                                            isInputting = pressed;
-                                            if (pressed && !this.children.contains(textField)) {
-                                                this.child(textField);
-                                            } else {
-                                                onConfirm.accept(text);
-                                                this.removeChild(textField);
-                                            }
-                                        })
-                                .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.literal("✎"))),
+                pressed -> {
+                    isInputting = pressed;
+                    if (pressed && !this.children.contains(textField)) {
+                        this.child(textField);
+                    } else {
+                        onConfirm.accept(text);
+                        this.removeChild(textField);
+                    }
+                })
+                .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.literal("✎"))),
                         UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.literal("✔"))))
-                                .sizing(Sizing.fill(), Sizing.fill()))
+                .sizing(Sizing.fill(), Sizing.fill()))
                 .tooltip(Arrays.asList(hoverTexts));
         this.child(textField);
     }
-
 }

@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
@@ -13,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -48,7 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BatteryBufferMachine extends TieredEnergyMachine
-        implements IControllable, IFancyUIMachine, IMachineLife {
+                                  implements IControllable, IFancyUIMachine, IMachineLife {
 
     public static final long AMPS_PER_BATTERY = 2L;
 
@@ -134,9 +134,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 template.child(UIComponents.slot(batteryInventory, index++)
-                                .canInsert(true)
-                                .canExtract(true)
-                                .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.BATTERY_OVERLAY)),
+                        .canInsert(true)
+                        .canExtract(true)
+                        .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.BATTERY_OVERLAY)),
                         x, y);
             }
         }
@@ -358,7 +358,5 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         private long getInternalStorage() {
             return energyStored;
         }
-
     }
-
 }

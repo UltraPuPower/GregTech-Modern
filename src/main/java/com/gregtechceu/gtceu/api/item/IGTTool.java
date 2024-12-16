@@ -886,7 +886,8 @@ public interface IGTTool extends HeldItemUIHolder.IHeldItemUIConstructor, ItemLi
                     menu.sendMessage(new SyncColumn(true));
                 }).sizing(Sizing.fixed(20)),
                         0, 1)
-                .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
+                .child(UIComponents.label(() -> Component.literal(Integer.toString(
+                        1 + 2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
                         0, 2)
                 .child(UIComponents.button(Component.literal("-"), (data) -> {
                     AoESymmetrical.decreaseColumn(tag, defaultDefinition);
@@ -901,7 +902,8 @@ public interface IGTTool extends HeldItemUIHolder.IHeldItemUIConstructor, ItemLi
                     menu.sendMessage(new SyncRow(true));
                 }).sizing(Sizing.fixed(20)),
                         1, 1)
-                .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
+                .child(UIComponents.label(() -> Component.literal(Integer.toString(
+                        1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
                         1, 2)
                 .child(UIComponents.button(Component.literal("-"), (data) -> {
                     AoESymmetrical.decreaseRow(tag, defaultDefinition);
@@ -916,13 +918,13 @@ public interface IGTTool extends HeldItemUIHolder.IHeldItemUIConstructor, ItemLi
                     menu.sendMessage(new SyncLayer(true));
                 }).sizing(Sizing.fixed(20)),
                         2, 1)
-                .child(UIComponents.label(() -> Component.literal(Integer.toString(1 + 2 * AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
+                .child(UIComponents.label(() -> Component.literal(Integer.toString(
+                        1 + 2 * AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition)))),
                         2, 2)
                 .child(UIComponents.button(Component.literal("-"), (data) -> {
                     AoESymmetrical.decreaseLayer(tag, defaultDefinition);
                     menu.sendMessage(new SyncLayer(false));
                 }).sizing(Sizing.fixed(20)), 2, 3);
-
 
         rootComponent.child(grid);
     }

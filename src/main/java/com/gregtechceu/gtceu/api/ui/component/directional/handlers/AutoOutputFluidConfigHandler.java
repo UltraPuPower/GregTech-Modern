@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.api.ui.component.directional.handlers;
 
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.*;
+import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Color;
@@ -11,11 +14,8 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
+
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -75,7 +75,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
         ioModeButton.positioning(Positioning.relative(100, 0));
 
         group.child(UIComponents.toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT,
-                        machine::isAllowInputFromOutputSideFluids, machine::setAllowInputFromOutputSideFluids)
+                machine::isAllowInputFromOutputSideFluids, machine::setAllowInputFromOutputSideFluids)
                 .shouldUseBaseBackground().setTooltipText("gtceu.gui.fluid_auto_output.allow_input")
                 .positioning(Positioning.layout())
                 .sizing(Sizing.fixed(18)));
@@ -143,10 +143,10 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
     public void addAdditionalUIElements(FlowLayout parent) {
         LabelComponent text = new LabelComponent(Component.translatable("gtceu.gui.auto_output.name")) {
 
-            //@Override
-            //public boolean isVisible() {
-            //    return machine.isAutoOutputFluids() && machine.getOutputFacingFluids() != null;
-            //}
+            // @Override
+            // public boolean isVisible() {
+            // return machine.isAutoOutputFluids() && machine.getOutputFacingFluids() != null;
+            // }
         };
         text.positioning(Positioning.absolute(parent.width() - 4 - text.width(), 4));
 

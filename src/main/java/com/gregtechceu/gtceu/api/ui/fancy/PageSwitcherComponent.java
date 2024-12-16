@@ -12,16 +12,19 @@ import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -47,7 +50,7 @@ public class PageSwitcherComponent implements IFancyUIProvider {
 
         FlowLayout scrollableGroup;
         container.child(UIContainers.verticalScroll(Sizing.fixed(156), Sizing.fixed(146),
-                        scrollableGroup = UIContainers.verticalFlow(Sizing.fill(), Sizing.fill()))
+                scrollableGroup = UIContainers.verticalFlow(Sizing.fill(), Sizing.fill()))
                 .scrollbarThickness(8)
                 .scrollbar(ScrollContainer.Scrollbar.custom(GuiTextures.SLIDER_BACKGROUND_VERTICAL.imageLocation,
                         GuiTextures.BUTTON.imageLocation)));
@@ -73,10 +76,11 @@ public class PageSwitcherComponent implements IFancyUIProvider {
 
                         var pageWidget = UIContainers.horizontalFlow(Sizing.fixed(25), Sizing.fixed(25));
                         pageWidget.positioning(Positioning.absolute((index % 5) * 30, y));
-                        pageWidget.child(UIComponents.button(Component.empty(), clickData -> onPageSwitched.accept(page))
-                                .renderer(ButtonComponent.Renderer.texture(GuiTextures.BACKGROUND.imageLocation,
-                                        0, 0, 16, 16))
-                                .sizing(Sizing.fill()));
+                        pageWidget
+                                .child(UIComponents.button(Component.empty(), clickData -> onPageSwitched.accept(page))
+                                        .renderer(ButtonComponent.Renderer.texture(GuiTextures.BACKGROUND.imageLocation,
+                                                0, 0, 16, 16))
+                                        .sizing(Sizing.fill()));
                         pageWidget.child(UIComponents.texture(page.getTabIcon())
                                 .positioning(Positioning.absolute(4, 4))
                                 .sizing(Sizing.fixed(17)));
@@ -107,5 +111,4 @@ public class PageSwitcherComponent implements IFancyUIProvider {
     public boolean hasPlayerInventory() {
         return false;
     }
-
 }

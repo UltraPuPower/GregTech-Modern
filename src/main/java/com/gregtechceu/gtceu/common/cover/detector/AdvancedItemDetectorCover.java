@@ -128,9 +128,11 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
                 .positioning(Positioning.absolute(0, 80))
                 .horizontalSizing(Sizing.fixed(65)));
 
-        group.child(new IntInputComponent(Sizing.fixed(176 - 80 - 10), Sizing.fixed(20), this::getMinValue, this::setMinValue)
+        group.child(new IntInputComponent(Sizing.fixed(176 - 80 - 10), Sizing.fixed(20), this::getMinValue,
+                this::setMinValue)
                 .positioning(Positioning.absolute(70, 50)));
-        group.child(new IntInputComponent(Sizing.fixed(176 - 80 - 10), Sizing.fixed(20), this::getMaxValue, this::setMaxValue)
+        group.child(new IntInputComponent(Sizing.fixed(176 - 80 - 10), Sizing.fixed(20), this::getMaxValue,
+                this::setMaxValue)
                 .positioning(Positioning.absolute(70, 75)));
 
         // Invert Redstone Output Toggle:

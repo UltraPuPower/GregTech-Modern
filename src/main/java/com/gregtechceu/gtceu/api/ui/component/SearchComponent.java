@@ -6,14 +6,14 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.TextTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+
 import com.lowdragmc.lowdraglib.utils.ISearch;
 import com.lowdragmc.lowdraglib.utils.SearchEngine;
-import lombok.Setter;
-import net.minecraft.client.gui.GuiGraphics;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import javax.annotation.Nonnull;
+import lombok.Setter;
 
 public class SearchComponent<T> extends FlowLayout {
 
@@ -30,7 +30,8 @@ public class SearchComponent<T> extends FlowLayout {
         this(horizontalSizing, verticalSizing, search, false);
     }
 
-    public SearchComponent(Sizing horizontalSizing, Sizing verticalSizing, IComponentSearch<T> search, boolean isServer) {
+    public SearchComponent(Sizing horizontalSizing, Sizing verticalSizing, IComponentSearch<T> search,
+                           boolean isServer) {
         super(horizontalSizing, verticalSizing, Algorithm.VERTICAL);
         this.child(textBoxComponent = (TextBoxComponent) new TextBoxComponent(horizontalSizing) {
 
@@ -72,13 +73,13 @@ public class SearchComponent<T> extends FlowLayout {
             }
             UITexture text = UITextures.text(search.resultDisplay(r)).width(width).textType(TextTexture.TextType.ROLL);
             popUp.child(UIComponents.button(Component.empty(), cd -> {
-                        search.selectResult(r);
-                        setShow(false);
-                        textBoxComponent.text(search.resultDisplay(r).getString());
-                    }).renderer(ButtonComponent.Renderer.texture(
-                            text,
-                            UITextures.group(text, UITextures.colorBorder(Color.BLACK, -1)),
-                            text))
+                search.selectResult(r);
+                setShow(false);
+                textBoxComponent.text(search.resultDisplay(r).getString());
+            }).renderer(ButtonComponent.Renderer.texture(
+                    text,
+                    UITextures.group(text, UITextures.colorBorder(Color.BLACK, -1)),
+                    text))
                     .positioning(Positioning.absolute(0, size * 15))
                     .sizing(Sizing.fill(), Sizing.fixed(15)));
             if (isServer) {
@@ -124,13 +125,13 @@ public class SearchComponent<T> extends FlowLayout {
 
             UITexture text = UITextures.text(search.resultDisplay(r)).width(width).textType(TextTexture.TextType.ROLL);
             popUp.child(UIComponents.button(Component.empty(), cd -> {
-                        search.selectResult(r);
-                        setShow(false);
-                        textBoxComponent.text(search.resultDisplay(r).getString());
-                    }).renderer(ButtonComponent.Renderer.texture(
-                            text,
-                            UITextures.group(text, UITextures.colorBorder(Color.BLACK, -1)),
-                            text))
+                search.selectResult(r);
+                setShow(false);
+                textBoxComponent.text(search.resultDisplay(r).getString());
+            }).renderer(ButtonComponent.Renderer.texture(
+                    text,
+                    UITextures.group(text, UITextures.colorBorder(Color.BLACK, -1)),
+                    text))
                     .positioning(Positioning.absolute(0, size * 15))
                     .sizing(Sizing.fill(), Sizing.fixed(15)));
         } else {
@@ -196,7 +197,5 @@ public class SearchComponent<T> extends FlowLayout {
         default T deserialize(FriendlyByteBuf buf) {
             return (T) buf.readComponent();
         }
-
     }
-
 }

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
-
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -46,9 +45,9 @@ public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
         group.surface(Surface.UI_BACKGROUND);
 
         group.child(UIComponents.label(holder.getHeld().getHoverName()))
-                .child(ItemFilter.loadFilter(holder.getHeld()).openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15, adapter))
+                .child(ItemFilter.loadFilter(holder.getHeld()).openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15,
+                        adapter))
                 .child(UIComponents.playerInventory(entityPlayer.getInventory(), GuiTextures.SLOT)
-                        .positioning(Positioning.absolute(7,  75)));
+                        .positioning(Positioning.absolute(7, 75)));
     }
-
 }

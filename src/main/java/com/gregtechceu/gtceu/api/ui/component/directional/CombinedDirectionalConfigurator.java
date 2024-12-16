@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.component.directional;
 
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.SceneComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -48,7 +48,8 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
     protected @Nullable BlockPos selectedPos;
     protected @Nullable Direction selectedSide;
 
-    public CombinedDirectionalConfigurator(FancyMachineUIComponent machineUI, IDirectionalConfigHandler[] configHandlers,
+    public CombinedDirectionalConfigurator(FancyMachineUIComponent machineUI,
+                                           IDirectionalConfigHandler[] configHandlers,
                                            MetaMachine machine, int width, int height) {
         super(Sizing.fixed(width), Sizing.fixed(height), Algorithm.HORIZONTAL);
         this.padding(Insets.of(4));
@@ -80,7 +81,6 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
                 .renderedCore(List.of(pos), null)
                 .renderSelect(false)
                 .onSelected(this::onSideSelected);
-
 
         sceneWidget.renderer().addRenderedBlocks(
                 List.of(pos.above(), pos.below(), pos.north(), pos.south(), pos.east(), pos.west()),
@@ -129,7 +129,8 @@ public class CombinedDirectionalConfigurator extends FlowLayout {
                     yOffsetLeft += widgetSize.height() + 3;
                 }
                 case RIGHT -> {
-                    widget.positioning(Positioning.absolute(width - widgetSize.width() - 6, height - 6 - widgetSize.height() - yOffsetRight));
+                    widget.positioning(Positioning.absolute(width - widgetSize.width() - 6,
+                            height - 6 - widgetSize.height() - yOffsetRight));
                     yOffsetRight += widgetSize.height() + 3;
                 }
             }

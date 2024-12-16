@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccess
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 
 import com.lowdragmc.lowdraglib.Platform;
-import io.netty.buffer.Unpooled;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +21,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 
+import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -53,10 +54,11 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     @Setter
     private Consumer<Player> closeCallback;
 
-    public static <T> UIContainerMenu<T> initClient(int containerId, Inventory playerInventory, @Nullable FriendlyByteBuf data) {
+    public static <T> UIContainerMenu<T> initClient(int containerId, Inventory playerInventory,
+                                                    @Nullable FriendlyByteBuf data) {
         if (data != null) {
             ResourceLocation uiFactoryId = data.readResourceLocation();
-            //noinspection unchecked
+            // noinspection unchecked
             var factory = (UIFactory<T>) UIFactory.FACTORIES.get(uiFactoryId);
 
             T holder = factory.readClientHolder(data);
@@ -66,7 +68,8 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
         return null;
     }
 
-    public UIContainerMenu(int containerId, Inventory playerInventory, UIFactory<T> factory, T holder, boolean isClient) {
+    public UIContainerMenu(int containerId, Inventory playerInventory, UIFactory<T> factory, T holder,
+                           boolean isClient) {
         super(MENU_TYPE, containerId);
         this.playerInventory = playerInventory;
         this.factory = factory;
@@ -82,7 +85,7 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
         this.addServerboundMessage(ServerboundComponentUpdate.class, this.receivedComponentUpdates::offer);
         this.addClientboundMessage(ClientboundComponentUpdate.class, this.receivedComponentUpdates::offer);
 
-        this.addServerboundMessage(ServerboundSetCarriedUpdate.class,msg -> this.setCarried(msg.newCarried()));
+        this.addServerboundMessage(ServerboundSetCarriedUpdate.class, msg -> this.setCarried(msg.newCarried()));
         this.addServerboundMessage(ServerboundRemoveSyncPropertyMessage.class, msg -> super.removeProperty(msg.name()));
     }
 
@@ -313,13 +316,17 @@ public class UIContainerMenu<T> extends AbstractContainerMenu {
     public static void initType() {}
 
     public interface IComponentUpdate {
+
         int updateId();
+
         FriendlyByteBuf updateData();
     }
 
     public record ClientboundComponentUpdate(int updateId, FriendlyByteBuf updateData) implements IComponentUpdate {}
+
     public record ServerboundComponentUpdate(int updateId, FriendlyByteBuf updateData) implements IComponentUpdate {}
 
     public record ServerboundSetCarriedUpdate(ItemStack newCarried) {}
+
     public record ServerboundRemoveSyncPropertyMessage(String name) {}
 }

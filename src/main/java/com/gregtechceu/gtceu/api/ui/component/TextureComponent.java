@@ -4,13 +4,12 @@ import com.gregtechceu.gtceu.api.ui.base.BaseUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.w3c.dom.Element;
 
 import java.util.Map;

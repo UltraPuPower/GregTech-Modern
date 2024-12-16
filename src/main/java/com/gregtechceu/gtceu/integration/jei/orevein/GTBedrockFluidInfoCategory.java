@@ -7,11 +7,11 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.RecipeType;
@@ -45,7 +45,8 @@ public class GTBedrockFluidInfoCategory extends UIRecipeCategory<GTOreVeinCompon
     }
 
     @Override
-    public void draw(GTOreVeinComponent recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(GTOreVeinComponent recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics,
+                     double mouseX, double mouseY) {
         super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
     }
 

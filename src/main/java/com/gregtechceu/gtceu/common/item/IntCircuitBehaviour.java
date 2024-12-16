@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
@@ -141,10 +141,10 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
             for (int y = 0; y <= 8; y++) {
                 int finalIdx = idx;
                 grid.child(UIComponents.button(Component.empty(),
-                                clickData -> {
-                                    setCircuitConfiguration(holder, finalIdx);
-                                    prop.set(finalIdx);
-                                })
+                        clickData -> {
+                            setCircuitConfiguration(holder, finalIdx);
+                            prop.set(finalIdx);
+                        })
                         .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
                                 UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
                         .sizing(Sizing.fixed(18)),
@@ -155,10 +155,10 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         for (int x = 0; x <= 5; x++) {
             int finalIdx = x + 27;
             grid.child(UIComponents.button(Component.empty(),
-                            clickData -> {
-                                setCircuitConfiguration(holder, finalIdx);
-                                prop.set(finalIdx);
-                            })
+                    clickData -> {
+                        setCircuitConfiguration(holder, finalIdx);
+                        prop.set(finalIdx);
+                    })
                     .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.SLOT,
                             UITextures.item(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18))))
                     .sizing(Sizing.fixed(18)),

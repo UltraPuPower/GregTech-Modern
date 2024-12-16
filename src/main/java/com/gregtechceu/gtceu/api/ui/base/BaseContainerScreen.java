@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.ui.base;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
-import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 import com.gregtechceu.gtceu.api.ui.ingredient.GhostIngredientSlot;
@@ -33,7 +32,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends AbstractContainerMenu>
-        extends AbstractContainerScreen<C> implements DisposableScreen {
+                                         extends AbstractContainerScreen<C> implements DisposableScreen {
 
     /**
      * The UI adapter of this screen. This handles
@@ -87,12 +86,12 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
             super.init();
             this.uiAdapter.leftPos(leftPos);
             this.uiAdapter.topPos(topPos);
-            //this.uiAdapter.rootComponent.forEachDescendant(child -> {
-            //    if (child instanceof SlotComponent slot) {
-            //        ((SlotAccessor) slot.slot()).gtceu$setX(slot.x()); // + leftPos
-            //        ((SlotAccessor) slot.slot()).gtceu$setY(slot.y()); // + topPos
-            //    }
-            //});
+            // this.uiAdapter.rootComponent.forEachDescendant(child -> {
+            // if (child instanceof SlotComponent slot) {
+            // ((SlotAccessor) slot.slot()).gtceu$setX(slot.x()); // + leftPos
+            // ((SlotAccessor) slot.slot()).gtceu$setY(slot.y()); // + topPos
+            // }
+            // });
         } else {
             try {
                 this.uiAdapter = this.createAdapter();
@@ -291,8 +290,7 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
 
     // stop the MC labels from rendering entirely.
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-    }
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {}
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -303,8 +301,8 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
 
         return (modifiers & GLFW.GLFW_MOD_CONTROL) == 0 &&
                 this.uiAdapter.rootComponent.focusHandler().focused() instanceof GreedyInputUIComponent inputComponent ?
-                inputComponent.onKeyPress(keyCode, scanCode, modifiers) :
-                super.keyPressed(keyCode, scanCode, modifiers);
+                        inputComponent.onKeyPress(keyCode, scanCode, modifiers) :
+                        super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -344,14 +342,11 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {
-
-    }
+    protected void renderBg(GuiGraphics graphics, float delta, int mouseX, int mouseY) {}
 
     @Override
     public void onClose() {
         super.onClose();
         if (this.uiAdapter != null) this.uiAdapter.dispose();
     }
-
 }

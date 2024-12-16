@@ -10,15 +10,13 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.pond.UISlotExtension;
-
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.core.mixins.ui.accessor.SlotAccessor;
 import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
-import com.mojang.datafixers.util.Pair;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -29,8 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
 
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -194,32 +194,32 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     @Override
     public void dismount(DismountReason reason) {
         /*
-        if (reason == DismountReason.REMOVED && containerAccess().screen() != null) {
-            var menu = containerAccess().screen().getMenu();
-
-            UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
-            menu.slots.set(this.slot.index, placeholder);
-            placeholder.index = this.slot.index;
-            ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
-            ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
-        }
-        */
+         * if (reason == DismountReason.REMOVED && containerAccess().screen() != null) {
+         * var menu = containerAccess().screen().getMenu();
+         * 
+         * UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
+         * menu.slots.set(this.slot.index, placeholder);
+         * placeholder.index = this.slot.index;
+         * ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
+         * ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
+         * }
+         */
         super.dismount(reason);
     }
 
     @Override
     public void dispose() {
         /*
-        if (containerAccess().screen() != null) {
-            var menu = containerAccess().screen().getMenu();
-
-            UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
-            menu.slots.set(this.slot.index, placeholder);
-            placeholder.index = this.slot.index;
-            ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
-            ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
-        }
-        */
+         * if (containerAccess().screen() != null) {
+         * var menu = containerAccess().screen().getMenu();
+         * 
+         * UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
+         * menu.slots.set(this.slot.index, placeholder);
+         * placeholder.index = this.slot.index;
+         * ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
+         * ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
+         * }
+         */
         super.dispose();
     }
 
@@ -233,7 +233,8 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
                 if (menuSlot.getContainerSlot() != innerSlot.getContainerSlot()) {
                     continue;
                 }
-                if (menuSlot instanceof SlotItemHandler menuHandler && innerSlot instanceof SlotItemHandler innerHandler) {
+                if (menuSlot instanceof SlotItemHandler menuHandler &&
+                        innerSlot instanceof SlotItemHandler innerHandler) {
                     if (menuHandler.getItemHandler() == innerHandler.getItemHandler()) {
                         foundIndex = menuSlot.index;
                         break;
@@ -248,8 +249,8 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
         }
         if (foundIndex != -1) {
             menu.slots.set(foundIndex, this.slot);
-            ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(foundIndex, this.slot.getItem());
-            ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(foundIndex, this.slot.getItem());
+            ((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(foundIndex, this.slot.getItem());
+            ((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(foundIndex, this.slot.getItem());
             ((SlotAccessor) this.slot).gtceu$setSlotIndex(foundIndex);
         }
     }

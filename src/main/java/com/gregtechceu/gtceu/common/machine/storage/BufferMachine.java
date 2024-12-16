@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -12,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -217,9 +217,7 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     ////////////////////////////////
 
     @Override
-    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-
-    }
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {}
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
@@ -231,8 +229,8 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
         for (int y = 0; y < invTier; y++) {
             for (int x = 0; x < invTier; x++) {
                 container.child(UIComponents.slot(getInventory().storage, index++)
-                                .canInsert(true)
-                                .canExtract(true),
+                        .canInsert(true)
+                        .canExtract(true),
                         y, x);
             }
         }
@@ -240,8 +238,8 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
         index = 0;
         for (int y = 0; y < invTier; y++) {
             container.child(UIComponents.tank(tank.getStorages()[index++])
-                            .canInsert(true)
-                            .canExtract(true),
+                    .canInsert(true)
+                    .canExtract(true),
                     y, invTier);
         }
 

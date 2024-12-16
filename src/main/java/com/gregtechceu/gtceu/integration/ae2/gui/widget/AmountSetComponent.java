@@ -41,7 +41,6 @@ public class AmountSetComponent extends BaseUIComponent {
                             .positioning(Positioning.absolute(x + 3, y + 12));
                     c.setMaxLength(10);
                 });
-
     }
 
     public void setSlotIndex(int slotIndex) {
@@ -87,7 +86,5 @@ public class AmountSetComponent extends BaseUIComponent {
         // FIXME MAKE TRANSLATABLE
         drawStringSized(graphics, "Amount", x() + 3, y() + 3, 0x404040, false, 1f, false);
         GuiTextures.DISPLAY.draw(graphics, mouseX, mouseY, x() + 3, y() + 11, 65, 14);
-
     }
-
 }

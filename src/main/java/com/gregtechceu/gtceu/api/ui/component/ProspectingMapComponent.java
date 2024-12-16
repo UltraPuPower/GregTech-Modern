@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.misc.PacketProspecting;
-import com.gregtechceu.gtceu.api.ui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.ui.container.*;
 import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.misc.PacketProspecting;
+import com.gregtechceu.gtceu.api.ui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.ui.texture.ProspectingTexture;
-import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.ui.texture.TextTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.common.item.ProspectorScannerBehavior;
@@ -83,26 +83,26 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
     }
 
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        super.writeInitialData(buffer);
-        buffer.writeVarInt(playerChunkX = gui.entityPlayer.chunkPosition().x);
-        buffer.writeVarInt(playerChunkZ = gui.entityPlayer.chunkPosition().z);
-        buffer.writeVarInt(gui.entityPlayer.getBlockX());
-        buffer.writeVarInt(gui.entityPlayer.getBlockZ());
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        super.readInitialData(buffer);
-        texture = new ProspectingTexture(
-                buffer.readVarInt(),
-                buffer.readVarInt(),
-                buffer.readVarInt(),
-                buffer.readVarInt(),
-                gui.entityPlayer.getVisualRotationYInDegrees(), mode, chunkRadius, darkMode);
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * super.writeInitialData(buffer);
+     * buffer.writeVarInt(playerChunkX = gui.entityPlayer.chunkPosition().x);
+     * buffer.writeVarInt(playerChunkZ = gui.entityPlayer.chunkPosition().z);
+     * buffer.writeVarInt(gui.entityPlayer.getBlockX());
+     * buffer.writeVarInt(gui.entityPlayer.getBlockZ());
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * super.readInitialData(buffer);
+     * texture = new ProspectingTexture(
+     * buffer.readVarInt(),
+     * buffer.readVarInt(),
+     * buffer.readVarInt(),
+     * buffer.readVarInt(),
+     * gui.entityPlayer.getVisualRotationYInDegrees(), mode, chunkRadius, darkMode);
+     * }
+     */
 
     @Override
     public void init() {
@@ -143,7 +143,8 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
     private void addNewItem(String uniqueID, Component renderingName, UITexture icon, int color) {
         if (!selectedMap.containsKey(uniqueID)) {
             int width = itemList.width() - 4;
-            SelectableFlowLayout selectable = new SelectableFlowLayout(Sizing.fixed(width), Sizing.fixed(15), FlowLayout.Algorithm.HORIZONTAL, () -> !Objects.equals(texture.getSelected(), uniqueID))
+            SelectableFlowLayout selectable = new SelectableFlowLayout(Sizing.fixed(width), Sizing.fixed(15),
+                    FlowLayout.Algorithm.HORIZONTAL, () -> !Objects.equals(texture.getSelected(), uniqueID))
                     .onSelected(c -> texture.setSelected(uniqueID))
                     .selectedTexture(Color.WHITE.borderTexture(-1));
 
@@ -174,7 +175,8 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
 
         var player = player();
         var world = player.level();
-        if (player.level().getGameTime() % scanTick == 0 && chunkIndex < (chunkRadius * 2 - 1) * (chunkRadius * 2 - 1)) {
+        if (player.level().getGameTime() % scanTick == 0 &&
+                chunkIndex < (chunkRadius * 2 - 1) * (chunkRadius * 2 - 1)) {
 
             int row = chunkIndex / (chunkRadius * 2 - 1);
             int column = chunkIndex % (chunkRadius * 2 - 1);
@@ -199,7 +201,6 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
                 }
             }
         }
-
 
         var x = x() + 3;
         var y = y() + (height() - texture.getImageHeight()) / 2 - 1;
@@ -267,7 +268,6 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
     }
 
     private WaypointItem getClickedVein(double mouseX, double mouseY) {
-
         var x = x() + 3;
         var y = y() + (height() - texture.getImageHeight()) / 2 - 1;
 
@@ -356,5 +356,4 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
     private record WaypointItem(BlockPos position, Component name, int color) {
 
     }
-
 }

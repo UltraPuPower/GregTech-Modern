@@ -26,11 +26,11 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -113,7 +113,6 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     // *********** GUI ***********//
     //////////////////////////////////////
 
-
     @Override
     public void loadServerUI(Player player, UIContainerMenu<CoverBehavior> menu, CoverBehavior holder) {
         menu.addServerboundMessage(UpdateMinValue.class, msg -> setMinValue(msg.value()));
@@ -140,15 +139,15 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
 
         minValueInput = new LongInputComponent(Sizing.fixed(176 - 40 - 10), Sizing.fixed(20),
                 this::getMinValue, value -> {
-            this.setMinValue(value);
-            menu.sendMessage(new UpdateMinValue(value));
-        });
+                    this.setMinValue(value);
+                    menu.sendMessage(new UpdateMinValue(value));
+                });
         minValueInput.positioning(Positioning.absolute(40, 50));
         maxValueInput = new LongInputComponent(Sizing.fixed(176 - 40 - 10), Sizing.fixed(20),
                 this::getMaxValue, value -> {
-            this.setMaxValue(value);
-            menu.sendMessage(new UpdateMaxValue(value));
-        });
+                    this.setMaxValue(value);
+                    menu.sendMessage(new UpdateMaxValue(value));
+                });
         maxValueInput.positioning(Positioning.absolute(40, 75));
         initializeMinMaxInputs(usePercent);
         group.child(minValueInput);
@@ -188,8 +187,11 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     public record UpdateMinValue(long value) {}
+
     public record UpdateMaxValue(long value) {}
+
     public record UpdateUsePercent(boolean value) {}
+
     public record UpdateInverted(boolean value) {}
 
     private void initializeMinMaxInputs(boolean wasPercent) {

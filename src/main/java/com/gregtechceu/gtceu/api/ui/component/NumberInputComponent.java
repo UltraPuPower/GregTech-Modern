@@ -8,12 +8,15 @@ import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.LDLib;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -75,7 +78,8 @@ public abstract class NumberInputComponent<T extends Number> extends FlowLayout 
         this(Sizing.fixed(100), Sizing.fixed(20), valueSupplier, onChanged);
     }
 
-    public NumberInputComponent(Sizing horizontalSizing, Sizing verticalSizing, Supplier<T> valueSupplier, Consumer<T> onChanged) {
+    public NumberInputComponent(Sizing horizontalSizing, Sizing verticalSizing, Supplier<T> valueSupplier,
+                                Consumer<T> onChanged) {
         super(horizontalSizing, verticalSizing, Algorithm.HORIZONTAL);
         this.valueSupplier = valueSupplier;
         this.onChanged = onChanged;
@@ -89,26 +93,27 @@ public abstract class NumberInputComponent<T extends Number> extends FlowLayout 
     }
 
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        super.writeInitialData(buffer);
-        buffer.writeUtf(toText(valueSupplier.get()));
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        super.readInitialData(buffer);
-        textField.setCurrentString(buffer.readUtf());
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * super.writeInitialData(buffer);
+     * buffer.writeUtf(toText(valueSupplier.get()));
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * super.readInitialData(buffer);
+     * textField.setCurrentString(buffer.readUtf());
+     * }
+     */
 
     private void buildUI() {
         int buttonWidth = Mth.clamp(this.width() / 5, 15, 40);
 
         this.child(UIComponents.button(Component.empty(), this::decrease)
-                        .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.VANILLA_BUTTON, getButtonTexture("-", buttonWidth))))
-                        .sizing(Sizing.fill(20), Sizing.fixed(20))
-                        .positioning(Positioning.relative(0, 0))
+                .renderer(ButtonComponent.Renderer
+                        .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, getButtonTexture("-", buttonWidth))))
+                .sizing(Sizing.fill(20), Sizing.fixed(20))
+                .positioning(Positioning.relative(0, 0))
                 .tooltip(List.of(Component.translatable("gui.widget.incrementButton.default_tooltip"))));
 
         this.textField = UIComponents.textBox(Sizing.fixed(60), toText(valueSupplier.get()))
@@ -118,7 +123,8 @@ public abstract class NumberInputComponent<T extends Number> extends FlowLayout 
         this.child(this.textField);
 
         this.child(UIComponents.button(Component.empty(), this::increase)
-                .renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.VANILLA_BUTTON, getButtonTexture("+", buttonWidth))))
+                .renderer(ButtonComponent.Renderer
+                        .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, getButtonTexture("+", buttonWidth))))
                 .tooltip(List.of(Component.translatable("gui.widget.incrementButton.default_tooltip"))));
     }
 

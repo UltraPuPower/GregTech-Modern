@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import lombok.Getter;
+
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

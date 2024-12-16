@@ -1,21 +1,20 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
-import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
-import com.gregtechceu.gtceu.api.ui.core.Size;
-import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
-import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.ui.component.directional.CombinedDirectionalConfigurator;
 import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.ui.component.directional.handlers.AutoOutputFluidConfigHandler;
 import com.gregtechceu.gtceu.api.ui.component.directional.handlers.AutoOutputItemConfigHandler;
 import com.gregtechceu.gtceu.api.ui.component.directional.handlers.CoverableConfigHandler;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
+import com.gregtechceu.gtceu.api.ui.core.Size;
+import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+import com.gregtechceu.gtceu.api.ui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;

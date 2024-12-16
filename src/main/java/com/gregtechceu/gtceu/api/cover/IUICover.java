@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.IUIHolder;
-
 import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
+
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -54,5 +54,4 @@ public interface IUICover extends IUIHolder<CoverBehavior> {
         rootComponent.child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT));
         rootComponent.child(component);
     }
-
 }

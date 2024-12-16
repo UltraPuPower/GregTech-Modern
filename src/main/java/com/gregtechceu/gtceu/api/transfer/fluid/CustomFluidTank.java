@@ -3,12 +3,13 @@ package com.gregtechceu.gtceu.api.transfer.fluid;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,7 @@ public class CustomFluidTank extends FluidTank
         this.onContentsChangedList.add(onContentsChanged);
         return size;
     }
-    
+
     public void removeOnContersChanged(int index) {
         this.onContentsChangedList.remove(index);
     }
@@ -83,5 +84,4 @@ public class CustomFluidTank extends FluidTank
     public void removeOnContersChanged(Runnable onContentsChanged) {
         this.onContentsChangedList.remove(onContentsChanged);
     }
-
 }

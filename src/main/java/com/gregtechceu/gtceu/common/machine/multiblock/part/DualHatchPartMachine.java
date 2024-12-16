@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -140,9 +140,9 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         for (int y = 0; y < tanks; y++) {
             for (int x = 0; x < tanks; x++) {
                 container.child(UIComponents.slot(
-                                getInventory().storage, index++)
-                                .canInsert(io.support(IO.IN))
-                                .canExtract(true)
+                        getInventory().storage, index++)
+                        .canInsert(io.support(IO.IN))
+                        .canExtract(true)
                         .backgroundTexture(GuiTextures.SLOT)
                         .ingredientIO(this.io),
                         y, x);

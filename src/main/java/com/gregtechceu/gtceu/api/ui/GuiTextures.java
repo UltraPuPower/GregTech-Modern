@@ -2,10 +2,9 @@ package com.gregtechceu.gtceu.api.ui;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.api.ui.texture.SteamTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-
-import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 
 /**
  * @author KilaBash
@@ -26,12 +25,15 @@ public class GuiTextures {
             GTCEu.id("textures/gui/overlay/tool_front_facing_rotation.png"));
     public static final ResourceTexture TOOL_IO_FACING_ROTATION = UITextures.resource(
             GTCEu.id("textures/gui/overlay/tool_io_facing_rotation.png"));
-    public static final ResourceTexture TOOL_PAUSE = UITextures.resource(GTCEu.id("textures/gui/overlay/tool_pause.png"));
-    public static final ResourceTexture TOOL_START = UITextures.resource(GTCEu.id("textures/gui/overlay/tool_start.png"));
+    public static final ResourceTexture TOOL_PAUSE = UITextures
+            .resource(GTCEu.id("textures/gui/overlay/tool_pause.png"));
+    public static final ResourceTexture TOOL_START = UITextures
+            .resource(GTCEu.id("textures/gui/overlay/tool_start.png"));
     public static final ResourceTexture TOOL_COVER_SETTINGS = UITextures.resource(
             GTCEu.id("textures/gui/overlay/tool_cover_settings.png"));
     public static final ResourceTexture TOOL_MUTE = UITextures.resource(GTCEu.id("textures/gui/overlay/tool_mute.png"));
-    public static final ResourceTexture TOOL_SOUND = UITextures.resource(GTCEu.id("textures/gui/overlay/tool_sound.png"));
+    public static final ResourceTexture TOOL_SOUND = UITextures
+            .resource(GTCEu.id("textures/gui/overlay/tool_sound.png"));
     public static final ResourceTexture TOOL_ALLOW_INPUT = UITextures.resource(
             GTCEu.id("textures/gui/overlay/tool_allow_input.png"));
     public static final ResourceTexture TOOL_ATTACH_COVER = UITextures.resource(
@@ -67,7 +69,6 @@ public class GuiTextures {
     public static final ResourceTexture CLIPBOARD_PAPER_BACKGROUND = UITextures.resource(
             GTCEu.id("textures/gui/base/clipboard_paper_background.png"));
     public static final NinePatchTexture TITLE_BAR_BACKGROUND = NinePatchTexture.get(GTCEu.id("title_bar_background"));
-
 
     public static final ResourceTexture DISPLAY = UITextures.resource(GTCEu.id("textures/gui/base/display.png"));
     public static final SteamTexture DISPLAY_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/display_%s.png");
@@ -113,8 +114,10 @@ public class GuiTextures {
             GTCEu.id("textures/gui/widget/button_fluid_output_overlay.png"));
     public static final ResourceTexture BUTTON_ITEM_OUTPUT = UITextures.resource(
             GTCEu.id("textures/gui/widget/button_item_output_overlay.png"));
-    public static final ResourceTexture BUTTON_LOCK = UITextures.resource(GTCEu.id("textures/gui/widget/button_lock.png"));
-    public static final ResourceTexture BUTTON_VOID = UITextures.resource(GTCEu.id("textures/gui/widget/button_void.png"));
+    public static final ResourceTexture BUTTON_LOCK = UITextures
+            .resource(GTCEu.id("textures/gui/widget/button_lock.png"));
+    public static final ResourceTexture BUTTON_VOID = UITextures
+            .resource(GTCEu.id("textures/gui/widget/button_void.png"));
     public static final ResourceTexture BUTTON_VOID_PARTIAL = UITextures.resource(
             GTCEu.id("textures/gui/widget/button_void_partial.png"));
     public static final ResourceTexture BUTTON_VOID_MULTIBLOCK = UITextures.resource(
@@ -143,7 +146,8 @@ public class GuiTextures {
     public static final ResourceTexture BUTTON_AUTO_PULL = UITextures.resource(
             GTCEu.id("textures/gui/widget/button_me_auto_pull.png"));
     public static final ResourceTexture LOCK = UITextures.resource(GTCEu.id("textures/gui/widget/lock.png"));
-    public static final ResourceTexture LOCK_WHITE = UITextures.resource(GTCEu.id("textures/gui/widget/lock_white.png"));
+    public static final ResourceTexture LOCK_WHITE = UITextures
+            .resource(GTCEu.id("textures/gui/widget/lock_white.png"));
     public static final ResourceTexture SWITCH = UITextures.resource(GTCEu.id("textures/gui/widget/switch.png"));
     public static final ResourceTexture SWITCH_HORIZONTAL = UITextures.resource(
             GTCEu.id("textures/gui/widget/switch_horizontal.png"));
@@ -188,11 +192,15 @@ public class GuiTextures {
             GTCEu.id("textures/gui/widget/button_miner_modes.png"));
 
     // ORE PROCESSING
-    public static final ResourceTexture OREBY_BASE = UITextures.resource(GTCEu.id("textures/gui/arrows/oreby-base.png"));
-    public static final ResourceTexture OREBY_CHEM = UITextures.resource(GTCEu.id("textures/gui/arrows/oreby-chem.png"));
+    public static final ResourceTexture OREBY_BASE = UITextures
+            .resource(GTCEu.id("textures/gui/arrows/oreby-base.png"));
+    public static final ResourceTexture OREBY_CHEM = UITextures
+            .resource(GTCEu.id("textures/gui/arrows/oreby-chem.png"));
     public static final ResourceTexture OREBY_SEP = UITextures.resource(GTCEu.id("textures/gui/arrows/oreby-sep.png"));
-    public static final ResourceTexture OREBY_SIFT = UITextures.resource(GTCEu.id("textures/gui/arrows/oreby-sift.png"));
-    public static final ResourceTexture OREBY_SMELT = UITextures.resource(GTCEu.id("textures/gui/arrows/oreby-smelt.png"));
+    public static final ResourceTexture OREBY_SIFT = UITextures
+            .resource(GTCEu.id("textures/gui/arrows/oreby-sift.png"));
+    public static final ResourceTexture OREBY_SMELT = UITextures
+            .resource(GTCEu.id("textures/gui/arrows/oreby-smelt.png"));
 
     // PRIMITIVE
     public static final NinePatchTexture PRIMITIVE_BACKGROUND = NinePatchTexture.get(GTCEu.id("primitive_background"));
@@ -231,7 +239,8 @@ public class GuiTextures {
             GTCEu.id("textures/gui/overlay/beaker_overlay_4.png"));
     public static final ResourceTexture BENDER_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/bender_overlay.png"));
-    public static final ResourceTexture BOX_OVERLAY = UITextures.resource(GTCEu.id("textures/gui/overlay/box_overlay.png"));
+    public static final ResourceTexture BOX_OVERLAY = UITextures
+            .resource(GTCEu.id("textures/gui/overlay/box_overlay.png"));
     public static final ResourceTexture BOXED_OVERLAY = UITextures.resource(
             GTCEu.id("textures/gui/overlay/boxed_overlay.png"));
     public static final ResourceTexture BREWER_OVERLAY = UITextures.resource(
@@ -473,7 +482,8 @@ public class GuiTextures {
             GTCEu.id("textures/gui/progress_bar/progress_bar_research_station_base.png"));
 
     // JEI
-    public static final ResourceTexture INFO_ICON = UITextures.resource(GTCEu.id("textures/gui/widget/information.png"));
+    public static final ResourceTexture INFO_ICON = UITextures
+            .resource(GTCEu.id("textures/gui/widget/information.png"));
     public static final ResourceTexture MULTIBLOCK_CATEGORY = UITextures.resource(
             GTCEu.id("textures/gui/icon/coke_oven.png"));
 
@@ -491,7 +501,8 @@ public class GuiTextures {
     // Terminal
     public static final ResourceTexture ICON_REMOVE = UITextures.resource(
             GTCEu.id("textures/gui/terminal/icon/remove_hover.png"));
-    public static final ResourceTexture ICON_UP = UITextures.resource(GTCEu.id("textures/gui/terminal/icon/up_hover.png"));
+    public static final ResourceTexture ICON_UP = UITextures
+            .resource(GTCEu.id("textures/gui/terminal/icon/up_hover.png"));
     public static final ResourceTexture ICON_DOWN = UITextures.resource(
             GTCEu.id("textures/gui/terminal/icon/down_hover.png"));
     public static final ResourceTexture ICON_RIGHT = UITextures.resource(
@@ -537,7 +548,8 @@ public class GuiTextures {
     public static final NinePatchTexture DISPLAY_FRAME = NinePatchTexture.get(GTCEu.id("display_frame"));
     public static final ResourceTexture INSUFFICIENT_INPUT = UITextures.resource(
             GTCEu.id("textures/gui/base/indicator_no_energy.png"));
-    public static final NinePatchTexture ENERGY_BAR_BACKGROUND = NinePatchTexture.get(GTCEu.id("progress_bar_boiler_empty_steel"));
+    public static final NinePatchTexture ENERGY_BAR_BACKGROUND = NinePatchTexture
+            .get(GTCEu.id("progress_bar_boiler_empty_steel"));
     public static final NinePatchTexture ENERGY_BAR_BASE = NinePatchTexture.get(GTCEu.id("progress_bar_boiler_heat"));
     public static final ResourceTexture LIGHT_ON = UITextures.resource(GTCEu.id("textures/gui/widget/light_on.png"));
     public static final ResourceTexture LIGHT_OFF = UITextures.resource(GTCEu.id("textures/gui/widget/light_off.png"));
@@ -564,7 +576,8 @@ public class GuiTextures {
             GTCEu.id("textures/gui/widget/config_arrow.png"));
     public static final ResourceTexture CONFIG_ARROW_DARK = UITextures.resource(
             GTCEu.id("textures/gui/widget/config_arrow_dark.png"));
-    public static final ResourceTexture SELECT_BOX = UITextures.resource(GTCEu.id("textures/gui/widget/select_box.png"));
+    public static final ResourceTexture SELECT_BOX = UITextures
+            .resource(GTCEu.id("textures/gui/widget/select_box.png"));
 
     // HPCA Component icons
     public static final ResourceTexture HPCA_COMPONENT_OUTLINE = UITextures.resource(

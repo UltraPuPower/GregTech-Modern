@@ -15,14 +15,12 @@ import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
-
 import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidStackHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -39,8 +37,10 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -234,9 +234,11 @@ public class TankComponent extends BaseUIComponent implements ClickableIngredien
             boolean performedFill = false;
             ItemStack filledResult = ItemStack.EMPTY;
             for (int i = 0; i < maxAttempts; i++) {
-                FluidActionResult res = FluidUtil.tryFillContainer(currentStack, this.handler, Integer.MAX_VALUE, null, false);
+                FluidActionResult res = FluidUtil.tryFillContainer(currentStack, this.handler, Integer.MAX_VALUE, null,
+                        false);
                 if (!res.isSuccess()) break;
-                ItemStack remaining = FluidUtil.tryFillContainer(currentStack, this.handler, Integer.MAX_VALUE, null, true).getResult();
+                ItemStack remaining = FluidUtil
+                        .tryFillContainer(currentStack, this.handler, Integer.MAX_VALUE, null, true).getResult();
                 performedFill = true;
 
                 currentStack.shrink(1);
@@ -254,7 +256,8 @@ public class TankComponent extends BaseUIComponent implements ClickableIngredien
                 }
             }
             if (performedFill) {
-                SoundEvent sound = initialFluid.getFluid().getFluidType().getSound(initialFluid, SoundActions.BUCKET_FILL);
+                SoundEvent sound = initialFluid.getFluid().getFluidType().getSound(initialFluid,
+                        SoundActions.BUCKET_FILL);
                 if (sound == null)
                     sound = SoundEvents.BUCKET_FILL;
                 player.level().playSound(null, player.position().x, player.getEyeY(), player.position().z,
@@ -277,7 +280,8 @@ public class TankComponent extends BaseUIComponent implements ClickableIngredien
             boolean performedEmptying = false;
             ItemStack drainedResult = ItemStack.EMPTY;
             for (int i = 0; i < maxAttempts; i++) {
-                FluidActionResult result = FluidUtil.tryEmptyContainer(currentStack, this.handler, Integer.MAX_VALUE, null,
+                FluidActionResult result = FluidUtil.tryEmptyContainer(currentStack, this.handler, Integer.MAX_VALUE,
+                        null,
                         false);
                 if (!result.isSuccess()) break;
                 ItemStack remainingStack = FluidUtil
@@ -388,7 +392,8 @@ public class TankComponent extends BaseUIComponent implements ClickableIngredien
         if (children.containsKey("overlay-texture")) {
             this.overlayTexture = model.parseTexture(UITexture.class, children.get("overlay-texture"));
         }
-        UIParsing.apply(children, "fill-direction", UIParsing.parseEnum(ProgressTexture.FillDirection.class), this::fillDirection);
+        UIParsing.apply(children, "fill-direction", UIParsing.parseEnum(ProgressTexture.FillDirection.class),
+                this::fillDirection);
         UIParsing.apply(children, "chance", UIParsing::parseFloat, this::recipeViewerChance);
         UIParsing.apply(children, "draw-contents", UIParsing::parseBool, this::drawContents);
         UIParsing.apply(children, "draw-tooltip", UIParsing::parseBool, this::drawTooltip);
@@ -400,5 +405,4 @@ public class TankComponent extends BaseUIComponent implements ClickableIngredien
 
         return new TankComponent(EmptyFluidHandler.INSTANCE, tank);
     }
-
 }

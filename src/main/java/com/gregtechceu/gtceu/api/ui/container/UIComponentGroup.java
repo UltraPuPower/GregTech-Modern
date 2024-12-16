@@ -150,5 +150,4 @@ public class UIComponentGroup extends BaseParentUIComponent {
             this.child(model.parseComponent(UIComponent.class, child));
         }
     }
-
 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.container;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -12,6 +13,7 @@ import java.util.function.Consumer;
 
 @Accessors(fluent = true, chain = true)
 public class SelectableFlowLayout extends FlowLayout {
+
     @Getter
     @Setter
     protected boolean isSelected;
@@ -24,7 +26,7 @@ public class SelectableFlowLayout extends FlowLayout {
     protected final BooleanSupplier selectionSupplier;
 
     public SelectableFlowLayout(Sizing horizontalSizing, Sizing verticalSizing, Algorithm algorithm,
-                           BooleanSupplier selectionSupplier) {
+                                BooleanSupplier selectionSupplier) {
         super(horizontalSizing, verticalSizing, algorithm);
         this.selectionSupplier = selectionSupplier;
     }
@@ -61,5 +63,4 @@ public class SelectableFlowLayout extends FlowLayout {
         isSelected = false;
         if (onUnSelected != null) onUnSelected.accept(this);
     }
-
 }

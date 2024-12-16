@@ -15,5 +15,4 @@ public interface MouseMoved {
             return anyTriggered;
         });
     }
-
 }

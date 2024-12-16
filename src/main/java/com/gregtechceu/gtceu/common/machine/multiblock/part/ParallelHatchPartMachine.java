@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -17,13 +16,14 @@ import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class ParallelHatchPartMachine extends TieredPartMachine implements IFancyUIMachine, IParallelHatch {
@@ -53,9 +53,10 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
     }
 
     @Override
-    public void loadServerUI(@NotNull Player player, @NotNull UIContainerMenu<MetaMachine> menu, @NotNull MetaMachine holder) {
+    public void loadServerUI(@NotNull Player player, @NotNull UIContainerMenu<MetaMachine> menu,
+                             @NotNull MetaMachine holder) {
         super.loadServerUI(player, menu, holder);
-        menu.addServerboundMessage(ChangeParallelMessage.class,msg -> setCurrentParallel(msg.parallel()));
+        menu.addServerboundMessage(ChangeParallelMessage.class, msg -> setCurrentParallel(msg.parallel()));
     }
 
     @Override

@@ -68,5 +68,4 @@ public class CycleItemStackHandler implements IItemHandlerModifiable {
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return true;
     }
-
 }

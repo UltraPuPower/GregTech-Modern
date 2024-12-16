@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.client.renderdoc;
 
 import com.gregtechceu.gtceu.GTCEu;
+
+import net.minecraft.Util;
+
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
@@ -8,7 +11,6 @@ import com.sun.jna.ptr.LongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -20,7 +22,7 @@ import java.util.EnumSet;
 import java.util.Map;
 
 @ApiStatus.Experimental
-@SuppressWarnings({"unused", "UnusedReturnValue"})
+@SuppressWarnings({ "unused", "UnusedReturnValue" })
 public final class RenderDoc {
 
     private RenderDoc() {}
@@ -44,7 +46,8 @@ public final class RenderDoc {
                         throw new UnsatisfiedLinkError();
                     }
 
-                    renderdocLibrary = Native.load("renderdoc", RenderdocLibrary.class, Map.of(Library.OPTION_OPEN_FLAGS, flags));
+                    renderdocLibrary = Native.load("renderdoc", RenderdocLibrary.class,
+                            Map.of(Library.OPTION_OPEN_FLAGS, flags));
                 }
 
                 int initResult = renderdocLibrary.RENDERDOC_GetAPI(10500, apiPointer);
@@ -57,10 +60,10 @@ public final class RenderDoc {
                     var minor = new IntByReference();
                     var patch = new IntByReference();
                     apiInstance.GetAPIVersion.call(major, minor, patch);
-                    GTCEu.LOGGER.info("Connected to RenderDoc API v" + major.getValue() + "." + minor.getValue() + "." + patch.getValue());
+                    GTCEu.LOGGER.info("Connected to RenderDoc API v" + major.getValue() + "." + minor.getValue() + "." +
+                            patch.getValue());
                 }
-            } catch (UnsatisfiedLinkError ignored) {
-            }
+            } catch (UnsatisfiedLinkError ignored) {}
         }
 
         renderdoc = apiInstance;
@@ -68,7 +71,7 @@ public final class RenderDoc {
 
     /**
      * @return {@code true} if the RenderDoc dynamic library is loaded
-     * and owo has successfully connected to the API
+     *         and owo has successfully connected to the API
      */
     public static boolean isAvailable() {
         return renderdoc != null;
@@ -76,7 +79,7 @@ public final class RenderDoc {
 
     /**
      * @return The version of the RenderDoc API that owo is connected to,
-     * in &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt; semver format
+     *         in &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt; semver format
      */
     public static String getAPIVersion() {
         if (renderdoc == null) return "not connected";
@@ -95,7 +98,7 @@ public final class RenderDoc {
      * @param option The option to modify
      * @param value  The value to change the option to
      * @return {@code true} if the value was correct and the option
-     * was successfully modified
+     *         was successfully modified
      */
     public static <T> boolean setCaptureOption(CaptureOption<T> option, T value) {
         if (renderdoc == null) return false;
@@ -221,7 +224,7 @@ public final class RenderDoc {
      *
      * @param index The index to query
      * @return The path and timestamp of the capture at the given index,
-     * or {@code null} if no such capture exists
+     *         or {@code null} if no such capture exists
      */
     public static Capture getCapture(int index) {
         if (renderdoc == null) return null;
@@ -281,7 +284,7 @@ public final class RenderDoc {
 
     /**
      * @return {@code true} if a RenderDoc replay UI
-     * instance is currently attached to this process
+     *         instance is currently attached to this process
      */
     public static boolean isReplayUIConnected() {
         if (renderdoc == null) return false;
@@ -305,7 +308,7 @@ public final class RenderDoc {
      * its window to the top - this is not guaranteed to work on every OS
      *
      * @return {@code true} if the UI tried to raise its window, {@code false}
-     * if some error occurred while passing on the command or no UI is connected
+     *         if some error occurred while passing on the command or no UI is connected
      */
     public static boolean showReplayUI() {
         if (renderdoc == null) return false;
@@ -324,11 +327,13 @@ public final class RenderDoc {
     }
 
     public static final class CaptureOption<T> {
+
         public static final CaptureOption<Boolean> ALLOW_VSYNC = new CaptureOption<>(0, Boolean.class);
         public static final CaptureOption<Boolean> ALLOW_FULLSCREEN = new CaptureOption<>(1, Boolean.class);
         public static final CaptureOption<Boolean> API_VALIDATION = new CaptureOption<>(2, Boolean.class);
         public static final CaptureOption<Boolean> CAPTURE_CALLSTACKS = new CaptureOption<>(3, Boolean.class);
-        public static final CaptureOption<Boolean> CAPTURE_CALLSTACKS_ONLY_DRAWS = new CaptureOption<>(4, Boolean.class);
+        public static final CaptureOption<Boolean> CAPTURE_CALLSTACKS_ONLY_DRAWS = new CaptureOption<>(4,
+                Boolean.class);
         public static final CaptureOption<Integer> DELAY_FOR_DEBUGGER = new CaptureOption<>(5, Integer.class);
         public static final CaptureOption<Boolean> VERIFY_BUFFER_ACCESS = new CaptureOption<>(6, Boolean.class);
         public static final CaptureOption<Boolean> HOOK_INTO_CHILDREN = new CaptureOption<>(7, Boolean.class);
@@ -350,6 +355,7 @@ public final class RenderDoc {
     }
 
     public enum Key {
+
         // '0' - '9' matches ASCII values
         ZERO(0x30, GLFW.GLFW_KEY_0),
         ONE(0x31, GLFW.GLFW_KEY_1),
@@ -447,6 +453,7 @@ public final class RenderDoc {
     }
 
     public enum OverlayOption {
+
         ENABLED(0x1),
         FRAME_RATE(0x2),
         FRAME_NUMBER(0x4),

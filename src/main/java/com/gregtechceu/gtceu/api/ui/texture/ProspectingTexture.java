@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.ui.texture;
 
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.core.Color;
+import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.ui.misc.ProspectorMode;
 
-import com.gregtechceu.gtceu.api.ui.core.Color;
-import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;

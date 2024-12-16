@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -50,7 +50,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-        implements IMachineLife, IDataAccessHatch, IDataInfoProvider {
+                                    implements IMachineLife, IDataAccessHatch, IDataInfoProvider {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             DataAccessHatchMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
@@ -104,9 +104,9 @@ public class DataAccessHatchMachine extends TieredPartMachine
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 group.child(UIComponents.slot(importItems, index)
-                                .canInsert(true)
-                                .canExtract(true)
-                                .backgroundTexture(GuiTextures.SLOT),
+                        .canInsert(true)
+                        .canExtract(true)
+                        .backgroundTexture(GuiTextures.SLOT),
                         x, y);
             }
         }
@@ -194,5 +194,4 @@ public class DataAccessHatchMachine extends TieredPartMachine
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
-
 }

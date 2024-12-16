@@ -3,9 +3,8 @@ package com.gregtechceu.gtceu.api.ui.texture;
 import com.gregtechceu.gtceu.api.ui.core.PositionedRectangle;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -22,7 +21,6 @@ import org.w3c.dom.Element;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class NinePatchTexture extends ResourceTexture {
 
@@ -43,7 +41,8 @@ public class NinePatchTexture extends ResourceTexture {
         this.repeat = repeat;
     }
 
-    public NinePatchTexture(ResourceLocation imageLocation, int u, int v, Size patchSize, Size textureSize, boolean repeat) {
+    public NinePatchTexture(ResourceLocation imageLocation, int u, int v, Size patchSize, Size textureSize,
+                            boolean repeat) {
         this(imageLocation, u, v, patchSize, patchSize, textureSize, repeat);
     }
 
@@ -59,16 +58,21 @@ public class NinePatchTexture extends ResourceTexture {
         int rightEdge = this.cornerPatchSize.width() + this.centerPatchSize.width();
         int bottomEdge = this.cornerPatchSize.height() + this.centerPatchSize.height();
 
-        context.blit(this.imageLocation, x, y, this.offsetX, this.offsetY, this.cornerPatchSize.width(), this.cornerPatchSize.height(),
+        context.blit(this.imageLocation, x, y, this.offsetX, this.offsetY, this.cornerPatchSize.width(),
+                this.cornerPatchSize.height(),
                 this.textureSize.width(), this.textureSize.height());
-        context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(), y, this.offsetX + rightEdge, this.offsetY,
+        context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(), y, this.offsetX + rightEdge,
+                this.offsetY,
                 this.cornerPatchSize.width(), this.cornerPatchSize.height(), this.textureSize.width(),
                 this.textureSize.height());
-        context.blit(this.imageLocation, x, y + height - this.cornerPatchSize.height(), this.offsetX, this.offsetY + bottomEdge,
+        context.blit(this.imageLocation, x, y + height - this.cornerPatchSize.height(), this.offsetX,
+                this.offsetY + bottomEdge,
                 this.cornerPatchSize.width(), this.cornerPatchSize.height(), this.textureSize.width(),
                 this.textureSize.height());
-        context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(), y + height - this.cornerPatchSize.height(),
-                this.offsetX + rightEdge, this.offsetY + bottomEdge, this.cornerPatchSize.width(), this.cornerPatchSize.height(),
+        context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(),
+                y + height - this.cornerPatchSize.height(),
+                this.offsetX + rightEdge, this.offsetY + bottomEdge, this.cornerPatchSize.width(),
+                this.cornerPatchSize.height(),
                 this.textureSize.width(), this.textureSize.height());
 
         if (this.repeat) {
@@ -88,7 +92,8 @@ public class NinePatchTexture extends ResourceTexture {
         if (width > doubleCornerWidth && height > doubleCornerHeight) {
             context.blit(this.imageLocation, x + this.cornerPatchSize.width(), y + this.cornerPatchSize.height(),
                     width - doubleCornerWidth, height - doubleCornerHeight, this.offsetX + this.cornerPatchSize.width(),
-                    this.offsetY + this.cornerPatchSize.height(), this.centerPatchSize.width(), this.centerPatchSize.height(),
+                    this.offsetY + this.cornerPatchSize.height(), this.centerPatchSize.width(),
+                    this.centerPatchSize.height(),
                     this.textureSize.width(), this.textureSize.height());
         }
 
@@ -97,8 +102,10 @@ public class NinePatchTexture extends ResourceTexture {
                     this.cornerPatchSize.height(), this.offsetX + this.cornerPatchSize.width(), this.offsetY,
                     this.centerPatchSize.width(), this.cornerPatchSize.height(), this.textureSize.width(),
                     this.textureSize.height());
-            context.blit(this.imageLocation, x + this.cornerPatchSize.width(), y + height - this.cornerPatchSize.height(),
-                    width - doubleCornerWidth, this.cornerPatchSize.height(), this.offsetX + this.cornerPatchSize.width(),
+            context.blit(this.imageLocation, x + this.cornerPatchSize.width(),
+                    y + height - this.cornerPatchSize.height(),
+                    width - doubleCornerWidth, this.cornerPatchSize.height(),
+                    this.offsetX + this.cornerPatchSize.width(),
                     this.offsetY + bottomEdge, this.centerPatchSize.width(), this.cornerPatchSize.height(),
                     this.textureSize.width(), this.textureSize.height());
         }
@@ -108,9 +115,11 @@ public class NinePatchTexture extends ResourceTexture {
                     height - doubleCornerHeight, this.offsetX, this.offsetY + this.cornerPatchSize.height(),
                     this.cornerPatchSize.width(), this.centerPatchSize.height(), this.textureSize.width(),
                     this.textureSize.height());
-            context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(), y + this.cornerPatchSize.height(),
+            context.blit(this.imageLocation, x + width - this.cornerPatchSize.width(),
+                    y + this.cornerPatchSize.height(),
                     this.cornerPatchSize.width(), height - doubleCornerHeight, this.offsetX + rightEdge,
-                    this.offsetY + this.cornerPatchSize.height(), this.cornerPatchSize.width(), this.centerPatchSize.height(),
+                    this.offsetY + this.cornerPatchSize.height(), this.cornerPatchSize.width(),
+                    this.centerPatchSize.height(),
                     this.textureSize.width(), this.textureSize.height());
         }
     }
@@ -147,9 +156,11 @@ public class NinePatchTexture extends ResourceTexture {
             while (leftoverWidth > 0) {
                 float drawWidth = Math.min(this.centerPatchSize.width(), leftoverWidth);
 
-                context.blit(this.imageLocation, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth, y, drawWidth,
+                context.blit(this.imageLocation, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth, y,
+                        drawWidth,
                         this.cornerPatchSize.height(),
-                        this.offsetX + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth, this.offsetY,
+                        this.offsetX + this.cornerPatchSize.width() + this.centerPatchSize.width() - drawWidth,
+                        this.offsetY,
                         drawWidth, this.cornerPatchSize.height(), this.textureSize.width(), this.textureSize.height());
                 context.blit(this.imageLocation, x + this.cornerPatchSize.width() + leftoverWidth - drawWidth,
                         y + height - this.cornerPatchSize.height(), drawWidth, this.cornerPatchSize.height(),
@@ -194,7 +205,8 @@ public class NinePatchTexture extends ResourceTexture {
     }
 
     @Override
-    public void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+    public void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                             float height) {
         this.draw(graphics, x, y, width, height);
     }
 
@@ -251,7 +263,8 @@ public class NinePatchTexture extends ResourceTexture {
                                 cornerPatchSize, centerPatchSize);
                     } else {
                         LOADED_TEXTURES.put(resourceId,
-                                new NinePatchTexture(texture, u, v, cornerPatchSize, centerPatchSize, textureSize, repeat));
+                                new NinePatchTexture(texture, u, v, cornerPatchSize, centerPatchSize, textureSize,
+                                        repeat));
                     }
                 } else {
                     var patchSizeObject = GsonHelper.getAsJsonObject(object, "patch_size");
@@ -259,7 +272,8 @@ public class NinePatchTexture extends ResourceTexture {
                             GsonHelper.getAsInt(patchSizeObject, "height"));
 
                     if (LOADED_TEXTURES.containsKey(resourceId)) {
-                        update(LOADED_TEXTURES.get(resourceId), texture, textureSize, u, v, repeat, patchSize, patchSize);
+                        update(LOADED_TEXTURES.get(resourceId), texture, textureSize, u, v, repeat, patchSize,
+                                patchSize);
                     } else {
                         LOADED_TEXTURES.put(resourceId,
                                 new NinePatchTexture(texture, u, v, patchSize, textureSize, repeat));
@@ -279,6 +293,5 @@ public class NinePatchTexture extends ResourceTexture {
             tex.textureSize = textureSize;
             tex.repeat = repeat;
         }
-
     }
 }

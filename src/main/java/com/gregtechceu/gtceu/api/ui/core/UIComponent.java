@@ -6,15 +6,13 @@ import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.FocusHandler;
 
-import com.gregtechceu.gtceu.api.ui.util.Observable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.sounds.SoundEvents;
+
 import org.jetbrains.annotations.*;
 import org.w3c.dom.Element;
 
@@ -298,6 +296,7 @@ public interface UIComponent extends PositionedRectangle {
 
     /**
      * Modify the enabled state of this component
+     * 
      * @param enabled the new enabled state of this component
      */
     UIComponent enabled(boolean enabled);

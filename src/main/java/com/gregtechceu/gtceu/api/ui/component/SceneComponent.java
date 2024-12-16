@@ -5,15 +5,12 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponentMenuAccess;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+
 import com.lowdragmc.lowdraglib.client.scene.*;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -30,6 +27,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -40,9 +43,10 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-@SuppressWarnings({"unused", "UnusedReturnValue", "SameParameterValue"})
+@SuppressWarnings({ "unused", "UnusedReturnValue", "SameParameterValue" })
 @Accessors(fluent = true, chain = true)
 public class SceneComponent extends UIComponentGroup {
+
     @Getter
     protected WorldSceneRenderer renderer;
     @Getter
@@ -229,7 +233,7 @@ public class SceneComponent extends UIComponentGroup {
             renderer.deleteCacheBuffer();
         }
         if (useFBOSceneRenderer) {
-            renderer = new FBOWorldSceneRenderer(dummyWorld,1080, 1080);
+            renderer = new FBOWorldSceneRenderer(dummyWorld, 1080, 1080);
         } else {
             renderer = new ImmediateWorldSceneRenderer(dummyWorld);
         }
@@ -278,7 +282,8 @@ public class SceneComponent extends UIComponentGroup {
         }
         center = new Vector3f((minX + maxX) / 2f + 0.5F, (minY + maxY) / 2f + 0.5F, (minZ + maxZ) / 2f + 0.5F);
         renderer.addRenderedBlocks(core, renderHook);
-        this.zoom = (float) (3.5 * Math.sqrt(Math.max(Math.max(Math.max(maxX - minX + 1, maxY - minY + 1), maxZ - minZ + 1), 1)));
+        this.zoom = (float) (3.5 *
+                Math.sqrt(Math.max(Math.max(Math.max(maxX - minX + 1, maxY - minY + 1), maxZ - minZ + 1), 1)));
         renderer.setCameraOrtho(range * zoom, range * zoom, range * zoom);
         renderer.setCameraLookAt(center, camZoom(), Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
         needCompileCache();
@@ -292,8 +297,7 @@ public class SceneComponent extends UIComponentGroup {
         return list;
     }
 
-    protected void renderBeforeBatchEnd(MultiBufferSource bufferSource, float partialTicks) {
-    }
+    protected void renderBeforeBatchEnd(MultiBufferSource bufferSource, float partialTicks) {}
 
     public void renderBlockOverLay(WorldSceneRenderer renderer) {
         PoseStack poseStack = new PoseStack();
@@ -316,7 +320,8 @@ public class SceneComponent extends UIComponentGroup {
                         if (blockState.isAir()) {
                             continue;
                         }
-                        hit = world.clipWithInteractionOverride(eyePos, endPos, pos, blockState.getShape(world, pos), blockState);
+                        hit = world.clipWithInteractionOverride(eyePos, endPos, pos, blockState.getShape(world, pos),
+                                blockState);
                         if (hit != null && hit.getType() != HitResult.Type.MISS) {
                             double dist = eyePos.distanceToSqr(hit.getLocation());
                             if (dist < min) {
@@ -367,14 +372,13 @@ public class SceneComponent extends UIComponentGroup {
     }
 
     private static void drawBorder(PoseStack poseStack, int x, int y, int width, int height, int color, int border) {
-        drawSolidRect(poseStack,x - border, y - border, width + 2 * border, border, color);
-        drawSolidRect(poseStack,x - border, y + height, width + 2 * border, border, color);
-        drawSolidRect(poseStack,x - border, y, border, height, color);
-        drawSolidRect(poseStack,x + width, y, border, height, color);
+        drawSolidRect(poseStack, x - border, y - border, width + 2 * border, border, color);
+        drawSolidRect(poseStack, x - border, y + height, width + 2 * border, border, color);
+        drawSolidRect(poseStack, x - border, y, border, height, color);
+        drawSolidRect(poseStack, x + width, y, border, height, color);
     }
 
     private static void drawSolidRect(PoseStack poseStack, int x, int y, int width, int height, int color) {
-
         fill(poseStack, x, y, x + width, y + height, 0, color);
         RenderSystem.enableBlend();
     }
@@ -402,33 +406,33 @@ public class SceneComponent extends UIComponentGroup {
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferBuilder.vertex(matrix4f, (float)x1, (float)y1, (float)z).color(r, g, b, a).endVertex();
-        bufferBuilder.vertex(matrix4f, (float)x1, (float)y2, (float)z).color(r, g, b, a).endVertex();
-        bufferBuilder.vertex(matrix4f, (float)x2, (float)y2, (float)z).color(r, g, b, a).endVertex();
-        bufferBuilder.vertex(matrix4f, (float)x2, (float)y1, (float)z).color(r, g, b, a).endVertex();
+        bufferBuilder.vertex(matrix4f, (float) x1, (float) y1, (float) z).color(r, g, b, a).endVertex();
+        bufferBuilder.vertex(matrix4f, (float) x1, (float) y2, (float) z).color(r, g, b, a).endVertex();
+        bufferBuilder.vertex(matrix4f, (float) x2, (float) y2, (float) z).color(r, g, b, a).endVertex();
+        bufferBuilder.vertex(matrix4f, (float) x2, (float) y1, (float) z).color(r, g, b, a).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
         RenderSystem.disableBlend();
     }
 
     /*
-    @Override
-    public Object getXEIIngredientOverMouse(double mouseX, double mouseY) {
-        Object result = super.getXEIIngredientOverMouse(mouseX, mouseY);
-        if (result == null && hoverItem != null && !hoverItem.m_41619_()) {
-            if (LDLib.isJeiLoaded()) {
-                return JEIPlugin.getItemIngredient(hoverItem, (int) mouseX, (int) mouseY, 1, 1);
-            }
-            if (LDLib.isReiLoaded()) {
-                return EntryStacks.of(hoverItem);
-            }
-            if (LDLib.isEmiLoaded()) {
-                return EmiStack.of(hoverItem);
-            }
-            return hoverItem;
-        }
-        return result;
-    }
-    */
+     * @Override
+     * public Object getXEIIngredientOverMouse(double mouseX, double mouseY) {
+     * Object result = super.getXEIIngredientOverMouse(mouseX, mouseY);
+     * if (result == null && hoverItem != null && !hoverItem.m_41619_()) {
+     * if (LDLib.isJeiLoaded()) {
+     * return JEIPlugin.getItemIngredient(hoverItem, (int) mouseX, (int) mouseY, 1, 1);
+     * }
+     * if (LDLib.isReiLoaded()) {
+     * return EntryStacks.of(hoverItem);
+     * }
+     * if (LDLib.isEmiLoaded()) {
+     * return EmiStack.of(hoverItem);
+     * }
+     * return hoverItem;
+     * }
+     * return result;
+     * }
+     */
 
     @Override
     public void receiveMessage(int id, FriendlyByteBuf buf) {
@@ -524,8 +528,10 @@ public class SceneComponent extends UIComponentGroup {
                 double progress = renderer.getCompileProgress();
                 if (progress > 0) {
                     // FIXME wtf is this??
-                    UITextures.text(Component.literal("Renderer is compiling! " + String.format("%.1f", progress * 100) + "%%"))
-                                    .draw(graphics, mouseX, mouseY, x, y, width, height);
+                    UITextures
+                            .text(Component
+                                    .literal("Renderer is compiling! " + String.format("%.1f", progress * 100) + "%%"))
+                            .draw(graphics, mouseX, mouseY, x, y, width, height);
                 }
             }
         }
@@ -541,7 +547,8 @@ public class SceneComponent extends UIComponentGroup {
     public SceneComponent center(Vector3f center) {
         this.center = center;
         if (renderer != null) {
-            renderer.setCameraLookAt(this.center, camZoom(), Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
+            renderer.setCameraLookAt(this.center, camZoom(), Math.toRadians(rotationPitch),
+                    Math.toRadians(rotationYaw));
         }
         return this;
     }
@@ -550,7 +557,8 @@ public class SceneComponent extends UIComponentGroup {
         this.zoom = zoom;
         if (renderer != null) {
             renderer.setCameraOrtho(range * zoom, range * zoom, range * zoom);
-            renderer.setCameraLookAt(this.center, camZoom(), Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
+            renderer.setCameraLookAt(this.center, camZoom(), Math.toRadians(rotationPitch),
+                    Math.toRadians(rotationYaw));
         }
         return this;
     }
@@ -567,7 +575,8 @@ public class SceneComponent extends UIComponentGroup {
         this.rotationYaw = rotationYaw;
         this.rotationPitch = rotationPitch;
         if (renderer != null) {
-            renderer.setCameraLookAt(this.center, camZoom(), Math.toRadians(rotationPitch), Math.toRadians(rotationYaw));
+            renderer.setCameraLookAt(this.center, camZoom(), Math.toRadians(rotationPitch),
+                    Math.toRadians(rotationYaw));
         }
         return this;
     }

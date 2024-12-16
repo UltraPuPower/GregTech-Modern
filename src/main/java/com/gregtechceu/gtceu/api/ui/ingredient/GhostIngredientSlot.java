@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.ingredient;
 
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +31,7 @@ public interface GhostIngredientSlot<I> extends UIComponent {
      */
     @Nullable
     default I castGhostIngredientIfValid(@NotNull Object ingredient) {
-        //noinspection unchecked
+        // noinspection unchecked
         return ghostIngredientClass().isInstance(ingredient) ? (I) ingredient : null;
     }
 
@@ -41,6 +42,7 @@ public interface GhostIngredientSlot<I> extends UIComponent {
 
     /**
      * A way to handle recipeviewer-specific ingredient instances.
+     * 
      * @return {@code true} if handling the ingredient yourself.
      */
     default boolean ingredientHandlingOverride(Object ingredient) {

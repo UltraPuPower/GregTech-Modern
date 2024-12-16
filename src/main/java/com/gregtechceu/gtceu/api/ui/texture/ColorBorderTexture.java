@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.ui.texture;
 import com.gregtechceu.gtceu.api.ui.core.Color;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.w3c.dom.Element;
@@ -21,7 +22,8 @@ public class ColorBorderTexture extends TransformTexture {
     }
 
     @Override
-    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                                float height) {
         if (width == 0 || height == 0) return;
         final int argb = color.argb();
         graphics.drawManaged(() -> {

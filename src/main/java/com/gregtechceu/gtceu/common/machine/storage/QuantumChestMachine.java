@@ -2,10 +2,6 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
-import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -17,6 +13,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
+import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
+import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
@@ -353,12 +353,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         group.padding(Insets.of(4));
         var importItems = createImportItems();
         group.child(UIContainers.verticalFlow(Sizing.fixed(81), Sizing.fill())
-                        .child(UIComponents.label(Component.translatable("gtceu.machine.quantum_chest.items_stored")))
-                        .child(UIComponents.label(() -> Component.literal(FormattingUtil.formatNumbers(storedAmount)))
-                                .color(Color.BLACK)
-                                .shadow(true))
-                        .padding(Insets.of(4))
-                        .surface(Surface.UI_DISPLAY))
+                .child(UIComponents.label(Component.translatable("gtceu.machine.quantum_chest.items_stored")))
+                .child(UIComponents.label(() -> Component.literal(FormattingUtil.formatNumbers(storedAmount)))
+                        .color(Color.BLACK)
+                        .shadow(true))
+                .padding(Insets.of(4))
+                .surface(Surface.UI_DISPLAY))
                 .child(UIComponents.slot(importItems, 0)
                         .canExtract(false)
                         .canInsert(true)
@@ -370,25 +370,26 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         .itemHook(s -> s.copyWithCount((int) Math.min(storedAmount, s.getMaxStackSize())))
                         .positioning(Positioning.absolute(87, 23)))
                 .child(UIComponents.button(Component.empty(), cd -> {
-                            if (!cd.isClientSide) {
-                                if (!stored.isEmpty()) {
-                                    var extracted = cache.extractItem(0,
-                                            (int) Math.min(storedAmount, stored.getMaxStackSize()), false);
-                                    if (!group.player().addItem(extracted)) {
-                                        Block.popResource(group.player().level(),
-                                                group.player().getOnPos(), extracted);
-                                    }
-                                }
+                    if (!cd.isClientSide) {
+                        if (!stored.isEmpty()) {
+                            var extracted = cache.extractItem(0,
+                                    (int) Math.min(storedAmount, stored.getMaxStackSize()), false);
+                            if (!group.player().addItem(extracted)) {
+                                Block.popResource(group.player().level(),
+                                        group.player().getOnPos(), extracted);
                             }
-                        }).renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.VANILLA_BUTTON,
-                                GuiTextures.BUTTON_DOWN)))
+                        }
+                    }
+                }).renderer(ButtonComponent.Renderer.texture(UITextures.group(GuiTextures.VANILLA_BUTTON,
+                        GuiTextures.BUTTON_DOWN)))
                         .positioning(Positioning.absolute(87, 42))
                         .sizing(Sizing.fixed(18)))
                 .child(new PhantomSlotComponent(lockedItem, 0,
                         stack -> stored.isEmpty() || ItemStack.isSameItemSameTags(stack, stored))
                         .maxStackSize(1)
                         .positioning(Positioning.absolute(58, 41)))
-                .child(UIComponents.toggleButton(GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
+                .child(UIComponents
+                        .toggleButton(GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
                         .shouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_auto_output.tooltip")
                         .positioning(Positioning.absolute(0, 37))

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
@@ -11,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -122,9 +122,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     //////////////////////////////////////
 
     @Override
-    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {
-
-    }
+    public void loadServerUI(Player player, UIContainerMenu<MetaMachine> menu, MetaMachine holder) {}
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
@@ -140,8 +138,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 template.child(UIComponents.slot(chargerInventory, index++)
-                                .canInsert(true)
-                                .canExtract(true)
+                        .canInsert(true)
+                        .canExtract(true)
                         .backgroundTexture(UITextures.group(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY)),
                         x, y);
             }

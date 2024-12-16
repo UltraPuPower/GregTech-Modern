@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
-
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -57,12 +57,12 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
                     .positioning(Positioning.absolute(2, 2 + i * 20))
                     .sizing(Sizing.fixed(136), Sizing.fixed(20)));
             group.child(UIComponents.texture(UITextures.dynamic(() -> UITextures.group(
-                            GuiTextures.VANILLA_BUTTON.copy()
-                                    .color(machine.getActiveRecipeType() == finalI ? ColorPattern.CYAN.color : -1),
-                            UITextures.text(Component.translatable(machine.getRecipeTypes()[finalI].registryName.toLanguageKey()))
-                                    .maxWidth(136)
-                                    .textType(TextTexture.TextType.ROLL)))
-                    )
+                    GuiTextures.VANILLA_BUTTON.copy()
+                            .color(machine.getActiveRecipeType() == finalI ? ColorPattern.CYAN.color : -1),
+                    UITextures
+                            .text(Component.translatable(machine.getRecipeTypes()[finalI].registryName.toLanguageKey()))
+                            .maxWidth(136)
+                            .textType(TextTexture.TextType.ROLL))))
                     .positioning(Positioning.absolute(2, 2 + i * 20))
                     .sizing(Sizing.fixed(136), Sizing.fixed(20)));
 
@@ -89,22 +89,23 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
         }
 
         /*
-        @Override
-        public void writeInitialData(FriendlyByteBuf buffer) {
-            buffer.writeVarInt(machine.getActiveRecipeType());
-        }
-
-        @Override
-        public void readInitialData(FriendlyByteBuf buffer) {
-            machine.setActiveRecipeType(buffer.readVarInt());
-        }
-
-        // TODO implement?
-        @Override
-        public void detectAndSendChanges() {
-            this.sendMessage(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
-        }
-        */
+         * @Override
+         * public void writeInitialData(FriendlyByteBuf buffer) {
+         * buffer.writeVarInt(machine.getActiveRecipeType());
+         * }
+         * 
+         * @Override
+         * public void readInitialData(FriendlyByteBuf buffer) {
+         * machine.setActiveRecipeType(buffer.readVarInt());
+         * }
+         * 
+         * // TODO implement?
+         * 
+         * @Override
+         * public void detectAndSendChanges() {
+         * this.sendMessage(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
+         * }
+         */
 
         @Override
         protected void parentUpdate(float delta, int mouseX, int mouseY) {

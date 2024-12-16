@@ -4,15 +4,15 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
-import com.gregtechceu.gtceu.api.ui.util.Delta;
 import com.gregtechceu.gtceu.api.ui.texture.NinePatchTexture;
+import com.gregtechceu.gtceu.api.ui.util.Delta;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.lwjgl.glfw.GLFW;

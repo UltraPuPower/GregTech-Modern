@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -46,10 +46,11 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
     public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166));
         group.child(UIComponents.label(getBlockState().getBlock().getName())
-                        .positioning(Positioning.absolute(6, 6)))
+                .positioning(Positioning.absolute(6, 6)))
                 .child(UIContainers.verticalFlow(Sizing.fixed(81), Sizing.fixed(55))
                         .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
-                        .child(UIComponents.label(() -> Component.literal(String.valueOf(tank.getFluidInTank(0).getAmount())))
+                        .child(UIComponents
+                                .label(() -> Component.literal(String.valueOf(tank.getFluidInTank(0).getAmount())))
                                 .color(Color.BLACK)
                                 .shadow(true))
                         .surface(GuiTextures.DISPLAY_STEAM.get(IS_STEEL)::draw)

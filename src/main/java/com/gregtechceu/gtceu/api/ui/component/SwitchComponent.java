@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
+
+import net.minecraft.network.FriendlyByteBuf;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
-import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
@@ -82,24 +84,24 @@ public class SwitchComponent extends BaseUIComponent {
     }
 
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(isPressed);
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        isPressed = buffer.readBoolean();
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-        if (!isClientSideWidget && supplier != null) {
-            setPressed(supplier.get());
-        }
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * buffer.writeBoolean(isPressed);
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * isPressed = buffer.readBoolean();
+     * }
+     * 
+     * @Override
+     * public void detectAndSendChanges() {
+     * super.detectAndSendChanges();
+     * if (!isClientSideWidget && supplier != null) {
+     * setPressed(supplier.get());
+     * }
+     * }
+     */
 
     public SwitchComponent pressed(boolean isPressed) {
         if (this.pressed == isPressed) return this;
@@ -149,7 +151,7 @@ public class SwitchComponent extends BaseUIComponent {
             }
         } else if (id == 2) {
             pressed = buf.readBoolean();
-        }else {
+        } else {
             super.receiveMessage(id, buf);
         }
     }

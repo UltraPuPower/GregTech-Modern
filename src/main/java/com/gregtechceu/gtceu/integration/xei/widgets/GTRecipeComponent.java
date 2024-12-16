@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
-import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -15,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.component.PredicatedButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.ProgressComponent;
@@ -22,12 +21,12 @@ import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
 
-import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -38,6 +37,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -76,7 +76,8 @@ public class GTRecipeComponent extends UIComponentGroup {
     }
 
     private static int getXOffset(GTRecipe recipe) {
-        if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getRecipeViewerSize().width()) {
+        if (recipe.recipeType.getRecipeUI().getOriginalWidth() !=
+                recipe.recipeType.getRecipeUI().getRecipeViewerSize().width()) {
             return (recipe.recipeType.getRecipeUI().getRecipeViewerSize().width() -
                     recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
         }
@@ -101,7 +102,7 @@ public class GTRecipeComponent extends UIComponentGroup {
                 LinkedHashMap<RecipeCapability<?>, List<Content>>::new);
         collectStorage(storages, contents, recipe);
 
-        //noinspection unchecked
+        // noinspection unchecked
         UIComponentGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressComponent.JEIProgress,
                 (UIAdapter<UIComponentGroup>) this.containerAccess().adapter(),
                 storages,
@@ -173,7 +174,8 @@ public class GTRecipeComponent extends UIComponentGroup {
                     .positioning(Positioning.absolute(100, 100))
                     .margins(Insets.of(0, -LINE_HEIGHT, 0, getVoltageXOffset()));
             if (recipe.recipeType.isOffsetVoltageText()) {
-                voltageTextWidget.margins(Insets.of(0, recipe.recipeType.getVoltageTextOffset(), 0, getVoltageXOffset()));
+                voltageTextWidget
+                        .margins(Insets.of(0, recipe.recipeType.getVoltageTextOffset(), 0, getVoltageXOffset()));
             }
             // make it clickable
             // voltageTextWidget.setBackground(new GuiTextureGroup(GuiTextures.BUTTON));
@@ -226,7 +228,8 @@ public class GTRecipeComponent extends UIComponentGroup {
         // add a recipe id getter, btw all the things can only click within the WidgetGroup while using EMI
         int x = width() - 15;
         int y = height() - 30;
-        child(new PredicatedButtonComponent(UITextures.group(GuiTextures.BUTTON, UITextures.text(Component.literal("ID"))),
+        child(new PredicatedButtonComponent(
+                UITextures.group(GuiTextures.BUTTON, UITextures.text(Component.literal("ID"))),
                 cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),
                 () -> !FMLLoader.isProduction(), !FMLLoader.isProduction())
                 .positioning(Positioning.absolute(x, y))
@@ -283,7 +286,7 @@ public class GTRecipeComponent extends UIComponentGroup {
         voltageTextWidget.text(Component.literal(tierText));
         voltageTextWidget.margins(Insets.of(0, recipe.recipeType.getVoltageTextOffset(), 0, getVoltageXOffset()));
         // TODO implement
-        //detectAndSendChanges();
+        // detectAndSendChanges();
     }
 
     public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips, int recipeTier,
@@ -297,7 +300,7 @@ public class GTRecipeComponent extends UIComponentGroup {
                 float boostedChanceFloat = 100f * boostedChance / content.maxChance;
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltips.add(Component.translatable("gtceu.gui.content.chance_base_logic",
-                                    FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                            FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltips.add(
@@ -311,7 +314,7 @@ public class GTRecipeComponent extends UIComponentGroup {
                 }
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltips.add(Component.translatable("gtceu.gui.content.chance_boosted_logic",
-                                    FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                            FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltips.add(
@@ -391,14 +394,17 @@ public class GTRecipeComponent extends UIComponentGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                UIComponentUtils.componentByIdForEach(group, "^%s.[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
+                UIComponentUtils.componentByIdForEach(group, "^%s.[0-9]+$".formatted(cap.slotName(io)),
+                        cap.getWidgetClass(),
                         component -> {
                             var index = UIComponentUtils.componentIdIndex(component);
                             if (index >= 0 && index < contents.size()) {
                                 var content = contents.get(index);
-                                cap.applyUIComponentInfo(component, adapter, index, true, io, null, recipe.getType(), recipe, content,
+                                cap.applyUIComponentInfo(component, adapter, index, true, io, null, recipe.getType(),
+                                        recipe, content,
                                         null, minTier, tier);
-                                group.child(UIComponents.texture(content.createOverlay(index >= nonTickCount, minTier, tier,
+                                group.child(UIComponents
+                                        .texture(content.createOverlay(index >= nonTickCount, minTier, tier,
                                                 recipe.getType().getChanceFunction()))
                                         .sizing(component.horizontalSizing().get(), component.verticalSizing().get())
                                         .positioning(component.positioning().get()));

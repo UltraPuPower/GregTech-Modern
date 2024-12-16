@@ -144,7 +144,8 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
         if (this.uiAdapter == null) return false;
 
         if ((modifiers & GLFW.GLFW_MOD_CONTROL) == 0 &&
-                this.uiAdapter.rootComponent.focusHandler().focused() instanceof GreedyInputUIComponent inputComponent &&
+                this.uiAdapter.rootComponent.focusHandler()
+                        .focused() instanceof GreedyInputUIComponent inputComponent &&
                 inputComponent.onKeyPress(keyCode, scanCode, modifiers)) {
             return true;
         }
@@ -183,5 +184,4 @@ public abstract class BaseUIScreen<R extends ParentUIComponent> extends Screen i
     public void dispose() {
         if (this.uiAdapter != null) this.uiAdapter.dispose();
     }
-
 }

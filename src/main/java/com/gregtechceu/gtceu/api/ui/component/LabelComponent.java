@@ -8,9 +8,7 @@ import com.gregtechceu.gtceu.api.ui.texture.TextTexture;
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,6 +17,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.joml.Vector4f;
 import org.w3c.dom.Element;
 
@@ -161,7 +162,8 @@ public class LabelComponent extends BaseUIComponent {
             return true;
         } else {
             if (textSupplier != null) {
-                this.wrappedText = Collections.singletonList(Language.getInstance().getVisualOrder(this.textSupplier.get()));
+                this.wrappedText = Collections
+                        .singletonList(Language.getInstance().getVisualOrder(this.textSupplier.get()));
             } else {
                 this.wrappedText = Collections.singletonList(Language.getInstance().getVisualOrder(this.text));
             }
@@ -257,10 +259,12 @@ public class LabelComponent extends BaseUIComponent {
                 int renderY = lambdaY * (this.lineHeight() + 2);
                 renderY += this.lineHeight() - lineHeight;
                 FormattedCharSequence line = this.wrappedText.size() > 1 ?
-                        FormattedCharSequence.composite(this.wrappedText.get(0), Component.literal("..").getVisualOrderText()) :
+                        FormattedCharSequence.composite(this.wrappedText.get(0),
+                                Component.literal("..").getVisualOrderText()) :
                         this.wrappedText.get(0);
 
-                if (Widget.isMouseOver(renderX, renderY, width, height, mouseX, mouseY) && this.wrappedText.size() > 1) {
+                if (Widget.isMouseOver(renderX, renderY, width, height, mouseX, mouseY) &&
+                        this.wrappedText.size() > 1) {
                     drawRollTextLine(graphics, renderX, renderY, width, height, font, lineHeight, line);
                 } else {
                     drawTextLine(graphics, renderX, renderY, width, height, font, lineHeight, line);
@@ -275,7 +279,8 @@ public class LabelComponent extends BaseUIComponent {
                     case RIGHT -> renderX += this.width - this.font.width(line);
                 }
 
-                if (this.wrappedText.size() > 1 && (textType == TextTexture.TextType.ROLL_ALWAYS || Widget.isMouseOver(renderX, renderY, width, height, mouseX, mouseY))) {
+                if (this.wrappedText.size() > 1 && (textType == TextTexture.TextType.ROLL_ALWAYS ||
+                        Widget.isMouseOver(renderX, renderY, width, height, mouseX, mouseY))) {
                     drawRollTextLine(graphics, renderX, renderY, width, height, font, lineHeight, line);
                 } else {
                     drawTextLine(graphics, renderX, renderY, width, height, font, lineHeight, line);
@@ -284,34 +289,38 @@ public class LabelComponent extends BaseUIComponent {
                 int renderY = lambdaY * (this.lineHeight() + 2);
                 renderY += this.lineHeight() - lineHeight;
                 FormattedCharSequence line = this.wrappedText.size() > 1 ?
-                        FormattedCharSequence.composite(this.wrappedText.get(0), Component.literal("..").getVisualOrderText()) :
+                        FormattedCharSequence.composite(this.wrappedText.get(0),
+                                Component.literal("..").getVisualOrderText()) :
                         this.wrappedText.get(0);
                 switch (this.horizontalTextAlignment) {
                     case CENTER -> renderX += (this.width - this.font.width(line)) / 2;
                     case RIGHT -> renderX += this.width - this.font.width(line);
                 }
 
-                if (Widget.isMouseOver(renderX, renderY, width, height, mouseX, mouseY) && this.wrappedText.size() > 1) {
+                if (Widget.isMouseOver(renderX, renderY, width, height, mouseX, mouseY) &&
+                        this.wrappedText.size() > 1) {
                     drawRollTextLine(graphics, renderX, renderY, width, height, font, lineHeight, line);
                 } else {
                     graphics.drawString(font, line, renderX, renderY, color.get().argb(), shadow);
                 }
-            } else if (textType == TextTexture.TextType.LEFT_ROLL || textType == TextTexture.TextType.LEFT_ROLL_ALWAYS) {
-                int renderY = lambdaY * (this.lineHeight() + 2);
-                renderY += this.lineHeight() - lineHeight;
+            } else
+                if (textType == TextTexture.TextType.LEFT_ROLL || textType == TextTexture.TextType.LEFT_ROLL_ALWAYS) {
+                    int renderY = lambdaY * (this.lineHeight() + 2);
+                    renderY += this.lineHeight() - lineHeight;
 
-                var line = this.wrappedText.get(0);
-                switch (this.horizontalTextAlignment) {
-                    case CENTER -> renderX += (this.width - this.font.width(line)) / 2;
-                    case RIGHT -> renderX += this.width - this.font.width(line);
-                }
+                    var line = this.wrappedText.get(0);
+                    switch (this.horizontalTextAlignment) {
+                        case CENTER -> renderX += (this.width - this.font.width(line)) / 2;
+                        case RIGHT -> renderX += this.width - this.font.width(line);
+                    }
 
-                if (this.wrappedText.size() > 1 && (textType == TextTexture.TextType.LEFT_ROLL_ALWAYS || Widget.isMouseOver(renderX, renderY, width, height, mouseX, mouseY))) {
-                    drawRollTextLine(graphics, renderX, renderY, width, height, font, lineHeight, line);
-                } else {
-                    graphics.drawString(font, line, renderX, renderY, color.get().argb(), shadow);
+                    if (this.wrappedText.size() > 1 && (textType == TextTexture.TextType.LEFT_ROLL_ALWAYS ||
+                            Widget.isMouseOver(renderX, renderY, width, height, mouseX, mouseY))) {
+                        drawRollTextLine(graphics, renderX, renderY, width, height, font, lineHeight, line);
+                    } else {
+                        graphics.drawString(font, line, renderX, renderY, color.get().argb(), shadow);
+                    }
                 }
-            }
         });
 
         pose.popPose();
@@ -327,12 +336,15 @@ public class LabelComponent extends BaseUIComponent {
         var realPos = trans.transform(new Vector4f(x, y, 0, 1));
         var realPos2 = trans.transform(new Vector4f(x + width, y + height, 0, 1));
         graphics.enableScissor((int) realPos.x, (int) realPos.y, (int) realPos2.x, (int) realPos2.y);
-        var t = rollSpeed > 0 ? ((((rollSpeed * Math.abs((int) (System.currentTimeMillis() % 1000000)) / 10) % (totalW))) / (totalW)) : 0.5;
+        var t = rollSpeed > 0 ?
+                ((((rollSpeed * Math.abs((int) (System.currentTimeMillis() % 1000000)) / 10) % (totalW))) / (totalW)) :
+                0.5;
         graphics.drawString(fontRenderer, line, (int) (from - t * totalW), (int) renderY, color.get().argb(), shadow);
         graphics.disableScissor();
     }
 
-    private void drawTextLine(GuiGraphics graphics, float x, float y, int width, int height, Font fontRenderer, int textH, FormattedCharSequence line) {
+    private void drawTextLine(GuiGraphics graphics, float x, float y, int width, int height, Font fontRenderer,
+                              int textH, FormattedCharSequence line) {
         int textW = fontRenderer.width(line);
         float _x = x + (width - textW) / 2f;
         float _y = y + (height - textH) / 2f;
@@ -375,5 +387,4 @@ public class LabelComponent extends BaseUIComponent {
         UIParsing.apply(children, "roll-speed", UIParsing::parseFloat, this::rollSpeed);
         UIParsing.apply(children, "text-type", UIParsing.parseEnum(TextTexture.TextType.class), this::textType);
     }
-
 }

@@ -172,26 +172,26 @@ public abstract class AEListGridComponent extends ScrollContainer<UIComponent> {
 
     // TODO implement
     /*
-    @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        super.writeInitialData(buffer);
-        if (this.list == null) return;
-        int slotRowsRequired = Math.max(this.slotAmountY, list.storage.size());
-        int slotsToAdd = slotRowsRequired - this.slotRowsAmount;
-        this.slotRowsAmount = slotRowsRequired;
-        this.modifySlotRows(slotsToAdd);
-        buffer.writeVarInt(slotsToAdd);
-        this.writeListChange(buffer);
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        super.readInitialData(buffer);
-        if (this.list == null) return;
-        this.modifySlotRows(buffer.readVarInt());
-        this.readListChange(buffer);
-    }
-    */
+     * @Override
+     * public void writeInitialData(FriendlyByteBuf buffer) {
+     * super.writeInitialData(buffer);
+     * if (this.list == null) return;
+     * int slotRowsRequired = Math.max(this.slotAmountY, list.storage.size());
+     * int slotsToAdd = slotRowsRequired - this.slotRowsAmount;
+     * this.slotRowsAmount = slotRowsRequired;
+     * this.modifySlotRows(slotsToAdd);
+     * buffer.writeVarInt(slotsToAdd);
+     * this.writeListChange(buffer);
+     * }
+     * 
+     * @Override
+     * public void readInitialData(FriendlyByteBuf buffer) {
+     * super.readInitialData(buffer);
+     * if (this.list == null) return;
+     * this.modifySlotRows(buffer.readVarInt());
+     * this.readListChange(buffer);
+     * }
+     */
 
     public static class Item extends AEListGridComponent {
 

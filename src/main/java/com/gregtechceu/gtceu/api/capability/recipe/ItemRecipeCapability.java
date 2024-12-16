@@ -38,7 +38,6 @@ import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeComponent;
 import com.gregtechceu.gtceu.utils.*;
 
-import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.ConstantFloat;
@@ -48,7 +47,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 

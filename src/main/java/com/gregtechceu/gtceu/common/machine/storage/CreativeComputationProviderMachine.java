@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
@@ -17,6 +16,7 @@ import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -135,14 +135,14 @@ public class CreativeComputationProviderMachine extends MetaMachine
                 .child(UIComponents.label(() -> Component.literal(String.valueOf(lastRequestedCWUt)))
                         .positioning(Positioning.absolute(7, 54)));
         rootComponent.child(UIComponents.switchComponent((clickData, value) -> {
-                    setActive(value);
-                    menu.sendMessage(new ActiveMessage(value));
-                })
+            setActive(value);
+            menu.sendMessage(new ActiveMessage(value));
+        })
                 .supplier(this::isActive)
-                        .texture(UITextures.group(GuiTextures.VANILLA_BUTTON,
-                                UITextures.text(Component.translatable("gtceu.creative.activity.off"))),
-                                UITextures.group(GuiTextures.VANILLA_BUTTON,
-                                        UITextures.text(Component.translatable("gtceu.creative.activity.on"))))
+                .texture(UITextures.group(GuiTextures.VANILLA_BUTTON,
+                        UITextures.text(Component.translatable("gtceu.creative.activity.off"))),
+                        UITextures.group(GuiTextures.VANILLA_BUTTON,
+                                UITextures.text(Component.translatable("gtceu.creative.activity.on"))))
                 .positioning(Positioning.absolute(9, 66))
                 .sizing(Sizing.fixed(122), Sizing.fixed(20)));
     }
@@ -153,5 +153,6 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     public record MaxCWUtMessage(int maxCWUt) {}
+
     public record ActiveMessage(boolean active) {}
 }

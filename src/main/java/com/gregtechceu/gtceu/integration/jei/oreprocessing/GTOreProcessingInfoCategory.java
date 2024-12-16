@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-
 import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProductComponent;
 

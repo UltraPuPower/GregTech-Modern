@@ -103,7 +103,7 @@ public class UIModelLoader implements ResourceManagerReloadListener {
         manager.listResources(PATH_PREFIX, identifier -> identifier.getPath().endsWith(PATH_SUFFIX))
                 .forEach((resourceId, resource) -> {
                     try {
-                        //+1 for the / at the end.
+                        // +1 for the / at the end.
                         var modelId = resourceId.withPath(path -> path.substring(PATH_PREFIX.length() + 1,
                                 path.length() - PATH_SUFFIX.length()));
 

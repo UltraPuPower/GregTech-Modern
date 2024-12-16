@@ -4,18 +4,19 @@ import com.gregtechceu.gtceu.api.ui.core.Color;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.joml.Vector4f;
 import org.w3c.dom.Element;
 
@@ -77,7 +78,8 @@ public class TextTexture extends TransformTexture {
     }
 
     @Override
-    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width, float height) {
+    protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
+                                float height) {
         if (textSupplier != null) {
             this.text = textSupplier.get();
         }
@@ -128,7 +130,8 @@ public class TextTexture extends TransformTexture {
                 drawTextLine(graphics, x, y, width, height, font, textH, line);
             }
         } else if (textType == TextType.ROLL || textType == TextType.ROLL_ALWAYS) {
-            if (texts.size() > 1 && (textType == TextType.ROLL_ALWAYS || Widget.isMouseOver(x, y, width, height, mouseX, mouseY))) {
+            if (texts.size() > 1 &&
+                    (textType == TextType.ROLL_ALWAYS || Widget.isMouseOver(x, y, width, height, mouseX, mouseY))) {
                 drawRollTextLine(graphics, x, y, width, height, font, textH, text);
             } else {
                 drawTextLine(graphics, x, y, width, height, font, textH, texts.get(0));
@@ -142,7 +145,8 @@ public class TextTexture extends TransformTexture {
                 graphics.drawString(font, line, x, _y, color, dropShadow);
             }
         } else if (textType == TextType.LEFT_ROLL || textType == TextType.LEFT_ROLL_ALWAYS) {
-            if (texts.size() > 1 && (textType == TextType.LEFT_ROLL_ALWAYS || Widget.isMouseOver(x, y, width, height, mouseX, mouseY))) {
+            if (texts.size() > 1 && (textType == TextType.LEFT_ROLL_ALWAYS ||
+                    Widget.isMouseOver(x, y, width, height, mouseX, mouseY))) {
                 drawRollTextLine(graphics, x, y, width, height, font, textH, text);
             } else {
                 float _y = y + (height - textH) / 2f;
@@ -151,10 +155,10 @@ public class TextTexture extends TransformTexture {
         }
         graphics.pose().popPose();
         RenderSystem.setShaderColor(1, 1, 1, 1);
-
     }
 
-    private void drawRollTextLine(GuiGraphics graphics, float x, float y, int width, int height, Font fontRenderer, int textH, Component line) {
+    private void drawRollTextLine(GuiGraphics graphics, float x, float y, int width, int height, Font fontRenderer,
+                                  int textH, Component line) {
         float _y = y + (height - textH) / 2f;
         int textW = fontRenderer.width(line);
         int totalW = width + textW + 10;
@@ -163,12 +167,15 @@ public class TextTexture extends TransformTexture {
         var realPos = trans.transform(new Vector4f(x, y, 0, 1));
         var realPos2 = trans.transform(new Vector4f(x + width, y + height, 0, 1));
         graphics.enableScissor((int) realPos.x, (int) realPos.y, (int) realPos2.x, (int) realPos2.y);
-        var t = rollSpeed > 0 ? ((((rollSpeed * Math.abs((int) (System.currentTimeMillis() % 1000000)) / 10) % (totalW))) / (totalW)) : 0.5;
+        var t = rollSpeed > 0 ?
+                ((((rollSpeed * Math.abs((int) (System.currentTimeMillis() % 1000000)) / 10) % (totalW))) / (totalW)) :
+                0.5;
         graphics.drawString(fontRenderer, line, (int) (from - t * totalW), (int) _y, color, dropShadow);
         graphics.disableScissor();
     }
 
-    private void drawTextLine(GuiGraphics graphics, float x, float y, int width, int height, Font fontRenderer, int textH, FormattedCharSequence line) {
+    private void drawTextLine(GuiGraphics graphics, float x, float y, int width, int height, Font fontRenderer,
+                              int textH, FormattedCharSequence line) {
         int textW = fontRenderer.width(line);
         float _x = x + (width - textW) / 2f;
         float _y = y + (height - textH) / 2f;
@@ -200,5 +207,4 @@ public class TextTexture extends TransformTexture {
         LEFT_ROLL,
         LEFT_ROLL_ALWAYS
     }
-
 }

@@ -7,13 +7,15 @@ import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -245,6 +247,6 @@ public class TabsComponent extends BaseUIComponent {
     public void selectTab(IFancyUIProvider selectedTab) {
         this.selectedTab = selectedTab;
         // TODO
-        //this.detectAndSendChanges();
+        // this.detectAndSendChanges();
     }
 }

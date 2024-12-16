@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -18,8 +18,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fluids.FluidType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -48,14 +49,17 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
         group.child(UIComponents.label(getBlockState().getBlock().getName()))
                 .child(UIContainers.verticalFlow(Sizing.fixed(81), Sizing.fixed(55))
                         .child(UIComponents.label(Component.translatable("gtceu.gui.fluid_amount")))
-                        .child(UIComponents.label(() -> Component.literal(String.valueOf(tank.getFluidInTank(0).getAmount())))
+                        .child(UIComponents
+                                .label(() -> Component.literal(String.valueOf(tank.getFluidInTank(0).getAmount())))
                                 .color(Color.BLACK)
                                 .shadow(true))
                         .child(UIComponents.tank(tank.getStorages()[0])
                                 .canInsert(io.support(IO.IN))
                                 .canExtract(true)
                                 .positioning(Positioning.absolute(90, 35)))
-                        .child(UIComponents.toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)
+                        .child(UIComponents
+                                .toggleButton(GuiTextures.BUTTON_FLUID_OUTPUT, this::isWorkingEnabled,
+                                        this::setWorkingEnabled)
                                 .shouldUseBaseBackground()
                                 .tooltip(List.of(Component.translatable("gtceu.gui.fluid_auto_input.tooltip")))
                                 .positioning(Positioning.absolute(7, 53))
@@ -66,5 +70,4 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
                         .positioning(Positioning.absolute(7, 84)))
                 .surface(Surface.UI_BACKGROUND);
     }
-
 }

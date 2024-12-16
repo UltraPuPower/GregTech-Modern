@@ -7,14 +7,16 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
 import com.gregtechceu.gtceu.utils.GTMath;
-import dev.emi.emi.api.forge.ForgeEmiStack;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
+import dev.emi.emi.api.forge.ForgeEmiStack;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +34,7 @@ public class EmiStackConverter {
     public static final Map<Class<?>, Converter<?>> CONVERTERS = new Reference2ReferenceOpenHashMap<>();
 
     public static final Converter<ItemStack> ITEM = register(ItemStack.class, new Converter<>() {
+
         @Override
         public @Nullable ItemStack convertFrom(EmiStack stack) {
             Item key = stack.getKeyOfType(Item.class);
@@ -65,6 +68,7 @@ public class EmiStackConverter {
         }
     });
     public static final Converter<FluidStack> FLUID = register(FluidStack.class, new Converter<>() {
+
         @Override
         public @Nullable FluidStack convertFrom(EmiStack stack) {
             Fluid key = stack.getKeyOfType(Fluid.class);
@@ -113,6 +117,7 @@ public class EmiStackConverter {
     }
 
     public interface Converter<T> {
+
         @Nullable
         T convertFrom(EmiStack stack);
 

@@ -4,9 +4,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.integration.rei.handler.UIREIDisplay;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinComponent;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.rei.ModularDisplay;
-
 import net.minecraft.world.item.ItemStack;
 
 import me.shedaniel.rei.api.common.entry.EntryIngredient;

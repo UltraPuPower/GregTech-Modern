@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.ui.GuiTextures;
-
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
@@ -55,15 +54,16 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
         screen.positioning(Positioning.absolute(7, 4));
         screen.padding(Insets.both(4, 5));
 
-        screen.child(UIContainers.draggable(Sizing.fill(), Sizing.fill(), UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
+        screen.child(UIContainers.draggable(Sizing.fill(), Sizing.fill(),
+                UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())
                         .child(UIComponents.label(self().getBlockState().getBlock().getName()))
                         .child(UIComponents.componentPanel(this::addDisplayText)
                                 .maxWidthLimit(150)
                                 .clickHandler(this::handleDisplayClick))
                         .positioning(Positioning.absolute(4, 17))
                         .padding(Insets.of(4))))
-                .surface((graphics, component) ->
-                        getScreenTexture().draw(graphics, 0, 0, component.x(), component.y(), component.width(), component.height()));
+                .surface((graphics, component) -> getScreenTexture().draw(graphics, 0, 0, component.x(), component.y(),
+                        component.width(), component.height()));
         rootComponent.child(screen)
                 .child(UIComponents.playerInventory(player.getInventory(), GuiTextures.SLOT)
                         .positioning(Positioning.absolute(3, 129)));

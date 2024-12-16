@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.ui.serialization;
 
 import com.gregtechceu.gtceu.api.ui.util.Observable;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import net.minecraft.network.FriendlyByteBuf;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 
 @Accessors(fluent = true)

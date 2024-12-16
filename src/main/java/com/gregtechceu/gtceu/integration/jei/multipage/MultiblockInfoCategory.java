@@ -5,9 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.ui.component.PatternPreviewComponent;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-
 import com.gregtechceu.gtceu.integration.jei.handler.UIRecipeCategory;
-import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
 import net.minecraft.network.chat.Component;
 

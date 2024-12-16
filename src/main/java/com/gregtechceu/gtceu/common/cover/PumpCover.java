@@ -409,7 +409,5 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             }
             return super.drain(resource, action);
         }
-
     }
-
 }

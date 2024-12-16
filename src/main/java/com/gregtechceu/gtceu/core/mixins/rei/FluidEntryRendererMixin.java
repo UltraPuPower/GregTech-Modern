@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.core.mixins.rei;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.gregtechceu.gtceu.utils.GTMath;
 import dev.architectury.fluid.FluidStack;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.TooltipContext;
@@ -25,9 +24,8 @@ public class FluidEntryRendererMixin {
                                           CallbackInfoReturnable<Tooltip> cir) {
         FluidStack stack = entry.getValue();
         TooltipsHandler.appendFluidTooltips(new net.minecraftforge.fluids.FluidStack(stack.getFluid(),
-                        GTMath.saturatedCast(stack.getAmount()), stack.getTag()),
+                GTMath.saturatedCast(stack.getAmount()), stack.getTag()),
                 cir.getReturnValue()::add,
                 context.getFlag());
     }
-
 }
