@@ -346,7 +346,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Override
     public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         adapter.rootComponent
-                .child(new FancyMachineUIComponent(this, Sizing.fixed(198), Sizing.fixed(208)));
+                .child(new FancyMachineUIComponent(this, Sizing.fixed(198), Sizing.fixed(208))
+                        .positioning(Positioning.relative(50, 50)));
     }
 
     @Override

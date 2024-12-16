@@ -388,11 +388,10 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                 UIComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
                         .createDefault();
                 SlotComponent batterySlot = createBatterySlot().createDefault();
-                UIComponentGroup group = UIContainers.group(Sizing.content(),
-                        Sizing.fixed(Math.max(template.height(), 78)));
+                UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content().min(78));
                 group.positioning(Positioning.relative(50, 50));
                 template.positioning(Positioning.relative(50, 50));
-                batterySlot.positioning(Positioning.absolute(group.width() / 2 - 9, group.height() - 18));
+                batterySlot.positioning(Positioning.relative(50, 100));
                 group.child(batterySlot);
                 group.child(template);
 

@@ -36,7 +36,8 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     @OnlyIn(Dist.CLIENT)
     default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
         adapter.rootComponent
-                .child(new FancyMachineUIComponent(this, Sizing.fixed(176), Sizing.fixed(166)));
+                .child(new FancyMachineUIComponent(this, Sizing.fixed(176), Sizing.fixed(166))
+                        .positioning(Positioning.relative(50, 50)));
     }
 
     /**

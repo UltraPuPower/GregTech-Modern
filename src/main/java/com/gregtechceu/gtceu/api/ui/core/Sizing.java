@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.ui.core;
 
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelParsingException;
 
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.util.Mth;
 
 import org.w3c.dom.Element;
@@ -10,12 +12,18 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 
+@Accessors(fluent = true, chain = true)
 public class Sizing implements Animatable<Sizing> {
 
     private static final Sizing CONTENT_SIZING = new Sizing(0, Method.CONTENT);
 
     public final Method method;
     public final int value;
+
+    @Setter
+    public int min = -1;
+    @Setter
+    public int max = -1;
 
     private Sizing(int value, Method method) {
         this.method = method;
@@ -32,8 +40,32 @@ public class Sizing implements Animatable<Sizing> {
     public int inflate(int space, Function<Sizing, Integer> contentSizeFunction) {
         return switch (this.method) {
             case FIXED -> this.value;
-            case FILL -> Math.round((this.value / 100f) * space);
-            case CONTENT -> contentSizeFunction.apply(this) + this.value * 2;
+            case FILL -> {
+                int value = Math.round((this.value / 100f) * space);
+                if (min != -1) {
+                    if (max != -1) {
+                        yield Mth.clamp(value, min, max);
+                    }
+                    yield Math.min(min, value);
+                }
+                if (max != -1) {
+                    yield Math.max(max, value);
+                }
+                yield value;
+            }
+            case CONTENT -> {
+                int value = contentSizeFunction.apply(this) + this.value * 2;
+                if (min != -1) {
+                    if (max != -1) {
+                        yield Mth.clamp(value, min, max);
+                    }
+                    yield Math.min(min, value);
+                }
+                if (max != -1) {
+                    yield Math.max(max, value);
+                }
+                yield value;
+            }
         };
     }
 
@@ -119,12 +151,23 @@ public class Sizing implements Animatable<Sizing> {
         var method = Method.valueOf(methodString.toUpperCase(Locale.ROOT));
         var value = sizingElement.getTextContent().strip();
 
+        var min = sizingElement.getAttribute("min").strip();
+        if (!min.matches("(\\d+)?")) {
+            throw new UIModelParsingException("Invalid min limit in sizing declaration");
+        }
+        var max = sizingElement.getAttribute("max").strip();
+        if (!max.matches("(\\d+)?")) {
+            throw new UIModelParsingException("Invalid max limit in sizing declaration");
+        }
+
         if (method == Method.CONTENT) {
             if (!value.matches("(-?\\d+)?")) {
                 throw new UIModelParsingException("Invalid value in sizing declaration");
             }
 
-            return new Sizing(value.isEmpty() ? 0 : Integer.parseInt(value), method);
+            return new Sizing(value.isEmpty() ? 0 : Integer.parseInt(value), method)
+                    .min(min.isEmpty() ? -1 : Integer.parseInt(min))
+                    .max(max.isEmpty() ? -1 : Integer.parseInt(max));
         } else {
             if (!value.matches("-?\\d+") && method != Method.FILL) {
                 throw new UIModelParsingException("Invalid value in sizing declaration: " + value);
@@ -132,7 +175,9 @@ public class Sizing implements Animatable<Sizing> {
                 return new Sizing(100, method);
             }
 
-            return new Sizing(Integer.parseInt(value), method);
+            return new Sizing(Integer.parseInt(value), method)
+                    .min(min.isEmpty() ? -1 : Integer.parseInt(min))
+                    .max(max.isEmpty() ? -1 : Integer.parseInt(max));
         }
     }
 
@@ -141,12 +186,13 @@ public class Sizing implements Animatable<Sizing> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Sizing sizing = (Sizing) o;
-        return value == sizing.value && method == sizing.method;
+        return value == sizing.value && method == sizing.method &&
+                min == sizing.min && max == sizing.max;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(method, value);
+        return Objects.hash(method, value, min, max);
     }
 
     private static class MergedSizing extends Sizing {

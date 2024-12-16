@@ -196,8 +196,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
             .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
                 UIComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
                         .createDefault();
-                UIComponentGroup group = UIContainers.group(Sizing.content(),
-                        Sizing.fixed(Math.max(template.height(), 78)));
+                UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content().min(78));
                 template.positioning(Positioning.relative(50, 50));
                 group.child(template);
                 return group;

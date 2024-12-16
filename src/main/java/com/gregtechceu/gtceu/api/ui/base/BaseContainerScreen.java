@@ -86,12 +86,6 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
             super.init();
             this.uiAdapter.leftPos(leftPos);
             this.uiAdapter.topPos(topPos);
-            // this.uiAdapter.rootComponent.forEachDescendant(child -> {
-            // if (child instanceof SlotComponent slot) {
-            // ((SlotAccessor) slot.slot()).gtceu$setX(slot.x()); // + leftPos
-            // ((SlotAccessor) slot.slot()).gtceu$setY(slot.y()); // + topPos
-            // }
-            // });
         } else {
             try {
                 this.uiAdapter = this.createAdapter();
