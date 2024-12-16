@@ -235,7 +235,7 @@ public class GTMachines {
                         case 3 -> 3;
                         default -> 4;
                     })
-                    .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/macerator"))
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.apply(tier), true))
@@ -250,7 +250,7 @@ public class GTMachines {
                             GTRecipeTypes.ROCK_BREAKER_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.ROCK_BREAKER_RECIPES)
-                    .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/rock_crusher"))
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.ROCK_BREAKER_RECIPES, defaultTankSizeFunction.apply(tier), true))
@@ -264,7 +264,7 @@ public class GTMachines {
                             GTRecipeTypes.AIR_SCRUBBER_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.AIR_SCRUBBER_RECIPES)
-                    .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/air_scrubber"))
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.AIR_SCRUBBER_RECIPES, defaultTankSizeFunction.apply(tier), true))
@@ -1073,9 +1073,6 @@ public class GTMachines {
         GCYMMachines.init();
         GTResearchMachines.init();
 
-        if (GTCEu.isCreateLoaded()) {
-            GTCreateMachines.init();
-        }
         if (GTCEu.isAE2Loaded()) {
             GTAEMachines.init();
         }

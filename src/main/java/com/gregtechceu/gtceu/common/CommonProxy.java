@@ -57,7 +57,6 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -123,7 +122,6 @@ public class CommonProxy {
         GTSoundEntries.init();
         GTDamageTypes.init();
         GTCovers.init();
-        ForgeMod.enableMilkFluid();
         GTFluids.init();
         GTCreativeModeTabs.init();
         GTBlocks.init();
