@@ -220,7 +220,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // Block/Item related
         event.add("GTBlocks", GTBlocks.class);
         event.add("GTMaterialBlocks", GTMaterialBlocks.class);
-        event.add("GCyMBlocks", GCYMBlocks.class);
         event.add("GCYMBlocks", GCYMBlocks.class);
         event.add("GTMachines", GTMachines.class);
         event.add("GTMultiMachines", GTMultiMachines.class);
