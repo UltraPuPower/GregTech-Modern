@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
-
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -220,7 +220,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         private static BlockState getBlockState(Either<BlockState, Material> block, Direction direction) {
             return block.map(
                     state -> state,
-                    material -> GTMaterialBlocks.SURFACE_ROCK_BLOCKS.get(material).get().getStateForDirection(direction));
+                    material -> GTMaterialBlocks.SURFACE_ROCK_BLOCKS.get(material).get()
+                            .getStateForDirection(direction));
         }
 
         @Override

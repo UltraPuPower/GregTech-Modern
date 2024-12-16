@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.collect.ArrayTable;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -13,12 +10,17 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+
+import com.google.common.collect.ArrayTable;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +33,8 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTMaterialItems {
 
     // Reference Table Builders
-    static ImmutableTable.Builder<TagPrefix, Material, ItemEntry<TagPrefixItem>>
-            MATERIAL_ITEMS_BUILDER = ImmutableTable.builder();
+    static ImmutableTable.Builder<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS_BUILDER = ImmutableTable
+            .builder();
 
     // Reference Maps
     public static final Map<UnificationEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
@@ -45,13 +47,11 @@ public class GTMaterialItems {
 
     // Reference Tables
     public static Table<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS;
-    public final static Table<Material, GTToolType, ItemProviderEntry<IGTTool>>
-            TOOL_ITEMS = ArrayTable.create(
+    public final static Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS = ArrayTable.create(
             GTCEuAPI.materialManager.getRegisteredMaterials().stream()
                     .filter(mat -> mat.hasProperty(PropertyKey.TOOL))
                     .toList(),
-            GTToolType.getTypes().values().stream().toList()
-    );
+            GTToolType.getTypes().values().stream().toList());
 
     // Material Items
     public static void generateMaterialItems() {
@@ -70,6 +70,7 @@ public class GTMaterialItems {
         }
         MATERIAL_ITEMS = MATERIAL_ITEMS_BUILDER.build();
     }
+
     private static void generateMaterialItem(TagPrefix tagPrefix, Material material, GTRegistrate registrate) {
         MATERIAL_ITEMS_BUILDER.put(tagPrefix, material, registrate
                 .item(tagPrefix.idPattern().formatted(material.getName()),
@@ -101,6 +102,7 @@ public class GTMaterialItems {
             }
         }
     }
+
     private static void generateTool(Material material, GTToolType toolType, GTRegistrate registrate) {
         var tier = material.getToolTier();
         TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate

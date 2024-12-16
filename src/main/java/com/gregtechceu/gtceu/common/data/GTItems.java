@@ -2608,7 +2608,8 @@ public class GTItems {
     }
 
     public static <T extends Item> void cauldronInteraction(T item) {
-        if (item instanceof TagPrefixItem tagPrefixItem && GTMaterialItems.purifyMap.containsKey(tagPrefixItem.tagPrefix)) {
+        if (item instanceof TagPrefixItem tagPrefixItem &&
+                GTMaterialItems.purifyMap.containsKey(tagPrefixItem.tagPrefix)) {
             CauldronInteraction.WATER.put(item, (state, world, pos, player, hand, stack) -> {
                 if (!world.isClientSide) {
                     Item stackItem = stack.getItem();
@@ -2623,8 +2624,9 @@ public class GTItems {
                         if (level == 0)
                             return InteractionResult.PASS;
 
-                        player.setItemInHand(hand, ChemicalHelper.get(GTMaterialItems.purifyMap.get(prefixItem.tagPrefix),
-                                prefixItem.material, stack.getCount()));
+                        player.setItemInHand(hand,
+                                ChemicalHelper.get(GTMaterialItems.purifyMap.get(prefixItem.tagPrefix),
+                                        prefixItem.material, stack.getCount()));
                         player.awardStat(Stats.USE_CAULDRON);
                         player.awardStat(Stats.ITEM_USED.get(stackItem));
                         LayeredCauldronBlock.lowerFillLevel(state, world, pos);

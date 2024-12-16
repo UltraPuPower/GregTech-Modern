@@ -102,9 +102,11 @@ public class GTBlocks {
     public static final BlockEntry<DuctPipeBlock>[] DUCT_PIPES = new BlockEntry[DuctPipeType.VALUES.length];
 
     //////////////////////////////////////
-    //           Pipes Blocks           //
+    // Pipes Blocks //
     //////////////////////////////////////
-    static { REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE); }
+    static {
+        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
+    }
 
     // Laser Pipe Blocks
     private static void generateLaserPipeBlocks() {
@@ -114,6 +116,7 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.debug("Generating GTCEu Laser Pipe Blocks... Complete!");
     }
+
     private static void registerLaserPipeBlock(int index) {
         var type = LaserPipeType.values()[index];
         var entry = REGISTRATE
@@ -141,6 +144,7 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.debug("Generating GTCEu Optical Pipe Blocks... Complete!");
     }
+
     private static void registerOpticalPipeBlock(int index) {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE
@@ -168,6 +172,7 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.debug("Generating GTCEu Duct Pipe Blocks... Complete!");
     }
+
     private static void registerDuctPipeBlock(int index) {
         var type = DuctPipeType.VALUES[index];
         var entry = REGISTRATE
@@ -204,7 +209,6 @@ public class GTBlocks {
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
             .simpleItem()
             .register();
-
 
     //////////////////////////////////////
     // ****** Casing Blocks *****//

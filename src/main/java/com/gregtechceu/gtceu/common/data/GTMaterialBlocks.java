@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
@@ -21,27 +18,32 @@ import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.Blocks;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.Map;
 
 public class GTMaterialBlocks {
 
     // Reference Table Builders
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends MaterialBlock>>
-            MATERIAL_BLOCKS_BUILDER = ImmutableTable.builder();
-    static ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>>
-            SURFACE_ROCK_BLOCKS_BUILDER = ImmutableMap.builder();
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>>
-            CABLE_BLOCKS_BUILDER = ImmutableTable.builder();
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>>
-            FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable.builder();
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<ItemPipeBlock>>
-            ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable.builder();
+    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS_BUILDER = ImmutableTable
+            .builder();
+    static ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS_BUILDER = ImmutableMap
+            .builder();
+    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS_BUILDER = ImmutableTable
+            .builder();
+    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable
+            .builder();
+    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
+            .builder();
 
     // Reference Tables
     public static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
@@ -68,6 +70,7 @@ public class GTMaterialBlocks {
         }
         GTCEu.LOGGER.debug("Generating GTCEu Material Blocks... Complete!");
     }
+
     private static void registerMaterialBlock(TagPrefix tagPrefix, Material material, GTRegistrate registrate) {
         MATERIAL_BLOCKS_BUILDER.put(tagPrefix, material, registrate
                 .block(tagPrefix.idPattern().formatted(material.getName()),
@@ -101,9 +104,11 @@ public class GTMaterialBlocks {
         }
         GTCEu.LOGGER.debug("Generating GTCEu Ore Blocks... Complete!");
     }
+
     private static boolean allowOreBlock(Material material) {
         return material.hasProperty(PropertyKey.ORE);
     }
+
     private static void registerOreBlock(Material material, GTRegistrate registrate) {
         for (var ore : TagPrefix.ORES.entrySet()) {
             if (ore.getKey().isIgnored(material)) continue;
@@ -151,9 +156,11 @@ public class GTMaterialBlocks {
         SURFACE_ROCK_BLOCKS = SURFACE_ROCK_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Surface Rock Indicator Blocks... Complete!");
     }
+
     private static boolean allowOreIndicator(Material material) {
         return material.hasProperty(PropertyKey.ORE);
     }
+
     private static void registerOreIndicator(Material material, GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
@@ -188,10 +195,12 @@ public class GTMaterialBlocks {
         CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks... Complete!");
     }
+
     private static boolean allowCableBlock(Material material, Insulation insulation) {
         return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material) &&
                 !(insulation.isCable && material.getProperty(PropertyKey.WIRE).isSuperconductor());
     }
+
     private static void registerCableBlock(Material material, Insulation insulation, GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s".formatted(material.getName(), insulation.name),
@@ -228,10 +237,13 @@ public class GTMaterialBlocks {
         FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks... Complete!");
     }
+
     private static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
         return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material);
     }
-    private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType, GTRegistrate registrate) {
+
+    private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType,
+                                               GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name),
                         p -> new FluidPipeBlock(p, fluidPipeType, material))
@@ -272,9 +284,11 @@ public class GTMaterialBlocks {
         ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks... Complete!");
     }
+
     private static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
         return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material);
     }
+
     private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType, GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name),

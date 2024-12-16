@@ -791,34 +791,41 @@ public class TagPrefix {
     public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .materialAmount(GTValues.M * 8).materialIconType(MaterialIconType.wire).unificationEnabled(true);
-    public static final TagPrefix wireGtOctal = new TagPrefix("wireGtOctal").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix wireGtOctal = new TagPrefix("wireGtOctal")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .materialAmount(GTValues.M * 4).materialIconType(MaterialIconType.wire).unificationEnabled(true);
     public static final TagPrefix wireGtQuadruple = new TagPrefix("wireGtQuadruple")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS).langValue("4x %s Wire")
             .miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0)).materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.wire).unificationEnabled(true);
-    public static final TagPrefix wireGtDouble = new TagPrefix("wireGtDouble").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix wireGtDouble = new TagPrefix("wireGtDouble")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0)).materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.wire).unificationEnabled(true);
-    public static final TagPrefix wireGtSingle = new TagPrefix("wireGtSingle").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix wireGtSingle = new TagPrefix("wireGtSingle")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .materialAmount(GTValues.M / 2).materialIconType(MaterialIconType.wire).unificationEnabled(true);
 
-    public static final TagPrefix cableGtHex = new TagPrefix("cableGtHex").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix cableGtHex = new TagPrefix("cableGtHex")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Cable").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .materialAmount(GTValues.M * 8).unificationEnabled(true);
-    public static final TagPrefix cableGtOctal = new TagPrefix("cableGtOctal").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix cableGtOctal = new TagPrefix("cableGtOctal")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Cable").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .materialAmount(GTValues.M * 4).unificationEnabled(true);
     public static final TagPrefix cableGtQuadruple = new TagPrefix("cableGtQuadruple")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS).langValue("4x %s Cable")
             .miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0)).materialAmount(GTValues.M * 2)
             .unificationEnabled(true);
-    public static final TagPrefix cableGtDouble = new TagPrefix("cableGtDouble").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix cableGtDouble = new TagPrefix("cableGtDouble")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Cable").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .materialAmount(GTValues.M).unificationEnabled(true);
-    public static final TagPrefix cableGtSingle = new TagPrefix("cableGtSingle").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix cableGtSingle = new TagPrefix("cableGtSingle")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Cable").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .materialAmount(GTValues.M / 2).unificationEnabled(true);
 
