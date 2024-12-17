@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
@@ -35,7 +35,7 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
     }
 
     @Override
-    default UIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
+    default UIComponent createConfigurator(UIAdapter<StackLayout> adapter) {
         throw new NotImplementedException();
     }
 

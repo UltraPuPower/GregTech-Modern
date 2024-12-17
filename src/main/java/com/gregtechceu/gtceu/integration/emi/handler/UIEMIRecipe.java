@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
 
-    protected T component;
+    protected Supplier<T> component;
     protected EMIUIAdapter adapter;
     @Getter
     protected List<EmiIngredient> inputs = new ArrayList<>();
@@ -43,19 +43,21 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
      * @param componentSupplier the supplier to create the UI from.
      */
     public UIEMIRecipe(Supplier<T> componentSupplier) {
-        this.component = componentSupplier.get();
-        // inflate up to a sane default
-        this.component.inflate(Size.of(200, 200));
+        this.component = componentSupplier;
 
-        Bounds bounds = new Bounds(0, 0, this.component.width(), this.component.height());
+        var comp = componentSupplier.get();
+        // inflate up to a sane default
+        comp.inflate(Size.of(200, 200));
+
+        Bounds bounds = new Bounds(0, 0, comp.width(), comp.height());
         this.adapter = new EMIUIAdapter(bounds);
-        this.adapter.rootComponent().child(this.component);
+        this.adapter.rootComponent().child(comp);
         this.adapter.prepare();
 
-        this.displayWidth = this.component.width();
-        this.displayHeight = this.component.height();
+        this.displayWidth = this.adapter.adapter.width();
+        this.displayHeight = this.adapter.adapter.height();
 
-        for (UIComponent c : getFlatWidgetCollection(this.component)) {
+        for (UIComponent c : getFlatWidgetCollection(comp)) {
             if (c instanceof ClickableIngredientSlot<?> slot) {
                 var io = slot.ingredientIO();
 
@@ -89,7 +91,7 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
     public void addWidgets(WidgetHolder widgets) {
         widgets.add(this.adapter);
 
-        for (UIComponent w : getFlatWidgetCollection(component)) {
+        for (UIComponent w : getFlatWidgetCollection(this.adapter.rootComponent().children().get(0))) {
             if (w instanceof ClickableIngredientSlot<?> slot) {
                 /*
                  * do we still want this?
@@ -150,7 +152,7 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
         }
     }
 
-    public List<UIComponent> getFlatWidgetCollection(T widgetIn) {
+    public List<UIComponent> getFlatWidgetCollection(UIComponent widgetIn) {
         List<UIComponent> widgetList = new ArrayList<>();
         if (widgetIn instanceof ParentUIComponent group) {
             group.collectDescendants(widgetList);

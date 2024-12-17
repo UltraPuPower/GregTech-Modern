@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import org.w3c.dom.Element;
 
-public class PlayerInventoryComponent extends UIComponentGroup {
+public class PlayerInventoryComponent extends StackLayout {
 
     protected PlayerInventoryComponent(Inventory inventory, UITexture slotTexture) {
         super(Sizing.fixed(162), Sizing.fixed(76));

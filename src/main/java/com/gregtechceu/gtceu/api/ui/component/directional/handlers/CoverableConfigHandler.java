@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.ui.component.*;
 import com.gregtechceu.gtceu.api.ui.component.CoverConfigurator;
 import com.gregtechceu.gtceu.api.ui.component.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.ConfiguratorPanelComponent;
@@ -169,8 +169,8 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
             }
 
             @Override
-            public ParentUIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
-                UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content(10));
+            public ParentUIComponent createConfigurator(UIAdapter<StackLayout> adapter) {
+                StackLayout group = UIContainers.stack(Sizing.content(), Sizing.content(10));
 
                 if (side == null || !(coverable.getCoverAtSide(side) instanceof IUICover iuiCover))
                     return group;

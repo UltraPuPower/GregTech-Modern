@@ -33,7 +33,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class ProspectingMapComponent extends UIComponentGroup implements SearchComponent.IComponentSearch<Object> {
+public class ProspectingMapComponent extends StackLayout implements SearchComponent.IComponentSearch<Object> {
 
     private final int chunkRadius;
     private final ProspectorMode mode;
@@ -61,7 +61,7 @@ public class ProspectingMapComponent extends UIComponentGroup implements SearchC
         child(UIComponents.texture(GuiTextures.BACKGROUND_INVERSE)
                 .positioning(Positioning.absolute(0, (height - imageHeight) / 2 - 4))
                 .sizing(Sizing.fixed(imageWidth + 8), Sizing.fixed(imageHeight + 8)));
-        var group = (UIComponentGroup) UIContainers.group(Sizing.fixed(width - (imageWidth + 10)), Sizing.fill())
+        var group = (StackLayout) UIContainers.stack(Sizing.fixed(width - (imageWidth + 10)), Sizing.fill())
                 .surface(Surface.UI_BACKGROUND_INVERSE)
                 .padding(Insets.both(8, 32))
                 .positioning(Positioning.absolute(imageWidth + 10, 0));

@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -120,8 +120,8 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     }
 
     @Override
-    public void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
-        var group = UIContainers.group(Sizing.fixed(184), Sizing.fixed(132));
+    public void loadClientUI(Player entityPlayer, UIAdapter<StackLayout> adapter, HeldItemUIHolder holder) {
+        var group = UIContainers.stack(Sizing.fixed(184), Sizing.fixed(132));
         adapter.rootComponent.child(group);
 
         var handler = new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld())));

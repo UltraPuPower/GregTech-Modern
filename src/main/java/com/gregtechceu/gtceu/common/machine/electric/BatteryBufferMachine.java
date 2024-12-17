@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
@@ -144,12 +144,12 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         var editableUI = createEnergyBar();
         var energyBar = editableUI.createDefault();
 
-        var group = UIContainers.group(Sizing.content(4 + 8), Sizing.content(8));
+        var group = UIContainers.stack(Sizing.content(4 + 8), Sizing.content(8));
         energyBar.positioning(Positioning.relative(2, 50));
         template.positioning(Positioning.relative(50, 50));
         group.child(energyBar);
         group.child(template);
-        editableUI.setupUI(group, (UIAdapter<UIComponentGroup>) component.containerAccess().adapter(), this);
+        editableUI.setupUI(group, (UIAdapter<StackLayout>) component.containerAccess().adapter(), this);
         return group;
     }
 

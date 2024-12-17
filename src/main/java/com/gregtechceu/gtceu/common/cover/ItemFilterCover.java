@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -102,8 +102,8 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        final var group = UIContainers.group(Sizing.fixed(178), Sizing.fixed(85));
+    public ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter) {
+        final var group = UIContainers.stack(Sizing.fixed(178), Sizing.fixed(85));
         group.child(UIComponents.label(Component.translatable(attachItem.getDescriptionId()))
                 .positioning(Positioning.absolute(60, 5)));
         group.child(new EnumSelectorComponent<>(Sizing.fixed(18), Sizing.fixed(18),

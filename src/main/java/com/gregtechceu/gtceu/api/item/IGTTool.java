@@ -22,7 +22,7 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
@@ -864,12 +864,12 @@ public interface IGTTool extends HeldItemUIHolder.IHeldItemUIConstructor, ItemLi
     }
 
     @Override
-    default void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
+    default void loadClientUI(Player entityPlayer, UIAdapter<StackLayout> adapter, HeldItemUIHolder holder) {
         final var menu = adapter.menu();
         CompoundTag tag = getBehaviorsTag(holder.getHeld());
         AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
 
-        var rootComponent = UIContainers.group(Sizing.fixed(120), Sizing.fixed(80));
+        var rootComponent = UIContainers.stack(Sizing.fixed(120), Sizing.fixed(80));
         rootComponent.positioning(Positioning.relative(50, 50));
         adapter.rootComponent.child(rootComponent);
 

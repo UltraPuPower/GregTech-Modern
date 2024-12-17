@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -45,7 +45,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
     private @Nullable F filter;
     private @Nullable CustomItemStackHandler filterSlot;
-    private @Nullable UIComponentGroup filterGroup;
+    private @Nullable StackLayout filterGroup;
 
     private @NotNull Consumer<F> onFilterLoaded = (filter) -> {};
     private @NotNull Consumer<F> onFilterRemoved = (filter) -> {};
@@ -73,8 +73,8 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     }
 
     public UIComponent createFilterConfigUI(int xPos, int yPos, int width, int height,
-                                            UIAdapter<UIComponentGroup> adapter) {
-        this.filterGroup = UIContainers.group(Sizing.fixed(width), Sizing.fixed(height));
+                                            UIAdapter<StackLayout> adapter) {
+        this.filterGroup = UIContainers.stack(Sizing.fixed(width), Sizing.fixed(height));
         filterGroup.positioning(Positioning.absolute(xPos, yPos));
         if (!this.filterItem.isEmpty()) {
             this.filterGroup.child(getFilter().openConfigurator(0, 0, adapter));
@@ -175,7 +175,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
         if (!this.filterItem.isEmpty() && this.filter != null) {
             this.filterGroup.child(this.filter.openConfigurator(0, 0,
-                    (UIAdapter<UIComponentGroup>) this.filterGroup.containerAccess().adapter()));
+                    (UIAdapter<StackLayout>) this.filterGroup.containerAccess().adapter()));
         }
     }
 

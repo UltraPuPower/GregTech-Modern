@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
@@ -160,7 +160,7 @@ public abstract class RecipeCapability<T> {
         return isRecipeSearchFilter();
     }
 
-    public void addXEIInfo(UIComponentGroup group, GTRecipe recipe, List<Content> contents, boolean perTick,
+    public void addXEIInfo(StackLayout group, GTRecipe recipe, List<Content> contents, boolean perTick,
                            boolean isInput) {}
 
     @NotNull
@@ -183,7 +183,7 @@ public abstract class RecipeCapability<T> {
     }
 
     public void applyUIComponentInfo(@NotNull UIComponent widget,
-                                     UIAdapter<UIComponentGroup> adapter, int index,
+                                     UIAdapter<StackLayout> adapter, int index,
                                      boolean isXEI,
                                      IO io,
                                      @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,

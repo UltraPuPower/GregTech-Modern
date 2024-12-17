@@ -31,12 +31,18 @@ public class VerticalTabsComponent extends TabsComponent {
     }
 
     @Override
-    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
+    public void update(float delta, int mouseX, int mouseY) {
+        super.update(delta, mouseX, mouseY);
         var hoveredTab = getHoveredTab(mouseX, mouseY);
         if (hoveredTab == null) {
             return;
         }
         updateTooltip(hoveredTab);
+    }
+
+    @Override
+    public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
+        var hoveredTab = getHoveredTab(mouseX, mouseY);
         // main tab
         drawTab(mainTab, graphics, mouseX, mouseY, x, y + 8, 24, 24, hoveredTab);
         for (int i = 0; i < subTabs.size(); ++i) {

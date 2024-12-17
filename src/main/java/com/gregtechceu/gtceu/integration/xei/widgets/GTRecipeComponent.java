@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.component.PredicatedButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.ProgressComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
 import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
@@ -52,7 +52,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * @date 2023/2/25
  * @implNote GTRecipeComponent
  */
-public class GTRecipeComponent extends UIComponentGroup {
+public class GTRecipeComponent extends StackLayout {
 
     public static final String RECIPE_CONTENT_GROUP_ID = "recipe_content_group";
     public static final Pattern RECIPE_CONTENT_GROUP_ID_REGEX = Pattern.compile("^recipe_content_group$");
@@ -103,13 +103,11 @@ public class GTRecipeComponent extends UIComponentGroup {
         collectStorage(storages, contents, recipe);
 
         // noinspection unchecked
-        UIComponentGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressComponent.JEIProgress,
-                (UIAdapter<UIComponentGroup>) this.containerAccess().adapter(),
+        StackLayout group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressComponent.JEIProgress,
+                (UIAdapter<StackLayout>) this.containerAccess().adapter(),
                 storages,
                 recipe.data.copy(), recipe.conditions);
-        addSlots(contents, group, (UIAdapter<UIComponentGroup>) this.containerAccess().adapter(), recipe);
-
-        var size = group.fullSize();
+        addSlots(contents, group, (UIAdapter<StackLayout>) this.containerAccess().adapter(), recipe);
 
         // Ensure any previous instances of the widget are removed first. This applies when changing the recipe
         // preview's voltage tier, as this recipe widget stays the same while its contents are updated.
@@ -118,6 +116,7 @@ public class GTRecipeComponent extends UIComponentGroup {
 
         child(group);
 
+        /*
         var EUt = RecipeHelper.getInputEUt(recipe);
         if (EUt == 0) {
             EUt = RecipeHelper.getOutputEUt(recipe);
@@ -127,6 +126,7 @@ public class GTRecipeComponent extends UIComponentGroup {
         if (recipe.data.getBoolean("duration_is_total_cwu")) {
             yOffset -= LINE_HEIGHT;
         }
+        */
 
         /// add text based on i/o's
         for (var capability : recipe.inputs.entrySet()) {
@@ -384,8 +384,8 @@ public class GTRecipeComponent extends UIComponentGroup {
     }
 
     public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable,
-                         UIComponentGroup group,
-                         UIAdapter<UIComponentGroup> adapter,
+                         StackLayout group,
+                         UIAdapter<StackLayout> adapter,
                          GTRecipe recipe) {
         for (var capabilityEntry : contentTable.rowMap().entrySet()) {
             IO io = capabilityEntry.getKey();

@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferProxyRecipeHandler;
 
@@ -127,7 +127,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         GTCEu.LOGGER.warn("'loadClientUI' of the Crafting Buffer Proxy was incorrectly called!");
     }
 

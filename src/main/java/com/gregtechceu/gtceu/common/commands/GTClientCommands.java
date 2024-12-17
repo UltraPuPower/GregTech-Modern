@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.commands;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.ui.ops.TextOps;
+import com.gregtechceu.gtceu.api.ui.ops.ComponentOps;
 import com.gregtechceu.gtceu.client.renderdoc.RenderDoc;
 import com.gregtechceu.gtceu.client.renderdoc.RenderdocScreen;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -14,10 +14,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 
 import com.mojang.brigadier.CommandDispatcher;
 
@@ -53,14 +51,14 @@ public class GTClientCommands {
                                     .executes(context -> {
                                         var capture = RenderDoc.getCapture(IntegerArgumentType.getInteger(context, "capture_index"));
                                         if (capture == null) {
-                                            context.getSource().sendFailure(TextOps.concat(
+                                            context.getSource().sendFailure(ComponentOps.concat(
                                                     Component.literal(GTCEu.NAME + " > "),
                                                     Component.translatable("no such capture")));
                                             return 0;
                                         }
 
                                         RenderDoc.setCaptureComments(capture, StringArgumentType.getString(context, "comment"));
-                                        context.getSource().sendSuccess(() -> TextOps.concat(
+                                        context.getSource().sendSuccess(() -> ComponentOps.concat(
                                                         Component.literal(GTCEu.NAME + " > "),
                                                         Component.literal("comment updated")),
                                                 false);

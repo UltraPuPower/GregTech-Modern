@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -116,10 +116,10 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         var menu = adapter.menu();
-        UIComponentGroup rootComponent;
-        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(140), Sizing.fixed(95)));
+        StackLayout rootComponent;
+        adapter.rootComponent.child(rootComponent = UIContainers.stack(Sizing.fixed(140), Sizing.fixed(95)));
 
         rootComponent.surface(Surface.UI_BACKGROUND);
         rootComponent.child(UIComponents.label(Component.literal("CWUt")));

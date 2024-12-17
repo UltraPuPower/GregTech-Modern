@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFa
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.*;
@@ -31,7 +31,7 @@ import java.util.List;
 public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
 
     @OnlyIn(Dist.CLIENT)
-    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    default void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         adapter.rootComponent
                 .child(new FancyMachineUIComponent(this, Sizing.fixed(176), Sizing.fixed(166))
                         .horizontalAlignment(HorizontalAlignment.CENTER)
@@ -53,7 +53,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
             }
             // noinspection unchecked
             editableUI.setupUI(template,
-                    (UIAdapter<UIComponentGroup>) component.containerAccess().adapter(),
+                    (UIAdapter<StackLayout>) component.containerAccess().adapter(),
                     self());
             return template;
         }
@@ -64,7 +64,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
      * Create the core widget of this machine.
      */
     default ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = UIContainers.group(Sizing.content(), Sizing.content());
+        var group = UIContainers.stack(Sizing.content(), Sizing.content());
 
         group.child(UIComponents.texture(GuiTextures.SCENE)
                 .sizing(Sizing.fixed(48), Sizing.fixed(16))

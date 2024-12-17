@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
@@ -69,7 +69,7 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         }
 
         @Override
-        public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
+        public UIComponent openConfigurator(int x, int y, UIAdapter<StackLayout> adapter) {
             throw new NotImplementedException("Not available for empty fluid filter");
         }
 

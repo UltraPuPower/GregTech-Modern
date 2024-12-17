@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
@@ -84,10 +84,10 @@ public class StorageCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
+    public ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter) {
         var menu = adapter.menu();
 
-        final var group = UIContainers.group(Sizing.fixed(126), Sizing.fixed(87));
+        final var group = UIContainers.stack(Sizing.fixed(126), Sizing.fixed(87));
 
         group.child(UIComponents.label(Component.translatable(getUITitle()))
                 .positioning(Positioning.absolute(10, 5)));
@@ -126,8 +126,8 @@ public class StorageCover extends CoverBehavior implements IUICover {
         }
 
         @Override
-        public UIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
-            final var group = UIContainers.group(Sizing.fixed(126), Sizing.fixed(87));
+        public UIComponent createConfigurator(UIAdapter<StackLayout> adapter) {
+            final var group = UIContainers.stack(Sizing.fixed(126), Sizing.fixed(87));
             group.padding(Insets.both(7, 21));
 
             for (int slot = 0; slot < SIZE; slot++) {

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 @Accessors(chain = true)
-public class AETextInputButtonComponent extends UIComponentGroup {
+public class AETextInputButtonComponent extends StackLayout {
 
     @Setter
     private Consumer<String> onConfirm;

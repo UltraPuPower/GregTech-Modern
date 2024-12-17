@@ -70,6 +70,7 @@ public abstract class BaseUIComponent implements UIComponent {
     protected final EventStream<MouseEnter> mouseEnterEvents = MouseEnter.newStream();
     protected final EventStream<MouseLeave> mouseLeaveEvents = MouseLeave.newStream();
 
+    protected final EventStream<Mount> mountEvents = Mount.newStream();
     protected final EventStream<Dismount> dismountEvents = Dismount.newStream();
 
     protected boolean hovered = false;
@@ -318,6 +319,12 @@ public abstract class BaseUIComponent implements UIComponent {
         this.parent = parent;
         this.mounted = true;
         this.moveTo(x, y);
+        mountEvents.sink().onMount(this, x, y);
+    }
+
+    @Override
+    public EventSource<Mount> mount() {
+        return mountEvents.source();
     }
 
     @Override

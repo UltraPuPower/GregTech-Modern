@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ProspectingMapComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
@@ -100,7 +100,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     public void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder) {}
 
     @Override
-    public void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
+    public void loadClientUI(Player entityPlayer, UIAdapter<StackLayout> adapter, HeldItemUIHolder holder) {
         FlowLayout flowLayout = UIContainers.horizontalFlow(Sizing.fixed(332), Sizing.fixed(200))
                 .configure(c -> {
                     c.surface(Surface.UI_BACKGROUND)

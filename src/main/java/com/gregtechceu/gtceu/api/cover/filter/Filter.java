@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
@@ -21,7 +21,7 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
 
     void loadServerUI(Player player, UIContainerMenu<HeldItemUIHolder> menu, HeldItemUIHolder holder);
 
-    UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter);
+    UIComponent openConfigurator(int x, int y, UIAdapter<StackLayout> adapter);
 
     CompoundTag saveFilter();
 

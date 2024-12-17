@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -42,8 +42,8 @@ public record FluidFilterBehaviour(Function<ItemStack, FluidFilter> filterCreato
     }
 
     @Override
-    public void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
-        var rootComponent = UIContainers.group(Sizing.fixed(176), Sizing.fixed(157));
+    public void loadClientUI(Player entityPlayer, UIAdapter<StackLayout> adapter, HeldItemUIHolder holder) {
+        var rootComponent = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(157));
         rootComponent.positioning(Positioning.relative(50, 50));
         adapter.rootComponent.child(rootComponent);
 

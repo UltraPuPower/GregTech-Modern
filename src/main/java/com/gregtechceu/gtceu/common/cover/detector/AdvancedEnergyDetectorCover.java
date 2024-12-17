@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.LongInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -122,10 +122,10 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     @Override
-    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
+    public ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter) {
         var menu = adapter.menu();
 
-        UIComponentGroup group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(105));
+        StackLayout group = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(105));
         group.child(UIComponents.label(Component.translatable("cover.advanced_energy_detector.label"))
                 .positioning(Positioning.absolute(10, 5)));
 

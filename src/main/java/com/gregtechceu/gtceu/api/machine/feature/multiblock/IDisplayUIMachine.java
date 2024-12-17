@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Insets;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -47,8 +47,8 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
     }
 
     @Override
-    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
-        UIComponentGroup rootComponent = adapter.rootComponent;
+    default void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
+        StackLayout rootComponent = adapter.rootComponent;
 
         var screen = UIContainers.verticalFlow(Sizing.fixed(162), Sizing.fixed(121));
         screen.positioning(Positioning.absolute(7, 4));

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.ScrollablePhantomFluidComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -124,10 +124,10 @@ public class SimpleFluidFilter implements FluidFilter {
         });
     }
 
-    public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
+    public UIComponent openConfigurator(int x, int y, UIAdapter<StackLayout> adapter) {
         var menu = adapter.menu();
 
-        UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
+        StackLayout group = UIContainers.stack(Sizing.content(), Sizing.content());
         GridLayout grid = UIContainers.grid(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3), 3, 3); // 80 55
         grid.positioning(Positioning.absolute(x, y));
         fluidStorageSlots = new CustomFluidTank[9];

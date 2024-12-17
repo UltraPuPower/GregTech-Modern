@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
@@ -473,13 +473,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public void applyUIComponentInfo(@NotNull UIComponent widget,
-                                     UIAdapter<UIComponentGroup> adapter,
+                                     UIAdapter<StackLayout> adapter,
                                      int index,
                                      boolean isXEI,
                                      IO io,
-                                     GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
+                                     GTRecipeTypeUI.@Nullable("null when storage == null") RecipeHolder recipeHolder,
                                      @NotNull GTRecipeType recipeType,
-                                     @UnknownNullability("null when content == null") GTRecipe recipe,
+                                     @Nullable("null when content == null") GTRecipe recipe,
                                      @Nullable Content content,
                                      @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof SlotComponent slot) {

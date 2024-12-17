@@ -222,7 +222,7 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         int invTier = getTankSize(tier);
-        var group = UIContainers.group(Sizing.content(8), Sizing.content(8));
+        var group = UIContainers.stack(Sizing.content(8), Sizing.content(8));
         var container = UIContainers.grid(Sizing.content(4), Sizing.content(4), invTier, invTier + 1);
 
         int index = 0;

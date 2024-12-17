@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
@@ -344,7 +344,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         adapter.rootComponent
                 .child(new FancyMachineUIComponent(this, Sizing.fixed(198), Sizing.fixed(208))
                         .positioning(Positioning.relative(50, 50)));
@@ -352,7 +352,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = UIContainers.group(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
+        var group = UIContainers.stack(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
         group.padding(Insets.of(4));
         group.child(UIContainers.verticalScroll(Sizing.fixed(182), Sizing.fixed(117),
                 UIContainers.verticalFlow(Sizing.fill(), Sizing.fill())

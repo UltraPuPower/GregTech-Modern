@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.ui.component.PredicatedTextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
@@ -176,7 +176,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         int rowSize = (int) Math.sqrt(inventorySize);
 
         FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed(175), Sizing.fixed(176));

@@ -19,7 +19,7 @@ import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PredicatedTextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
@@ -178,10 +178,10 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         var menu = adapter.menu();
         var rootComponent = adapter.rootComponent;
-        var screenGroup = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166));
+        var screenGroup = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(166));
         screenGroup.padding(Insets.of(5));
         screenGroup.surface(GuiTextures.BACKGROUND_STEAM.get(isHighPressure)::draw);
 

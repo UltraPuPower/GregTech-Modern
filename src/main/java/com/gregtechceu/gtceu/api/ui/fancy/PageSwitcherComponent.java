@@ -63,8 +63,7 @@ public class PageSwitcherComponent implements IFancyUIProvider {
                 .sorted(Comparator.comparingInt(PageGroupingData::groupPositionWeight))
                 .forEachOrdered(group -> {
                     if (group.groupKey() != null) {
-                        scrollableGroup.child(UIComponents.label(Component.translatable(group.groupKey()))
-                                .positioning(Positioning.layout()));
+                        scrollableGroup.child(UIComponents.label(Component.translatable(group.groupKey())));
                     }
 
                     final var currentPage = new MutableInt(0);
@@ -78,8 +77,7 @@ public class PageSwitcherComponent implements IFancyUIProvider {
                         pageWidget.positioning(Positioning.absolute((index % 5) * 30, y));
                         pageWidget
                                 .child(UIComponents.button(Component.empty(), clickData -> onPageSwitched.accept(page))
-                                        .renderer(ButtonComponent.Renderer.texture(GuiTextures.BACKGROUND.imageLocation,
-                                                0, 0, 16, 16))
+                                        .renderer(ButtonComponent.Renderer.texture(GuiTextures.BACKGROUND))
                                         .sizing(Sizing.fill()));
                         pageWidget.child(UIComponents.texture(page.getTabIcon())
                                 .positioning(Positioning.absolute(4, 4))

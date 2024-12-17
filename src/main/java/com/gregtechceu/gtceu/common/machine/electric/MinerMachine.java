@@ -226,7 +226,7 @@ public class MinerMachine extends WorkableTieredMachine
                 FlowLayout template = createTemplate(inventorySize).createDefault();
                 SlotComponent batterySlot = createBatterySlot().createDefault();
                 batterySlot.positioning(Positioning.absolute(100, 10));
-                UIComponentGroup group = UIContainers.group(Sizing.fill(), Sizing.fill());
+                StackLayout group = UIContainers.stack(Sizing.fill(), Sizing.fill());
                 group.padding(Insets.both(6, 4));
 
                 template.positioning(Positioning.relative(50, 50));

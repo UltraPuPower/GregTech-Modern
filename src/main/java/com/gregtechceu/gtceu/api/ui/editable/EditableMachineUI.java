@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.editable;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
@@ -13,28 +13,28 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-public class EditableMachineUI implements IEditableUI<UIComponentGroup, MetaMachine> {
+public class EditableMachineUI implements IEditableUI<StackLayout, MetaMachine> {
 
     @Getter
     final ResourceLocation uiPath;
-    final Supplier<UIComponentGroup> widgetSupplier;
-    final BinderFunction<UIComponentGroup, MetaMachine> binder;
+    final Supplier<StackLayout> widgetSupplier;
+    final BinderFunction<StackLayout, MetaMachine> binder;
     @Nullable
     private UIModel customUICache;
 
-    public EditableMachineUI(ResourceLocation uiPath, Supplier<UIComponentGroup> widgetSupplier,
-                             BinderFunction<UIComponentGroup, MetaMachine> binder) {
+    public EditableMachineUI(ResourceLocation uiPath, Supplier<StackLayout> widgetSupplier,
+                             BinderFunction<StackLayout, MetaMachine> binder) {
         this.uiPath = uiPath;
         this.widgetSupplier = widgetSupplier;
         this.binder = binder;
     }
 
-    public UIComponentGroup createDefault() {
+    public StackLayout createDefault() {
         return widgetSupplier.get();
     }
 
     @Override
-    public void setupUI(UIComponentGroup template, UIAdapter<UIComponentGroup> adapter, MetaMachine machine) {
+    public void setupUI(StackLayout template, UIAdapter<StackLayout> adapter, MetaMachine machine) {
         binder.bind(template, adapter, machine);
     }
 
@@ -43,10 +43,10 @@ public class EditableMachineUI implements IEditableUI<UIComponentGroup, MetaMach
     //////////////////////////////////////
 
     @Nullable
-    public UIComponentGroup createCustomUI() {
+    public StackLayout createCustomUI() {
         if (hasCustomUI()) {
             var model = getCustomUI();
-            var group = model.parseComponentTree(UIComponentGroup.class);
+            var group = model.parseComponentTree(StackLayout.class);
             group.moveTo(0, 0);
             return group;
         }

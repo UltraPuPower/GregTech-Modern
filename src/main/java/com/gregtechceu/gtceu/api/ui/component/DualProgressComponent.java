@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
-public class DualProgressComponent extends UIComponentGroup {
+public class DualProgressComponent extends StackLayout {
 
     private DoubleSupplier progressSupplier;
     @Setter

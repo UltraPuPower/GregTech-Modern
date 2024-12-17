@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.HeldItemUIHolder;
@@ -70,7 +70,7 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
-    public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
+    public UIComponent openConfigurator(int x, int y, UIAdapter<StackLayout> adapter) {
         FlowLayout group = UIContainers.verticalFlow(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3));
         group.padding(Insets.both(16, 8));
         group.positioning(Positioning.absolute(x, y));

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.fancy;
 
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
@@ -23,7 +23,7 @@ public interface IFancyConfigurator {
 
     UITexture getIcon();
 
-    UIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter);
+    UIComponent createConfigurator(UIAdapter<StackLayout> adapter);
 
     default List<Component> getTooltips() {
         return List.of(getTitle());

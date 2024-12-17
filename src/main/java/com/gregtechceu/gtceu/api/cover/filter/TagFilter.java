@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -119,8 +119,8 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         onUpdated.accept((S) this);
     }
 
-    public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
-        UIComponentGroup group = UIContainers.group(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3));
+    public UIComponent openConfigurator(int x, int y, UIAdapter<StackLayout> adapter) {
+        StackLayout group = UIContainers.stack(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3));
         group.positioning(Positioning.absolute(x, y));
 
         group.child(UIComponents.texture(GuiTextures.INFO_ICON)

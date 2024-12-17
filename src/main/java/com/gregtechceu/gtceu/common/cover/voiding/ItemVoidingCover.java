@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
@@ -91,8 +91,8 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     /// ///////////////////////////////////
 
     @Override
-    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(120));
+    public ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter) {
+        final var group = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(120));
         group.padding(Insets.both(10, 5));
         group.child(UIComponents.label(Component.translatable(getUITitle())));
 
@@ -114,7 +114,7 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
         return "cover.item.voiding.title";
     }
 
-    protected void buildAdditionalUI(UIComponentGroup group) {
+    protected void buildAdditionalUI(StackLayout group) {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 

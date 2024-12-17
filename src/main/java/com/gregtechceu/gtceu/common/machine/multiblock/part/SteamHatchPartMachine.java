@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -43,7 +43,7 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         FlowLayout group = UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166));
         group.child(UIComponents.label(getBlockState().getBlock().getName())
                 .positioning(Positioning.absolute(6, 6)))

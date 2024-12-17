@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.NumberInputComponent;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
@@ -223,7 +223,7 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     @Override
-    protected void buildAdditionalUI(UIComponentGroup group) {
+    protected void buildAdditionalUI(StackLayout group) {
         group.child(new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20),
                 TransferMode.values(), transferMode, this::setTransferMode)
                 .positioning(Positioning.absolute(146, 45)));

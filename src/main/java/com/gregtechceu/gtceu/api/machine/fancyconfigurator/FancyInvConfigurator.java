@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
@@ -42,7 +42,7 @@ public class FancyInvConfigurator implements IFancyConfigurator {
     }
 
     @Override
-    public UIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
+    public UIComponent createConfigurator(UIAdapter<StackLayout> adapter) {
         int rowSize = (int) Math.sqrt(inventory.getSlots());
         int colSize = rowSize;
         if (inventory.getSlots() == 8) {
@@ -50,7 +50,7 @@ public class FancyInvConfigurator implements IFancyConfigurator {
             colSize = 2;
         }
 
-        var group = UIContainers.group(Sizing.content(8), Sizing.content(8));
+        var group = UIContainers.stack(Sizing.content(8), Sizing.content(8));
         var container = UIContainers.grid(Sizing.content(4), Sizing.content(4), rowSize, colSize);
 
         int index = 0;

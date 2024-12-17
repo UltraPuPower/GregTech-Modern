@@ -400,13 +400,13 @@ public class FisherMachine extends TieredEnergyMachine
 
                 var energyBar = createEnergyBar().createDefault();
                 var batterySlot = createBatterySlot().createDefault();
-                var energyGroup = UIContainers.group(Sizing.content(), Sizing.content(20));
+                var energyGroup = UIContainers.stack(Sizing.content(), Sizing.content(20));
                 energyBar.positioning(Positioning.relative(2, 50));
                 batterySlot.positioning(Positioning.relative(50, 100));
                 energyGroup.child(energyBar);
                 energyGroup.child(batterySlot);
 
-                var group = UIContainers.group(Sizing.content(4 + 8), Sizing.content(4));
+                var group = UIContainers.stack(Sizing.content(4 + 8), Sizing.content(4));
                 template.positioning(Positioning.relative(50, 50));
 
                 energyGroup.positioning(Positioning.relative(2, 50));

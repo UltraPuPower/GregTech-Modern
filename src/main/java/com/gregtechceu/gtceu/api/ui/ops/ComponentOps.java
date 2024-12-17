@@ -13,9 +13,9 @@ import net.minecraft.util.FormattedCharSequence;
  * A collection of common operations
  * for working with and stylizing {@link Component}
  */
-public final class TextOps {
+public final class ComponentOps {
 
-    private TextOps() {}
+    private ComponentOps() {}
 
     /**
      * Appends the {@code text} onto the {@code prefix} without

@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.GhostCircuitSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -355,11 +355,11 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         }
         // Position all slots at 0,0 as they'll be moved to the correct position on the client.
         SlotGenerator generator = SlotGenerator.begin(menu::addSlot, 0, 0);
-        for (int i = 0; i < this.importItems.getSlots(); i++) {
-            generator.slot(this.importItems, i, 0, 0);
+        for (int i = 0; i < this.importItems.storage.getSlots(); i++) {
+            generator.slot(this.importItems.storage, i, 0, 0);
         }
-        for (int i = 0; i < this.exportItems.getSlots(); i++) {
-            generator.slot(this.exportItems, i, 0, 0);
+        for (int i = 0; i < this.exportItems.storage.getSlots(); i++) {
+            generator.slot(this.exportItems.storage, i, 0, 0);
         }
         generator.playerInventory(menu.getPlayerInventory());
 
@@ -385,10 +385,10 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
-                UIComponentGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
+                StackLayout template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
                         .createDefault();
                 SlotComponent batterySlot = createBatterySlot().createDefault();
-                UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content().min(78));
+                StackLayout group = UIContainers.stack(Sizing.content(), Sizing.content().copy().min(78));
                 group.positioning(Positioning.relative(50, 50));
                 template.positioning(Positioning.relative(50, 50));
                 batterySlot.positioning(Positioning.relative(50, 100));

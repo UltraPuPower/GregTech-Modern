@@ -89,28 +89,32 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     @Setter
     protected boolean drawTooltip = true;
 
+    private SlotComponent() {
+        this.sizing(Sizing.fixed(18));
+    }
+
     protected SlotComponent(int index) {
+        this();
         this.index = index;
         this.slot = new MutableSlotWrapper(new UIContainerMenu.EmptySlotPlaceholder());
-        this.sizing(Sizing.fixed(18));
     }
 
     protected SlotComponent(IItemHandlerModifiable itemHandler, int index) {
+        this();
         this.index = index;
         this.slot = new MutableSlotWrapper(new SlotItemHandler(itemHandler, index, x, y));
-        this.sizing(Sizing.fixed(18));
     }
 
     protected SlotComponent(Container container, int index) {
+        this();
         this.index = index;
         this.slot = new MutableSlotWrapper(new Slot(container, index, x, y));
-        this.sizing(Sizing.fixed(18));
     }
 
     protected SlotComponent(Slot slot) {
+        this();
         this.index = slot.getSlotIndex();
         this.slot = new MutableSlotWrapper(slot);
-        this.sizing(Sizing.fixed(18));
     }
 
     public SlotComponent setSlot(IItemHandlerModifiable handler, int index) {
@@ -195,38 +199,46 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
         if (containerAccess().screen() != null) {
             finalizeSlot(containerAccess().screen());
         }
+        ParentUIComponent p = parent;
+        do {
+            // go up the component tree, subscribe to mount & dismount of parents at all levels except root
+            p.mount().subscribe((component, x1, y1) -> {
+                if (component.containerAccess().screen() != null) {
+                    finalizeSlot(component.containerAccess().screen());
+                }
+            });
+            p.dismount().subscribe((component, reason) -> {
+                if (reason == DismountReason.REMOVED) {
+                    removeSlot();
+                }
+            });
+            p = p.parent();
+        } while (p != null && p != root());
     }
 
     @Override
     public void dismount(DismountReason reason) {
-        /*
-         * if (reason == DismountReason.REMOVED && containerAccess().screen() != null) {
-         * var menu = containerAccess().screen().getMenu();
-         * 
-         * UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
-         * menu.slots.set(this.slot.index, placeholder);
-         * placeholder.index = this.slot.index;
-         * ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
-         * ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
-         * }
-         */
+        if (reason == DismountReason.REMOVED && containerAccess().screen() != null) {
+            removeSlot();
+        }
         super.dismount(reason);
     }
 
     @Override
     public void dispose() {
-        /*
-         * if (containerAccess().screen() != null) {
-         * var menu = containerAccess().screen().getMenu();
-         * 
-         * UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
-         * menu.slots.set(this.slot.index, placeholder);
-         * placeholder.index = this.slot.index;
-         * ((AbstractContainerMenuAccessor)menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
-         * ((AbstractContainerMenuAccessor)menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
-         * }
-         */
+        if (containerAccess().screen() != null) {
+            removeSlot();
+        }
         super.dispose();
+    }
+
+    private void removeSlot() {
+        var menu = containerAccess().screen().getMenu();
+        UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
+        menu.slots.set(this.slot.index, placeholder);
+        placeholder.index = this.slot.index;
+        ((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
+        ((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
     }
 
     public void finalizeSlot(AbstractContainerScreen<?> screen) {
@@ -456,7 +468,9 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
         @SuppressWarnings("unused") // it actually overrides an accessor mixin's method.
         public void gtceu$setSlotIndex(int index) {
             this.index = index;
-            ((SlotAccessor)inner).gtceu$setSlotIndex(index);
+            ((SlotAccessor) inner).gtceu$setSlotIndex(index);
         }
+
     }
+
 }

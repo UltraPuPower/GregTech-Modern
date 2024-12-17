@@ -138,9 +138,10 @@ public interface ParentUIComponent extends UIComponent {
         for (var child : this.children()) {
             if (!child.enabled() || !ScissorStack.isVisible(mouseX, mouseY, g.pose())) continue;
 
+            g.pose().pushPose();
             g.pose().translate(0, 0, child.zIndex());
             child.drawTooltip(g, mouseX, mouseY, partialTicks, delta);
-            g.pose().translate(0, 0, -child.zIndex());
+            g.pose().popPose();
         }
 
         if (!this.allowOverflow()) {
@@ -199,6 +200,7 @@ public interface ParentUIComponent extends UIComponent {
      */
     @Override
     default void update(float delta, int mouseX, int mouseY) {
+        UIComponent.super.update(delta, mouseX, mouseY);
         this.padding().update(delta);
 
         for (int i = 0; i < this.children().size(); i++) {

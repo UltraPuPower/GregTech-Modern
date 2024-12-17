@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GTOreByProductComponent extends UIComponentGroup {
+public class GTOreByProductComponent extends StackLayout {
 
     // XY positions of every item and fluid, in three enormous lists
     protected final static ImmutableList<Integer> ITEM_INPUT_LOCATIONS = ImmutableList.of(
@@ -128,7 +128,7 @@ public class GTOreByProductComponent extends UIComponentGroup {
 
         List<ItemEntryList> itemInputs = recipeWrapper.itemInputs;
         CycleItemEntryHandler itemInputsHandler = new CycleItemEntryHandler(itemInputs);
-        UIComponentGroup itemStackGroup = UIContainers.group(Sizing.fill(), Sizing.fill());
+        StackLayout itemStackGroup = UIContainers.stack(Sizing.fill(), Sizing.fill());
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
             final int finalI = i;
             itemStackGroup.child(UIComponents.slot(itemInputsHandler, i / 2)
@@ -171,7 +171,7 @@ public class GTOreByProductComponent extends UIComponentGroup {
 
         List<FluidEntryList> fluidInputs = recipeWrapper.fluidInputs;
         CycleFluidEntryHandler fluidInputsHandler = new CycleFluidEntryHandler(fluidInputs);
-        UIComponentGroup fluidStackGroup = UIContainers.group(Sizing.fill(), Sizing.fill());
+        StackLayout fluidStackGroup = UIContainers.stack(Sizing.fill(), Sizing.fill());
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
             if (!fluidInputs.get(slotIndex).isEmpty()) {

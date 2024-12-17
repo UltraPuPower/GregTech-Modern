@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -56,6 +56,7 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             tabs.add(tab);
             tab.sizing(Sizing.fixed(0));
             tab.horizontalSizing().animate(getAnimationTime(), Easing.QUADRATIC, Sizing.fixed(0));
+            tab.verticalSizing().animate(getAnimationTime(), Easing.QUADRATIC, Sizing.fixed(0));
         }
         applySizing();
     }
@@ -131,7 +132,8 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             padding(Insets.of(getTabSize()));
             positioning(Positioning.absolute(0, tabs.size() * (getTabSize() + 2)));
             this.configurator = configurator;
-            this.button = new ButtonComponent(Component.empty(), b -> {}) {
+            this.button = new ButtonComponent(Component.empty(), b -> {
+            }) {
 
                 @Override
                 public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -172,7 +174,7 @@ public class ConfiguratorPanelComponent extends FlowLayout {
         public void containerAccess(UIComponentMenuAccess access) {
             super.containerAccess(access);
             if (!(configurator instanceof IFancyConfiguratorButton)) {
-                var config = configurator.createConfigurator((UIAdapter<UIComponentGroup>) access.adapter());
+                var config = configurator.createConfigurator((UIAdapter<StackLayout>) access.adapter());
                 config.positioning(Positioning.absolute(border, 0));
 
                 this.view = UIContainers.horizontalFlow(Sizing.content(), Sizing.content());
@@ -207,13 +209,12 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             super.onChildMutated(child);
             if (this.view != null && this.view == child) {
                 if (expanded == this) {
-                    var size = view.fullSize();
                     positioning().animate(getAnimationTime(), Easing.QUADRATIC,
-                            Positioning.absolute(dragOffsetX + (-width() + (tabs.size() > 1 ? -2 : getTabSize())),
-                                    dragOffsetY));
-                    positioning().animation().finished().subscribe((dir, looping) -> {
-                        child(view);
-                    });
+                                    Positioning.absolute(dragOffsetX + (-width() + (tabs.size() > 1 ? -2 : getTabSize())),
+                                            dragOffsetY))
+                            .finished().subscribe((dir, looping) -> {
+                                child(view);
+                            });
                     horizontalSizing().animate(getAnimationTime(), Easing.QUADRATIC, Sizing.content());
                     verticalSizing().animate(getAnimationTime(), Easing.QUADRATIC, Sizing.content());
                 }
@@ -247,8 +248,8 @@ public class ConfiguratorPanelComponent extends FlowLayout {
             }
 
             positioning().animate(getAnimationTime(), Easing.QUADRATIC, Positioning.absolute(
-                    dragOffsetX - width + (tabs.size() > 1 ? -2 : getTabSize()),
-                    dragOffsetY))
+                            dragOffsetX - width + (tabs.size() > 1 ? -2 : getTabSize()),
+                            dragOffsetY))
                     .finished().subscribe((dir, looping) -> {
                         child(view);
                     });
@@ -339,11 +340,13 @@ public class ConfiguratorPanelComponent extends FlowLayout {
         public boolean onMouseMoved(double mouseX, double mouseY) {
             return super.onMouseMoved(mouseX, mouseY) || isMouseOverElement(mouseX, mouseY);
         }
+
     }
 
     public class FloatingTab extends Tab {
 
-        protected Runnable closeCallback = () -> {};
+        protected Runnable closeCallback = () -> {
+        };
 
         public FloatingTab(IFancyConfigurator configurator) {
             super(configurator);
@@ -362,9 +365,11 @@ public class ConfiguratorPanelComponent extends FlowLayout {
         public void onClose(Runnable closeCallback) {
             this.closeCallback = closeCallback;
         }
+
     }
 
     private static int getAnimationTime() {
         return ConfigHolder.INSTANCE.client.animationTime;
     }
+
 }

@@ -221,7 +221,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             rowSize = 4;
             colSize = 2;
         }
-        var group = UIContainers.group(Sizing.content(), Sizing.content());
+        var group = UIContainers.stack(Sizing.content(), Sizing.content());
         group.margins(Insets.of(8));
         var container = UIContainers.grid(Sizing.fill(), Sizing.fill(), rowSize, colSize);
         container.margins(Insets.of(4));

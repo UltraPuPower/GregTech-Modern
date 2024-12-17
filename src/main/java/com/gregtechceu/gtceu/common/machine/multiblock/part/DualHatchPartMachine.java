@@ -132,7 +132,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
         int slots = getInventorySize();
         int tanks = (int) Math.sqrt(slots);
-        var group = UIContainers.group(Sizing.content(8), Sizing.content(8));
+        var group = UIContainers.stack(Sizing.content(8), Sizing.content(8));
 
         GridLayout container = UIContainers.grid(Sizing.content(4), Sizing.content(4), tanks, tanks + 1);
 

@@ -104,7 +104,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        return UIContainers.group(Sizing.content(), Sizing.content())
+        return UIContainers.stack(Sizing.content(), Sizing.content())
                 .child(UIComponents.texture(GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE)
                         .positioning(Positioning.absolute(46, 15))
                         .sizing(Sizing.fixed(84), Sizing.fixed(60)))

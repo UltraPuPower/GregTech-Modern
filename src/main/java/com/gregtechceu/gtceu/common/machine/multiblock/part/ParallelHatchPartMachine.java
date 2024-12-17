@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -61,7 +61,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        UIComponentGroup parallelAmountGroup = UIContainers.group(Sizing.fixed(100), Sizing.fixed(20));
+        StackLayout parallelAmountGroup = UIContainers.stack(Sizing.fixed(100), Sizing.fixed(20));
         parallelAmountGroup.child(new IntInputComponent(this::getCurrentParallel, value -> {
             setCurrentParallel(value);
             component.containerAccess().screen().getMenu().sendMessage(new ChangeParallelMessage(value));

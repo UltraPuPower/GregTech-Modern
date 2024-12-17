@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.network.chat.Component;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -153,6 +154,11 @@ public interface UIComponentStub extends UIComponent {
 
     @Override
     default void mount(ParentUIComponent parent, int x, int y) {
+        throw new NotImplementedException("Interface stub method called");
+    }
+
+    @Override
+    default EventSource<Mount> mount() {
         throw new NotImplementedException("Interface stub method called");
     }
 

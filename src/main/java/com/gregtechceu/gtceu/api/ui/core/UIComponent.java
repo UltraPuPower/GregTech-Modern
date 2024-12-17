@@ -333,6 +333,8 @@ public interface UIComponent extends PositionedRectangle {
      */
     void mount(ParentUIComponent parent, int x, int y);
 
+    EventSource<Mount> mount();
+
     /**
      * Called when this component is being dismounted from its
      * parent. This usually happens because the layout is being recalculated

@@ -13,10 +13,6 @@ public final class UIContainers {
     // Layout
     // ------
 
-    public static UIComponentGroup group(Sizing horizontalSizing, Sizing verticalSizing) {
-        return new UIComponentGroup(horizontalSizing, verticalSizing);
-    }
-
     public static GridLayout grid(Sizing horizontalSizing, Sizing verticalSizing, int rows, int columns) {
         return new GridLayout(horizontalSizing, verticalSizing, rows, columns);
     }

@@ -4,9 +4,10 @@ import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
+import com.gregtechceu.gtceu.api.ui.texture.TextTexture;
 import com.gregtechceu.gtceu.api.ui.texture.UITexture;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
 
@@ -20,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class TitleBarComponent extends UIComponentGroup {
+public class TitleBarComponent extends StackLayout {
 
     private static final int BORDER_SIZE = 3;
     private static final int HORIZONTAL_MARGIN = 8;
@@ -79,6 +80,8 @@ public class TitleBarComponent extends UIComponentGroup {
                 .positioning(Positioning.absolute(BORDER_SIZE + 1, BORDER_SIZE + 1)));
 
         mainSection.child(this.tabTitle = (LabelComponent) UIComponents.label(Component.empty())
+                .rollSpeed(ROLL_SPEED)
+                .textType(TextTexture.TextType.LEFT_ROLL)
                 .sizing(Sizing.content())
                 .positioning(Positioning.absolute(BORDER_SIZE + innerHeight, BORDER_SIZE)));
 
@@ -90,9 +93,8 @@ public class TitleBarComponent extends UIComponentGroup {
         this.showBackButton = showBackButton;
         this.showMenuButton = showMenuButton;
 
-        tabTitle.text(currentPage.getTitle().copy().withStyle(ChatFormatting.BLACK));
-        tabTitle.maxWidth(this.width());
-        tabTitle.rollSpeed(ROLL_SPEED);
+        tabTitle.text(currentPage.getTitle().copy().withStyle(ChatFormatting.BLACK))
+                .maxWidth(this.width());
 
         tabIcon.texture(currentPage.getTabIcon());
 
@@ -131,4 +133,5 @@ public class TitleBarComponent extends UIComponentGroup {
         tabTitle.maxWidth(titleWidth);
         tabTitle.sizing(Sizing.fixed(titleWidth), Sizing.fill());
     }
+
 }

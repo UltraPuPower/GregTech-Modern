@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -119,13 +118,13 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         int rowSize = (int) Math.sqrt(inventory.getSlots());
         int xOffset = rowSize == 10 ? 9 : 0;
 
         var menu = adapter.menu();
-        UIComponentGroup rootComponent;
-        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176 + xOffset * 2),
+        StackLayout rootComponent;
+        adapter.rootComponent.child(rootComponent = UIContainers.stack(Sizing.fixed(176 + xOffset * 2),
                 Sizing.fixed(18 + 18 * rowSize + 94)));
 
         rootComponent.surface(Surface.UI_BACKGROUND);

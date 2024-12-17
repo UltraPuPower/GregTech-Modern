@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerInteger;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 
 import net.minecraft.network.chat.Component;
 
@@ -35,7 +35,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    public void addXEIInfo(UIComponentGroup group, GTRecipe recipe, List<Content> contents, boolean perTick,
+    public void addXEIInfo(StackLayout group, GTRecipe recipe, List<Content> contents, boolean perTick,
                            boolean isInput) {
         if (perTick) {
             int cwu = contents.stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum();

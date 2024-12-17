@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.UIContainerScreen;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
@@ -29,11 +29,11 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
     }
 
     @Override
-    public @Nullable UIAdapter<UIComponentGroup> createAdapter(Player player, MetaMachine holder,
+    public @Nullable UIAdapter<StackLayout> createAdapter(Player player, MetaMachine holder,
                                                                UIContainerScreen screen) {
         UIModel model = UIModelLoader.get(holder.getDefinition().getId());
         if (model != null) {
-            return model.createAdapterWithoutScreen(0, 0, 176, 166, UIComponentGroup.class);
+            return model.createAdapterWithoutScreen(0, 0, 176, 166, StackLayout.class);
         }
         return super.createAdapter(player, holder, screen);
     }
@@ -47,7 +47,7 @@ public class MachineUIFactory extends UIFactory<MetaMachine> {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         if (holder instanceof IUIMachine machine) {
             UIModel model = UIModelLoader.get(holder.getDefinition().getId());
             if (model != null) {

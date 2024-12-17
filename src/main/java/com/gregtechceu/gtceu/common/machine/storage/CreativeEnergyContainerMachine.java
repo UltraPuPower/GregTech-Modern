@@ -9,12 +9,9 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
-import com.gregtechceu.gtceu.api.ui.component.SelectorComponent;
-import com.gregtechceu.gtceu.api.ui.component.TextBoxComponent;
-import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.component.*;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
@@ -200,7 +197,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         adapter.rootComponent.child(UIContainers.verticalFlow(Sizing.fixed(176), Sizing.fixed(166))
                 .gap(8)
                 .<FlowLayout>configure(c -> {
@@ -230,10 +227,10 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
                         .positioning(Positioning.absolute(24, 53))
                         .verticalSizing(Sizing.fixed(16)))
                 .child(UIComponents.button(Component.literal("-"), cd -> {
-                    if (amps < Integer.MAX_VALUE) {
-                        amps++;
-                    }
-                }).renderer(ButtonComponent.Renderer.texture(GuiTextures.VANILLA_BUTTON))
+                            if (amps < Integer.MAX_VALUE) {
+                                amps++;
+                            }
+                        }).renderer(ButtonComponent.Renderer.texture(GuiTextures.VANILLA_BUTTON))
                         .positioning(Positioning.absolute(142, 55))
                         .sizing(Sizing.fixed(20)))
                 // FIXME MAKE TRANSLATABLE
@@ -241,40 +238,44 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
                         .translatable("Average Energy I/O per tick: " + this.lastAverageEnergyIOPerTick)))
                 .child(UIComponents.switchComponent((clickData, value) -> active = value)
                         .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
-                                "gtceu.creative.activity.off"))),
+                                        "gtceu.creative.activity.off"))),
                                 UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
                                         "gtceu.creative.activity.on"))))
                         .pressed(active)
                         .positioning(Positioning.absolute(0, 107))
                         .sizing(Sizing.fixed(77), Sizing.fixed(20)))
                 .child(UIComponents.switchComponent((clickData, value) -> {
-                    source = value;
-                    if (source) {
-                        voltage = 0;
-                        amps = 0;
-                        setTier = 0;
-                    } else {
-                        voltage = GTValues.V[14];
-                        amps = Integer.MAX_VALUE;
-                        setTier = 14;
-                    }
-                })
+                            source = value;
+                            if (source) {
+                                voltage = 0;
+                                amps = 0;
+                                setTier = 0;
+                            } else {
+                                voltage = GTValues.V[14];
+                                amps = Integer.MAX_VALUE;
+                                setTier = 14;
+                            }
+                        })
                         .texture(UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
-                                "gtceu.creative.energy.sink"))),
+                                        "gtceu.creative.energy.sink"))),
                                 UITextures.group(GuiTextures.VANILLA_BUTTON, UITextures.text(Component.translatable(
                                         "gtceu.creative.energy.source"))))
                         .pressed(source)
                         .positioning(Positioning.absolute(78, 107))
                         .sizing(Sizing.fixed(77), Sizing.fixed(20)))
-                .child(new SelectorComponent(Sizing.fixed(50), Sizing.fixed(20), Arrays.stream(GTValues.VNF).toList(),
-                        -1)
-                        .onChanged(tier -> {
-                            setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
-                            voltage = GTValues.VEX[setTier];
+                .child(UIComponents.dropdown(Sizing.fixed(20))
+                        .<DropdownComponent>configure(c -> {
+                            for (String tierName : GTValues.VNF) {
+                                c.button(Component.literal(tierName),
+                                        (clickData, dropdownComponent) -> {
+                                            setTier = ArrayUtils.indexOf(GTValues.VNF, tierName);
+                                            voltage = GTValues.VEX[setTier];
+                                        });
+                            }
                         })
-                        .supplier(() -> GTValues.VNF[setTier])
-                        .buttonSurface(GuiTextures.VANILLA_BUTTON::draw)
+                        //.buttonSurface(GuiTextures.VANILLA_BUTTON::draw)
                         .surface(Surface.flat(Color.BLACK.argb()))
                         .positioning(Positioning.absolute(0, -25))));
     }
+
 }

@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -146,10 +146,10 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         var menu = adapter.menu();
-        UIComponentGroup rootComponent;
-        adapter.rootComponent.child(rootComponent = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
+        StackLayout rootComponent;
+        adapter.rootComponent.child(rootComponent = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(166)));
 
         rootComponent.surface(GuiTextures.PRIMITIVE_BACKGROUND::draw);
         rootComponent.child(UIComponents.label(getBlockState().getBlock().getName())

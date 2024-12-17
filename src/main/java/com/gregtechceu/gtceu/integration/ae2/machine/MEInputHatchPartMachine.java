@@ -131,7 +131,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var group = UIContainers.group(Sizing.content(), Sizing.content());
+        var group = UIContainers.stack(Sizing.content(), Sizing.content());
         group.padding(Insets.of(3));
         // ME Network status
         group.child(UIComponents.label(() -> this.isOnline ?

@@ -46,21 +46,21 @@ public class Sizing implements Animatable<Sizing> {
             case FIXED -> this.value;
             case FILL -> {
                 int value = Math.round((this.value / 100f) * space);
-                if (min != -1) {
-                    value = Math.max(min, value);
-                }
                 if (max != -1) {
                     value = Math.min(max, value);
+                }
+                if (min != -1) {
+                    value = Math.max(min, value);
                 }
                 yield value;
             }
             case CONTENT -> {
                 int value = contentSizeFunction.apply(this) + this.value * 2;
-                if (min != -1) {
-                    value = Math.max(min, value);
-                }
                 if (max != -1) {
                     value = Math.min(max, value);
+                }
+                if (min != -1) {
+                    value = Math.max(min, value);
                 }
                 yield value;
             }
@@ -154,16 +154,16 @@ public class Sizing implements Animatable<Sizing> {
         var value = sizingElement.getTextContent().strip();
 
         var min = sizingElement.getAttribute("min").strip();
-        if (!min.matches("(\\d+)?")) {
+        if (!min.matches("^(\\d+)?$")) {
             throw new UIModelParsingException("Invalid min limit in sizing declaration");
         }
         var max = sizingElement.getAttribute("max").strip();
-        if (!max.matches("(\\d+)?")) {
+        if (!max.matches("^(\\d+)?$")) {
             throw new UIModelParsingException("Invalid max limit in sizing declaration");
         }
 
         if (method == Method.CONTENT) {
-            if (!value.matches("(-?\\d+)?")) {
+            if (!value.matches("^(-?\\d+)?$")) {
                 throw new UIModelParsingException("Invalid value in sizing declaration");
             }
 

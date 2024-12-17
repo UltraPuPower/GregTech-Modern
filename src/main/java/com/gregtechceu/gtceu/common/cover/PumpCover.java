@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.NumberInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -304,8 +304,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     //////////////////////////////////////
 
     @Override
-    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(137));
+    public ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter) {
+        final var group = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(137));
         group.child(UIComponents.label(Component.translatable(getUITitle(), GTValues.VN[tier]))
                 .positioning(Positioning.absolute(10, 5)));
 
@@ -356,7 +356,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return "cover.pump.title";
     }
 
-    protected void buildAdditionalUI(UIComponentGroup group) {
+    protected void buildAdditionalUI(StackLayout group) {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 

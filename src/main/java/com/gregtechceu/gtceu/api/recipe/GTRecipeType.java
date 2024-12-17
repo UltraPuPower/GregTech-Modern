@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
 import com.gregtechceu.gtceu.api.ui.texture.ResourceTexture;
 import com.gregtechceu.gtceu.api.ui.texture.SteamTexture;
@@ -166,7 +166,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, UIComponentGroup> uiBuilder) {
+    public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, StackLayout> uiBuilder) {
         this.recipeUI.setUiBuilder(uiBuilder);
         return this;
     }

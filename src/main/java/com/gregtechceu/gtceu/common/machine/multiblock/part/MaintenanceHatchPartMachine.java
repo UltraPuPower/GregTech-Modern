@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
@@ -339,9 +339,9 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     /// ///////////////////////////////////
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        UIComponentGroup group;
+        StackLayout group;
         if (isConfigurable) {
-            group = UIContainers.group(Sizing.fixed(150), Sizing.fixed(70));
+            group = UIContainers.stack(Sizing.fixed(150), Sizing.fixed(70));
             group.padding(Insets.of(4, 8, 4, 8));
             group.child(UIContainers.verticalScroll(Sizing.fill(), Sizing.fill(),
                     UIComponents.componentPanel(list -> {
@@ -367,7 +367,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                     .padding(Insets.both(4, 5))
                     .surface(Surface.UI_DISPLAY));
         } else {
-            group = UIContainers.group(Sizing.fixed(8 + 18), Sizing.fixed(8 + 20 + 18));
+            group = UIContainers.stack(Sizing.fixed(8 + 18), Sizing.fixed(8 + 20 + 18));
             group.padding(Insets.of(4));
         }
         group.child(UIComponents.slot(itemStackHandler, 0)

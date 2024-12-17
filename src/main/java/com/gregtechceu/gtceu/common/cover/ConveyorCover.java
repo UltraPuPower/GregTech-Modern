@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
@@ -436,8 +436,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     public void loadServerUI(Player player, UIContainerMenu<CoverBehavior> menu, CoverBehavior holder) {}
 
     @Override
-    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        final var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(137));
+    public ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter) {
+        final var group = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(137));
         group.padding(Insets.both(10, 5));
         group.child(UIComponents.label(Component.translatable(getUITitle(), GTValues.VN[tier])));
 
@@ -490,7 +490,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return "cover.conveyor.title";
     }
 
-    protected void buildAdditionalUI(UIComponentGroup group) {
+    protected void buildAdditionalUI(StackLayout group) {
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 

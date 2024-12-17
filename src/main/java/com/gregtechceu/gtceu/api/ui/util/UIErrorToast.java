@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.util;
 
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
-import com.gregtechceu.gtceu.api.ui.ops.TextOps;
+import com.gregtechceu.gtceu.api.ui.ops.ComponentOps;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -38,7 +38,7 @@ public class UIErrorToast implements Toast {
                             .withStyle(ChatFormatting.GRAY)));
         });
 
-        this.width = Math.min(240, TextOps.width(textRenderer, texts) + 8);
+        this.width = Math.min(240, ComponentOps.width(textRenderer, texts) + 8);
         this.errorMessage = this.wrap(texts);
     }
 
@@ -47,7 +47,7 @@ public class UIErrorToast implements Toast {
         var texts = this.initText(message, (consumer) -> {
             consumer.accept(Component.literal("No context provided").withStyle(ChatFormatting.GRAY));
         });
-        this.width = Math.min(240, TextOps.width(textRenderer, texts) + 8);
+        this.width = Math.min(240, ComponentOps.width(textRenderer, texts) + 8);
         this.errorMessage = this.wrap(texts);
     }
 

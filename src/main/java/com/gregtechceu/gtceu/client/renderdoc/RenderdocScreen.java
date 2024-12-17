@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
-import com.gregtechceu.gtceu.api.ui.ops.TextOps;
+import com.gregtechceu.gtceu.api.ui.ops.ComponentOps;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import com.gregtechceu.gtceu.utils.CommandOpenedScreen;
 import net.minecraft.ChatFormatting;
@@ -118,8 +118,8 @@ public class RenderdocScreen extends BaseUIScreen<FlowLayout> implements Command
     }
 
     private Component createCapturesText() {
-        return TextOps.withColor("Captures: §" + RenderDoc.getNumCaptures(),
-                TextOps.color(ChatFormatting.WHITE), 0x00D7FF);
+        return ComponentOps.withColor("Captures: §" + RenderDoc.getNumCaptures(),
+                ComponentOps.color(ChatFormatting.WHITE), 0x00D7FF);
     }
 
     private static CheckboxComponent overlayControl(Component name, EnumSet<RenderDoc.OverlayOption> state,

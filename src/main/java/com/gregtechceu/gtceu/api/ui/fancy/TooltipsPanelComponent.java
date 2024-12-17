@@ -18,7 +18,7 @@ public class TooltipsPanelComponent extends BaseUIComponent {
 
     @Getter
     protected List<IFancyTooltip> tooltips = new ArrayList<>();
-w
+
     public TooltipsPanelComponent() {
         positioning(Positioning.absolute(202, 2));
         sizing(Sizing.fixed(20), Sizing.fixed(0));

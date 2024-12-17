@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 
 import net.minecraftforge.items.ItemStackHandler;
 
-public class GTProgrammedCircuitComponent extends UIComponentGroup {
+public class GTProgrammedCircuitComponent extends StackLayout {
 
     public GTProgrammedCircuitComponent() {
         super(Sizing.fixed(150), Sizing.fixed(80));

@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.FancyMachineUIComponent;
@@ -111,7 +111,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         var group = UIContainers.verticalFlow(Sizing.fixed(182 + 8), Sizing.fixed(117 + 8));
         group.padding(Insets.of(4));
 
-        UIComponentGroup inner = UIContainers.group(Sizing.fill(), Sizing.fill());
+        StackLayout inner = UIContainers.stack(Sizing.fill(), Sizing.fill());
         inner.child(UIComponents.label(self().getBlockState().getBlock().getName())
                 .positioning(Positioning.absolute(0, 1)))
                 .child(UIComponents.componentPanel(this::addDisplayText)
@@ -125,7 +125,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         IFancyUIMachine.super.loadClientUI(player, adapter, holder);
     }
 

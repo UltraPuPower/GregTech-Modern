@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
@@ -143,10 +143,10 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         super.loadClientUI(player, adapter, holder);
         var menu = adapter.menu();
-        UIComponentGroup group = (UIComponentGroup) adapter.rootComponent.children().get(0);
+        StackLayout group = (StackLayout) adapter.rootComponent.children().get(0);
 
         group.child(UIComponents.slot(this.fuelHandler.storage, 0)
                 .backgroundTexture(UITextures.group(GuiTextures.SLOT_STEAM.get(isHighPressure),

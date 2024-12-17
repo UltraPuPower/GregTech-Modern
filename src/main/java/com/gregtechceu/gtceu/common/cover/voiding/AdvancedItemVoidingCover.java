@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.ui.component.EnumSelectorComponent;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
@@ -117,7 +117,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     @Override
-    protected void buildAdditionalUI(UIComponentGroup group) {
+    protected void buildAdditionalUI(StackLayout group) {
         group.child(
                 new EnumSelectorComponent<>(Sizing.fixed(20), Sizing.fixed(20), VoidingMode.values(), voidingMode,
                         this::setVoidingMode)

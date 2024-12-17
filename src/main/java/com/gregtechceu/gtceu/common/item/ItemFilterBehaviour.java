@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -40,8 +40,8 @@ public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
     }
 
     @Override
-    public void loadClientUI(Player entityPlayer, UIAdapter<UIComponentGroup> adapter, HeldItemUIHolder holder) {
-        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(157));
+    public void loadClientUI(Player entityPlayer, UIAdapter<StackLayout> adapter, HeldItemUIHolder holder) {
+        var group = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(157));
         group.surface(Surface.UI_BACKGROUND);
 
         group.child(UIComponents.label(holder.getHeld().getHoverName()))

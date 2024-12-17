@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Insets;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
@@ -131,7 +131,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
+        StackLayout group = UIContainers.stack(Sizing.content(), Sizing.content());
         group.padding(Insets.of(3));
         // ME Network status
         group.child(UIComponents.label(() -> this.isOnline ?

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.cover;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.holder.IUIHolder;
 import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
@@ -36,7 +36,7 @@ public interface IUICover extends IUIHolder<CoverBehavior> {
         self().coverHolder.markDirty();
     }
 
-    ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter);
+    ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter);
 
     @Override
     default void loadServerUI(Player player, UIContainerMenu<CoverBehavior> menu, CoverBehavior holder) {
@@ -45,7 +45,7 @@ public interface IUICover extends IUIHolder<CoverBehavior> {
     }
 
     @Override
-    default void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, CoverBehavior holder) {
+    default void loadClientUI(Player player, UIAdapter<StackLayout> adapter, CoverBehavior holder) {
         var rootComponent = adapter.rootComponent;
 
         var component = createUIWidget(adapter);

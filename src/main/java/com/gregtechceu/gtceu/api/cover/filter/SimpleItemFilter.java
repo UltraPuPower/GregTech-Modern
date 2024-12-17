@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.PhantomSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -107,8 +107,8 @@ public class SimpleItemFilter implements ItemFilter {
         // TODO implement
     }
 
-    public UIComponent openConfigurator(int x, int y, UIAdapter<UIComponentGroup> adapter) {
-        UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
+    public UIComponent openConfigurator(int x, int y, UIAdapter<StackLayout> adapter) {
+        StackLayout group = UIContainers.stack(Sizing.content(), Sizing.content());
         group.positioning(Positioning.absolute(x, y));
         GridLayout grid = UIContainers.grid(Sizing.fixed(18 * 3 + 25), Sizing.fixed(18 * 3), 3, 3); // 80 55
         for (int i = 0; i < 3; i++) {

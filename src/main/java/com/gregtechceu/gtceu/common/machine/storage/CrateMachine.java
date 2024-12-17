@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.util.SlotGenerator;
@@ -91,8 +91,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
-        UIComponentGroup rootComponent = adapter.rootComponent;
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
+        StackLayout rootComponent = adapter.rootComponent;
 
         int xOffset = inventorySize >= 90 ? 162 : 0;
         int yOverflow = xOffset > 0 ? 18 : 9;

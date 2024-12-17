@@ -281,6 +281,16 @@ public abstract class BaseContainerScreen<R extends ParentUIComponent, C extends
         this.renderTooltip(context, mouseX, mouseY);
     }
 
+    @Override
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+        if (uiAdapter.enableInspector) {
+            return;
+        }
+        super.renderTooltip(guiGraphics, x, y);
+        var context = UIGuiGraphics.of(guiGraphics);
+        uiAdapter.renderTooltip(context, x, y);
+    }
+
     // stop the MC labels from rendering entirely.
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {}

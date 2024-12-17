@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.ButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
@@ -113,8 +113,8 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
     }
 
     @Override
-    public UIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
-        var group = UIContainers.group(Sizing.fixed(174), Sizing.fixed(132));
+    public UIComponent createConfigurator(UIAdapter<StackLayout> adapter) {
+        var group = UIContainers.stack(Sizing.fixed(174), Sizing.fixed(132));
         // FIXME MAKE TRANSLATABLE
         group.child(UIComponents.label(Component.literal("Programmed Circuit Configuration"))
                 .positioning(Positioning.absolute(9, 8)));

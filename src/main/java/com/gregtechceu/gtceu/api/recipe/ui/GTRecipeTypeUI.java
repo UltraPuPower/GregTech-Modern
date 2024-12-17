@@ -72,7 +72,7 @@ public class GTRecipeTypeUI {
     private ProgressTexture.FillDirection steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
     @Setter
     @Nullable
-    protected BiConsumer<GTRecipe, UIComponentGroup> uiBuilder;
+    protected BiConsumer<GTRecipe, StackLayout> uiBuilder;
     @Setter
     @Getter
     protected int maxTooltips = 3;
@@ -134,8 +134,8 @@ public class GTRecipeTypeUI {
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressComponent#JEIProgress}.
      */
     @OnlyIn(Dist.CLIENT)
-    public UIComponentGroup createUITemplate(DoubleSupplier progressSupplier,
-                                             UIAdapter<UIComponentGroup> adapter,
+    public StackLayout createUITemplate(DoubleSupplier progressSupplier,
+                                             UIAdapter<StackLayout> adapter,
                                              Table<IO, RecipeCapability<?>, Object> storages,
                                              CompoundTag data,
                                              List<RecipeCondition> conditions,
@@ -148,8 +148,8 @@ public class GTRecipeTypeUI {
         return group;
     }
 
-    public UIComponentGroup createUITemplate(DoubleSupplier progressSupplier,
-                                             UIAdapter<UIComponentGroup> adapter,
+    public StackLayout createUITemplate(DoubleSupplier progressSupplier,
+                                             UIAdapter<StackLayout> adapter,
                                              Table<IO, RecipeCapability<?>, Object> storages,
                                              CompoundTag data,
                                              List<RecipeCondition> conditions) {
@@ -159,20 +159,20 @@ public class GTRecipeTypeUI {
     /**
      * Auto layout UI template for recipes.
      */
-    public IEditableUI<UIComponentGroup, RecipeHolder> createEditableUITemplate(final boolean isSteam,
+    public IEditableUI<StackLayout, RecipeHolder> createEditableUITemplate(final boolean isSteam,
                                                                                 final boolean isHighPressure) {
         return new IEditableUI.Normal<>(() -> {
             var isCustomUI = !isSteam && hasCustomUI();
             if (isCustomUI) {
                 UIModel model = getCustomUI();
-                UIComponentGroup group = model.parseComponentTree(UIComponentGroup.class);
+                StackLayout group = model.parseComponentTree(StackLayout.class);
                 group.positioning(Positioning.absolute(0, 0));
                 return group;
             }
 
             var inputs = addInventorySlotGroup(false, isSteam, isHighPressure);
             var outputs = addInventorySlotGroup(true, isSteam, isHighPressure);
-            var group = UIContainers.group(Sizing.fill(), Sizing.fill());
+            var group = UIContainers.stack(Sizing.content(), Sizing.content());
             group.allowOverflow(true);
 
             inputs.positioning(Positioning.relative(35, 45));
@@ -291,7 +291,7 @@ public class GTRecipeTypeUI {
         }
         if (totalR == 0 || maxCount == 0) {
             // early exit if no content
-            return UIContainers.group(Sizing.fixed(0), Sizing.fixed(0));
+            return UIContainers.stack(Sizing.fixed(0), Sizing.fixed(0));
         }
         GridLayout group = UIContainers.grid(Sizing.fixed(maxCount * 18 + 8), Sizing.fixed(totalR * 18 + 8),
                 totalR, maxCount);
@@ -306,11 +306,9 @@ public class GTRecipeTypeUI {
             for (int slotIndex = 0; slotIndex < capCount; slotIndex++) {
                 var component = cap.createUIComponent();
                 // noinspection DataFlowIssue
-                component.positioning(Positioning.absolute(0, 0))
-                        .id(cap.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
+                component.id(cap.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
                 var texture = UIComponents.texture(
                         getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure))
-                        .positioning(Positioning.absolute(0, 0))
                         .sizing(Sizing.fill());
 
                 StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
@@ -370,7 +368,7 @@ public class GTRecipeTypeUI {
         return maxPropertyCount * 10; // GTRecipeComponent#LINE_HEIGHT
     }
 
-    public void appendJEIUI(GTRecipe recipe, UIComponentGroup widgetGroup) {
+    public void appendJEIUI(GTRecipe recipe, StackLayout widgetGroup) {
         if (uiBuilder != null) {
             uiBuilder.accept(recipe, widgetGroup);
         }

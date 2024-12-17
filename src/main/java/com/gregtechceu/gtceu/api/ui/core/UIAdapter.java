@@ -224,8 +224,6 @@ public class UIAdapter<R extends ParentUIComponent>
             RenderSystem.disableScissor();
             RenderSystem.disableDepthTest();
 
-            this.rootComponent.drawTooltip(uiGraphics, mouseX, mouseY, partialTicks, delta);
-
             final var hovered = this.rootComponent.childAt(mouseX, mouseY);
             if (!disposed && hovered != null) {
                 this.cursorAdapter.applyStyle(hovered.cursorStyle());
@@ -237,6 +235,28 @@ public class UIAdapter<R extends ParentUIComponent>
                 uiGraphics.drawInspector(this.rootComponent, mouseX, mouseY, !this.globalInspector);
                 uiGraphics.pose().popPose();
             }
+
+            if (this.captureFrame) RenderDoc.endFrameCapture();
+        } finally {
+            isRendering = false;
+            this.captureFrame = false;
+        }
+    }
+
+    public void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (this.enableInspector) {
+            return;
+        }
+
+        try {
+            isRendering = true;
+            if (this.captureFrame) RenderDoc.startFrameCapture();
+
+            if (!(graphics instanceof UIGuiGraphics)) graphics = UIGuiGraphics.of(graphics);
+            var uiGraphics = (UIGuiGraphics) graphics;
+
+            final var partialTicks = Minecraft.getInstance().getPartialTick();
+            final var delta = Minecraft.getInstance().getDeltaFrameTime();
 
             this.rootComponent.drawTooltip(uiGraphics, mouseX, mouseY, partialTicks, delta);
 

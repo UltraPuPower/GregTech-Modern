@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.ToggleButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -114,8 +114,8 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
     //////////////////////////////////////
 
     @Override
-    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(170));
+    public ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter) {
+        var group = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(170));
         group.padding(Insets.both(10, 0));
         group.child(UIComponents.label(Component.translatable("cover.advanced_item_detector.label"))
                 .positioning(Positioning.absolute(0, 5)));

@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.*;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
@@ -195,8 +195,8 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     //////////////////////////////////////
 
     @Override
-    public ParentUIComponent createUIWidget(UIAdapter<UIComponentGroup> adapter) {
-        var group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(75));
+    public ParentUIComponent createUIWidget(UIAdapter<StackLayout> adapter) {
+        var group = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(75));
         group.padding(Insets.both(0, 5));
 
         group.child(UIComponents.label(Component.translatable("cover.machine_controller.title"))

@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.util.ClickData;
@@ -25,11 +26,11 @@ import java.util.stream.Stream;
 @ApiStatus.Internal
 @Accessors(fluent = true, chain = true)
 @Getter
-public class FancyMachineUIComponent extends UIComponentGroup {
+public class FancyMachineUIComponent extends StackLayout {
 
     protected final TitleBarComponent titleBar;
     protected final VerticalTabsComponent sideTabsComponent;
-    protected final UIComponentGroup pageContainer;
+    protected final FlowLayout pageContainer;
     protected final PageSwitcherComponent pageSwitcher;
     @Getter
     protected final ConfiguratorPanelComponent configuratorPanel;
@@ -59,9 +60,10 @@ public class FancyMachineUIComponent extends UIComponentGroup {
                                    Sizing horizontalSizing, Sizing verticalSizing) {
         super(horizontalSizing.andThen(Sizing.fixed(20)), verticalSizing.andThen(Sizing.fixed(16)));
         this.mainPage = mainPage;
-        this.allowOverflow(true);
+        this.allowOverflow(true)
+                .surface(Surface.BLANK);
 
-        child(this.pageContainer = UIContainers.group(horizontalSizing, verticalSizing)
+        child(this.pageContainer = UIContainers.horizontalFlow(horizontalSizing, verticalSizing)
                 .configure(c -> {
                     c.allowOverflow(true)
                             .surface(Surface.UI_BACKGROUND)
@@ -72,7 +74,7 @@ public class FancyMachineUIComponent extends UIComponentGroup {
             child(this.playerInventory = UIComponents.playerInventory()
                     .configure(c -> {
                         c.positioning(Positioning.relative(50, 100))
-                                .padding(Insets.of(0, 2, 22, 2));
+                                .padding(Insets.of(0, 2, 2, 2));
                     }));
         } else {
             playerInventory = null;
@@ -86,7 +88,7 @@ public class FancyMachineUIComponent extends UIComponentGroup {
         child(this.configuratorPanel = new ConfiguratorPanelComponent()
                 .configure(c -> {
                     c.allowOverflow(true)
-                            .positioning(Positioning.absolute(-(24 + 2), height));
+                            .positioning(Positioning.absolute(-(4 + 2), height));
                 }));
         this.pageSwitcher = new PageSwitcherComponent(this::switchPage);
 
@@ -165,10 +167,10 @@ public class FancyMachineUIComponent extends UIComponentGroup {
             previousPages.pop();
         }
 
-        this.removeChild(sideTabsComponent);
+        this.sideTabsComponent.enabled(false);
 
         this.previousPages.push(new NavigationEntry(currentHomePage, currentHomePage, () -> {
-            this.child(sideTabsComponent);
+            this.sideTabsComponent.enabled(true);
         }));
 
         this.currentPage = this.pageSwitcher;
@@ -183,7 +185,7 @@ public class FancyMachineUIComponent extends UIComponentGroup {
         this.currentPage = mainPage;
         this.previousPages.clear();
 
-        this.child(sideTabsComponent);
+        sideTabsComponent.enabled(true);
 
         setupSideTabs(this.currentHomePage);
         navigate(nextHomePage, nextHomePage);
@@ -275,6 +277,12 @@ public class FancyMachineUIComponent extends UIComponentGroup {
         this.pageContainer.clearChildren();
         this.configuratorPanel.clear();
         this.tooltipsPanel.clear();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        clearUI();
     }
 
     protected void setupSideTabs(IFancyUIProvider currentHomePage) {

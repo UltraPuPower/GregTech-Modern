@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 
 import net.minecraft.client.Minecraft;
@@ -32,7 +32,7 @@ public class CoverUIFactory extends UIFactory<CoverBehavior> {
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, CoverBehavior holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, CoverBehavior holder) {
         if (holder instanceof IUICover cover) {
             cover.loadClientUI(player, adapter, holder);
         }

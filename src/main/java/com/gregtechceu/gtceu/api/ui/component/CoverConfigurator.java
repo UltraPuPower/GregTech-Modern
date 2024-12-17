@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.ui.component;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.fancy.IFancyConfigurator;
@@ -38,8 +38,8 @@ public class CoverConfigurator implements IFancyConfigurator {
     }
 
     @Override
-    public ParentUIComponent createConfigurator(UIAdapter<UIComponentGroup> adapter) {
-        UIComponentGroup group = UIContainers.group(Sizing.content(), Sizing.content());
+    public ParentUIComponent createConfigurator(UIAdapter<StackLayout> adapter) {
+        StackLayout group = UIContainers.stack(Sizing.content(), Sizing.content());
         if (side != null) {
             if (coverable.getCoverAtSide(side) instanceof IUICover iuiCover) {
                 ParentUIComponent coverConfigurator = iuiCover.createUIWidget(adapter);

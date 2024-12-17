@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
@@ -594,7 +594,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         adapter.rootComponent.child(UIContainers.horizontalFlow(Sizing.fixed(176), Sizing.fixed(166))
                 .<FlowLayout>configure(c -> {
                     c.surface(Surface.UI_BACKGROUND);

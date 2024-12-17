@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.rei.handler;
 
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
@@ -25,11 +25,11 @@ public class REIUIAdapter extends Widget {
     public static final Point LAYOUT = new Point(-69, -69);
 
     private Consumer<ScreenEvent.Closing> closeListener;
-    public final UIAdapter<UIComponentGroup> adapter;
+    public final UIAdapter<StackLayout> adapter;
 
     public REIUIAdapter(Rectangle bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.x, bounds.y, bounds.width, bounds.height,
-                UIContainers::group);
+                UIContainers::stack);
         this.adapter.inspectorZOffset = 900;
 
         if (Minecraft.getInstance().screen != null) {
@@ -45,7 +45,7 @@ public class REIUIAdapter extends Widget {
         this.adapter.inflateAndMount();
     }
 
-    public UIComponentGroup rootComponent() {
+    public StackLayout rootComponent() {
         return this.adapter.rootComponent;
     }
 

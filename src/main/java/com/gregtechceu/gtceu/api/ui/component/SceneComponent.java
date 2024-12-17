@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.component;
 
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
 import com.gregtechceu.gtceu.api.ui.core.UIComponentMenuAccess;
 import com.gregtechceu.gtceu.api.ui.core.UIGuiGraphics;
@@ -45,7 +45,7 @@ import java.util.function.Consumer;
 
 @SuppressWarnings({ "unused", "UnusedReturnValue", "SameParameterValue" })
 @Accessors(fluent = true, chain = true)
-public class SceneComponent extends UIComponentGroup {
+public class SceneComponent extends StackLayout {
 
     @Getter
     protected WorldSceneRenderer renderer;

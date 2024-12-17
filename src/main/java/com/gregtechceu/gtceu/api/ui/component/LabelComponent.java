@@ -21,6 +21,7 @@ import net.minecraft.util.FormattedCharSequence;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.w3c.dom.Element;
 
@@ -60,7 +61,7 @@ public class LabelComponent extends BaseUIComponent {
     @Setter
     public float rollSpeed = 1;
     @Setter
-    public TextTexture.TextType textType;
+    public TextTexture.TextType textType = TextTexture.TextType.NORMAL;
 
     @Getter
     protected Function<Style, Boolean> textClickHandler = UIGuiGraphics.utilityScreen()::handleComponentClicked;
@@ -186,6 +187,7 @@ public class LabelComponent extends BaseUIComponent {
         var pose = graphics.pose();
 
         pose.pushPose();
+        pose.translate(0, 0, 400);
         //pose.translate(0, 1 / Minecraft.getInstance().getWindow().getGuiScale(), 0);
 
         int x = this.x;
@@ -336,8 +338,8 @@ public class LabelComponent extends BaseUIComponent {
         int totalW = width + textW + 10;
         float from = x + width;
         var trans = graphics.pose().last().pose();
-        var realPos = trans.transform(new Vector4f(x, y, 0, 1));
-        var realPos2 = trans.transform(new Vector4f(x + width, y + height, 0, 1));
+        var realPos = new Matrix4f(trans).transform(new Vector4f(x, y, 0, 1));
+        var realPos2 = new Matrix4f(trans).transform(new Vector4f(x + width, y + height, 0, 1));
         graphics.enableScissor((int) realPos.x, (int) realPos.y, (int) realPos2.x, (int) realPos2.y);
         var t = rollSpeed > 0 ?
                 ((((rollSpeed * Math.abs((int) (System.currentTimeMillis() % 1000000)) / 10) % (totalW))) / (totalW)) :

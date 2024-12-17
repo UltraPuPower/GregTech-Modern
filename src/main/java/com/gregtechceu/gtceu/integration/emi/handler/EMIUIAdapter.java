@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.emi.handler;
 
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.util.ScissorStack;
@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -24,7 +23,7 @@ import java.util.function.Consumer;
 
 public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
-    public final UIAdapter<UIComponentGroup> adapter;
+    public final UIAdapter<StackLayout> adapter;
 
     @Getter
     private final Bounds bounds;
@@ -39,7 +38,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
 
     public EMIUIAdapter(Bounds bounds) {
         this.adapter = UIAdapter.createWithoutScreen(bounds.x(), bounds.y(), bounds.width(), bounds.height(),
-                UIContainers::group);
+                UIContainers::stack);
         this.adapter.inspectorZOffset = 900;
         this.bounds = bounds;
 
@@ -56,7 +55,7 @@ public class EMIUIAdapter extends Widget implements ContainerEventHandler {
         this.adapter.inflateAndMount();
     }
 
-    public UIComponentGroup rootComponent() {
+    public StackLayout rootComponent() {
         return this.adapter.rootComponent;
     }
 

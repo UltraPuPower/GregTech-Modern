@@ -46,7 +46,7 @@ public abstract class BaseParentUIComponent extends BaseUIComponent implements P
     protected Surface surface = Surface.BLANK;
     @Getter
     @Setter
-    protected boolean allowOverflow = false;
+    protected boolean allowOverflow = true;
 
     protected BaseParentUIComponent(Sizing horizontalSizing, Sizing verticalSizing) {
         this.horizontalSizing.set(horizontalSizing);

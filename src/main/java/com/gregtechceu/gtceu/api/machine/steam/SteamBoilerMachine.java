@@ -16,11 +16,10 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
 import com.gregtechceu.gtceu.api.ui.core.Sizing;
-import com.gregtechceu.gtceu.api.ui.core.Surface;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.serialization.SyncedProperty;
 import com.gregtechceu.gtceu.api.ui.texture.ProgressTexture;
@@ -317,10 +316,10 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     }
 
     @Override
-    public void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, MetaMachine holder) {
+    public void loadClientUI(Player player, UIAdapter<StackLayout> adapter, MetaMachine holder) {
         var menu = adapter.menu();
-        UIComponentGroup group;
-        adapter.rootComponent.child(group = UIContainers.group(Sizing.fixed(176), Sizing.fixed(166)));
+        StackLayout group;
+        adapter.rootComponent.child(group = UIContainers.stack(Sizing.fixed(176), Sizing.fixed(166)));
 
         group.surface(GuiTextures.BACKGROUND_STEAM.get(isHighPressure)::draw);
         group.child(UIComponents.label(getBlockState().getBlock().getName())

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.ui.factory;
 
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.UIContainerScreen;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 
@@ -52,14 +52,14 @@ public abstract class UIFactory<T> {
     }
 
     @Nullable
-    public UIAdapter<UIComponentGroup> createAdapter(Player player, T holder, UIContainerScreen screen) {
-        return UIAdapter.create(screen, UIContainers::group);
+    public UIAdapter<StackLayout> createAdapter(Player player, T holder, UIContainerScreen screen) {
+        return UIAdapter.create(screen, UIContainers::stack);
     }
 
     public abstract void loadServerUI(Player player, UIContainerMenu<T> menu, T holder);
 
     @OnlyIn(Dist.CLIENT)
-    public abstract void loadClientUI(Player player, UIAdapter<UIComponentGroup> adapter, T holder);
+    public abstract void loadClientUI(Player player, UIAdapter<StackLayout> adapter, T holder);
 
     public Component getUITitle(T holder, Player player) {
         return Component.empty();

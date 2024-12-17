@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIParsing;
 
+import com.gregtechceu.gtceu.api.ui.util.ClickData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -128,7 +129,7 @@ public class DropdownComponent extends FlowLayout {
         return this;
     }
 
-    public DropdownComponent button(Component text, Consumer<DropdownComponent> onClick) {
+    public DropdownComponent button(Component text, BiConsumer<ClickData, DropdownComponent> onClick) {
         this.entries.child(new Button(this, text, onClick).margins(Insets.of(2)));
         return this;
     }
@@ -184,7 +185,7 @@ public class DropdownComponent extends FlowLayout {
                     UIParsing.expectChildren(entry, children, "text");
 
                     var text = UIParsing.parseComponent(children.get("text"));
-                    this.button(text, dropdownComponent -> {});
+                    this.button(text, (cd, dropdownComponent) -> {});
                 }
                 case "checkbox" -> {
                     var children = UIParsing.childElements(entry);
@@ -278,9 +279,9 @@ public class DropdownComponent extends FlowLayout {
     protected static class Button extends LabelComponent implements ResizeableComponent {
 
         protected final DropdownComponent parentDropdown;
-        protected Consumer<DropdownComponent> onClick;
+        protected BiConsumer<ClickData, DropdownComponent> onClick;
 
-        protected Button(DropdownComponent parentDropdown, Component text, Consumer<DropdownComponent> onClick) {
+        protected Button(DropdownComponent parentDropdown, Component text, BiConsumer<ClickData, DropdownComponent> onClick) {
             super(text);
             this.onClick = onClick;
             this.parentDropdown = parentDropdown;
@@ -297,7 +298,8 @@ public class DropdownComponent extends FlowLayout {
         public boolean onMouseDown(double mouseX, double mouseY, int button) {
             super.onMouseDown(mouseX, mouseY, button);
 
-            this.onClick.accept(this.parentDropdown);
+            ClickData cd = new ClickData(button);
+            this.onClick.accept(cd, this.parentDropdown);
 
             return true;
         }
@@ -323,10 +325,10 @@ public class DropdownComponent extends FlowLayout {
         protected boolean state;
 
         public Checkbox(DropdownComponent parentDropdown, Component text, boolean state, Consumer<Boolean> onClick) {
-            super(parentDropdown, text, dropdownComponent -> {});
+            super(parentDropdown, text, (cd, dropdownComponent) -> {});
 
             this.state = state;
-            this.onClick = dropdownComponent -> {
+            this.onClick = (cd, dropdownComponent) -> {
                 this.state = !this.state;
                 onClick.accept(this.state);
             };

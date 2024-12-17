@@ -33,7 +33,7 @@ public class ItemStackTexture extends TransformTexture {
     protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
                                 float height) {
         graphics.pose().pushPose();
-        graphics.pose().scale(width / 16f, height / 16f, 1);
+        //graphics.pose().scale(width / 16f, height / 16f, 1);
         graphics.pose().translate(x * 16 / width, y * 16 / height, -200);
         graphics.renderFakeItem(stack, 0, 0);
         graphics.pose().popPose();

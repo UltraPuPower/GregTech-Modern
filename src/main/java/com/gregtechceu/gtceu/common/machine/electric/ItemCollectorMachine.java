@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Insets;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -439,7 +439,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                 energyGroup.child(energyBar);
                 batterySlot.positioning(Positioning.layout());
                 energyGroup.child(batterySlot);
-                var group = UIContainers.group(Sizing.content(12), Sizing.content(8));
+                var group = UIContainers.stack(Sizing.content(12), Sizing.content(8));
 
                 energyGroup.positioning(Positioning.relative(5, 50));
                 template.positioning(Positioning.relative(50, 50));
@@ -476,10 +476,10 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         });
     }
 
-    protected static EditableUI<UIComponentGroup, ItemCollectorMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("functional_container", UIComponentGroup.class, () -> {
+    protected static EditableUI<StackLayout, ItemCollectorMachine> createTemplate(int inventorySize) {
+        return new EditableUI<>("functional_container", StackLayout.class, () -> {
             int rowSize = (int) Math.sqrt(inventorySize);
-            UIComponentGroup main = UIContainers.group(Sizing.fixed(rowSize * 18 + 8 + 25),
+            StackLayout main = UIContainers.stack(Sizing.fixed(rowSize * 18 + 8 + 25),
                     Sizing.fixed(rowSize * 18 + 8));
             main.margins(Insets.both(4, 4));
 

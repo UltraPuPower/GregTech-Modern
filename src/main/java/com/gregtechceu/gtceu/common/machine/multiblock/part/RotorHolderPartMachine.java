@@ -226,7 +226,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
 
     @Override
     public ParentUIComponent createBaseUIComponent(FancyMachineUIComponent component) {
-        var container = UIContainers.group(Sizing.content(8), Sizing.content(8));
+        var container = UIContainers.stack(Sizing.content(8), Sizing.content(8));
         container.positioning(Positioning.relative(50, 50));
         container.child(new BlockableSlotComponent(inventory.storage, 0)
                 .isBlocked(() -> rotorSpeed != 0)

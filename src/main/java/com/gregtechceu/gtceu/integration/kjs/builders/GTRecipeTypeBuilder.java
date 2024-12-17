@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.texture.*;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
@@ -39,7 +39,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     private GTRecipeType smallRecipeMap;
     private Supplier<ItemStack> iconSupplier;
     @Nullable
-    protected BiConsumer<GTRecipe, UIComponentGroup> uiBuilder;
+    protected BiConsumer<GTRecipe, StackLayout> uiBuilder;
 
     public GTRecipeTypeBuilder(ResourceLocation i, Object... args) {
         super(i);
@@ -144,7 +144,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         return this;
     }
 
-    public GTRecipeTypeBuilder setUiBuilder(BiConsumer<GTRecipe, UIComponentGroup> uiBuilder) {
+    public GTRecipeTypeBuilder setUiBuilder(BiConsumer<GTRecipe, StackLayout> uiBuilder) {
         this.uiBuilder = uiBuilder;
         return this;
     }

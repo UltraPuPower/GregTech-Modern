@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.ui.editable;
 
-import com.gregtechceu.gtceu.api.ui.container.UIComponentGroup;
+import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.util.UIComponentUtils;
@@ -33,7 +33,7 @@ public class EditableUI<W extends UIComponent, T> implements IEditableUI<W, T> {
     }
 
     @Override
-    public void setupUI(UIComponentGroup template, UIAdapter<UIComponentGroup> adapter, T instance) {
+    public void setupUI(StackLayout template, UIAdapter<StackLayout> adapter, T instance) {
         UIComponentUtils.componentByIdForEach(template, "^" + id + "$", clazz, w -> binder.bind(w, adapter, instance));
     }
 }
