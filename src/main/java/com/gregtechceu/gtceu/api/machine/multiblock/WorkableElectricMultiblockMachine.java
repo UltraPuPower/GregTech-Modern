@@ -118,7 +118,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                         .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
                         .maxWidthLimit(200)
                         .clickHandler(this::handleDisplayClick))
-                .positioning(Positioning.absolute(0, 13));
+                .positioning(Positioning.absolute(0, 13))
+                .sizing(Sizing.fill(), Sizing.fill());
         group.child(UIContainers.verticalScroll(Sizing.fill(), Sizing.fill(), inner))
                 .surface(Surface.UI_BACKGROUND_INVERSE);
         return group;

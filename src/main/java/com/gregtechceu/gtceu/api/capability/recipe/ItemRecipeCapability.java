@@ -462,7 +462,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public @NotNull UIComponent createUIComponent() {
-        return UIComponents.slot(0);
+        return UIComponents.slot(0).backgroundTexture(null);
     }
 
     @NotNull

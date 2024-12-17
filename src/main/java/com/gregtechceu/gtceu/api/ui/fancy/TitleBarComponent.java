@@ -61,7 +61,7 @@ public class TitleBarComponent extends StackLayout {
         this.positioning(Positioning.absolute(HORIZONTAL_MARGIN, 0));
         this.innerHeight = HEIGHT - BORDER_SIZE;
 
-        child(this.buttonGroup = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fixed(innerHeight)));
+        this.buttonGroup = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fixed(innerHeight));
         buttonGroup.positioning(Positioning.absolute(0, BORDER_SIZE));
         buttonGroup.surface(Surface.TITLE_BAR_BACKGROUND);
         buttonGroup.child(this.backButton = UIComponents.button(Component.literal(" <"), onBackClicked)
@@ -71,18 +71,19 @@ public class TitleBarComponent extends StackLayout {
                 .positioning(Positioning.relative(100, 100))
                 .margins(Insets.both(BUTTON_WIDTH, BORDER_SIZE))
                 .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(HEIGHT - BORDER_SIZE)));
+        child(buttonGroup);
 
-        child(this.mainSection = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fill()));
+        this.mainSection = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fill());
         mainSection.positioning(Positioning.absolute(BUTTON_WIDTH, 0));
         mainSection.surface(Surface.TITLE_BAR_BACKGROUND);
         mainSection.child(this.tabIcon = (TextureComponent) UIComponents.texture(UITexture.EMPTY)
                 .sizing(Sizing.fixed(innerHeight - 2), Sizing.fixed(innerHeight - 2))
                 .positioning(Positioning.absolute(BORDER_SIZE + 1, BORDER_SIZE + 1)));
+        child(mainSection);
 
         mainSection.child(this.tabTitle = (LabelComponent) UIComponents.label(Component.empty())
                 .rollSpeed(ROLL_SPEED)
                 .textType(TextTexture.TextType.LEFT_ROLL)
-                .sizing(Sizing.content())
                 .positioning(Positioning.absolute(BORDER_SIZE + innerHeight, BORDER_SIZE)));
 
         hasInit = true;
@@ -132,6 +133,8 @@ public class TitleBarComponent extends StackLayout {
         mainSection.sizing(Sizing.fixed(mainSectionWidth), Sizing.fill());
         tabTitle.maxWidth(titleWidth);
         tabTitle.sizing(Sizing.fixed(titleWidth), Sizing.fill());
+
+        super.updateLayout();
     }
 
 }

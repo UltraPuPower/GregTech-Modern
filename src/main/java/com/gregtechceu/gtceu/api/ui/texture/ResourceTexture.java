@@ -16,14 +16,14 @@ import java.util.Map;
 public class ResourceTexture extends TransformTexture {
 
     public ResourceLocation imageLocation;
-    public int offsetX;
-    public int offsetY;
-    public int imageWidth;
-    public int imageHeight;
+    public float offsetX;
+    public float offsetY;
+    public float imageWidth;
+    public float imageHeight;
     @Setter
     protected int color = -1;
 
-    protected ResourceTexture(ResourceLocation imageLocation, int offsetX, int offsetY, int width, int height) {
+    protected ResourceTexture(ResourceLocation imageLocation, float offsetX, float offsetY, float width, float height) {
         this.imageLocation = imageLocation;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
@@ -37,18 +37,18 @@ public class ResourceTexture extends TransformTexture {
 
     public ResourceTexture getSubTexture(float offsetX, float offsetY, float width, float height) {
         return new ResourceTexture(imageLocation,
-                (int) (this.offsetX + (imageWidth * offsetX)),
-                (int) (this.offsetY + (imageHeight * offsetY)),
-                (int) (this.imageWidth * width),
-                (int) (this.imageHeight * height));
+                this.offsetX + (imageWidth * offsetX),
+                this.offsetY + (imageHeight * offsetY),
+                this.imageWidth * width,
+                this.imageHeight * height);
     }
 
     public ResourceTexture getSubTexture(double offsetX, double offsetY, double width, double height) {
         return new ResourceTexture(imageLocation,
-                (int) (this.offsetX + (float) (imageWidth * offsetX)),
-                (int) (this.offsetY + (float) (imageHeight * offsetY)),
-                (int) (this.imageWidth * (float) width),
-                (int) (this.imageHeight * (float) height));
+                this.offsetX + (float) (imageWidth * offsetX),
+                this.offsetY + (float) (imageHeight * offsetY),
+                this.imageWidth * (float) width,
+                this.imageHeight * (float) height);
     }
 
     public ResourceTexture copy() {
@@ -58,7 +58,7 @@ public class ResourceTexture extends TransformTexture {
     @Override
     protected void drawInternal(UIGuiGraphics graphics, int mouseX, int mouseY, float x, float y, float width,
                                 float height) {
-        drawSubArea(graphics, x, y, width, height, 0, 0, 1, 1);
+        drawSubAreaInternal(graphics, x, y, width, height, 0, 0, 1, 1);
     }
 
     @Override
@@ -70,8 +70,8 @@ public class ResourceTexture extends TransformTexture {
 
         float imageU = this.offsetX + (this.imageWidth * drawnU);
         float imageV = this.offsetY + (this.imageHeight * drawnV);
-        int imageWidth = (int) (this.imageWidth * drawnWidth);
-        int imageHeight = (int) (this.imageHeight * drawnHeight);
+        float imageWidth = this.imageWidth * drawnWidth;
+        float imageHeight = this.imageHeight * drawnHeight;
 
         graphics.blit(imageLocation, x, y, imageU, imageV, imageWidth, imageHeight, this.imageWidth, this.imageHeight);
     }

@@ -19,7 +19,7 @@ public class VerticalTabsComponent extends TabsComponent {
 
     public VerticalTabsComponent(Consumer<IFancyUIProvider> onTabClick) {
         super(onTabClick);
-        ResourceTexture tabsLeft = UITextures.resource(GTCEu.id("textures/gui/tab/tabs_left.png"));
+        ResourceTexture tabsLeft = UITextures.resource(GTCEu.id("textures/gui/tab/tabs_left.png"), 0, 0, 64, 84);
         setTabTexture(tabsLeft.getSubTexture(0, 1 / 3f, 0.5f, 1 / 3f));
         setTabHoverTexture(tabsLeft.getSubTexture(0.5f, 1 / 3f, 0.5f, 1 / 3f));
         setTabPressedTexture(tabsLeft.getSubTexture(0.5f, 1 / 3f, 0.5f, 1 / 3f));
@@ -53,16 +53,14 @@ public class VerticalTabsComponent extends TabsComponent {
     @OnlyIn(Dist.CLIENT)
     @Nullable
     public IFancyUIProvider getHoveredTab(double mouseX, double mouseY) {
-        if (isMouseOverElement(mouseX, mouseY)) {
-            // main tab
-            if (UIComponent.isMouseOver(x, y + 8, 24, 24, mouseX, mouseY)) {
-                return mainTab;
-            }
-            // others
-            int i = ((int) mouseY - y - 24 - 8) / 24;
-            if (i >= 0 && i < subTabs.size()) {
-                return subTabs.get(i);
-            }
+        // main tab
+        if (UIComponent.isMouseOver(x, y + 8, 24, 24, mouseX, mouseY)) {
+            return mainTab;
+        }
+        // others
+        int i = ((int) mouseY - y - 24 - 8) / 24;
+        if (i >= 0 && i < subTabs.size()) {
+            return subTabs.get(i);
         }
         return null;
     }

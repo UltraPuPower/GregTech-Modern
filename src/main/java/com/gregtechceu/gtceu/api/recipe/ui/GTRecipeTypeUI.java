@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.ui;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -30,6 +31,7 @@ import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
@@ -50,8 +52,10 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @SuppressWarnings("UnusedReturnValue")
 public class GTRecipeTypeUI {
 
@@ -172,7 +176,7 @@ public class GTRecipeTypeUI {
 
             var inputs = addInventorySlotGroup(false, isSteam, isHighPressure);
             var outputs = addInventorySlotGroup(true, isSteam, isHighPressure);
-            var group = UIContainers.stack(Sizing.content(), Sizing.content());
+            var group = UIContainers.stack(Sizing.fill(), Sizing.fill());
             group.allowOverflow(true);
 
             inputs.positioning(Positioning.relative(35, 45));
@@ -289,38 +293,87 @@ public class GTRecipeTypeUI {
                 }
             }
         }
+        int slotCountTotal = map.values().stream().mapToInt(i -> i).sum();
+
+        int[] inputSlotGrid = determineSlotsGrid(map.getOrDefault(ItemRecipeCapability.CAP, 0));
+        int itemSlotsToLeft = inputSlotGrid[0];
+        int itemSlotsToDown = inputSlotGrid[1];
+        int startInputsX = isOutputs ? 106 : 70 - itemSlotsToLeft * 18;
+        int startInputsY = 33 - (int) (itemSlotsToDown / 2.0 * 18);
+
+        boolean wasGroup = slotCountTotal == 12;
+        if (wasGroup) startInputsY -= 9;
+        else if (slotCountTotal >= 8 && !isOutputs) startInputsY -= 9;
+
         if (totalR == 0 || maxCount == 0) {
             // early exit if no content
             return UIContainers.stack(Sizing.fixed(0), Sizing.fixed(0));
         }
-        GridLayout group = UIContainers.grid(Sizing.fixed(maxCount * 18 + 8), Sizing.fixed(totalR * 18 + 8),
-                totalR, maxCount);
+        StackLayout group = UIContainers.stack(Sizing.content(4), Sizing.content(8));
+        group.positioning(Positioning.absolute(startInputsX, startInputsY));
         group.padding(Insets.of(4));
-        int index = 0;
         for (var entry : map.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             if (cap.getWidgetClass() == null) {
                 continue;
             }
             int capCount = entry.getValue();
-            for (int slotIndex = 0; slotIndex < capCount; slotIndex++) {
-                var component = cap.createUIComponent();
-                // noinspection DataFlowIssue
-                component.id(cap.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
-                var texture = UIComponents.texture(
-                        getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure))
-                        .sizing(Sizing.fill());
 
-                StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
-                layout.positioning(Positioning.absolute((index % 3) * 18, (index / 3) * 18));
-                layout.children(List.of(component, texture));
-                group.child(component, index / 3 % 3, index % 3);
-                index++;
+            if (cap == ItemRecipeCapability.CAP) {
+                for (int i = 0; i < itemSlotsToDown; i++) {
+                    for (int j = 0; j < itemSlotsToLeft; j++) {
+                        int slotIndex = i * itemSlotsToLeft + j;
+                        if (slotIndex >= capCount) break;
+                        int x = 18 * j;
+                        int y = 18 * i;
+
+                        addSlot(group, cap, capCount, slotIndex, x, y, isOutputs, isSteam, isHighPressure);
+                    }
+                }
+            } else {
+                int offset = wasGroup ? 2 : 0;
+
+                if (itemSlotsToDown >= capCount && itemSlotsToLeft < 3) {
+                    int startSpecX = isOutputs ? itemSlotsToLeft * 18 : -18;
+                    for (int i = 0; i < capCount; i++) {
+                        int y = offset + 18 * i;
+
+                        addSlot(group, cap, capCount, i, startSpecX, y, isOutputs, isSteam, isHighPressure);
+                    }
+                } else {
+                    int startSpecY = itemSlotsToDown * 18;
+                    for (int i = 0; i < capCount; i++) {
+                        int x = isOutputs ? 18 * (i % 3) :
+                                itemSlotsToLeft * 18 - 18 - 18 * (i % 3);
+                        int y = startSpecY + (i / 3) * 18;
+
+                        addSlot(group, cap, capCount, i, x, y, isOutputs, isSteam, isHighPressure);
+                    }
+                }
+
             }
-            // move to new row
-            index += (3 - (index % 3)) % 3;
+
         }
         return group;
+    }
+
+    private void addSlot(StackLayout group, RecipeCapability<?> cap, int capCount,
+                         int index, int x, int y,
+                         boolean isOutputs, boolean isSteam, boolean isHighPressure) {
+
+        var component = cap.createUIComponent();
+        // noinspection DataFlowIssue
+        component.id(cap.slotName(isOutputs ? IO.OUT : IO.IN, index))
+                .positioning(Positioning.absolute(0, 0));
+        var texture = UIComponents.texture(
+                        getOverlaysForSlot(isOutputs, cap, index == capCount - 1, isSteam, isHighPressure))
+                .sizing(Sizing.fill())
+                .positioning(Positioning.absolute(0, 0));
+
+        StackLayout layout = UIContainers.stack(Sizing.fixed(18), Sizing.fixed(18));
+        layout.positioning(Positioning.absolute(x, y));
+        layout.children(List.of(texture, component));
+        group.child(layout);
     }
 
     protected static int[] determineSlotsGrid(int itemCount) {

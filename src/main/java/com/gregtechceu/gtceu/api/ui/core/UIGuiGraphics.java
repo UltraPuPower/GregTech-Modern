@@ -228,7 +228,7 @@ public class UIGuiGraphics extends GuiGraphics {
      * @param textureHeight the height of the texture.
      */
     public void blit(ResourceLocation atlasLocation, float x, float y, float blitOffset, float uOffset, float vOffset,
-                     int uWidth, int vHeight, int textureWidth, int textureHeight) {
+                     float uWidth, float vHeight, float textureWidth, float textureHeight) {
         this.blit(atlasLocation, x, x + uWidth, y, y + vHeight, blitOffset, uWidth, vHeight, uOffset, vOffset,
                 textureWidth, textureHeight);
     }
@@ -238,10 +238,8 @@ public class UIGuiGraphics extends GuiGraphics {
      * dimensions with texture coordinates.
      *
      * @param atlasLocation the location of the texture atlas.
-     * @param x             the x-coordinate of the top-left corner of the blit
-     *                      position.
-     * @param y             the y-coordinate of the top-left corner of the blit
-     *                      position.
+     * @param x             the x-coordinate of the top-left corner of the blit position.
+     * @param y             the y-coordinate of the top-left corner of the blit position.
      * @param uOffset       the horizontal texture coordinate offset.
      * @param vOffset       the vertical texture coordinate offset.
      * @param width         the width of the blitted portion.
@@ -250,7 +248,7 @@ public class UIGuiGraphics extends GuiGraphics {
      * @param textureHeight the height of the texture.
      */
     public void blit(ResourceLocation atlasLocation, float x, float y, float uOffset, float vOffset, float width,
-                     float height, int textureWidth, int textureHeight) {
+                     float height, float textureWidth, float textureHeight) {
         this.blit(atlasLocation, x, y, width, height, uOffset, vOffset, width, height, textureWidth, textureHeight);
     }
 
@@ -259,10 +257,8 @@ public class UIGuiGraphics extends GuiGraphics {
      * dimensions with texture coordinates.
      *
      * @param atlasLocation the location of the texture atlas.
-     * @param x             the x-coordinate of the top-left corner of the blit
-     *                      position.
-     * @param y             the y-coordinate of the top-left corner of the blit
-     *                      position.
+     * @param x             the x-coordinate of the top-left corner of the blit position.
+     * @param y             the y-coordinate of the top-left corner of the blit position.
      * @param width         the width of the blitted portion.
      * @param height        the height of the blitted portion.
      * @param uOffset       the horizontal texture coordinate offset.
@@ -273,7 +269,7 @@ public class UIGuiGraphics extends GuiGraphics {
      * @param textureHeight the height of the texture.
      */
     public void blit(ResourceLocation atlasLocation, float x, float y, float width, float height, float uOffset,
-                     float vOffset, float uWidth, float vHeight, int textureWidth, int textureHeight) {
+                     float vOffset, float uWidth, float vHeight, float textureWidth, float textureHeight) {
         this.blit(atlasLocation, x, x + width, y, y + height, 0, uWidth, vHeight, uOffset, vOffset, textureWidth,
                 textureHeight);
     }
@@ -283,11 +279,9 @@ public class UIGuiGraphics extends GuiGraphics {
      *
      * @param atlasLocation the location of the texture atlas.
      * @param x1            the x-coordinate of the first corner of the blit position.
-     * @param x2            the x-coordinate of the second corner of the blit position
-     *                      .
+     * @param x2            the x-coordinate of the second corner of the blit position.
      * @param y1            the y-coordinate of the first corner of the blit position.
-     * @param y2            the y-coordinate of the second corner of the blit position
-     *                      .
+     * @param y2            the y-coordinate of the second corner of the blit position.
      * @param blitOffset    the z-level offset for rendering order.
      * @param uWidth        the width of the blitted portion in texture coordinates.
      * @param vHeight       the height of the blitted portion in texture coordinates.
@@ -297,10 +291,10 @@ public class UIGuiGraphics extends GuiGraphics {
      * @param textureHeight the height of the texture.
      */
     void blit(ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float uWidth,
-              float vHeight, float uOffset, float vOffset, int textureWidth, int textureHeight) {
-        this.innerBlit(atlasLocation, x1, x2, y1, y2, blitOffset, (uOffset + 0.0F) / (float) textureWidth,
-                (uOffset + uWidth) / (float) textureWidth, (vOffset + 0.0F) / (float) textureHeight,
-                (vOffset + (float) vHeight) / (float) textureHeight);
+              float vHeight, float uOffset, float vOffset, float textureWidth, float textureHeight) {
+        this.innerBlit(atlasLocation, x1, x2, y1, y2, blitOffset, (uOffset + 0.0F) / textureWidth,
+                (uOffset + uWidth) / textureWidth, (vOffset + 0.0F) / textureHeight,
+                (vOffset + vHeight) / textureHeight);
     }
 
     /**
@@ -309,11 +303,9 @@ public class UIGuiGraphics extends GuiGraphics {
      *
      * @param atlasLocation the location of the texture atlas.
      * @param x1            the x-coordinate of the first corner of the blit position.
-     * @param x2            the x-coordinate of the second corner of the blit position
-     *                      .
+     * @param x2            the x-coordinate of the second corner of the blit position.
      * @param y1            the y-coordinate of the first corner of the blit position.
-     * @param y2            the y-coordinate of the second corner of the blit position
-     *                      .
+     * @param y2            the y-coordinate of the second corner of the blit position.
      * @param blitOffset    the z-level offset for rendering order.
      * @param minU          the minimum horizontal texture coordinate.
      * @param maxU          the maximum horizontal texture coordinate.
@@ -344,7 +336,6 @@ public class UIGuiGraphics extends GuiGraphics {
         buffer.vertex(matrix, x + width, y + height, 0).color(0f, 1f, 1f, 1f).endVertex();
         buffer.vertex(matrix, x + width, y, 0).color(vertical ? 1f : 0f, 1f, 1f, 1f).endVertex();
 
-        // OwoClient.HSV_PROGRAM.use();
         Tesselator.getInstance().end();
     }
 
