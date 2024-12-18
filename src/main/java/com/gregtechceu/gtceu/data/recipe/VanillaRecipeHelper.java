@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
@@ -207,7 +208,7 @@ public class VanillaRecipeHelper {
      * <p/>
      * For Enums - {@link Enum#name()} is called.
      * <p/>
-     * For {@link UnificationEntry} - {@link UnificationEntry#toString()} is called.
+     * For {@link MaterialEntry} - {@link MaterialEntry#toString()} is called.
      * <p/>
      * Base tool names are as follows:
      * <ul>
@@ -268,7 +269,7 @@ public class VanillaRecipeHelper {
                     }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
-                } else if (content instanceof UnificationEntry entry) {
+                } else if (content instanceof MaterialEntry entry) {
                     TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
                     if (tag != null) {
                         builder.define(sign, tag);
@@ -284,7 +285,7 @@ public class VanillaRecipeHelper {
         builder.save(provider);
 
         if (withUnificationData) {
-            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
@@ -349,7 +350,7 @@ public class VanillaRecipeHelper {
                     builder.define(sign, (TagKey<Item>) key);
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
-                } else if (content instanceof UnificationEntry entry) {
+                } else if (content instanceof MaterialEntry entry) {
                     TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
                     if (tag != null) {
                         builder.define(sign, tag);
@@ -365,7 +366,7 @@ public class VanillaRecipeHelper {
         builder.save(provider);
 
         if (withUnificationData) {
-            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
@@ -419,7 +420,7 @@ public class VanillaRecipeHelper {
                     }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
-                } else if (content instanceof UnificationEntry entry) {
+                } else if (content instanceof MaterialEntry entry) {
                     TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
                     if (tag != null) {
                         builder.define(sign, tag);
@@ -436,7 +437,7 @@ public class VanillaRecipeHelper {
         builder.save(provider);
 
         if (withUnificationData) {
-            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
@@ -489,7 +490,7 @@ public class VanillaRecipeHelper {
                 builder.requires((TagKey<Item>) key);
             } else if (content instanceof ItemLike itemLike) {
                 builder.requires(itemLike);
-            } else if (content instanceof UnificationEntry entry) {
+            } else if (content instanceof MaterialEntry entry) {
                 TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
                 if (tag != null) {
                     builder.requires(tag);
@@ -553,7 +554,7 @@ public class VanillaRecipeHelper {
                 continue; // todo can this be improved?
             } else if (ingredient instanceof ItemLike) {
                 itemLike = (ItemLike) ingredient;
-            } else if (ingredient instanceof UnificationEntry entry) {
+            } else if (ingredient instanceof MaterialEntry entry) {
                 ItemStack stack = ChemicalHelper.get(entry.tagPrefix, entry.material);
                 if (stack == ItemStack.EMPTY) continue;
                 itemLike = stack.getItem();
@@ -562,7 +563,7 @@ public class VanillaRecipeHelper {
             } else continue; // throw out bad entries
 
             // First try to get ItemMaterialInfo
-            ItemMaterialInfo info = ChemicalHelper.getMaterialInfo(itemLike);
+            ItemMaterialInfo info = ItemMaterialData.getMaterialInfo(itemLike);
             if (info != null) {
                 for (MaterialStack ms : info.getMaterials()) {
                     if (!(ms.material() instanceof MarkerMaterial)) {
@@ -573,7 +574,7 @@ public class VanillaRecipeHelper {
             }
 
             // Then try to get a single Material (UnificationEntry needs this, for example)
-            MaterialStack materialStack = ChemicalHelper.getMaterial(itemLike);
+            MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
             if (materialStack != null && !(materialStack.material() instanceof MarkerMaterial)) {
                 addMaterialStack(materialStacksExploded, inputCountMap, materialStack, lastChar);
             }

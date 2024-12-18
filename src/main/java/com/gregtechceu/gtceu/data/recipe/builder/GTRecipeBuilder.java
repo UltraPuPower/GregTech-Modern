@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
@@ -333,7 +333,7 @@ public class GTRecipeBuilder {
             return inputItems(stack);
         } else if (input instanceof Ingredient ingredient) {
             return inputItems(ingredient);
-        } else if (input instanceof UnificationEntry entry) {
+        } else if (input instanceof MaterialEntry entry) {
             return inputItems(entry);
         } else if (input instanceof TagKey<?> tag) {
             return inputItems((TagKey<Item>) tag);
@@ -356,7 +356,7 @@ public class GTRecipeBuilder {
             return inputItems(stack.copyWithCount(count));
         } else if (input instanceof Ingredient ingredient) {
             return inputItems(ingredient, count);
-        } else if (input instanceof UnificationEntry entry) {
+        } else if (input instanceof MaterialEntry entry) {
             return inputItems(entry, count);
         } else if (input instanceof TagKey<?> tag) {
             return inputItems((TagKey<Item>) tag, count);
@@ -426,14 +426,14 @@ public class GTRecipeBuilder {
         return inputItems(orePrefix, material, 1);
     }
 
-    public GTRecipeBuilder inputItems(UnificationEntry input) {
+    public GTRecipeBuilder inputItems(MaterialEntry input) {
         if (input.material == null) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix);
         }
         return inputItems(input.tagPrefix, input.material, 1);
     }
 
-    public GTRecipeBuilder inputItems(UnificationEntry input, int count) {
+    public GTRecipeBuilder inputItems(MaterialEntry input, int count) {
         if (input.material == null) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix);
         }
@@ -469,7 +469,7 @@ public class GTRecipeBuilder {
             return outputItems(item.asItem());
         } else if (input instanceof ItemStack stack) {
             return outputItems(stack);
-        } else if (input instanceof UnificationEntry entry) {
+        } else if (input instanceof MaterialEntry entry) {
             return outputItems(entry);
         } else if (input instanceof MachineDefinition machine) {
             return outputItems(machine);
@@ -488,7 +488,7 @@ public class GTRecipeBuilder {
             return outputItems(item.asItem(), count);
         } else if (input instanceof ItemStack stack) {
             return outputItems(stack.copyWithCount(count));
-        } else if (input instanceof UnificationEntry entry) {
+        } else if (input instanceof MaterialEntry entry) {
             return outputItems(entry, count);
         } else if (input instanceof MachineDefinition machine) {
             return outputItems(machine, count);
@@ -550,14 +550,14 @@ public class GTRecipeBuilder {
         return outputItems(item);
     }
 
-    public GTRecipeBuilder outputItems(UnificationEntry entry) {
+    public GTRecipeBuilder outputItems(MaterialEntry entry) {
         if (entry.material == null) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix);
         }
         return outputItems(entry.tagPrefix, entry.material);
     }
 
-    public GTRecipeBuilder outputItems(UnificationEntry entry, int count) {
+    public GTRecipeBuilder outputItems(MaterialEntry entry, int count) {
         if (entry.material == null) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix);
         }

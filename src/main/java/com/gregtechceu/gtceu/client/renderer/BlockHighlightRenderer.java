@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer;
 
+import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
@@ -39,6 +41,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.Set;
@@ -63,6 +66,44 @@ public class BlockHighlightRenderer {
 
             Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
+
+            var block = level.getBlockState(blockPos);
+
+            if(block.getBlock() instanceof MaterialBlock) {
+                rColour = gColour = 0;
+                bColour = 0;
+                alpha = 0.55f;
+                Vec3 pos = camera.getPosition();
+                poseStack.pushPose();
+                poseStack.translate(-pos.x, -pos.y, -pos.z);
+                var buffer = multiBufferSource.getBuffer(RenderType.lines());
+                RenderSystem.lineWidth(3);
+                RenderSystem.disableDepthTest();
+                RenderSystem.enableBlend();
+                var mat = poseStack.last().pose();
+                var box = new AABB(blockPos);
+                float minX = (float)box.minX, minY = (float)box.minY, minZ = (float)box.minZ,
+                        maxX = (float)box.maxX, maxY = (float)box.maxY, maxZ = (float)box.maxZ;
+                drawLine(mat, buffer, new Vector3f(minX, minY, minZ), new Vector3f(maxX, minY, minZ)); // bottom face
+                drawLine(mat, buffer, new Vector3f(maxX, minY, minZ), new Vector3f(maxX, minY, maxZ));
+                drawLine(mat, buffer, new Vector3f(maxX, minY, maxZ), new Vector3f(minX, minY, maxZ));
+                drawLine(mat, buffer, new Vector3f(minX, minY, maxZ), new Vector3f(minX, minY, minZ));
+
+                drawLine(mat, buffer, new Vector3f(minX, minY, minZ), new Vector3f(minX, maxY, minZ)); // posts
+                drawLine(mat, buffer, new Vector3f(maxX, minY, minZ), new Vector3f(maxX, maxY, minZ));
+                drawLine(mat, buffer, new Vector3f(maxX, minY, maxZ), new Vector3f(maxX, maxY, maxZ));
+                drawLine(mat, buffer, new Vector3f(minX, minY, maxZ), new Vector3f(minX, maxY, maxZ));
+
+                drawLine(mat, buffer, new Vector3f(minX, maxY, minZ), new Vector3f(maxX, maxY, minZ)); // posts
+                drawLine(mat, buffer, new Vector3f(maxX, maxY, minZ), new Vector3f(maxX, maxY, maxZ));
+                drawLine(mat, buffer, new Vector3f(maxX, maxY, maxZ), new Vector3f(minX, maxY, maxZ));
+                drawLine(mat, buffer, new Vector3f(minX, maxY, maxZ), new Vector3f(minX, maxY, minZ));
+
+                RenderSystem.disableBlend();
+                RenderSystem.enableDepthTest();
+                poseStack.popPose();
+                return;
+            }
 
             // draw tool grid highlight
             if ((!toolType.isEmpty()) || (held.isEmpty() && player.isShiftKeyDown())) {
@@ -165,11 +206,13 @@ public class BlockHighlightRenderer {
     private static float rColour;
     private static float gColour;
     private static float bColour;
+    private static float alpha;
 
     private static void drawGridOverlays(PoseStack poseStack, VertexConsumer buffer, BlockHitResult blockHitResult,
                                          Function<Direction, ResourceTexture> test) {
         rColour = gColour = 0.2F + (float) Math.sin((float) (System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
+        alpha = 1.0f;
         var blockPos = blockHitResult.getBlockPos();
         var facing = blockHitResult.getDirection();
         var box = new AABB(blockPos);
@@ -363,9 +406,9 @@ public class BlockHighlightRenderer {
     private static void drawLine(Matrix4f mat, VertexConsumer buffer, Vector3f from, Vector3f to) {
         var normal = new Vector3f(from).sub(to);
 
-        buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, 1f)
+        buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, alpha)
                 .normal(normal.x, normal.y, normal.z).endVertex();
-        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, 1f).normal(normal.x, normal.y, normal.z)
+        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, alpha).normal(normal.x, normal.y, normal.z)
                 .endVertex();
     }
 }

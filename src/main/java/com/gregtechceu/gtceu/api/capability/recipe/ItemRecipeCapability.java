@@ -169,7 +169,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
             if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {
-                Material material = ChemicalHelper.getMaterial(stack.getItem()).material();
+                Material material = ChemicalHelper.getMaterialStack(stack.getItem()).material();
                 ingredients.add(new MapIntersectionIngredient((IntersectionIngredient) IntersectionIngredient.of(
                         Ingredient.of(prefix.getItemTags(material)[0]), Ingredient.of(prefix.getItemParentTags()[0]))));
             }

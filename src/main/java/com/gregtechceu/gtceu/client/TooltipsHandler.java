@@ -44,7 +44,7 @@ public class TooltipsHandler {
 
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Formula
-        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem());
+        var unificationEntry = ChemicalHelper.getMaterialEntry(stack.getItem());
         if (unificationEntry != null && unificationEntry.material != null) {
             if (unificationEntry.material.getChemicalFormula() != null &&
                     !unificationEntry.material.getChemicalFormula().isEmpty())

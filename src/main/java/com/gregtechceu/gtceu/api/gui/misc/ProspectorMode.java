@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.gui.misc;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
@@ -70,7 +70,7 @@ public abstract class ProspectorMode<T> {
                         if (state.is(oreTag)) {
                             var itemName = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
                                 var name = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
-                                var entry = ChemicalHelper.getUnificationEntry(blockState.getBlock());
+                                var entry = ChemicalHelper.getMaterialEntry(blockState.getBlock());
                                 if (entry != null && entry.material != null) {
                                     name = "material_" + entry.material.toString();
                                 }
@@ -102,7 +102,7 @@ public abstract class ProspectorMode<T> {
                     if (mat != null) {
                         var list = new ArrayList<ItemStack>();
                         for (TagPrefix oreTag : TagPrefix.ORES.keySet()) {
-                            for (var block : ChemicalHelper.getBlocks(new UnificationEntry(oreTag, mat))) {
+                            for (var block : ChemicalHelper.getBlocks(new MaterialEntry(oreTag, mat))) {
                                 list.add(new ItemStack(block));
                             }
                         }

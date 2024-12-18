@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.*;
@@ -145,7 +145,7 @@ public class GTBlocks {
                                     .block(tagPrefix.idPattern().formatted(material.getName()),
                                             properties -> new MaterialBlock(properties, tagPrefix, material))
                                     .initialProperties(() -> Blocks.IRON_BLOCK)
-                                    .properties(p -> tagPrefix.blockProperties().properties().apply(p).noLootTable())
+                                    .properties(p -> tagPrefix.blockProperties().properties().apply(p).isViewBlocking(tagPrefix == TagPrefix.frameGt ? Blocks::never : Blocks::always).noLootTable())
                                     .transform(unificationBlock(tagPrefix, material))
                                     .addLayer(tagPrefix.blockProperties().renderType())
                                     .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
@@ -1663,9 +1663,9 @@ public class GTBlocks {
         return builder -> {
             builder.onRegister(block -> {
                 Supplier<Block> blockSupplier = SupplierMemoizer.memoizeBlockSupplier(() -> block);
-                UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
+                MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
                 GTItems.toUnify.put(entry, blockSupplier);
-                ChemicalHelper.registerUnificationItems(entry, blockSupplier);
+                ItemMaterialData.registerMaterialInfoItems(entry, blockSupplier);
             });
             return builder;
         };

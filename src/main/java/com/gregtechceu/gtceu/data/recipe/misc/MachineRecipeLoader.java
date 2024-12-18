@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.block.LampBlock;
@@ -886,7 +886,7 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "basic_tape", BASIC_TAPE.asStack(),
-                " P ", "PSP", " P ", 'P', new UnificationEntry(plate, Paper), 'S', STICKY_RESIN.asItem());
+                " P ", "PSP", " P ", 'P', new MaterialEntry(plate, Paper), 'S', STICKY_RESIN.asItem());
         ASSEMBLER_RECIPES.recipeBuilder("basic_tape").EUt(VA[ULV]).inputItems(plate, Paper, 2).inputItems(STICKY_RESIN)
                 .outputItems(BASIC_TAPE, 2)
                 .duration(100).save(provider);

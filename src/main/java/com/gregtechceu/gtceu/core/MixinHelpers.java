@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.core;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -60,7 +61,7 @@ public class MixinHelpers {
     public static <T> void generateGTDynamicTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap,
                                                  Registry<T> registry) {
         if (registry == BuiltInRegistries.ITEM) {
-            ChemicalHelper.UNIFICATION_ENTRY_ITEM.forEach((entry, itemLikes) -> {
+            ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, itemLikes) -> {
                 if (itemLikes.isEmpty()) return;
                 var material = entry.material;
                 if (material != null) {
@@ -124,7 +125,7 @@ public class MixinHelpers {
                         ResourceLocation fluidKeyTag = TagUtil.createFluidTag(key.getTagKey()).location();
                         Fluid fluid = property.getStorage().get(key);
                         if (fluid != null) {
-                            ChemicalHelper.FLUID_MATERIAL.put(fluid, material);
+                            ItemMaterialData.FLUID_MATERIAL.put(fluid, material);
 
                             ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
                             TagLoader.EntryWithSource entry = new TagLoader.EntryWithSource(TagEntry.element(fluidId),

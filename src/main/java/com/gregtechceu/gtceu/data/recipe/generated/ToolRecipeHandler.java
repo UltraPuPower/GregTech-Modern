@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -132,9 +132,9 @@ public class ToolRecipeHandler {
                             Ingredient.of(batteryStack), powerUnitStack,
                             "S d", "GMG", "PBP",
                             'M', motorItems.get(tier).asStack(),
-                            'S', new UnificationEntry(screw, baseMaterials.get(tier)),
-                            'P', new UnificationEntry(plate, baseMaterials.get(tier)),
-                            'G', new UnificationEntry(gearSmall, baseMaterials.get(tier)),
+                            'S', new MaterialEntry(screw, baseMaterials.get(tier)),
+                            'P', new MaterialEntry(plate, baseMaterials.get(tier)),
+                            'G', new MaterialEntry(gearSmall, baseMaterials.get(tier)),
                             'B', batteryStack);
                 }
             }
@@ -144,8 +144,8 @@ public class ToolRecipeHandler {
     private static void processTool(TagPrefix prefix, Material material, ToolProperty property,
                                     Consumer<FinishedRecipe> provider) {
         ItemStack stick = new ItemStack(Items.STICK);
-        UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
-        UnificationEntry ingot = new UnificationEntry(
+        MaterialEntry plate = new MaterialEntry(TagPrefix.plate, material);
+        MaterialEntry ingot = new MaterialEntry(
                 material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material);
 
         if (material.hasFlag(GENERATE_PLATE)) {
@@ -223,7 +223,7 @@ public class ToolRecipeHandler {
         }
 
         if (material.hasFlag(GENERATE_ROD)) {
-            UnificationEntry rod = new UnificationEntry(TagPrefix.rod, material);
+            MaterialEntry rod = new MaterialEntry(TagPrefix.rod, material);
 
             if (material.hasFlag(GENERATE_PLATE)) {
                 addToolRecipe(provider, material, GTToolType.BUTCHERY_KNIFE, false,
@@ -235,7 +235,7 @@ public class ToolRecipeHandler {
                     addToolRecipe(provider, material, GTToolType.WIRE_CUTTER, false,
                             "PfP", "hPd", "STS",
                             'P', plate,
-                            'T', new UnificationEntry(TagPrefix.screw, material),
+                            'T', new MaterialEntry(TagPrefix.screw, material),
                             'S', rod);
                 } else if (!ArrayUtils.contains(softMaterials, material)) {
                     GTCEu.LOGGER
@@ -267,9 +267,9 @@ public class ToolRecipeHandler {
         TagPrefix toolPrefix;
 
         if (material.hasFlag(GENERATE_PLATE)) {
-            final UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
-            final UnificationEntry steelPlate = new UnificationEntry(TagPrefix.plate, GTMaterials.Steel);
-            final UnificationEntry steelRing = new UnificationEntry(TagPrefix.ring, GTMaterials.Steel);
+            final MaterialEntry plate = new MaterialEntry(TagPrefix.plate, material);
+            final MaterialEntry steelPlate = new MaterialEntry(TagPrefix.plate, GTMaterials.Steel);
+            final MaterialEntry steelRing = new MaterialEntry(TagPrefix.ring, GTMaterials.Steel);
 
             // drill
             if (property.hasType(GTToolType.DRILL_LV)) {
@@ -309,7 +309,7 @@ public class ToolRecipeHandler {
                         "hXW", "XRX", "WXd",
                         'X', plate,
                         'R', steelRing,
-                        'W', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel));
+                        'W', new MaterialEntry(TagPrefix.screw, GTMaterials.Steel));
             }
 
             // electric wire cutters
@@ -325,7 +325,7 @@ public class ToolRecipeHandler {
                         "XfX", "X X", "SRS",
                         'X', plate,
                         'R', steelRing,
-                        'S', new UnificationEntry(screw, GTMaterials.Steel));
+                        'S', new MaterialEntry(screw, GTMaterials.Steel));
             }
 
             // buzzsaw
@@ -364,7 +364,7 @@ public class ToolRecipeHandler {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("screwdriver_tip_%s", material.getName()),
                         ChemicalHelper.get(toolPrefix, material),
                         "fR", " h",
-                        'R', new UnificationEntry(TagPrefix.rodLong, material));
+                        'R', new MaterialEntry(TagPrefix.rodLong, material));
             } else {
                 GTCEu.LOGGER.info("Did not find long rod for " + material.getName() +
                         ", skipping electric screwdriver recipe");
@@ -387,7 +387,7 @@ public class ToolRecipeHandler {
                     Ingredient.of(powerUnitStack),
                     tool,
                     "wHd", " U ",
-                    'H', new UnificationEntry(toolHead, material),
+                    'H', new MaterialEntry(toolHead, material),
                     'U', powerUnitStack);
         }
     }
@@ -415,7 +415,7 @@ public class ToolRecipeHandler {
         for (var color : MarkerMaterials.Color.COLORS.entrySet()) {
             ToolHelper.getToolTag(toolStack).putInt(ToolHelper.TINT_COLOR_KEY, color.getKey().getTextColor());
             Object[] recipeWithDye = ArrayUtils.addAll(recipe, 'D',
-                    new UnificationEntry(TagPrefix.dye, color.getValue()));
+                    new MaterialEntry(TagPrefix.dye, color.getValue()));
 
             if (mirrored) { // todo mirrored
                 VanillaRecipeHelper.addShapedRecipe(provider,
@@ -440,7 +440,7 @@ public class ToolRecipeHandler {
     }
 
     private static void registerFlintToolRecipes(Consumer<FinishedRecipe> provider) {
-        final UnificationEntry flint = new UnificationEntry(TagPrefix.gem, GTMaterials.Flint);
+        final MaterialEntry flint = new MaterialEntry(TagPrefix.gem, GTMaterials.Flint);
         final ItemStack stick = new ItemStack(Items.STICK);
 
         addToolRecipe(provider, GTMaterials.Flint, GTToolType.MORTAR, false,
@@ -487,7 +487,7 @@ public class ToolRecipeHandler {
             addToolRecipe(provider, material, GTToolType.MORTAR, false,
                     " I ", "SIS", "SSS",
                     'I',
-                    new UnificationEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot,
+                    new MaterialEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot,
                             material),
                     'S', new ItemStack(Blocks.STONE));
         }
@@ -510,13 +510,13 @@ public class ToolRecipeHandler {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material.getName()),
                         ToolHelper.get(GTToolType.SOFT_MALLET, material),
                         "II ", "IIS", "II ",
-                        'I', new UnificationEntry(TagPrefix.ingot, material),
+                        'I', new MaterialEntry(TagPrefix.ingot, material),
                         'S', stick);
 
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("plunger_%s", material.getName()),
                         ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
                         "xPP", " SP", "S f",
-                        'P', new UnificationEntry(TagPrefix.plate, material),
+                        'P', new MaterialEntry(TagPrefix.plate, material),
                         'S', rod);
             }
         }
@@ -529,9 +529,9 @@ public class ToolRecipeHandler {
                     Ingredient.of(batteryItem), GTItems.PROSPECTOR_LV.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_LV.asStack(),
-                    'P', new UnificationEntry(plate, GTMaterials.Steel),
+                    'P', new MaterialEntry(plate, GTMaterials.Steel),
                     'S', GTItems.SENSOR_LV.asStack(),
-                    'D', new UnificationEntry(plate, GTMaterials.Glass),
+                    'D', new MaterialEntry(plate, GTMaterials.Glass),
                     'C', CustomTags.LV_CIRCUITS,
                     'B', batteryItem.asStack());
 
@@ -539,9 +539,9 @@ public class ToolRecipeHandler {
                     "lv_magnet_" + batteryItem.getId().getPath(),
                     Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_LV.asStack(),
                     "MwM", "MBM", "CPC",
-                    'M', new UnificationEntry(rod, GTMaterials.SteelMagnetic),
-                    'P', new UnificationEntry(plate, GTMaterials.Steel),
-                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin),
+                    'M', new MaterialEntry(rod, GTMaterials.SteelMagnetic),
+                    'P', new MaterialEntry(plate, GTMaterials.Steel),
+                    'C', new MaterialEntry(cableGtSingle, GTMaterials.Tin),
                     'B', batteryItem.asStack());
         }
 
@@ -551,7 +551,7 @@ public class ToolRecipeHandler {
                     Ingredient.of(batteryItem), GTItems.PORTABLE_SCANNER.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_MV.asStack(),
-                    'P', new UnificationEntry(plate, GTMaterials.Aluminium),
+                    'P', new MaterialEntry(plate, GTMaterials.Aluminium),
                     'S', GTItems.SENSOR_MV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
                     'C', CustomTags.MV_CIRCUITS,
@@ -564,7 +564,7 @@ public class ToolRecipeHandler {
                     Ingredient.of(batteryItem), GTItems.PROSPECTOR_HV.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_HV.asStack(),
-                    'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
+                    'P', new MaterialEntry(plate, GTMaterials.StainlessSteel),
                     'S', GTItems.SENSOR_HV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
                     'C', CustomTags.HV_CIRCUITS,
@@ -574,9 +574,9 @@ public class ToolRecipeHandler {
                     "hv_magnet_" + batteryItem.getId().getPath(),
                     Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_HV.asStack(),
                     "MwM", "MBM", "CPC",
-                    'M', new UnificationEntry(rod, GTMaterials.NeodymiumMagnetic),
-                    'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
-                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold),
+                    'M', new MaterialEntry(rod, GTMaterials.NeodymiumMagnetic),
+                    'P', new MaterialEntry(plate, GTMaterials.StainlessSteel),
+                    'C', new MaterialEntry(cableGtSingle, GTMaterials.Gold),
                     'B', batteryItem.asStack());
         }
 
@@ -586,7 +586,7 @@ public class ToolRecipeHandler {
                     Ingredient.of(batteryItem), GTItems.PROSPECTOR_LuV.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_LuV.asStack(),
-                    'P', new UnificationEntry(plate, GTMaterials.RhodiumPlatedPalladium),
+                    'P', new MaterialEntry(plate, GTMaterials.RhodiumPlatedPalladium),
                     'S', GTItems.SENSOR_LuV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
                     'C', CustomTags.LuV_CIRCUITS,

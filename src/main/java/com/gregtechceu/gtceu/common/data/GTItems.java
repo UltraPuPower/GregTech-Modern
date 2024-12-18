@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.filter.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -12,7 +13,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
@@ -101,7 +102,7 @@ public class GTItems {
     // ***** Material Items ******//
     //////////////////////////////////////
 
-    public static final Map<UnificationEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
+    public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
     public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
 
     static {
@@ -2681,7 +2682,7 @@ public class GTItems {
     }
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {
-        return item -> ChemicalHelper.registerMaterialInfo(item, materialInfo);
+        return item -> ItemMaterialData.registerMaterialInfo(item, materialInfo);
     }
 
     public static <P, T extends Item,
@@ -2690,9 +2691,9 @@ public class GTItems {
         return builder -> {
             builder.onRegister(item -> {
                 Supplier<ItemLike> supplier = SupplierMemoizer.memoize(() -> item);
-                UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
+                MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
                 toUnify.put(entry, supplier);
-                ChemicalHelper.registerUnificationItems(entry, supplier);
+                ItemMaterialData.registerMaterialInfoItems(entry, supplier);
             });
             return builder;
         };

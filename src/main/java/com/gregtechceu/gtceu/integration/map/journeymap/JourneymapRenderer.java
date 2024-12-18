@@ -151,7 +151,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
             var blockOrMaterial = vein.definition().indicatorGenerators().get(0).block();
             firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
                     state -> {
-                        var matStack = ChemicalHelper.getMaterial(state.getBlock());
+                        var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
                         return matStack == null ? null : matStack.material();
                     },
                     Function.identity());

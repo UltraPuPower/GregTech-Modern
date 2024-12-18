@@ -57,7 +57,7 @@ public abstract class VeinGenerator {
                 .sorted(Comparator.comparingInt(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
                 .map(either -> either.map(state -> {
-                    var matStack = ChemicalHelper.getMaterial(state.getBlock());
+                    var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
                     return matStack == null ? null : matStack.material();
                 }, Function.identity()))
                 .filter(Objects::nonNull)
@@ -71,12 +71,12 @@ public abstract class VeinGenerator {
     public List<Map.Entry<Integer, Material>> getValidMaterialsChances() {
         return getAllEntries().stream()
                 .filter(entry -> entry.getKey()
-                        .map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ?
-                                ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity()) !=
+                        .map(state -> ChemicalHelper.getMaterialStack(state.getBlock()) != null ?
+                                ChemicalHelper.getMaterialStack(state.getBlock()).material() : null, Function.identity()) !=
                         null)
                 .map(entry -> Map.entry(entry.getValue(), entry.getKey()
-                        .map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ?
-                                ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity())))
+                        .map(state -> ChemicalHelper.getMaterialStack(state.getBlock()) != null ?
+                                ChemicalHelper.getMaterialStack(state.getBlock()).material() : null, Function.identity())))
                 .collect(Collectors.toList());
     }
 

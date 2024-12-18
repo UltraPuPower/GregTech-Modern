@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -32,25 +32,25 @@ public class MiscRecipeLoader {
     public static void init(Consumer<FinishedRecipe> provider) {
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
-                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
+                "SGS", "PBP", "PWP", 'S', new MaterialEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
                 new ItemStack(Items.BOOK),
-                'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
+                'P', new MaterialEntry(plate, WroughtIron), 'W', new MaterialEntry(wireGtSingle, RedAlloy));
         // Machine Memory Card Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_memory_card", MACHINE_MEMORY_CARD.asStack(),
-                "PWP", "SLS", "PPP", 'P', new UnificationEntry(plate, Steel), 'W',
-                new UnificationEntry(wireGtSingle, Copper), 'S', new UnificationEntry(screw, RedAlloy), 'L',
+                "PWP", "SLS", "PPP", 'P', new MaterialEntry(plate, Steel), 'W',
+                new MaterialEntry(wireGtSingle, Copper), 'S', new MaterialEntry(screw, RedAlloy), 'L',
                 CustomTags.LV_CIRCUITS);
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Tin),
-                new UnificationEntry(dust, Tin),
-                new UnificationEntry(dust, Lead));
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Tin),
+                new MaterialEntry(dust, Tin),
+                new MaterialEntry(dust, Lead));
 
         MIXER_RECIPES.recipeBuilder("fermented_spider_eye_brown").duration(100).EUt(VA[ULV])
                 .inputItems(dust, Sugar)

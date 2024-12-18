@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.GTBucketItem;
@@ -191,7 +191,7 @@ public class HazardProperty implements IMaterialProperty {
                 isFluid = true;
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
-            UnificationEntry entry = ChemicalHelper.getUnificationEntry(item.getItem());
+            MaterialEntry entry = ChemicalHelper.getMaterialEntry(item.getItem());
             if (entry != null && entry.material != null) {
                 material = entry.material;
                 prefix = entry.tagPrefix;

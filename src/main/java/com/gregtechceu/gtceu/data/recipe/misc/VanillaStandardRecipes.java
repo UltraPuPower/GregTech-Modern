@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -170,19 +170,19 @@ public class VanillaStandardRecipes {
                 .duration(30).EUt(2).save(provider);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "glass_dust_flint", ChemicalHelper.get(dust, Glass),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dustTiny, Flint));
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dustTiny, Flint));
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "glass_full_dust_flint", ChemicalHelper.get(dust, Glass, 8),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dust, QuartzSand),
-                new UnificationEntry(dust, Flint));
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dust, QuartzSand),
+                new MaterialEntry(dust, Flint));
 
         MIXER_RECIPES.recipeBuilder("glass_from_quartzite").duration(160).EUt(VA[ULV])
                 .inputItems(dustSmall, Flint)
@@ -496,17 +496,17 @@ public class VanillaStandardRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "sticky_resin_torch", new ItemStack(Blocks.TORCH, 3), "X", "Y",
                 'X', STICKY_RESIN, 'Y', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_sulfur", new ItemStack(Blocks.TORCH, 2), "C", "S", 'C',
-                new UnificationEntry(dust, Sulfur), 'S', new ItemStack(Items.STICK));
+                new MaterialEntry(dust, Sulfur), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_phosphorus", new ItemStack(Blocks.TORCH, 6), "C", "S", 'C',
-                new UnificationEntry(dust, Phosphorus), 'S', new ItemStack(Items.STICK));
+                new MaterialEntry(dust, Phosphorus), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_coal_dust", new ItemStack(Blocks.TORCH, 4), "C", "S", 'C',
-                new UnificationEntry(dust, Coal), 'S', new ItemStack(Items.STICK));
+                new MaterialEntry(dust, Coal), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_charcoal_dust", new ItemStack(Blocks.TORCH, 4), "C", "S",
-                'C', new UnificationEntry(dust, Charcoal), 'S', new ItemStack(Items.STICK));
+                'C', new MaterialEntry(dust, Charcoal), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_coke", new ItemStack(Blocks.TORCH, 8), "C", "S", 'C',
-                new UnificationEntry(gem, Coke), 'S', new ItemStack(Items.STICK));
+                new MaterialEntry(gem, Coke), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_coke_dust", new ItemStack(Blocks.TORCH, 8), "C", "S", 'C',
-                new UnificationEntry(dust, Coke), 'S', new ItemStack(Items.STICK));
+                new MaterialEntry(dust, Coke), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_creosote", new ItemStack(Blocks.TORCH, 16), "WB", "S ",
                 'W', ItemTags.WOOL, 'S', new ItemStack(Items.STICK), 'B',
                 new FluidContainerIngredient(Creosote.getFluidTag(), 1000));
@@ -816,31 +816,31 @@ public class VanillaStandardRecipes {
                 'P', new ItemStack(Items.LEATHER),
                 'C', new ItemStack(Items.LEATHER_CHESTPLATE),
                 'L', new ItemStack(Items.LEATHER_LEGGINGS),
-                'S', new UnificationEntry(screw, Iron));
+                'S', new MaterialEntry(screw, Iron));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "iron_horse_armor", new ItemStack(Items.IRON_HORSE_ARMOR), "hdH",
                 "PCP", "LSL",
                 'H', new ItemStack(Items.IRON_HELMET),
-                'P', new UnificationEntry(plate, Iron),
+                'P', new MaterialEntry(plate, Iron),
                 'C', new ItemStack(Items.IRON_CHESTPLATE),
                 'L', new ItemStack(Items.IRON_LEGGINGS),
-                'S', new UnificationEntry(screw, Iron));
+                'S', new MaterialEntry(screw, Iron));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "golden_horse_armor", new ItemStack(Items.GOLDEN_HORSE_ARMOR),
                 "hdH", "PCP", "LSL",
                 'H', new ItemStack(Items.GOLDEN_HELMET),
-                'P', new UnificationEntry(plate, Gold),
+                'P', new MaterialEntry(plate, Gold),
                 'C', new ItemStack(Items.GOLDEN_CHESTPLATE),
                 'L', new ItemStack(Items.GOLDEN_LEGGINGS),
-                'S', new UnificationEntry(screw, Gold));
+                'S', new MaterialEntry(screw, Gold));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "diamond_horse_armor", new ItemStack(Items.DIAMOND_HORSE_ARMOR),
                 "hdH", "PCP", "LSL",
                 'H', new ItemStack(Items.DIAMOND_HELMET),
-                'P', new UnificationEntry(plate, Diamond),
+                'P', new MaterialEntry(plate, Diamond),
                 'C', new ItemStack(Items.DIAMOND_CHESTPLATE),
                 'L', new ItemStack(Items.DIAMOND_LEGGINGS),
-                'S', new UnificationEntry(bolt, Diamond));
+                'S', new MaterialEntry(bolt, Diamond));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_helmet", new ItemStack(Items.CHAINMAIL_HELMET), "PPP",
                 "PhP",
@@ -1083,7 +1083,7 @@ public class VanillaStandardRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "saddle", new ItemStack(Items.SADDLE), "LLL", "LCL", "RSR",
                 'L', new ItemStack(Items.LEATHER),
                 'C', ItemTags.WOOL_CARPETS,
-                'R', new UnificationEntry(ring, Iron),
+                'R', new MaterialEntry(ring, Iron),
                 'S', new ItemStack(Items.STRING));
 
         AUTOCLAVE_RECIPES.recipeBuilder("clay_from_dust")

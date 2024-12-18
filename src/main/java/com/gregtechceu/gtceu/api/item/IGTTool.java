@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
@@ -427,7 +427,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (repair.getItem() instanceof IGTTool gtTool) {
             return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
-        UnificationEntry entry = ChemicalHelper.getUnificationEntry(repair.getItem());
+        MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
         if (entry == null || entry.material == null) return false;
         if (entry.material == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks

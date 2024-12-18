@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
@@ -50,7 +50,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "dynamo_hatch_ulv", ENERGY_OUTPUT_HATCH[ULV].asStack(),
                 " V ", "SHS", "   ",
-                'S', new UnificationEntry(spring, Lead),
+                'S', new MaterialEntry(spring, Lead),
                 'V', VOLTAGE_COIL_ULV.asStack(),
                 'H', HULL[ULV].asStack());
 
@@ -63,7 +63,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "dynamo_hatch_lv", ENERGY_OUTPUT_HATCH[LV].asStack(),
                 " V ", "SHS", "   ",
-                'S', new UnificationEntry(spring, Tin),
+                'S', new MaterialEntry(spring, Tin),
                 'V', VOLTAGE_COIL_LV.asStack(),
                 'H', HULL[LV].asStack());
 
@@ -77,7 +77,7 @@ public class MetaTileEntityMachineRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "dynamo_hatch_mv", ENERGY_OUTPUT_HATCH[MV].asStack(),
                 " V ", "SHS", " P ",
                 'P', ULTRA_LOW_POWER_INTEGRATED_CIRCUIT.asStack(),
-                'S', new UnificationEntry(spring, Copper),
+                'S', new MaterialEntry(spring, Copper),
                 'V', VOLTAGE_COIL_MV.asStack(),
                 'H', HULL[MV].asStack());
 
@@ -175,7 +175,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "energy_hatch_ulv", ENERGY_INPUT_HATCH[ULV].asStack(),
                 " V ", "CHC", "   ",
-                'C', new UnificationEntry(cableGtSingle, RedAlloy),
+                'C', new MaterialEntry(cableGtSingle, RedAlloy),
                 'V', VOLTAGE_COIL_ULV.asStack(),
                 'H', HULL[ULV].asStack());
 
@@ -188,7 +188,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "energy_hatch_lv", ENERGY_INPUT_HATCH[LV].asStack(),
                 " V ", "CHC", "   ",
-                'C', new UnificationEntry(cableGtSingle, Tin),
+                'C', new MaterialEntry(cableGtSingle, Tin),
                 'V', VOLTAGE_COIL_LV.asStack(),
                 'H', HULL[LV].asStack());
 
@@ -201,7 +201,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "energy_hatch_mv", ENERGY_INPUT_HATCH[MV].asStack(),
                 " V ", "CHC", " P ",
-                'C', new UnificationEntry(cableGtSingle, Copper),
+                'C', new MaterialEntry(cableGtSingle, Copper),
                 'P', ULTRA_LOW_POWER_INTEGRATED_CIRCUIT.asStack(),
                 'V', VOLTAGE_COIL_MV.asStack(),
                 'H', HULL[MV].asStack());
@@ -304,8 +304,8 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = POWER_TRANSFORMER[tier];
             if (hatch == null) continue;
             // Assume they actually are nonnull for now.
-            var materialPrime = ChemicalHelper.getMaterial(CraftingComponent.CABLE_HEX.getIngredient(tier)).material();
-            var materialSecond = ChemicalHelper.getMaterial(CraftingComponent.CABLE_TIER_UP_OCT.getIngredient(tier))
+            var materialPrime = ChemicalHelper.getMaterialStack(CraftingComponent.CABLE_HEX.getIngredient(tier)).material();
+            var materialSecond = ChemicalHelper.getMaterialStack(CraftingComponent.CABLE_TIER_UP_OCT.getIngredient(tier))
                     .material();
 
             ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_power_transformer")

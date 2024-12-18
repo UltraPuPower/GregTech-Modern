@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
@@ -318,7 +318,7 @@ public class OreRecipeHandler {
         }
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("crushed_ore_to_dust_%s", material.getName()),
-                impureDustStack, 'h', new UnificationEntry(crushedPrefix, material));
+                impureDustStack, 'h', new MaterialEntry(crushedPrefix, material));
 
         processMetalSmelting(crushedPrefix, material, property, provider);
     }
@@ -346,7 +346,7 @@ public class OreRecipeHandler {
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
                 String.format("centrifuged_ore_to_dust_%s", material.getName()), dustStack,
-                'h', new UnificationEntry(centrifugedPrefix, material));
+                'h', new MaterialEntry(centrifugedPrefix, material));
 
         processMetalSmelting(centrifugedPrefix, material, property, provider);
     }
@@ -377,7 +377,7 @@ public class OreRecipeHandler {
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("purified_ore_to_dust_%s", material.getName()),
                 dustStack,
-                'h', new UnificationEntry(purifiedPrefix, material));
+                'h', new MaterialEntry(purifiedPrefix, material));
 
         if (!crushedCentrifugedStack.isEmpty()) {
             THERMAL_CENTRIFUGE_RECIPES

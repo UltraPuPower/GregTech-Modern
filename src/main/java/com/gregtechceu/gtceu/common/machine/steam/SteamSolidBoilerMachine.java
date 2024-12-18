@@ -115,7 +115,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     public static ItemStack getBurningFuelRemainder(ItemStack fuelStack) {
         float remainderChance;
         ItemStack remainder;
-        var materialStack = ChemicalHelper.getMaterial(fuelStack);
+        var materialStack = ChemicalHelper.getMaterialStack(fuelStack);
         if (materialStack == null)
             return ItemStack.EMPTY;
         else if (materialStack.material() == GTMaterials.Charcoal) {

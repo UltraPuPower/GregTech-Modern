@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -82,6 +83,8 @@ public class TagPrefix {
     public static TagPrefix get(String name) {
         return PREFIXES.get(name);
     }
+
+    public static final TagPrefix nullPrefix = new TagPrefix("null");
 
     public static final TagPrefix ore = oreTagPrefix("stone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("%s Ore")
@@ -1131,7 +1134,7 @@ public class TagPrefix {
     public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
-            ChemicalHelper.registerUnificationItems(this, material, items);
+            ItemMaterialData.registerMaterialInfoItems(this, material, items);
         }
     }
 

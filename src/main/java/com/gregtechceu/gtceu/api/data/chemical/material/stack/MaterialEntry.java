@@ -7,20 +7,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class UnificationEntry {
+public record MaterialEntry(TagPrefix tagPrefix, @Nullable Material material) {
 
-    public final TagPrefix tagPrefix;
-    @Nullable
-    public final Material material;
-
-    public UnificationEntry(TagPrefix tagPrefix, @Nullable Material material) {
-        this.tagPrefix = tagPrefix;
-        this.material = material;
-    }
-
-    public UnificationEntry(TagPrefix tagPrefix) {
-        this.tagPrefix = tagPrefix;
-        this.material = null;
+    public MaterialEntry(TagPrefix tagPrefix) {
+        this(tagPrefix, null);
     }
 
     @Override
@@ -28,7 +18,7 @@ public class UnificationEntry {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UnificationEntry that = (UnificationEntry) o;
+        MaterialEntry that = (MaterialEntry) o;
 
         if (tagPrefix != that.tagPrefix) return false;
         return Objects.equals(material, that.material);
@@ -46,21 +36,5 @@ public class UnificationEntry {
         return (tagPrefix != null ? tagPrefix.name : "") + (material != null ? material.toCamelCaseString() : "");
     }
 
-    public static final UnificationEntry EmptyMapMarkerEntry = new UnificationEntry(null) {
-
-        @Override
-        public boolean equals(Object o) {
-            return this == o;
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-
-        @Override
-        public String toString() {
-            return "EMPTY UNIFICATION ENTRY";
-        }
-    };
+    public static final MaterialEntry NullEntry = new MaterialEntry(null, null);
 }

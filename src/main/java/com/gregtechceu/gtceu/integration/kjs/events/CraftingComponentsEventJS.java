@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 
 import net.minecraft.core.registries.Registries;
@@ -54,11 +54,11 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         component.appendIngredients(newMap);
     }
 
-    public void modifyUnificationEntry(CraftingComponent.Component component, int tier, UnificationEntry item) {
+    public void modifyUnificationEntry(CraftingComponent.Component component, int tier, MaterialEntry item) {
         component.appendIngredients(Map.of(tier, item));
     }
 
-    public void modifyUnificationEntry(CraftingComponent.Component component, Map<Number, UnificationEntry> map) {
+    public void modifyUnificationEntry(CraftingComponent.Component component, Map<Number, MaterialEntry> map) {
         Map<Integer, Object> newMap = map.entrySet()
                 .stream()
                 .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))
@@ -90,7 +90,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         return new CraftingComponent.Component(newMap);
     }
 
-    public CraftingComponent.Component createUnificationEntry(Map<Number, UnificationEntry> map) {
+    public CraftingComponent.Component createUnificationEntry(Map<Number, MaterialEntry> map) {
         Map<Integer, Object> newMap = map.entrySet()
                 .stream()
                 .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -217,11 +217,11 @@ public interface GTRecipeSchema {
             return inputItems(inputs);
         }
 
-        public GTRecipeJS itemInput(UnificationEntry input) {
+        public GTRecipeJS itemInput(MaterialEntry input) {
             return inputItems(input);
         }
 
-        public GTRecipeJS itemInput(UnificationEntry input, int count) {
+        public GTRecipeJS itemInput(MaterialEntry input, int count) {
             return inputItems(input, count);
         }
 
@@ -267,11 +267,11 @@ public interface GTRecipeSchema {
             return inputItems(orePrefix, material, 1);
         }
 
-        public GTRecipeJS inputItems(UnificationEntry input) {
+        public GTRecipeJS inputItems(MaterialEntry input) {
             return inputItems(input.tagPrefix, input.material, 1);
         }
 
-        public GTRecipeJS inputItems(UnificationEntry input, int count) {
+        public GTRecipeJS inputItems(MaterialEntry input, int count) {
             return inputItems(input.tagPrefix, input.material, count);
         }
 
@@ -291,12 +291,12 @@ public interface GTRecipeSchema {
             return outputItems(outputs);
         }
 
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material);
+        public GTRecipeJS itemOutput(MaterialEntry materialEntry) {
+            return outputItems(materialEntry.tagPrefix, materialEntry.material);
         }
 
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry, int count) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
+        public GTRecipeJS itemOutput(MaterialEntry materialEntry, int count) {
+            return outputItems(materialEntry.tagPrefix, materialEntry.material, count);
         }
 
         public GTRecipeJS outputItems(ExtendedOutputItem... outputs) {

@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardPropert
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -208,7 +208,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTMedicalConditions", GTMedicalConditions.class);
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
-        event.add("UnificationEntry", UnificationEntry.class);
+        event.add("UnificationEntry", MaterialEntry.class);
         event.add("RecipeCapability", RecipeCapability.class);
         event.add("ChanceLogic", ChanceLogic.class);
         event.add("GTFluidAttributes", FluidAttributes.class);
@@ -292,15 +292,15 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
             return null;
         });
-        typeWrappers.registerSimple(UnificationEntry.class, o -> {
-            if (o instanceof UnificationEntry entry) return entry;
+        typeWrappers.registerSimple(MaterialEntry.class, o -> {
+            if (o instanceof MaterialEntry entry) return entry;
             if (o instanceof CharSequence chars) {
                 var values = chars.toString().split(":");
                 if (values.length == 1) {
-                    return new UnificationEntry(TagPrefix.get(values[0]));
+                    return new MaterialEntry(TagPrefix.get(values[0]));
                 }
                 if (values.length >= 2) {
-                    return new UnificationEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
+                    return new MaterialEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
                 }
             }
             return null;
