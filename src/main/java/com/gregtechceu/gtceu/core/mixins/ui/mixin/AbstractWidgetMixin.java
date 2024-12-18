@@ -201,6 +201,11 @@ public abstract class AbstractWidgetMixin implements UIComponentStub, GuiEventLi
     }
 
     @Override
+    public EventSource<Enabled> enabledEvent() {
+        return this.gtceu$getWrapper().enabledEvent();
+    }
+
+    @Override
     public EventSource<MouseUp> mouseUp() {
         return this.gtceu$getWrapper().mouseUp();
     }

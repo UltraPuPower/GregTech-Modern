@@ -282,7 +282,7 @@ public class ConfiguratorPanelComponent extends FlowLayout {
 
         @Override
         public void draw(UIGuiGraphics graphics, int mouseX, int mouseY, float partialTicks, float delta) {
-            if (false /* && this.positioning().animation().finished() */) {
+            if (this.positioning.animation() == null || this.positioning().animation().isFinished()) {
                 graphics.enableScissor(x + border - 1, y + border - 1,
                         x + border - 1 + width - (border - 1) * 2,
                         y + border - 1 + height - (border - 1) * 2);

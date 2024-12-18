@@ -18,8 +18,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.client.event.ContainerScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
@@ -104,7 +102,7 @@ public class UIAdapter<R extends ParentUIComponent>
         var rootComponent = rootComponentMaker.apply(Sizing.fill(100), Sizing.fill(100));
 
         var adapter = new UIAdapter<>(0, 0, screen.width, screen.height, rootComponent, true);
-        screen.addRenderableWidget(adapter);
+        //screen.addRenderableWidget(adapter);
         screen.setFocused(adapter);
 
         return adapter;
@@ -217,8 +215,6 @@ public class UIAdapter<R extends ParentUIComponent>
             this.rootComponent.draw(uiGraphics, mouseX, mouseY, partialTicks, delta);
 
             RenderSystem.depthMask(true);
-            MinecraftForge.EVENT_BUS
-                    .post(new ContainerScreenEvent.Render.Background(this.screen, graphics, mouseX, mouseY));
             RenderSystem.depthMask(false);
 
             RenderSystem.disableScissor();
@@ -244,10 +240,6 @@ public class UIAdapter<R extends ParentUIComponent>
     }
 
     public void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
-        if (this.enableInspector) {
-            return;
-        }
-
         try {
             isRendering = true;
             if (this.captureFrame) RenderDoc.startFrameCapture();

@@ -200,7 +200,7 @@ public class LabelComponent extends BaseUIComponent {
             y += this.verticalSizing.get().value;
         }
 
-        RenderSystem.disableDepthTest();
+        RenderSystem.enableDepthTest();
 
         switch (this.verticalTextAlignment) {
             case CENTER -> y += (this.height - ((this.wrappedText.size() * (this.lineHeight() + 2)) - 2)) / 2;

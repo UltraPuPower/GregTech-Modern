@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -88,6 +87,8 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     protected boolean drawContents = true;
     @Setter
     protected boolean drawTooltip = true;
+
+    private boolean slotFinalized = false;
 
     private SlotComponent() {
         this.sizing(Sizing.fixed(18));
@@ -196,24 +197,31 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     @Override
     public void mount(ParentUIComponent parent, int x, int y) {
         super.mount(parent, x, y);
-        if (containerAccess().screen() != null) {
-            finalizeSlot(containerAccess().screen());
-        }
-        ParentUIComponent p = parent;
+        finalizeSlot();
+
         do {
-            // go up the component tree, subscribe to mount & dismount of parents at all levels except root
-            p.mount().subscribe((component, x1, y1) -> {
-                if (component.containerAccess().screen() != null) {
-                    finalizeSlot(component.containerAccess().screen());
+            // go up the component tree, subscribe to disable, mount & dismount of parents at all levels except root
+            parent.enabledEvent().subscribe((component, newEnabled) -> {
+                if (!this.enabled()) {
+                    return;
+                }
+                // enable this slot if a parent is enabled and vice versa.
+                if (newEnabled) {
+                    finalizeSlot();
+                } else {
+                    removeSlot();
                 }
             });
-            p.dismount().subscribe((component, reason) -> {
+            parent.mount().subscribe((component, x1, y1) -> {
+                finalizeSlot();
+            });
+            parent.dismount().subscribe((component, reason) -> {
                 if (reason == DismountReason.REMOVED) {
                     removeSlot();
                 }
             });
-            p = p.parent();
-        } while (p != null && p != root());
+            parent = parent.parent();
+        } while (parent != null && parent != root());
     }
 
     @Override
@@ -233,16 +241,26 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
     }
 
     private void removeSlot() {
+        if (!slotFinalized || containerAccess() == null || containerAccess().screen() == null) {
+            return;
+        }
+
         var menu = containerAccess().screen().getMenu();
         UIContainerMenu.EmptySlotPlaceholder placeholder = new UIContainerMenu.EmptySlotPlaceholder();
         menu.slots.set(this.slot.index, placeholder);
         placeholder.index = this.slot.index;
         ((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(this.slot.index, ItemStack.EMPTY);
         ((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(this.slot.index, ItemStack.EMPTY);
+
+        slotFinalized = false;
     }
 
-    public void finalizeSlot(AbstractContainerScreen<?> screen) {
-        var menu = screen.getMenu();
+    public void finalizeSlot() {
+        if (slotFinalized || containerAccess() == null || containerAccess().screen() == null) {
+            return;
+        }
+
+        var menu = containerAccess().screen().getMenu();
 
         if (!menu.slots.contains(this.slot)) {
             Slot innerSlot = this.slot.getInner();
@@ -267,11 +285,12 @@ public class SlotComponent extends BaseUIComponent implements ClickableIngredien
             }
             if (foundIndex != -1) {
                 menu.slots.set(foundIndex, this.slot);
+                ((SlotAccessor) this.slot).gtceu$setSlotIndex(foundIndex);
                 ((AbstractContainerMenuAccessor) menu).gtceu$getLastSlots().set(foundIndex, this.slot.getItem());
                 ((AbstractContainerMenuAccessor) menu).gtceu$getRemoteSlots().set(foundIndex, this.slot.getItem());
-                ((SlotAccessor) this.slot).gtceu$setSlotIndex(foundIndex);
             }
         }
+        slotFinalized = true;
     }
 
     @Override

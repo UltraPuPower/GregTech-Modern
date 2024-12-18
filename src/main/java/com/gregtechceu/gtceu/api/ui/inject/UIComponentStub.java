@@ -88,6 +88,11 @@ public interface UIComponentStub extends UIComponent {
     }
 
     @Override
+    default EventSource<Enabled> enabledEvent() {
+        throw new NotImplementedException("Interface stub method called");
+    }
+
+    @Override
     default EventSource<MouseEnter> mouseEnter() {
         throw new NotImplementedException("Interface stub method called");
     }

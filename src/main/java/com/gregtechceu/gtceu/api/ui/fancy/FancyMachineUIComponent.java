@@ -73,14 +73,16 @@ public class FancyMachineUIComponent extends StackLayout {
         if (mainPage.hasPlayerInventory()) {
             child(this.playerInventory = UIComponents.playerInventory()
                     .configure(c -> {
-                        c.positioning(Positioning.relative(50, 100))
-                                .padding(Insets.of(0, 2, 2, 2));
+                        c.positioning(Positioning.relative(50, 100));
                     }));
         } else {
             playerInventory = null;
         }
 
-        child(this.titleBar = new TitleBarComponent(this::navigateBack, this::openPageSwitcher));
+        child(this.titleBar = new TitleBarComponent(this::navigateBack, this::openPageSwitcher)
+                .configure(c -> {
+                    c.positioning(Positioning.absolute(TitleBarComponent.HORIZONTAL_MARGIN + 20, 0));
+                }));
         child(this.sideTabsComponent = (VerticalTabsComponent) new VerticalTabsComponent(this::navigate)
                 .positioning(Positioning.absolute(0, TitleBarComponent.HEIGHT))
                 .sizing(Sizing.fixed(24), Sizing.fill()));
@@ -266,11 +268,7 @@ public class FancyMachineUIComponent extends StackLayout {
         if (this.playerInventory == null)
             return;
 
-        if (showInventory && !this.children.contains(this.playerInventory)) {
-            child(this.playerInventory);
-        } else {
-            removeChild(this.playerInventory);
-        }
+        this.playerInventory.enabled(showInventory);
     }
 
     protected void clearUI() {

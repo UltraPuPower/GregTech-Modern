@@ -317,6 +317,8 @@ public interface UIComponent extends PositionedRectangle {
      */
     UIComponent enabled(boolean enabled);
 
+    EventSource<Enabled> enabledEvent();
+
     /**
      * Calculate and apply the sizing of this component
      * according to the last known expansion space

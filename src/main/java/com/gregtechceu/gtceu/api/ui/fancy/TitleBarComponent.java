@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class TitleBarComponent extends StackLayout {
 
     private static final int BORDER_SIZE = 3;
-    private static final int HORIZONTAL_MARGIN = 8;
+    public static final int HORIZONTAL_MARGIN = 8;
     public static final int HEIGHT = 16;
     private static final int BUTTON_WIDTH = 18;
 
@@ -56,8 +56,8 @@ public class TitleBarComponent extends StackLayout {
     protected TitleBarComponent(Consumer<ClickData> onBackClicked, Consumer<ClickData> onMenuClicked) {
         super(Sizing.fill(), Sizing.fixed(HEIGHT));
         allowOverflow(true);
-        //this.padding(Insets.both(HORIZONTAL_MARGIN, 0));
-        this.margins(Insets.both(HORIZONTAL_MARGIN, 0));
+        this.padding(Insets.both(HORIZONTAL_MARGIN, 0));
+        //this.margins(Insets.both(HORIZONTAL_MARGIN, 0));
         this.positioning(Positioning.absolute(HORIZONTAL_MARGIN, 0));
         this.innerHeight = HEIGHT - BORDER_SIZE;
 

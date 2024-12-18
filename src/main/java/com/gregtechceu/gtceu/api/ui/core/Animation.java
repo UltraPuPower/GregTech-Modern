@@ -3,19 +3,26 @@ package com.gregtechceu.gtceu.api.ui.core;
 import com.gregtechceu.gtceu.api.ui.util.EventSource;
 import com.gregtechceu.gtceu.api.ui.util.EventStream;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.util.Mth;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Accessors(fluent = true, chain = true)
 public class Animation<A extends Animatable<A>> {
 
     private final int duration;
 
     private float delta = 0;
+    @Getter
     private Direction direction = Direction.BACKWARDS;
-    private boolean looping = false;
+    @Getter
+    @Setter
+    private boolean loop = false;
 
     private final Consumer<A> setter;
     private final Easing easing;
@@ -24,7 +31,8 @@ public class Animation<A extends Animatable<A>> {
     private final A to;
 
     private final EventStream<Finished> finishedEvents = Finished.newStream();
-    private boolean eventInvoked = true;
+    @Getter
+    private boolean isFinished = true;
 
     public Animation(int duration, Consumer<A> setter, Easing easing, A from, A to) {
         this.duration = duration;
@@ -40,12 +48,12 @@ public class Animation<A extends Animatable<A>> {
 
     public void update(float delta) {
         if (this.delta == this.direction.targetDelta) {
-            if (!this.eventInvoked) {
-                this.finishedEvents.sink().onFinished(this.direction, this.looping);
-                this.eventInvoked = true;
+            if (!this.isFinished) {
+                this.finishedEvents.sink().onFinished(this.direction, this.loop);
+                this.isFinished = true;
             }
 
-            if (this.looping) this.reverse();
+            if (this.loop) this.reverse();
             else return;
         }
 
@@ -72,20 +80,7 @@ public class Animation<A extends Animatable<A>> {
     private void setDirection(Direction direction) {
         if (this.direction == direction) return;
         this.direction = direction;
-        this.eventInvoked = false;
-    }
-
-    public Animation<A> loop(boolean loop) {
-        this.looping = loop;
-        return this;
-    }
-
-    public boolean looping() {
-        return this.looping;
-    }
-
-    public Direction direction() {
-        return this.direction;
+        this.isFinished = false;
     }
 
     public EventSource<Finished> finished() {

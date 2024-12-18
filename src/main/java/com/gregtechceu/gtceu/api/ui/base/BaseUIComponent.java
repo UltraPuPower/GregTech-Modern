@@ -54,8 +54,8 @@ public abstract class BaseUIComponent implements UIComponent {
     protected final AnimatableProperty<Sizing> verticalSizing = AnimatableProperty.of(Sizing.content());
 
     @Getter
-    @Setter
     protected boolean enabled = true;
+    protected final EventStream<Enabled> enabledEvents = Enabled.newStream();
 
     protected final EventStream<MouseDown> mouseDownEvents = MouseDown.newStream();
     protected final EventStream<MouseUp> mouseUpEvents = MouseUp.newStream();
@@ -179,6 +179,18 @@ public abstract class BaseUIComponent implements UIComponent {
         } else {
             this.mouseLeaveEvents.sink().onMouseLeave();
         }
+    }
+
+    @Override
+    public BaseUIComponent enabled(boolean enabled) {
+        this.enabledEvents.sink().onEnabled(this, enabled);
+        this.enabled = enabled;
+        return this;
+    }
+
+    @Override
+    public EventSource<Enabled> enabledEvent() {
+        return this.enabledEvents.source();
     }
 
     @Override

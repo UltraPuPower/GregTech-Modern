@@ -93,6 +93,9 @@ public class TextTexture extends TransformTexture {
             graphics.fill(x, y, width, height, backgroundColor);
             RenderSystem.enableBlend();
         }
+
+        RenderSystem.enableDepthTest();
+
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         Font font = Minecraft.getInstance().font;

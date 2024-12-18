@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -177,7 +176,6 @@ public class GTRecipeTypeUI {
             var inputs = addInventorySlotGroup(false, isSteam, isHighPressure);
             var outputs = addInventorySlotGroup(true, isSteam, isHighPressure);
             var group = UIContainers.stack(Sizing.fill(), Sizing.fill());
-            group.allowOverflow(true);
 
             inputs.positioning(Positioning.relative(35, 45));
             outputs.positioning(Positioning.relative(65, 45));
@@ -267,17 +265,11 @@ public class GTRecipeTypeUI {
     }
 
     protected ParentUIComponent addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
-        int maxCount = 0;
-        int totalR = 0;
         TreeMap<RecipeCapability<?>, Integer> map = new TreeMap<>(RecipeCapability.COMPARATOR);
         if (isOutputs) {
             for (var value : recipeType.maxOutputs.entrySet()) {
                 if (value.getKey().doRenderSlot) {
                     int val = value.getValue();
-                    if (val > maxCount) {
-                        maxCount = Math.min(val, 3);
-                    }
-                    totalR += (val + 2) / 3;
                     map.put(value.getKey(), val);
                 }
             }
@@ -285,10 +277,6 @@ public class GTRecipeTypeUI {
             for (var value : recipeType.maxInputs.entrySet()) {
                 if (value.getKey().doRenderSlot) {
                     int val = value.getValue();
-                    if (val > maxCount) {
-                        maxCount = Math.min(val, 3);
-                    }
-                    totalR += (val + 2) / 3;
                     map.put(value.getKey(), val);
                 }
             }
@@ -305,10 +293,6 @@ public class GTRecipeTypeUI {
         if (wasGroup) startInputsY -= 9;
         else if (slotCountTotal >= 8 && !isOutputs) startInputsY -= 9;
 
-        if (totalR == 0 || maxCount == 0) {
-            // early exit if no content
-            return UIContainers.stack(Sizing.fixed(0), Sizing.fixed(0));
-        }
         StackLayout group = UIContainers.stack(Sizing.content(4), Sizing.content(8));
         group.positioning(Positioning.absolute(startInputsX, startInputsY));
         group.padding(Insets.of(4));
@@ -319,6 +303,7 @@ public class GTRecipeTypeUI {
             }
             int capCount = entry.getValue();
 
+            // prioritize item slots
             if (cap == ItemRecipeCapability.CAP) {
                 for (int i = 0; i < itemSlotsToDown; i++) {
                     for (int j = 0; j < itemSlotsToLeft; j++) {
@@ -330,7 +315,7 @@ public class GTRecipeTypeUI {
                         addSlot(group, cap, capCount, slotIndex, x, y, isOutputs, isSteam, isHighPressure);
                     }
                 }
-            } else {
+            } else { // add all other slots after
                 int offset = wasGroup ? 2 : 0;
 
                 if (itemSlotsToDown >= capCount && itemSlotsToLeft < 3) {
