@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.ui.component.LabelComponent;
 import com.gregtechceu.gtceu.api.ui.component.PredicatedButtonComponent;
 import com.gregtechceu.gtceu.api.ui.component.ProgressComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.core.*;
 import com.gregtechceu.gtceu.api.ui.texture.UITextures;
@@ -52,7 +53,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * @date 2023/2/25
  * @implNote GTRecipeComponent
  */
-public class GTRecipeComponent extends StackLayout {
+public class GTRecipeComponent extends FlowLayout {
 
     public static final String RECIPE_CONTENT_GROUP_ID = "recipe_content_group";
     public static final Pattern RECIPE_CONTENT_GROUP_ID_REGEX = Pattern.compile("^recipe_content_group$");
@@ -68,7 +69,8 @@ public class GTRecipeComponent extends StackLayout {
 
     public GTRecipeComponent(GTRecipe recipe) {
         super(Sizing.fixed(recipe.recipeType.getRecipeUI().getRecipeViewerSize().width()),
-                Sizing.fixed(recipe.recipeType.getRecipeUI().getRecipeViewerSize().height()));
+                Sizing.fixed(recipe.recipeType.getRecipeUI().getRecipeViewerSize().height()),
+                Algorithm.VERTICAL);
         positioning(Positioning.absolute(getXOffset(recipe), 0));
         this.recipe = recipe;
         this.padding(Insets.of(0, 0, /*-getXOffset(recipe) + */3, 0));
@@ -103,7 +105,7 @@ public class GTRecipeComponent extends StackLayout {
         collectStorage(storages, contents, recipe);
 
         // noinspection unchecked
-        StackLayout group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressComponent.JEIProgress,
+        FlowLayout group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressComponent.JEIProgress,
                 (UIAdapter<StackLayout>) this.containerAccess().adapter(),
                 storages,
                 recipe.data.copy(), recipe.conditions);
@@ -300,7 +302,7 @@ public class GTRecipeComponent extends StackLayout {
                 float boostedChanceFloat = 100f * boostedChance / content.maxChance;
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltips.add(Component.translatable("gtceu.gui.content.chance_base_logic",
-                            FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                    FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltips.add(
@@ -314,7 +316,7 @@ public class GTRecipeComponent extends StackLayout {
                 }
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltips.add(Component.translatable("gtceu.gui.content.chance_boosted_logic",
-                            FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                                    FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltips.add(
@@ -384,7 +386,7 @@ public class GTRecipeComponent extends StackLayout {
     }
 
     public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable,
-                         StackLayout group,
+                         FlowLayout group,
                          UIAdapter<StackLayout> adapter,
                          GTRecipe recipe) {
         for (var capabilityEntry : contentTable.rowMap().entrySet()) {
@@ -413,4 +415,5 @@ public class GTRecipeComponent extends StackLayout {
             }
         }
     }
+
 }

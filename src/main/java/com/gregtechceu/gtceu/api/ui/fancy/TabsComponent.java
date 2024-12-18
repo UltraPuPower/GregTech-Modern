@@ -241,7 +241,7 @@ public class TabsComponent extends BaseUIComponent {
             tabTexture.draw(graphics, mouseX, mouseY, x, y, width, height);
         }
         // render icon
-        tab.getTabIcon().draw(graphics, mouseX, mouseY, x, y, width, height);
+        tab.getTabIcon().draw(graphics, mouseX, mouseY, x + (width - 16) / 2f, y + (height - 16) / 2f, 16, 16);
     }
 
     public void selectTab(IFancyUIProvider selectedTab) {

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.ui.editable;
 
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 
@@ -10,9 +11,9 @@ public interface IEditableUI<W extends UIComponent, T> {
 
     W createDefault();
 
-    void setupUI(StackLayout template, UIAdapter<StackLayout> adapter, T instance);
+    void setupUI(ParentUIComponent template, UIAdapter<StackLayout> adapter, T instance);
 
-    record Normal<A extends UIComponent, B>(Supplier<A> supplier, BinderFunction<StackLayout, B> binder)
+    record Normal<A extends ParentUIComponent, B>(Supplier<A> supplier, BinderFunction<ParentUIComponent, B> binder)
             implements IEditableUI<A, B> {
 
         @Override
@@ -21,7 +22,7 @@ public interface IEditableUI<W extends UIComponent, T> {
         }
 
         @Override
-        public void setupUI(StackLayout template, UIAdapter<StackLayout> adapter, B instance) {
+        public void setupUI(ParentUIComponent template, UIAdapter<StackLayout> adapter, B instance) {
             binder.bind(template, adapter, instance);
         }
     }

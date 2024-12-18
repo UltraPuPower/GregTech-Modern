@@ -1,17 +1,12 @@
 package com.gregtechceu.gtceu.integration.emi.handler;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
-import com.gregtechceu.gtceu.api.ui.component.TankComponent;
 import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.Size;
 import com.gregtechceu.gtceu.api.ui.core.UIComponent;
 import com.gregtechceu.gtceu.api.ui.ingredient.ClickableIngredientSlot;
 
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.EmptyHandler;
+import com.gregtechceu.gtceu.integration.emi.handler.widget.NoRenderEMISlotWidget;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -25,7 +20,7 @@ import java.util.function.Supplier;
 
 public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
 
-    protected Supplier<T> component;
+    protected T component;
     protected EMIUIAdapter adapter;
     @Getter
     protected List<EmiIngredient> inputs = new ArrayList<>();
@@ -43,21 +38,19 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
      * @param componentSupplier the supplier to create the UI from.
      */
     public UIEMIRecipe(Supplier<T> componentSupplier) {
-        this.component = componentSupplier;
-
-        var comp = componentSupplier.get();
+        this.component = componentSupplier.get();
         // inflate up to a sane default
-        comp.inflate(Size.of(200, 200));
+        component.inflate(Size.of(200, 200));
 
-        Bounds bounds = new Bounds(0, 0, comp.width(), comp.height());
+        Bounds bounds = new Bounds(0, 0, component.width(), component.height());
         this.adapter = new EMIUIAdapter(bounds);
-        this.adapter.rootComponent().child(comp);
+        this.adapter.rootComponent().child(component);
         this.adapter.prepare();
 
         this.displayWidth = this.adapter.adapter.width();
         this.displayHeight = this.adapter.adapter.height();
 
-        for (UIComponent c : getFlatWidgetCollection(comp)) {
+        for (UIComponent c : getFlatWidgetCollection(component)) {
             if (c instanceof ClickableIngredientSlot<?> slot) {
                 var io = slot.ingredientIO();
 
@@ -91,16 +84,8 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
     public void addWidgets(WidgetHolder widgets) {
         widgets.add(this.adapter);
 
-        for (UIComponent w : getFlatWidgetCollection(this.adapter.rootComponent().children().get(0))) {
-            if (w instanceof ClickableIngredientSlot<?> slot) {
-                /*
-                 * do we still want this?
-                 * if (w.parent() instanceof DraggableScrollableWidgetGroup draggable && draggable.isUseScissor()) {
-                 * // don't add the EMI widget at all if we have a draggable group, let the draggable widget handle it
-                 * instead.
-                 * continue;
-                 * }
-                 */
+        for (UIComponent c : getFlatWidgetCollection(this.component)) {
+            if (c instanceof ClickableIngredientSlot<?> slot) {
                 var io = slot.ingredientIO();
                 if (io != null) {
                     EmiIngredient ingredient;
@@ -117,34 +102,13 @@ public abstract class UIEMIRecipe<T extends UIComponent> implements EmiRecipe {
                         ingredient = ((EmiStackConverter.Converter) converter).convertTo(slot);
                     }
 
-                    SlotWidget slotWidget = null;
-                    // Clear the LDLib slots & add EMI slots based on them.
-                    if (slot instanceof SlotComponent slotW) {
-                        slotW.setSlot((IItemHandlerModifiable) EmptyHandler.INSTANCE, 0)
-                                .drawContents(false)
-                                .drawTooltip(false);
-                    } else if (slot instanceof TankComponent tankW) {
-                        tankW.setFluidTank(EmptyFluidHandler.INSTANCE)
-                                .drawContents(false)
-                                .drawTooltip(false);
-                        long capacity = Math.max(1, ingredient.getAmount());
-                        slotWidget = new TankWidget(ingredient, w.x(), w.y(), w.width(), w.height(), capacity);
-                    }
-                    if (slotWidget == null) {
-                        slotWidget = new SlotWidget(ingredient, w.x(), w.y());
-                    }
-
-                    slotWidget.customBackground(null, w.x(), w.y(), w.width(), w.height()).drawBack(false);
+                    // don't render the EMI slot widget at all, use the UI for that.
+                    // still need to add the slots though, or EMI will complain.
+                    SlotWidget slotWidget = new NoRenderEMISlotWidget(ingredient, c.x(), c.y());
                     if (io == IO.NONE) {
                         slotWidget.catalyst(true);
                     } else if (io == IO.OUT) {
                         slotWidget.recipeContext(this);
-                    }
-                    var tooltip = w.tooltip();
-                    if (tooltip != null) {
-                        for (ClientTooltipComponent component : tooltip) {
-                            slotWidget.appendTooltip(() -> component);
-                        }
                     }
                     widgets.add(slotWidget);
                 }

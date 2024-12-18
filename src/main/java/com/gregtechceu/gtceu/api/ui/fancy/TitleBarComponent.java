@@ -66,25 +66,25 @@ public class TitleBarComponent extends StackLayout {
         buttonGroup.surface(Surface.TITLE_BAR_BACKGROUND);
         buttonGroup.child(this.backButton = UIComponents.button(Component.literal(" <"), onBackClicked)
                 .positioning(Positioning.absolute(0, BORDER_SIZE))
-                .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(HEIGHT - BORDER_SIZE)));
+                .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(innerHeight)));
         buttonGroup.child(this.menuButton = UIComponents.button(Component.literal("+"), onMenuClicked)
                 .positioning(Positioning.relative(100, 100))
-                .margins(Insets.both(BUTTON_WIDTH, BORDER_SIZE))
-                .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(HEIGHT - BORDER_SIZE)));
+                //.margins(Insets.both(BUTTON_WIDTH, BORDER_SIZE))
+                .sizing(Sizing.fixed(BUTTON_WIDTH), Sizing.fixed(innerHeight)));
         child(buttonGroup);
 
-        this.mainSection = UIContainers.horizontalFlow(Sizing.fill(), Sizing.fill());
+        this.mainSection = UIContainers.horizontalFlow(Sizing.fill().andThen(Sizing.fixed(-BUTTON_WIDTH * 2)),
+                Sizing.fill());
         mainSection.positioning(Positioning.absolute(BUTTON_WIDTH, 0));
         mainSection.surface(Surface.TITLE_BAR_BACKGROUND);
         mainSection.child(this.tabIcon = (TextureComponent) UIComponents.texture(UITexture.EMPTY)
-                .sizing(Sizing.fixed(innerHeight - 2), Sizing.fixed(innerHeight - 2))
-                .positioning(Positioning.absolute(BORDER_SIZE + 1, BORDER_SIZE + 1)));
+                        .sizing(Sizing.fixed(innerHeight - 2))
+                        .positioning(Positioning.absolute(BORDER_SIZE + 1, BORDER_SIZE + 1)))
+                .child(this.tabTitle = (LabelComponent) UIComponents.label(Component.empty())
+                        .rollSpeed(ROLL_SPEED)
+                        //.textType(TextTexture.TextType.LEFT_ROLL)
+                        .positioning(Positioning.absolute(HEIGHT, BORDER_SIZE)));
         child(mainSection);
-
-        mainSection.child(this.tabTitle = (LabelComponent) UIComponents.label(Component.empty())
-                .rollSpeed(ROLL_SPEED)
-                .textType(TextTexture.TextType.LEFT_ROLL)
-                .positioning(Positioning.absolute(BORDER_SIZE + innerHeight, BORDER_SIZE)));
 
         hasInit = true;
         updateLayout();

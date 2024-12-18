@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.fancy;
 
 import com.gregtechceu.gtceu.api.ui.GuiTextures;
 import com.gregtechceu.gtceu.api.ui.component.PlayerInventoryComponent;
+import com.gregtechceu.gtceu.api.ui.component.TextureComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
 import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
@@ -31,6 +32,7 @@ public class FancyMachineUIComponent extends StackLayout {
     protected final TitleBarComponent titleBar;
     protected final VerticalTabsComponent sideTabsComponent;
     protected final FlowLayout pageContainer;
+    protected final TextureComponent background;
     protected final PageSwitcherComponent pageSwitcher;
     @Getter
     protected final ConfiguratorPanelComponent configuratorPanel;
@@ -59,21 +61,25 @@ public class FancyMachineUIComponent extends StackLayout {
     public FancyMachineUIComponent(IFancyUIProvider mainPage,
                                    Sizing horizontalSizing, Sizing verticalSizing) {
         super(horizontalSizing.andThen(Sizing.fixed(20)), verticalSizing.andThen(Sizing.fixed(16)));
+        //this.margins(Insets.of(-border));
         this.mainPage = mainPage;
-        this.allowOverflow(true)
-                .surface(Surface.BLANK);
 
         child(this.pageContainer = UIContainers.horizontalFlow(horizontalSizing, verticalSizing)
                 .configure(c -> {
-                    c.allowOverflow(true)
-                            .surface(Surface.UI_BACKGROUND)
-                            .positioning(Positioning.absolute(20, TitleBarComponent.HEIGHT));
+                    c.allowOverflow(true);
+                    c.positioning(Positioning.absolute(20, 16));
+                }));
+        child(this.background = UIComponents.texture(GuiTextures.BACKGROUND)
+                .configure(c -> {
+                    c.positioning(Positioning.absolute(20, 16))
+                            .sizing(horizontalSizing, verticalSizing);
                 }));
 
         if (mainPage.hasPlayerInventory()) {
             child(this.playerInventory = UIComponents.playerInventory()
                     .configure(c -> {
-                        c.positioning(Positioning.relative(50, 100));
+                        c.margins(Insets.of(4, 4, 20 + 4, 4))
+                                .positioning(Positioning.relative(50, 100));
                     }));
         } else {
             playerInventory = null;
@@ -81,7 +87,8 @@ public class FancyMachineUIComponent extends StackLayout {
 
         child(this.titleBar = new TitleBarComponent(this::navigateBack, this::openPageSwitcher)
                 .configure(c -> {
-                    c.positioning(Positioning.absolute(TitleBarComponent.HORIZONTAL_MARGIN + 20, 0));
+                    c.positioning(Positioning.absolute(20, 0))
+                            .horizontalSizing(horizontalSizing);
                 }));
         child(this.sideTabsComponent = (VerticalTabsComponent) new VerticalTabsComponent(this::navigate)
                 .positioning(Positioning.absolute(0, TitleBarComponent.HEIGHT))
@@ -204,7 +211,6 @@ public class FancyMachineUIComponent extends StackLayout {
     protected void setupFancyUI(IFancyUIProvider fancyUI, boolean showInventory) {
         clearUI();
 
-
         UIAdapter<?> adapter = containerAccess().adapter();
         Size size = Size.zero();
         if (adapter != null) {
@@ -225,12 +231,16 @@ public class FancyMachineUIComponent extends StackLayout {
         // layout
         Sizing horizontal = page.horizontalSizing().get().copy().min(172);
         Sizing vertical = page.verticalSizing().get().copy().min(86);
-        this.sizing(horizontal.andThen(Sizing.fixed(20)), vertical.andThen(Sizing.fixed(16)));
+        //this.sizing(horizontal.andThen(Sizing.fixed(20)), vertical
+        //        .andThen(Sizing.fixed(16 + (!showInventory || playerInventory == null ? 0 : 76))));
 
         final var margins = this.margins.get();
         int width = horizontal.inflate(this.space.width() - margins.horizontal(), page::determineHorizontalContentSize);
         int height = vertical.inflate(this.space.height() - margins.vertical(),
                 page::determineVerticalContentSize);
+
+        this.background.sizing(Sizing.fixed(width),
+                Sizing.fixed(height + (!showInventory || playerInventory == null ? 0 : 76)));
 
         AbstractContainerScreen<?> screen = containerAccess().screen();
         if (screen != null) {
@@ -258,8 +268,11 @@ public class FancyMachineUIComponent extends StackLayout {
                 .positioning(Positioning.relative(50, 50)));
         fancyUI.attachConfigurators(configuratorPanel);
         configuratorPanel
-                .positioning(Positioning.absolute(-4 - 2, screen.height - configuratorPanel.height() - 4));
+                .positioning(Positioning.absolute(-(4 + 2), screen.height - configuratorPanel.height() - 4));
         fancyUI.attachTooltips(tooltipsPanel);
+
+        sideTabsComponent.verticalSizing(Sizing.fixed(height));
+        titleBar.horizontalSizing(Sizing.fixed(width));
 
         this.inflate(this.space);
     }

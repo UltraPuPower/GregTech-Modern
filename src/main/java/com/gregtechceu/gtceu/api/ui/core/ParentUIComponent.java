@@ -276,15 +276,6 @@ public interface ParentUIComponent extends UIComponent {
         return null;
     }
 
-    static <T extends UIComponent> void childByIdForEach(ParentUIComponent group, String regex, Class<T> clazz,
-                                                         Consumer<T> consumer) {
-        for (UIComponent widget : group.childrenByPattern(Pattern.compile(regex))) {
-            if (clazz.isInstance(widget)) {
-                consumer.accept(clazz.cast(widget));
-            }
-        }
-    }
-
     default List<UIComponent> childrenByPattern(Pattern regex) {
         List<UIComponent> list = new ArrayList<>();
         childrenByPattern(list, regex);

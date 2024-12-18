@@ -278,7 +278,15 @@ public class Sizing implements Animatable<Sizing> {
 
         @Override
         public int inflate(int space, Function<Sizing, Integer> contentSizeFunction) {
-            return this.first.inflate(space, contentSizeFunction) + this.second.inflate(space, contentSizeFunction);
+            var value = this.first.inflate(space, contentSizeFunction) +
+                    this.second.inflate(space, contentSizeFunction);
+            if (max != -1) {
+                value = Math.min(max, value);
+            }
+            if (min != -1) {
+                value = Math.max(min, value);
+            }
+            return value;
         }
 
         @Override

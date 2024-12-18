@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.ui.editable;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
+import com.gregtechceu.gtceu.api.ui.core.ParentUIComponent;
 import com.gregtechceu.gtceu.api.ui.core.UIAdapter;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModel;
 import com.gregtechceu.gtceu.api.ui.parsing.UIModelLoader;
@@ -18,12 +19,12 @@ public class EditableMachineUI implements IEditableUI<StackLayout, MetaMachine> 
     @Getter
     final ResourceLocation uiPath;
     final Supplier<StackLayout> widgetSupplier;
-    final BinderFunction<StackLayout, MetaMachine> binder;
+    final BinderFunction<ParentUIComponent, MetaMachine> binder;
     @Nullable
     private UIModel customUICache;
 
     public EditableMachineUI(ResourceLocation uiPath, Supplier<StackLayout> widgetSupplier,
-                             BinderFunction<StackLayout, MetaMachine> binder) {
+                             BinderFunction<ParentUIComponent, MetaMachine> binder) {
         this.uiPath = uiPath;
         this.widgetSupplier = widgetSupplier;
         this.binder = binder;
@@ -34,7 +35,7 @@ public class EditableMachineUI implements IEditableUI<StackLayout, MetaMachine> 
     }
 
     @Override
-    public void setupUI(StackLayout template, UIAdapter<StackLayout> adapter, MetaMachine machine) {
+    public void setupUI(ParentUIComponent template, UIAdapter<StackLayout> adapter, MetaMachine machine) {
         binder.bind(template, adapter, machine);
     }
 

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.GhostCircuitSlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -385,7 +386,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
-                StackLayout template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
+                FlowLayout template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
                         .createDefault();
                 SlotComponent batterySlot = createBatterySlot().createDefault();
                 StackLayout group = UIContainers.stack(Sizing.content(), Sizing.content().copy().min(78));

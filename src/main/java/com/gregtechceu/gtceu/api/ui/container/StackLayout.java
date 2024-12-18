@@ -28,11 +28,25 @@ public class StackLayout extends BaseParentUIComponent {
 
     @Override
     public int determineHorizontalContentSize(Sizing sizing) {
+        if (this.contentSize.width() <= 0) {
+            int contentWidth = this.padding.get().horizontal();
+            for (UIComponent child : this.children) {
+                contentWidth += child.fullSize().width();
+            }
+            return contentWidth;
+        }
         return this.contentSize.width() + this.padding.get().horizontal();
     }
 
     @Override
     public int determineVerticalContentSize(Sizing sizing) {
+        if (this.contentSize.height() <= 0) {
+            int contentHeight = this.padding.get().vertical();
+            for (UIComponent child : this.children) {
+                contentHeight += child.fullSize().height();
+            }
+            return contentHeight;
+        }
         return this.contentSize.height() + this.padding.get().vertical();
     }
 

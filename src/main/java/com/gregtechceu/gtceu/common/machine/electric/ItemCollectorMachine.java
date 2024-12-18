@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
 import com.gregtechceu.gtceu.api.ui.component.IntInputComponent;
 import com.gregtechceu.gtceu.api.ui.component.SlotComponent;
 import com.gregtechceu.gtceu.api.ui.component.UIComponents;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.GridLayout;
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
@@ -458,7 +459,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                     rangeSelector.positioning(Positioning.relative(40, 5));
                     rangeSelector.setMin(1);
                     rangeSelector.setMax(itemCollectorMachine.maxRange);
-                    template.child(rangeSelector);
+                    if (template instanceof StackLayout stackLayout) {
+                        stackLayout.child(rangeSelector);
+                    } else if (template instanceof FlowLayout flowLayout) {
+                        flowLayout.child(rangeSelector);
+                    }
                 }
             }));
 

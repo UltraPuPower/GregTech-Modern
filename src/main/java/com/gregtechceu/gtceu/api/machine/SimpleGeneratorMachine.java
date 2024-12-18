@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.ui.UIContainerMenu;
+import com.gregtechceu.gtceu.api.ui.container.FlowLayout;
 import com.gregtechceu.gtceu.api.ui.container.StackLayout;
 import com.gregtechceu.gtceu.api.ui.container.UIContainers;
 import com.gregtechceu.gtceu.api.ui.core.Positioning;
@@ -194,7 +195,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, recipeType) -> new EditableMachineUI(path, () -> {
-                StackLayout template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
+                FlowLayout template = recipeType.getRecipeUI().createEditableUITemplate(false, false)
                         .createDefault();
                 StackLayout group = UIContainers.stack(Sizing.content(), Sizing.content().copy().min(78));
                 template.positioning(Positioning.relative(50, 50));

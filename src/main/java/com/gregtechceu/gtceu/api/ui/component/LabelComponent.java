@@ -67,7 +67,6 @@ public class LabelComponent extends BaseUIComponent {
     protected Function<Style, Boolean> textClickHandler = UIGuiGraphics.utilityScreen()::handleComponentClicked;
 
     protected LabelComponent(Component text) {
-        zIndex(400);
         this.text = text;
         this.wrappedText = new ArrayList<>();
 
