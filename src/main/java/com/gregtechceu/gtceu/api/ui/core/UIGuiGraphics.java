@@ -292,8 +292,8 @@ public class UIGuiGraphics extends GuiGraphics {
      */
     void blit(ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float uWidth,
               float vHeight, float uOffset, float vOffset, float textureWidth, float textureHeight) {
-        this.innerBlit(atlasLocation, x1, x2, y1, y2, blitOffset, (uOffset + 0.0F) / textureWidth,
-                (uOffset + uWidth) / textureWidth, (vOffset + 0.0F) / textureHeight,
+        this.innerBlit(atlasLocation, x1, x2, y1, y2, blitOffset, uOffset / textureWidth,
+                (uOffset + uWidth) / textureWidth, vOffset / textureHeight,
                 (vOffset + vHeight) / textureHeight);
     }
 

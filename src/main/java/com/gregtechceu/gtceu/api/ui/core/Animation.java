@@ -31,7 +31,6 @@ public class Animation<A extends Animatable<A>> {
     private final A to;
 
     private final EventStream<Finished> finishedEvents = Finished.newStream();
-    @Getter
     private boolean isFinished = true;
 
     public Animation(int duration, Consumer<A> setter, Easing easing, A from, A to) {
@@ -85,6 +84,10 @@ public class Animation<A extends Animatable<A>> {
 
     public EventSource<Finished> finished() {
         return this.finishedEvents.source();
+    }
+
+    public boolean isFinished() {
+        return this.isFinished;
     }
 
     public enum Direction {
