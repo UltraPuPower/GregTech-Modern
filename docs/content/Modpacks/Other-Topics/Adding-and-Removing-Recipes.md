@@ -97,7 +97,7 @@ ServerEvents.recipes(event => {
     - `.perTick()`: Using this will enable you to control whether a recipe input/output is consumed/produced per tick the recipe is running or all at once at recipe start/end. Set to true with `.perTick(true)` to make the recipe builder consider any following input/output calls as per-tick. Remember to set the value to false with `.perTick(false)` after the calls you intend to be per-tick, to prevent behaviour you don't want!
 
 ### Cleanroom
-Making your recipe require the (sterile) Cleanroom is not that hard, just do 
+Making your recipe require the (sterile) Cleanroom is not that hard, as there is build in support, in the form of `.cleanroom(CleanroomType.type)`
 
 ```js title="cleanroom.js"
 ServerEvents.recipes(event => {
